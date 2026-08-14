@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turn Textbooks and Lectures Into a Custom Study Podcast | Everyday AI Done Right</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF9;
+    --ink: #1C1C1E;
+    --green: #0F8A5F;
+    --coral: #FF6B4A;
+    --card-bg: #FFFFFF;
+    --border: #E5E5E5;
+    --muted: #6B7280;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  }
+
+  [data-theme="dark"] {
+    --paper: #141414;
+    --ink: #F4F4F3;
+    --green: #22C58B;
+    --coral: #FF8064;
+    --card-bg: #1E1E1E;
+    --border: #333333;
+    --muted: #9CA3AF;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding-top: 70px;
+  }
+  
+  h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; font-weight: 800; line-height: 1.2; margin-bottom: 0.5em; }
+  h1 { font-size: 2.25rem; }
+  h2 { font-size: 1.5rem; margin-top: 2rem; }
+  p { margin-bottom: 1rem; }
+  
+  code, .badge, .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+  
+  a { color: var(--green); text-decoration: none; font-weight: 600; }
+  a:hover { text-decoration: underline; }
+
+  /* Topbar */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 60px;
+    background: var(--card-bg); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; z-index: 100; box-shadow: var(--shadow);
+  }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .cat-label { background: var(--green); color: #fff; padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  
+  .theme-toggle {
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 12px; cursor: pointer; color: var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+    display: flex; align-items: center; gap: 6px;
+  }
+  
+  /* Container */
+  .container { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+  
+  /* Hero */
+  .hero { margin-bottom: 48px; }
+  .badges { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tool-badge { background: var(--paper); border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; color: var(--muted); }
+  .verify-badge { background: var(--green); color: #fff; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
+  .pitch { font-size: 1.25rem; color: var(--ink); font-weight: 500; }
+  
+  /* Cost Widget */
+  .cost-widget {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px; margin-bottom: 48px; box-shadow: var(--shadow);
+    display: flex; justify-content: space-around; flex-wrap: wrap; gap: 24px;
+  }
+  .cost-item { text-align: center; }
+  .cost-label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+  .price { font-family: 'Manrope', sans-serif; font-size: 1.5rem; font-weight: 800; display: inline-block; position: relative; }
+  .price.strike { color: var(--muted); }
+  .price.zero { color: var(--green); opacity: 0; transform: scale(0.5); }
+  
+  .price.strike.animate { animation: strikeIn 0.6s forwards; }
+  .price.zero.animate { animation: popIn 0.6s 0.4s forwards; }
+  
+  @keyframes strikeIn {
+    0% { text-decoration: none; }
+    100% { text-decoration: line-through; color: var(--coral); }
+  }
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Stepper */
+  .stepper-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 32px; margin-bottom: 48px; box-shadow: var(--shadow);
+  }
+  .stepper-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .stepper-dots { display: flex; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background 0.3s; }
+  .dot.active { background: var(--green); transform: scale(1.2); }
+  .step-content { min-height: 150px; margin-bottom: 24px; }
+  .step-content h3 { color: var(--green); font-size: 1.1rem; margin-bottom: 8px; }
+  .step-content .prompt-box {
+    background: var(--paper); border: 1px dashed var(--border); padding: 16px; border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; position: relative;
+    white-space: pre-wrap;
+  }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px; background: var(--green); color: #fff; border: none;
+    padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: 600;
+  }
+  .stepper-btns { display: flex; justify-content: space-between; }
+  .btn {
+    background: var(--ink); color: var(--paper); border: none; padding: 10px 24px;
+    border-radius: 8px; cursor: pointer; font-weight: 600; font-family: 'Inter', sans-serif;
+    transition: opacity 0.2s;
+  }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn:hover:not(:disabled) { opacity: 0.8; }
+  
+  /* Callout */
+  .callout {
+    background: var(--card-bg); border-left: 4px solid var(--coral); border-radius: 8px;
+    padding: 24px; margin-bottom: 48px; box-shadow: var(--shadow);
+  }
+  .callout h3 { color: var(--coral); }
+
+  /* Three Things */
+  .three-things { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 48px; }
+  .thing-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px; cursor: pointer; position: relative; min-height: 180px;
+    box-shadow: var(--shadow); transition: transform 0.3s;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .thing-card:hover { transform: translateY(-4px); }
+  .thing-front, .thing-back { transition: opacity 0.4s, transform 0.4s; }
+  .thing-back { display: none; color: var(--muted); font-size: 0.95rem; }
+  .thing-card.revealed .thing-front { display: none; }
+  .thing-card.revealed .thing-back { display: block; }
+  .thing-hint { font-size: 0.75rem; color: var(--muted); margin-top: 12px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Quota Checker */
+  .quota-checker {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 32px; margin-bottom: 48px; box-shadow: var(--shadow);
+  }
+  .quota-input-group { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;}
+  .quota-input-group input {
+    flex: 1; min-width: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: 1rem; background: var(--paper); color: var(--ink);
+  }
+  .preset-btns { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;}
+  .preset-btn {
+    background: var(--paper); border: 1px solid var(--border); padding: 6px 12px;
+    border-radius: 999px; cursor: pointer; font-size: 0.85rem;
+  }
+  .preset-btn:hover { border-color: var(--green); }
+  .quota-result {
+    padding: 16px; border-radius: 8px; background: var(--paper); border: 1px solid var(--border);
+    display: none;
+  }
+  .quota-result.visible { display: block; }
+  .quota-result.safe { border-color: var(--green); color: var(--green); }
+  .quota-result.warn { border-color: var(--coral); color: var(--coral); }
+
+  /* Share Bar */
+  .share-bar { display: flex; gap: 12px; margin: 24px 0; flex-wrap: wrap; }
+  .share-btn {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink);
+    font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: transform 0.2s;
+  }
+  .share-btn:hover { transform: scale(1.1); border-color: var(--green); }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--border); padding: 48px 24px; text-align: center; color: var(--muted); font-size: 0.9rem; }
+  footer a { margin: 0 8px; }
+
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .price.zero { opacity: 1; transform: scale(1); }
+    .price.strike { text-decoration: line-through; color: var(--coral); }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="https://iggym.github.io/everyday-ai-done-right/" style="font-weight:800; font-family:'Manrope',sans-serif;">Everyday AI</a>
+    <span class="cat-label">Learning</span>
+  </div>
+  <div class="topbar-right">
+    <span class="mono" style="color:var(--muted); font-size:0.8rem;">5 min read</span>
+    <button class="theme-toggle" id="theme-toggle">
+      <span id="theme-icon">🌙</span> <span id="theme-text">Auto</span>
+    </button>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div class="badges">
+      <span class="badge tool-badge">NotebookLM Standard (Google)</span>
+      <span class="badge verify-badge">Verified May 12, 2026</span>
+    </div>
+    <h1>Turn Textbooks and Lectures Into a Custom Study Podcast</h1>
+    <p class="pitch">Upload up to 50 PDFs, web pages, or YouTube links to NotebookLM and generate a two-host AI podcast that debates your specific sources—completely free, but capped at three audio generations per day on a rolling 24-hour clock.</p>
+    
+    <div class="share-bar" id="share-top"></div>
+  </section>
+
+  <section class="cost-widget" id="cost-widget">
+    <div class="cost-item">
+      <span class="cost-label">Private Tutor</span>
+      <div><span class="price strike" data-original="$50/hr">$50/hr</span></div>
+      <div><span class="price zero">$0</span></div>
+    </div>
+    <div class="cost-item">
+      <span class="cost-label">Blinkist Audio</span>
+      <div><span class="price strike" data-original="$99/yr">$99/yr</span></div>
+      <div><span class="price zero">$0</span></div>
+    </div>
+    <div class="cost-item">
+      <span class="cost-label">Google AI Plus</span>
+      <div><span class="price strike" data-original="$5/mo">$5/mo</span></div>
+      <div><span class="price zero">$0</span></div>
+    </div>
+  </section>
+
+  <h2>The Walkthrough</h2>
+  <div class="stepper-card">
+    <div class="stepper-nav">
+      <span class="mono" id="step-indicator">Step 1 of 7</span>
+      <div class="stepper-dots" id="stepper-dots"></div>
+    </div>
+    <div class="step-content" id="step-content"></div>
+    <div class="stepper-btns">
+      <button class="btn" id="prev-btn">← Previous</button>
+      <button class="btn" id="next-btn">Next →</button>
+    </div>
+  </div>
+
+  <h2>What breaks</h2>
+  <div class="callout">
+    <h3>The honest failure mode</h3>
+    <p>The three-audio-a-day limit operates on a strict rolling 24-hour window, not a midnight reset. If you generate your third podcast at 4:00 PM on a Tuesday, you cannot generate another one until 4:00 PM on Wednesday. The AI hosts also use heavy "podcast banter" (frequent "wows" and conversational filler), which can be grating if you just want dry information extraction. Finally, you cannot upload raw `.mp4` video files directly; you must use a public YouTube URL or extract the transcript to a text document first.</p>
+  </div>
+
+  <h2>Three Things</h2>
+  <div class="three-things" id="three-things">
+    <div class="thing-card" data-idx="0">
+      <div class="thing-front">
+        <h3>1. The Narrow Source Trick</h3>
+        <p class="thing-hint">Click to reveal</p>
+      </div>
+      <div class="thing-back">If you only need to study one specific chapter, do not upload a 500-page textbook just to use one of your three daily audio credits on a broad summary. Create a separate notebook, upload just that single chapter, and the hosts will drill deeply into those specific pages.</div>
+    </div>
+    <div class="thing-card" data-idx="1">
+      <div class="thing-front">
+        <h3>2. Multimodal Synthesis</h3>
+        <p class="thing-hint">Click to reveal</p>
+      </div>
+      <div class="thing-back">You can add a YouTube lecture URL and a PDF textbook chapter to the same notebook. The Audio Overview will synthesize both, effectively having the "hosts" bridge the gap between the academic text and the professor's spoken explanations.</div>
+    </div>
+    <div class="thing-card" data-idx="2">
+      <div class="thing-front">
+        <h3>3. The Chat vs. Audio Math</h3>
+        <p class="thing-hint">Click to reveal</p>
+      </div>
+      <div class="thing-back">Asking follow-up questions in the text chat box does not consume your "Audio Overview" daily credits. Generate the audio once for the broad summary, then use the 50 daily text chats to drill down into specific definitions or quiz yourself.</div>
+    </div>
+  </div>
+
+  <div class="share-bar" id="share-bottom"></div>
+
+  <h2>Will you hit the limit?</h2>
+  <div class="quota-checker">
+    <p>How many custom audio podcasts do you need to generate per day?</p>
+    <div class="preset-btns">
+      <button class="preset-btn" data-val="1">1/day</button>
+      <button class="preset-btn" data-val="3">3/day</button>
+      <button class="preset-btn" data-val="5">5/day</button>
+      <button class="preset-btn" data-val="10">10/day</button>
+    </div>
+    <div class="quota-input-group">
+      <input type="number" id="quota-input" placeholder="Enter number" min="1">
+      <button class="btn" id="quota-calc">Check Quota</button>
+    </div>
+    <div class="quota-result" id="quota-result"></div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Verified against Google Support & third-party API trackers on May 12, 2026.</p>
+  <p style="margin-top:16px;">
+    <a href="https://iggym.github.io/everyday-ai-done-right/">Home</a> | 
+    <a href="https://iggym.github.io/everyday-ai-done-right/">Browse more guides</a>
+  </p>
+</footer>
+
+<script>
+  // Theme Toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+  const themeIcon = document.getElementById('theme-icon');
+  const themeText = document.getElementById('theme-text');
+  
+  function applyTheme(theme) {
+    if (theme === 'auto') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      themeIcon.textContent = '🌓';
+      themeText.textContent = 'Auto';
+    } else {
+      html.setAttribute('data-theme', theme);
+      themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+      themeText.textContent = theme === 'dark' ? 'Dark' : 'Light';
+    }
+  }
+  
+  let currentTheme = localStorage.getItem('eadr-theme') || 'auto';
+  applyTheme(currentTheme);
+  
+  themeToggle.addEventListener('click', () => {
+    const modes = ['auto', 'light', 'dark'];
+    let idx = modes.indexOf(currentTheme);
+    currentTheme = modes[(idx + 1) % modes.length];
+    localStorage.setItem('eadr-theme', currentTheme);
+    applyTheme(currentTheme);
+  });
+
+  // Stepper
+  const steps = [
+    { title: "Step 1: Sign in", content: "Go to <code>notebooklm.google.com</code> and sign in with any standard, free Google account." },
+    { title: "Step 2: Add sources", content: "Click 'Create new notebook' and add your learning materials using the plus icon. You can upload PDFs, paste YouTube URLs, or drop in raw text. (Limit: 50 sources)." },
+    { title: "Step 3: Locate Audio Overview", content: "Wait a few moments for the right-hand panel to populate. Locate the 'Audio Overview' section and click 'Generate'." },
+    { title: "Step 4: Customize the hosts", content: "Before clicking generate, click 'Customize' and paste this prompt:" },
+    { title: "Step 5: Generate", content: "Click 'Generate' and wait a few minutes for the audio file to build." },
+    { title: "Step 6: Download", content: "Play the podcast directly in the browser, or click the three dots to download the MP3 to your phone for an offline study session." },
+    { title: "Step 7: Drill down", content: "Use the chat box below the audio player to ask specific follow-up questions about the text without using up another daily audio generation credit." }
+  ];
+  
+  const promptText = `Focus strictly on the core arguments and definitions from the provided text. Keep the tone academic but conversational, and spend at least half the time discussing the practical examples provided in the sources.`;
+  
+  let currentStep = 0;
+  const stepContent = document.getElementById('step-content');
+  const stepIndicator = document.getElementById('step-indicator');
+  const dotsContainer = document.getElementById('stepper-dots');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  
+  function renderStep() {
+    stepIndicator.textContent = `Step ${currentStep + 1} of ${steps.length}`;
+    let html = `<h3>${steps[currentStep].title}</h3><p>${steps[currentStep].content}</p>`;
+    if (currentStep === 3) {
+      html += `<div class="prompt-box">${promptText}<button class="copy-btn" onclick="copyText('${promptText.replace(/'/g, "\\'")}', this)">Copy</button></div>`;
+    }
+    stepContent.innerHTML = html;
+    prevBtn.disabled = currentStep === 0;
+    nextBtn.disabled = currentStep === steps.length - 1;
+    
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentStep);
+    });
+  }
+  
+  for (let i = 0; i < steps.length; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.addEventListener('click', () => { currentStep = i; renderStep(); });
+    dotsContainer.appendChild(dot);
+  }
+  
+  prevBtn.addEventListener('click', () => { if(currentStep > 0) { currentStep--; renderStep(); } });
+  nextBtn.addEventListener('click', () => { if(currentStep < steps.length - 1) { currentStep++; renderStep(); } });
+  renderStep();
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.innerText;
+      btn.innerText = 'Copied!';
+      setTimeout(() => { btn.innerText = original; }, 1500);
+    });
+  }
+
+  // Quota Checker
+  const quotaInput = document.getElementById('quota-input');
+  const quotaResult = document.getElementById('quota-result');
+  document.getElementById('quota-calc').addEventListener('click', checkQuota);
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      quotaInput.value = btn.dataset.val;
+      checkQuota();
+    });
+  });
+
+  function checkQuota() {
+    const val = parseInt(quotaInput.value);
+    if (isNaN(val) || val < 1) return;
+    
+    quotaResult.classList.add('visible');
+    if (val <= 3) {
+      quotaResult.className = 'quota-result visible safe';
+      quotaResult.innerHTML = `<strong>You're clear.</strong> You are well within the free Standard tier limit of 3 per day. You won't pay a cent.`;
+    } else {
+      quotaResult.className = 'quota-result visible warn';
+      quotaResult.innerHTML = `<strong>Limit hit.</strong> You will hit the free limit (3/day). The Standard tier operates on a strict rolling 24-hour window, so if you hit your cap at 4 PM, you'll be blocked until 4 PM tomorrow. To get 6 generations a day, the cheapest sourced upgrade is Google AI Plus at ~$4.99/mo.`;
+    }
+  }
+
+  // Three Things
+  document.querySelectorAll('.thing-card').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('revealed'));
+  });
+
+  // Cost Widget Animation
+  const costObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.price.strike').forEach(el => el.classList.add('animate'));
+        document.querySelectorAll('.price.zero').forEach(el => el.classList.add('animate'));
+        costObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.5 });
+  costObserver.observe(document.getElementById('cost-widget'));
+
+  // Share Bar
+  const url = encodeURIComponent(window.location.href);
+  const pitch = encodeURIComponent("Turn textbooks and lectures into a custom study podcast with NotebookLM—free, but capped at 3 audio generations/day on a rolling 24h clock.");
+  const threeThingsText = encodeURIComponent("3 non-obvious tricks to master NotebookLM's free tier.");
+  
+  const shareLinks = (textVar) => `
+    <a class="share-btn" target="_blank" href="https://twitter.com/intent/tweet?text=${textVar}&url=${url}" title="X">X</a>
+    <a class="share-btn" target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${textVar}&summary=${textVar}" title="LinkedIn">in</a>
+    <a class="share-btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=${url}" title="Facebook">f</a>
+    <a class="share-btn" target="_blank" href="https://wa.me/?text=${textVar}%20${url}" title="WhatsApp">wa</a>
+    <a class="share-btn" target="_blank" href="https://www.reddit.com/submit?url=${url}&title=${textVar}" title="Reddit">r/</a>
+    <a class="share-btn" href="mailto:?subject=${textVar}&body=${url}" title="Email">@</a>
+    <button class="share-btn" onclick="copyText(window.location.href, this)" title="Copy Link">🔗</button>
+  `;
+  
+  document.getElementById('share-top').innerHTML = shareLinks(pitch);
+  document.getElementById('share-bottom').innerHTML = shareLinks(threeThingsText);
+
+</script>
+</body>
+</html>
