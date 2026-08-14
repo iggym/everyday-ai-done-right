@@ -162,7 +162,6 @@
     background:var(--green-soft); padding:4px 10px; border-radius:12px;
     display:inline-flex; align-items:center; gap:5px;
   }
-  .tool-badge::before{ content:'●'; font-size:8px; }
   .reading-time{ font-family:var(--mono); font-size:11px; color:var(--muted); white-space:nowrap; }
   .card h2{ font-family:var(--display); font-weight:800; font-size:1.15rem; margin:0 0 10px; line-height:1.3; }
   .card p.hook{ font-size:14px; color:var(--ink-soft); margin:0 0 16px; line-height:1.55; }
@@ -256,6 +255,15 @@
 
   let activeCategory = null;
 
+  const EMOJI_MAP = {
+    accessibility: '👁️',
+    career: '💼',
+    health: '🥗',
+    learning: '🎧',
+    household: '🧾',
+    civic: '⚖️'
+  };
+
   function fmtDate(iso){
     try{ return new Date(iso+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
     catch(e){ return iso; }
@@ -263,11 +271,13 @@
 
   function cardHTML(a, idx, isPinned){
     const tags = (a.tags||[]).map(t=>`<span class="tag-pill">${t}</span>`).join('');
+    const categoryEmoji = EMOJI_MAP[a.category?.toLowerCase()] || '💡';
+
     return `
       <a class="card ${isPinned?'pinned':''}" href="${a.path}" style="animation-delay:${Math.min(idx*0.04,0.4)}s"
          data-category="${a.category||''}" data-search="${(a.title+' '+(a.hook||'')+' '+(a.tool||'')+' '+(a.tags||[]).join(' ')).toLowerCase()}">
         <div class="card-top">
-          <span class="tool-badge">${a.tool || 'Free tool'}</span>
+          <span class="tool-badge">${categoryEmoji} ${a.tool || 'Free tool'}</span>
           <span class="reading-time">${a.reading_time_minutes || '—'} min</span>
         </div>
         <h2>${a.title}</h2>
@@ -296,7 +306,10 @@
     const cats = [...new Set(articles.map(a => a.category).filter(Boolean))];
     if(cats.length === 0){ filtersEl.innerHTML=''; return; }
     let html = `<span class="chip active" data-cat="">All</span>`;
-    cats.forEach(c => { html += `<span class="chip" data-cat="${c}">${c.charAt(0).toUpperCase()+c.slice(1)}</span>`; });
+    cats.forEach(c => { 
+      const emoji = EMOJI_MAP[c.toLowerCase()] || '';
+      html += `<span class="chip" data-cat="${c}">${emoji} ${c.charAt(0).toUpperCase()+c.slice(1)}</span>`; 
+    });
     filtersEl.innerHTML = html;
     filtersEl.querySelectorAll('.chip').forEach(chip=>{
       chip.addEventListener('click', ()=>{
