@@ -167,5 +167,22 @@
   "reading_time_minutes": 4,
   "pinned": false,
   "verified": "2026-02-12"
+},{
+  "id": "1004",
+  "slug": "ats-resume-impact-statement-engine",
+  "title": "Transform Work History into ATS-Proof Resume Impact Statements",
+  "hook": "Convert raw work experience bullets into quantified impact statements using Claude's free tier without paid subscription software.",
+  "path": "articles/ats-resume-impact-statement-engine.html",
+  "date": "2026-03-24",
+  "status": "published",
+  "format": "guide",
+  "category": "career",
+  "tool": "Claude 3.5 Sonnet (claude.ai, free tier)",
+  "tool_family": "Anthropic",
+  "source_url": "https://support.anthropic.com/en/articles/8324991-about-claude-ai-free-plan",
+  "tags": ["resume", "job-search", "ats", "claude", "career"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-03-24"
 }]
 }
