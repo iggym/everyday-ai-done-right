@@ -7,5 +7,20 @@
     "audience": "Anyone, anywhere, seeking practical 100% free AI workflows — no paid API keys, no credit card, no subscription tier",
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
-  "articles": []
+  "articles": [{
+  "id": "0014",
+  "slug": "turn-40-page-pdf-into-plain-language-answers",
+  "title": "Turn a 40-Page PDF Into Plain-Language Answers",
+  "hook": "Upload a dense 40-page form to Google AI Studio's free chat interface and get page-referenced, plain-language answers without paying $20/month for premium AI.",
+  "path": "articles/turn-40-page-pdf-into-plain-language-answers.html",
+  "date": "2024-02-14",
+  "status": "published",
+  "format": "guide",
+  "category": "accessibility",
+  "tool": "Google AI Studio (Gemini 1.5 Flash, free tier)",
+  "tags": ["accessibility", "pdf", "document-analysis", "gemini", "free-tier"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2024-02-14"
+}]
 }
