@@ -14,18 +14,18 @@ Pick a category below to jump straight to the step-by-step verified guide:
 ### 💼 Career & Work
 > Level up your job hunt, sharpen your resume, and automate application workflows without paying career coaches.
 
-* 📄 **[Resume Critique Guide](https://iggym.github.io/everyday-ai-done-right/articles/brutally-honest-resume-critique.html)** — Get brutal, hiring-manager-grade feedback on your resume using free LLM reasoning.
+* 📄 **[Resume Critique Guide](https://iggym.github.io/everyday-ai-done-right/articles/get-a-brutally-honest-resume-critique.html)** — Get brutal, hiring-manager-grade feedback on your resume using free LLM reasoning.
 * 🎯 **[Tailored Application Engine](https://iggym.github.io/everyday-ai-done-right/articles/turn-a-raw-resume-into-a-tailored-application.html)** — Adapt your cover letter and experience bullets to specific job descriptions in seconds.
-* 🤖 **[ATS Resume Engine](https://iggym.github.io/everyday-ai-done-right/articles/beat-ats-screening-with-plain-text-resume.html)** — Format and optimize your resume to pass automated applicant tracking filters.
+* 🤖 **[ATS Resume Engine](https://iggym.github.io/everyday-ai-done-right/articles/beat-ats-screening-with-a-clean-text-resume.html)** — Format and optimize your resume to pass automated applicant tracking filters.
 
 ---
 
 ### 🥗 Health & Wellness
 > Turn everyday photos and voice notes into instant health insights, meal breakdowns, and routine tracking.
 
-* 📸 **[Health Screenshots Analyzer](https://iggym.github.io/everyday-ai-done-right/articles/parse-lab-results-and-medical-bills.html)** — Make sense of confusing lab results, portal summaries, or medical bills.
-* 🍎 **[Food Photo Nutrition Tracker](https://iggym.github.io/everyday-ai-done-right/articles/food-photo-nutrition-breakdown.html)** — Snap a quick picture of your plate to get instant calorie and macro estimates.
-* 🎙️ **[Voice Memo Nutrition Logger](https://iggym.github.io/everyday-ai-done-right/articles/voice-memo-nutrition-and-meal-logger.html)** — Speak what you ate into your phone and convert it into structured nutrition data.
+* 📸 **[Health Screenshots Analyzer](https://iggym.github.io/everyday-ai-done-right/articles/parse-lab-results-and-medical-bills-from-a-screenshot.html)** — Make sense of confusing lab results, portal summaries, or medical bills.
+* 🍎 **[Food Photo Nutrition Tracker](https://iggym.github.io/everyday-ai-done-right/articles/get-a-macro-breakdown-from-a-photo-of-your-meal.html)** — Snap a quick picture of your plate to get instant calorie and macro estimates.
+* 🎙️ **[Voice Memo Nutrition Logger](https://iggym.github.io/everyday-ai-done-right/articles/log-meals-and-macros-by-speaking-a-quick-voice-memo.html)** — Speak what you ate into your phone and convert it into structured nutrition data.
 
 ---
 
