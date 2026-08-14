@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decode Legal Jargon for Free | everyday-ai-done-right</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #FAFAF9; --ink: #1C1C1E; --green: #0F8A5F; --coral: #FF6B4A;
+            --border: #E5E5E3; --surface: #FFFFFF; --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --font-display: 'Manrope', sans-serif; --font-body: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+            --transition-speed: 0.4s;
+        }
+        [data-theme="dark"] {
+            --paper: #141414; --ink: #F4F4F3; --green: #22C58B; --coral: #FF8064;
+            --border: #2C2C2C; --surface: #1C1C1E; --shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-body); background: var(--paper); color: var(--ink); line-height: 1.6; transition: background var(--transition-speed), color var(--transition-speed); }
+        h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; }
+        .mono { font-family: var(--font-mono); }
+        
+        .topbar { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; transition: background var(--transition-speed), border var(--transition-speed); }
+        .topbar a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 14px; }
+        .topbar-right { display: flex; align-items: center; gap: 16px; font-size: 14px; }
+        .badge { font-family: var(--font-mono); font-size: 12px; background: var(--paper); border: 1px solid var(--border); padding: 4px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+        button { cursor: pointer; border: none; font-family: var(--font-body); }
+        .toggle-btn { background: var(--paper); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; font-size: 12px; color: var(--ink); font-weight: 500; transition: all 0.2s; }
+
+        .container { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+        
+        .hero h1 { font-size: 40px; margin-bottom: 16px; }
+        .pitch { font-size: 18px; font-weight: 500; margin-bottom: 24px; }
+        .tool-badge { display: inline-block; font-family: var(--font-mono); font-size: 14px; background: var(--green); color: #fff; padding: 6px 12px; border-radius: 999px; margin-right: 8px; }
+
+        .cost-widget { margin: 32px 0; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); text-align: center; }
+        .price-old { font-size: 24px; text-decoration: line-through; color: #888; opacity: 1; transition: opacity 0.6s ease; }
+        .price-old.hidden { opacity: 0; position: absolute; pointer-events: none; }
+        .price-new { font-size: 48px; font-weight: 800; color: var(--green); opacity: 0; transform: scale(0.8); transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s; }
+        .price-new.visible { opacity: 1; transform: scale(1); }
+
+        .quota-widget { margin: 32px 0; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); }
+        .quota-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--paper); color: var(--ink); font-family: var(--font-mono); margin: 8px 0; }
+        .quota-result { margin-top: 16px; font-size: 14px; font-weight: 500; min-height: 20px; }
+        .source-line { font-size: 12px; color: #888; margin-top: 12px; font-family: var(--font-mono); word-break: break-all; }
+
+        .stepper-nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+        .step-btn { padding: 8px 16px; border-radius: 999px; background: var(--paper); border: 1px solid var(--border); font-family: var(--font-mono); font-size: 13px; transition: all 0.2s; }
+        .step-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+        .step-panel { display: none; animation: fadeIn 0.3s ease; }
+        .step-panel.active { display: block; }
+        .prompt-box { background: var(--paper); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-top: 12px; font-family: var(--font-mono); font-size: 14px; position: relative; display: flex; justify-content: space-between; align-items: center; }
+        .copy-btn { background: var(--ink); color: var(--paper); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; flex-shrink: 0; margin-left: 12px; transition: background 0.2s; }
+
+        .what-breaks { margin: 40px 0; padding: 24px; border: 2px solid var(--coral); border-radius: 16px; background: rgba(255, 107, 74, 0.05); }
+
+        .three-things { margin: 40px 0; }
+        .thing-item { margin-bottom: 12px; }
+        .thing-btn { width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 500; color: var(--ink); display: flex; justify-content: space-between; align-items: center; }
+        .thing-content { max-height: 0; overflow: hidden; padding: 0 16px; background: var(--surface); border: 1px solid transparent; transition: max-height 0.3s ease, padding 0.3s ease; border-radius: 0 0 12px 12px; }
+        .thing-item.open .thing-content { max-height: 200px; padding: 16px; border-color: var(--border); border-top: 0; }
+        .thing-item.open .thing-btn { border-radius: 12px 12px 0 0; border-bottom-color: transparent; }
+
+        .share-bar { display: flex; gap: 8px; margin: 24px 0; flex-wrap: wrap; }
+        .share-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--paper); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; transition: transform 0.2s; text-decoration: none; color: var(--ink); }
+        .share-icon:hover { transform: scale(1.1); }
+
+        .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 13px; color: #888; }
+        .footer a { color: var(--green); text-decoration: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="topbar">
+        <a href="https://iggym.github.io/everyday-ai-done-right/">&larr; Everyday AI</a>
+        <div class="topbar-right">
+            <span class="badge"><span class="badge-dot"></span>Civic & Legal</span>
+            <span class="badge">3 min read</span>
+            <button class="toggle-btn" onclick="toggleTheme()">Theme</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="hero">
+            <h1>Decode Legal Jargon in Any Document for Free</h1>
+            <p class="pitch">Paste any confusing lease, contract, or official notice into Microsoft Copilot and get a plain-English summary in seconds—free forever, no card, up to 30 uses a day. Free forever, no card.</p>
+            <div style="margin-bottom: 16px;">
+                <span class="tool-badge">Microsoft Copilot</span>
+                <span class="badge">Verified 2023-11-28</span>
+            </div>
+        </header>
+
+        <div class="share-bar" id="share-pitch"></div>
+
+        <section class="cost-widget" id="cost-widget">
+            <p style="margin-bottom: 8px; font-weight: 600;">Paid Alternative</p>
+            <div class="price-old" id="price-old">$200+ / hour</div>
+            <div class="price-new" id="price-new">$0</div>
+        </section>
+
+        <section class="quota-widget">
+            <h3 style="font-size: 16px; margin-bottom: 8px;">Quota Checker</h3>
+            <p style="font-size: 14px;">How many documents do you need to decode per day?</p>
+            <input type="number" class="quota-input" id="quota-input" placeholder="e.g., 5" oninput="checkQuota()">
+            <div class="quota-result" id="quota-result"></div>
+            <div class="source-line">Quota source: <a href="https://www.microsoft.com/en-us/edge/features/copilot" target="_blank" style="color: var(--green);">https://www.microsoft.com/en-us/edge/features/copilot</a> (verified 2023-11-28)</div>
+        </section>
+
+        <section class="walkthrough">
+            <h2 style="margin-bottom: 16px;">The Walkthrough</h2>
+            <div class="stepper-nav" id="stepper-nav"></div>
+            <div id="stepper-content">
+                <div class="step-panel" data-step="1">
+                    <h3>Step 1: Open Copilot</h3>
+                    <p style="margin-top: 8px;">Go to <a href="https://copilot.microsoft.com" target="_blank" style="color: var(--green);">copilot.microsoft.com</a> and log in with a free Microsoft account (Outlook, Hotmail, or Xbox). No payment method is required.</p>
+                </div>
+                <div class="step-panel" data-step="2">
+                    <h3>Step 2: Set to Precise Mode</h3>
+                    <p style="margin-top: 8px;">Set the conversation style to "Precise" using the toggle at the top. This grounds the AI in literal translation rather than creative rewriting, which is crucial for legal text.</p>
+                </div>
+                <div class="step-panel" data-step="3">
+                    <h3>Step 3: Paste the Prompt & Document</h3>
+                    <p style="margin-top: 8px;">Paste the template below into the chat, replacing the bracketed section with your document text:</p>
+                    <div class="prompt-box">
+                        <code id="prompt-text">You are a plain-English translator. I will paste a legal or official document. Do not give legal advice. Just explain what each section means in simple terms a 12-year-old would understand. Here is the text: [Paste Text]</code>
+                        <button class="copy-btn" onclick="copyText('prompt-text', this)">Copy</button>
+                    </div>
+                </div>
+                <div class="step-panel" data-step="4">
+                    <h3>Step 4: Ask Follow-ups</h3>
+                    <p style="margin-top: 8px;">Read the summary. Ask follow-up questions like "What happens if I break clause 3?" or "Search the web for tenant rights in [My State] regarding this clause" to add local context.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="what-breaks">
+            <h3 style="color: var(--coral); margin-bottom: 12px;">What Breaks</h3>
+            <p>You are limited to 30 prompts per 24 hours. If you paste a document over 4,000 words, it will truncate the end. Copilot will confidently translate text, but it can hallucinate local legal precedents—always verify critical rights with a real self-help center or legal aid. It is a translator, not a lawyer.</p>
+        </section>
+
+        <section class="three-things">
+            <h2 style="margin-bottom: 16px;">Three Things This Teaches</h2>
+            <div class="thing-item">
+                <button class="thing-btn" onclick="toggleThing(this)">1. Prompt guardrails <span>+</span></button>
+                <div class="thing-content">Explicitly telling the AI "Do not give legal advice, just translate" reduces the risk of it hallucinating rights you don't actually have under the contract.</div>
+            </div>
+            <div class="thing-item">
+                <button class="thing-btn" onclick="toggleThing(this)">2. Precise mode matters <span>+</span></button>
+                <div class="thing-content">Copilot's "Precise" tone is grounded and literal, preventing it from creatively rewriting your rights in a way that accidentally favors the other party.</div>
+            </div>
+            <div class="thing-item">
+                <button class="thing-btn" onclick="toggleThing(this)">3. Finding local context <span>+</span></button>
+                <div class="thing-content">You can ask Copilot to "Search the web" for local tenant/consumer rights to add real, localized legal context to the translation, bridging a gap that static LLMs cannot.</div>
+            </div>
+        </section>
+
+        <div class="share-bar" id="share-things"></div>
+
+        <footer class="footer">
+            <p>Free-tier terms verified 2023-11-28 against <a href="https://www.microsoft.com/en-us/edge/features/copilot">Microsoft Copilot Features</a>.</p>
+            <p style="margin-top: 4px;">Ladder tier: T0 (Free forever, no card).</p>
+            <p style="margin-top: 8px;"><a href="https://iggym.github.io/everyday-ai-done-right/">&larr; Browse more guides</a></p>
+        </footer>
+    </main>
+
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('eadr-theme', next);
+        }
+        (function() {
+            const saved = localStorage.getItem('eadr-theme');
+            if (saved) document.documentElement.setAttribute('data-theme', saved);
+            else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
+        })();
+
+        setTimeout(() => {
+            document.getElementById('price-old').classList.add('hidden');
+            document.getElementById('price-new').classList.add('visible');
+        }, 800);
+
+        function checkQuota() {
+            const val = parseInt(document.getElementById('quota-input').value);
+            const res = document.getElementById('quota-result');
+            if (isNaN(val) || val <= 0) { res.textContent = ''; return; }
+            if (val <= 30) {
+                res.innerHTML = `<span style="color: var(--green);">✓ Safe:</span> ${val} documents/day stays under the 30 free daily prompts.`;
+            } else {
+                res.innerHTML = `<span style="color: var(--coral);">✗ Over Limit:</span> You will hit the daily cap. Quota resets every 24 hours. For unlimited access, you'd need Copilot Pro ($20.00/month).`;
+            }
+        }
+
+        const steps = document.querySelectorAll('.step-panel');
+        const nav = document.getElementById('stepper-nav');
+        steps.forEach((_, i) => {
+            const btn = document.createElement('button');
+            btn.className = `step-btn ${i === 0 ? 'active' : ''}`;
+            btn.innerText = `Step ${i + 1}`;
+            btn.onclick = () => {
+                document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                steps.forEach(s => s.classList.remove('active'));
+                steps[i].classList.add('active');
+            };
+            nav.appendChild(btn);
+        });
+        steps[0].classList.add('active');
+
+        function copyText(id, btn) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.innerText = 'Copied!';
+                setTimeout(() => btn.innerText = 'Copy', 1500);
+            });
+        }
+
+        function toggleThing(btn) {
+            btn.parentElement.classList.toggle('open');
+        }
+
+        const pageUrl = encodeURIComponent(window.location.href);
+        const pitchText = encodeURIComponent("Paste any confusing lease, contract, or official notice into Microsoft Copilot and get a plain-English summary in seconds—free forever, no card, up to 30 uses a day.");
+        const thingText = encodeURIComponent("You can ask Copilot to 'Search the web' for local tenant/consumer rights to add real, localized legal context to the translation.");
+
+        function genShareIcons(txt) {
+            return `
+                <a href="https://twitter.com/intent/tweet?text=${txt}&url=${pageUrl}" target="_blank" class="share-icon" title="X">𝕏</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}" target="_blank" class="share-icon" title="LinkedIn">in</a>
+                <a href="https://www.facebook.com/sharer.php?u=${pageUrl}" target="_blank" class="share-icon" title="Facebook">f</a>
+                <a href="https://api.whatsapp.com/send?text=${txt}%20${pageUrl}" target="_blank" class="share-icon" title="WhatsApp">w</a>
+                <a href="https://www.reddit.com/submit?url=${pageUrl}&title=${txt}" target="_blank" class="share-icon" title="Reddit">R</a>
+                <a href="mailto:?subject=Check%20this%20out&body=${txt}%20${pageUrl}" class="share-icon" title="Email">@</a>
+                <button class="share-icon" title="Copy Link" onclick="navigator.clipboard.writeText(decodeURIComponent('${pageUrl}')).then(()=>{this.innerText='✓';setTimeout(()=>this.innerText='🔗',1500)})">🔗</button>
+            `;
+        }
+        document.getElementById('share-pitch').innerHTML = genShareIcons(pitchText);
+        document.getElementById('share-things').innerHTML = genShareIcons(thingText);
+    </script>
+</body>
+</html>
