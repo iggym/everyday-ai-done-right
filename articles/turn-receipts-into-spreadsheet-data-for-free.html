@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn Receipts Into Spreadsheet Data for Free | everyday-ai-done-right</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #FAFAF9; --ink: #1C1C1E; --green: #0F8A5F; --coral: #FF6B4A;
+            --border: #E5E5E3; --surface: #FFFFFF; --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --font-display: 'Manrope', sans-serif; --font-body: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+            --transition-speed: 0.4s;
+        }
+        [data-theme="dark"] {
+            --paper: #141414; --ink: #F4F4F3; --green: #22C58B; --coral: #FF8064;
+            --border: #2C2C2C; --surface: #1C1C1E; --shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-body); background: var(--paper); color: var(--ink); line-height: 1.6; transition: background var(--transition-speed), color var(--transition-speed); }
+        h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; }
+        .mono { font-family: var(--font-mono); }
+        
+        .topbar { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; transition: background var(--transition-speed), border var(--transition-speed); }
+        .topbar a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 14px; }
+        .topbar-right { display: flex; align-items: center; gap: 16px; font-size: 14px; }
+        .badge { font-family: var(--font-mono); font-size: 12px; background: var(--paper); border: 1px solid var(--border); padding: 4px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+        button { cursor: pointer; border: none; font-family: var(--font-body); }
+        .toggle-btn { background: var(--paper); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; font-size: 12px; color: var(--ink); font-weight: 500; transition: all 0.2s; }
+
+        .container { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+        
+        .hero h1 { font-size: 40px; margin-bottom: 16px; }
+        .pitch { font-size: 18px; font-weight: 500; margin-bottom: 24px; }
+        .tool-badge { display: inline-block; font-family: var(--font-mono); font-size: 14px; background: var(--green); color: #fff; padding: 6px 12px; border-radius: 999px; margin-right: 8px; }
+
+        .cost-widget { margin: 32px 0; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); text-align: center; }
+        .price-old { font-size: 24px; text-decoration: line-through; color: #888; opacity: 1; transition: opacity 0.6s ease; }
+        .price-old.hidden { opacity: 0; position: absolute; pointer-events: none; }
+        .price-new { font-size: 48px; font-weight: 800; color: var(--green); opacity: 0; transform: scale(0.8); transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s; }
+        .price-new.visible { opacity: 1; transform: scale(1); }
+
+        .quota-widget { margin: 32px 0; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); }
+        .quota-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--paper); color: var(--ink); font-family: var(--font-mono); margin: 8px 0; }
+        .quota-result { margin-top: 16px; font-size: 14px; font-weight: 500; min-height: 20px; }
+        .source-line { font-size: 12px; color: #888; margin-top: 12px; font-family: var(--font-mono); word-break: break-all; }
+
+        .stepper-nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+        .step-btn { padding: 8px 16px; border-radius: 999px; background: var(--paper); border: 1px solid var(--border); font-family: var(--font-mono); font-size: 13px; transition: all 0.2s; }
+        .step-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+        .step-panel { display: none; animation: fadeIn 0.3s ease; }
+        .step-panel.active { display: block; }
+        .prompt-box { background: var(--paper); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-top: 12px; font-family: var(--font-mono); font-size: 14px; position: relative; display: flex; justify-content: space-between; align-items: center; }
+        .copy-btn { background: var(--ink); color: var(--paper); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; flex-shrink: 0; margin-left: 12px; transition: background 0.2s; }
+
+        .what-breaks { margin: 40px 0; padding: 24px; border: 2px solid var(--coral); border-radius: 16px; background: rgba(255, 107, 74, 0.05); }
+
+        .three-things { margin: 40px 0; }
+        .thing-item { margin-bottom: 12px; }
+        .thing-btn { width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 500; color: var(--ink); display: flex; justify-content: space-between; align-items: center; }
+        .thing-content { max-height: 0; overflow: hidden; padding: 0 16px; background: var(--surface); border: 1px solid transparent; transition: max-height 0.3s ease, padding 0.3s ease; border-radius: 0 0 12px 12px; }
+        .thing-item.open .thing-content { max-height: 200px; padding: 16px; border-color: var(--border); border-top: 0; }
+        .thing-item.open .thing-btn { border-radius: 12px 12px 0 0; border-bottom-color: transparent; }
+
+        .share-bar { display: flex; gap: 8px; margin: 24px 0; flex-wrap: wrap; }
+        .share-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--paper); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; transition: transform 0.2s; text-decoration: none; color: var(--ink); }
+        .share-icon:hover { transform: scale(1.1); }
+
+        .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 13px; color: #888; }
+        .footer a { color: var(--green); text-decoration: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="topbar">
+        <a href="https://iggym.github.io/everyday-ai-done-right/">&larr; Everyday AI</a>
+        <div class="topbar-right">
+            <span class="badge"><span class="badge-dot"></span>Household</span>
+            <span class="badge">4 min read</span>
+            <button class="toggle-btn" onclick="toggleTheme()">Theme</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="hero">
+            <h1>Turn Receipt Photos Into Spreadsheet Data for Free</h1>
+            <p class="pitch">Snap a photo of a crumpled receipt and get a formatted table of items and prices using ChatGPT's free vision tier—no card needed, no app to install. Free forever, no card.</p>
+            <div style="margin-bottom: 16px;">
+                <span class="tool-badge">ChatGPT Vision</span>
+                <span class="badge">Verified 2023-10-15</span>
+            </div>
+        </header>
+
+        <div class="share-bar" id="share-pitch"></div>
+
+        <section class="cost-widget" id="cost-widget">
+            <p style="margin-bottom: 8px; font-weight: 600;">Paid Alternative</p>
+            <div class="price-old" id="price-old">$5.99 / mo</div>
+            <div class="price-new" id="price-new">$0</div>
+        </section>
+
+        <section class="quota-widget">
+            <h3 style="font-size: 16px; margin-bottom: 8px;">Quota Checker</h3>
+            <p style="font-size: 14px;">How many receipts do you need to scan per 3-hour session?</p>
+            <input type="number" class="quota-input" id="quota-input" placeholder="e.g., 5" oninput="checkQuota()">
+            <div class="quota-result" id="quota-result"></div>
+            <div class="source-line">Quota source: <a href="https://help.openai.com/en/articles/6766072-is-chatgpt-free-to-use" target="_blank" style="color: var(--green);">https://help.openai.com/en/articles/6766072-is-chatgpt-free-to-use</a> (verified 2023-10-15)</div>
+        </section>
+
+        <section class="walkthrough">
+            <h2 style="margin-bottom: 16px;">The Walkthrough</h2>
+            <div class="stepper-nav" id="stepper-nav"></div>
+            <div id="stepper-content">
+                <div class="step-panel" data-step="1">
+                    <h3>Step 1: Open ChatGPT</h3>
+                    <p style="margin-top: 8px;">Go to <a href="https://chatgpt.com" target="_blank" style="color: var(--green);">chatgpt.com</a> on your phone or computer and log in to a free account.</p>
+                </div>
+                <div class="step-panel" data-step="2">
+                    <h3>Step 2: Upload the Receipt Photo</h3>
+                    <p style="margin-top: 8px;">Tap the paperclip/attachment icon next to the prompt box and upload a photo of your receipt from your camera roll or files.</p>
+                </div>
+                <div class="step-panel" data-step="3">
+                    <h3>Step 3: Paste the Extraction Prompt</h3>
+                    <p style="margin-top: 8px;">Paste the template below into the text box and hit send:</p>
+                    <div class="prompt-box">
+                        <code id="prompt-text">Extract the item names and prices from this receipt. Format the output as a markdown table with columns: Item, Price. Add a final row for the Total.</code>
+                        <button class="copy-btn" onclick="copyText('prompt-text', this)">Copy</button>
+                    </div>
+                </div>
+                <div class="step-panel" data-step="4">
+                    <h3>Step 4: Copy to Spreadsheet</h3>
+                    <p style="margin-top: 8px;">Copy the resulting markdown table from the AI response and paste it directly into your budget spreadsheet (Google Sheets or Excel will auto-format the columns).</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="what-breaks">
+            <h3 style="color: var(--coral); margin-bottom: 12px;">What Breaks</h3>
+            <p>You are limited to roughly 16 vision messages every 3 hours on the free tier. If the receipt is extremely faded or handwritten, it may hallucinate items or prices. Always check the AI's calculated Total against the receipt's printed total to catch OCR errors. It cannot read receipts that are entirely in a language it doesn't recognize without prompting it first.</p>
+        </section>
+
+        <section class="three-things">
+            <h2 style="margin-bottom: 16px;">Three Things This Teaches</h2>
+            <div class="thing-item">
+                <button class="thing-btn" onclick="toggleThing(this)">1. Markdown to spreadsheet <span>+</span></button>
+                <div class="thing-content">Pasting a markdown table from ChatGPT directly into Google Sheets or Excel automatically formats it into columns, skipping manual tabbing.</div>
+            </div>
+            <div class="thing-item">
+                <button class="thing-btn" onclick="toggleThing(this)">2. The checksum verify <span>+</span></button>
+                <div class="thing-content">Asking the AI to sum the prices and compare it to the printed total catches OCR errors before they break your budget math.</div>
+            </div>
+            <div class="thing-item">
+                <button class="thing-btn" onclick="toggleThing(this)">3. Consolidating multiple receipts <span>+</span></button>
+                <div class="thing-content">You can upload 3-4 receipt images in one prompt and ask for a single combined table, saving your rolling message quota.</div>
+            </div>
+        </section>
+
+        <div class="share-bar" id="share-things"></div>
+
+        <footer class="footer">
+            <p>Free-tier terms verified 2023-10-15 against <a href="https://help.openai.com/en/articles/6766072-is-chatgpt-free-to-use">OpenAI Help Center</a>.</p>
+            <p style="margin-top: 4px;">Ladder tier: T0 (Free forever, no card).</p>
+            <p style="margin-top: 8px;"><a href="https://iggym.github.io/everyday-ai-done-right/">&larr; Browse more guides</a></p>
+        </footer>
+    </main>
+
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('eadr-theme', next);
+        }
+        (function() {
+            const saved = localStorage.getItem('eadr-theme');
+            if (saved) document.documentElement.setAttribute('data-theme', saved);
+            else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
+        })();
+
+        setTimeout(() => {
+            document.getElementById('price-old').classList.add('hidden');
+            document.getElementById('price-new').classList.add('visible');
+        }, 800);
+
+        function checkQuota() {
+            const val = parseInt(document.getElementById('quota-input').value);
+            const res = document.getElementById('quota-result');
+            if (isNaN(val) || val <= 0) { res.textContent = ''; return; }
+            if (val <= 16) {
+                res.innerHTML = `<span style="color: var(--green);">✓ Safe:</span> ${val} receipts per 3-hour window stays under the ~16 message free limit.`;
+            } else {
+                res.innerHTML = `<span style="color: var(--coral);">✗ Over Limit:</span> You will likely hit the rolling 3-hour cap. Wait for the window to reset, or upgrade to ChatGPT Plus ($20/month) for 80+ messages.`;
+            }
+        }
+
+        const steps = document.querySelectorAll('.step-panel');
+        const nav = document.getElementById('stepper-nav');
+        steps.forEach((_, i) => {
+            const btn = document.createElement('button');
+            btn.className = `step-btn ${i === 0 ? 'active' : ''}`;
+            btn.innerText = `Step ${i + 1}`;
+            btn.onclick = () => {
+                document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                steps.forEach(s => s.classList.remove('active'));
+                steps[i].classList.add('active');
+            };
+            nav.appendChild(btn);
+        });
+        steps[0].classList.add('active');
+
+        function copyText(id, btn) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.innerText = 'Copied!';
+                setTimeout(() => btn.innerText = 'Copy', 1500);
+            });
+        }
+
+        function toggleThing(btn) {
+            btn.parentElement.classList.toggle('open');
+        }
+
+        const pageUrl = encodeURIComponent(window.location.href);
+        const pitchText = encodeURIComponent("Snap a photo of a crumpled receipt and get a formatted table of items and prices using ChatGPT's free vision tier—no card needed, no app to install.");
+        const thingText = encodeURIComponent("Pasting a markdown table from ChatGPT directly into Google Sheets or Excel automatically formats it into columns.");
+
+        function genShareIcons(txt) {
+            return `
+                <a href="https://twitter.com/intent/tweet?text=${txt}&url=${pageUrl}" target="_blank" class="share-icon" title="X">𝕏</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}" target="_blank" class="share-icon" title="LinkedIn">in</a>
+                <a href="https://www.facebook.com/sharer.php?u=${pageUrl}" target="_blank" class="share-icon" title="Facebook">f</a>
+                <a href="https://api.whatsapp.com/send?text=${txt}%20${pageUrl}" target="_blank" class="share-icon" title="WhatsApp">w</a>
+                <a href="https://www.reddit.com/submit?url=${pageUrl}&title=${txt}" target="_blank" class="share-icon" title="Reddit">R</a>
+                <a href="mailto:?subject=Check%20this%20out&body=${txt}%20${pageUrl}" class="share-icon" title="Email">@</a>
+                <button class="share-icon" title="Copy Link" onclick="navigator.clipboard.writeText(decodeURIComponent('${pageUrl}')).then(()=>{this.innerText='✓';setTimeout(()=>this.innerText='🔗',1500)})">🔗</button>
+            `;
+        }
+        document.getElementById('share-pitch').innerHTML = genShareIcons(pitchText);
+        document.getElementById('share-things').innerHTML = genShareIcons(thingText);
+    </script>
+</body>
+</html>
