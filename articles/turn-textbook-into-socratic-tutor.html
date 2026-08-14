@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turn Any Textbook Into a Strict Socratic Tutor | everyday-ai-done-right</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #FAFAF9;
+      --ink: #1C1C1E;
+      --green: #0F8A5F;
+      --coral: #FF6B4A;
+      --bg-card: #FFFFFF;
+      --border: #E5E5E5;
+      --shadow: 0 4px 24px rgba(0,0,0,0.04);
+      --font-display: 'Manrope', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="dark"] {
+      --paper: #141414;
+      --ink: #F4F4F3;
+      --green: #22C58B;
+      --coral: #FF8064;
+      --bg-card: #1E1E1E;
+      --border: #333333;
+      --shadow: 0 4px 24px rgba(0,0,0,0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 250, 249, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+    [data-theme="dark"] .topbar { background: rgba(20, 20, 20, 0.8); }
+    .topbar a { color: var(--ink); text-decoration: none; font-weight: 600; }
+    .topbar .meta { display: flex; gap: 16px; align-items: center; }
+    
+    .theme-toggle {
+      background: none; border: 1px solid var(--border); border-radius: 50%;
+      width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--ink);
+    }
+
+    /* Container */
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+
+    /* Hero */
+    .hero { margin-bottom: 48px; }
+    .badges { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 4px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge.t0 { border-color: var(--green); color: var(--green); }
+    h1 {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .pitch { font-size: 1.2rem; color: var(--ink); opacity: 0.9; margin-bottom: 32px; }
+
+    /* Cost Widget */
+    .cost-widget {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .cost-widget p { font-size: 0.9rem; margin-bottom: 12px; font-family: var(--font-mono); }
+    .cost-reveal { font-family: var(--font-display); font-size: 2rem; font-weight: 800; }
+    .cost-strike { text-decoration: line-through; color: var(--coral); opacity: 0.7; margin-right: 16px; }
+    .cost-zero { color: var(--green); animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Content Sections */
+    section { margin-bottom: 48px; }
+    h2 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+    p { margin-bottom: 16px; }
+
+    /* Stepper */
+    .stepper-nav { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    .step-btn {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 50%;
+      width: 40px; height: 40px; font-family: var(--font-mono); font-weight: 600; cursor: pointer;
+      transition: all 0.2s; color: var(--ink);
+    }
+    .step-btn.active { background: var(--green); color: white; border-color: var(--green); }
+    .step-panel {
+      display: none;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .step-panel.active {
+      display: block;
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .step-panel h3 { font-family: var(--font-display); margin-bottom: 12px; }
+    
+    /* Copy Button */
+    .copy-btn {
+      background: var(--ink); color: var(--paper); border: none; border-radius: 6px;
+      padding: 4px 12px; font-family: var(--font-mono); font-size: 0.8rem; cursor: pointer;
+      margin-left: 8px; transition: opacity 0.2s;
+    }
+    .copy-btn.copied { background: var(--green); }
+
+    /* Callouts */
+    .callout-breaks {
+      background: rgba(255, 107, 74, 0.05);
+      border-left: 4px solid var(--coral);
+      padding: 24px;
+      border-radius: 0 16px 16px 0;
+      margin: 32px 0;
+    }
+    [data-theme="dark"] .callout-breaks { background: rgba(255, 128, 100, 0.1); }
+    .callout-breaks h3 { color: var(--coral); margin-bottom: 12px; font-family: var(--font-display); }
+
+    /* Three Things */
+    .three-things-item {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      background: var(--bg-card);
+      transition: border-color 0.2s;
+    }
+    .three-things-item:hover { border-color: var(--green); }
+    .three-things-item h4 { font-family: var(--font-display); display: flex; justify-content: space-between; align-items: center; }
+    .three-things-item h4::after { content: '+'; font-size: 1.5rem; font-weight: 300; transition: transform 0.3s; }
+    .three-things-item.unlocked h4::after { transform: rotate(45deg); }
+    .hidden-text {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.5s ease, opacity 0.5s ease;
+      opacity: 0;
+      font-size: 0.95rem;
+    }
+    .three-things-item.unlocked .hidden-text {
+      max-height: 300px;
+      margin-top: 16px;
+      opacity: 1;
+    }
+
+    /* Quota Widget */
+    .quota-widget {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 24px; margin-top: 24px; text-align: center; box-shadow: var(--shadow);
+    }
+    .quota-buttons { display: flex; gap: 12px; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
+    .quota-btn {
+      background: transparent; border: 1px solid var(--ink); color: var(--ink);
+      padding: 8px 16px; border-radius: 99px; font-family: var(--font-mono); cursor: pointer;
+    }
+    .quota-result { font-weight: 600; min-height: 48px; margin-bottom: 12px; transition: color 0.3s; }
+    .quota-source { font-size: 0.75rem; font-family: var(--font-mono); opacity: 0.6; }
+
+    /* Share Bar */
+    .share-bar { display: flex; gap: 16px; margin: 24px 0; justify-content: center; flex-wrap: wrap; opacity: 0; transform: translateY(10px); animation: slideUp 0.6s ease forwards; animation-delay: 0.3s; }
+    .share-bar a, .share-bar button {
+      color: var(--ink); text-decoration: none; background: none; border: 1px solid var(--border);
+      width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; cursor: pointer; transition: all 0.2s;
+    }
+    .share-bar a:hover, .share-bar button:hover { border-color: var(--green); color: var(--green); }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animations */
+    .animate-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .animate-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 80px; padding: 40px 24px; border-top: 1px solid var(--border);
+      text-align: center; font-size: 0.85rem; font-family: var(--font-mono);
+    }
+    footer a { color: var(--green); text-decoration: none; }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .cost-zero, .step-panel, .hidden-text, .three-things-item h4::after, .animate-in, .share-bar {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        max-height: none !important;
+      }
+      .step-panel { display: none; }
+      .step-panel.active { display: block; opacity: 1; transform: none; }
+      .hidden-text { max-height: 0; }
+      .three-things-item.unlocked .hidden-text { max-height: 300px; }
+      .share-bar { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="https://iggym.github.io/everyday-ai-done-right/">← everyday-ai-done-right</a>
+    <div class="meta">
+      <span>Learning</span>
+      <span>~4 min read</span>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">☀️</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero animate-in">
+      <div class="badges">
+        <span class="badge">Mistral Vibe (Le Chat)</span>
+        <span class="badge t0">✓ Verified 2025-12-11</span>
+        <span class="badge">Tier: T0 (No Card)</span>
+      </div>
+      <h1>Turn Any Textbook Into a Strict Socratic Tutor</h1>
+      <p class="pitch">Mistral's Vibe (formerly Le Chat) gives you 25 high-quality messages per day for free, with no credit card required, and its PDF upload turns any open-source textbook into an interactive tutor that forces <em>you</em> to do the thinking.</p>
+      
+      <div class="share-bar" id="share-pitch">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <section class="cost-widget animate-in">
+      <p>Replaces Chegg Study or Human Tutors</p>
+      <div class="cost-reveal">
+        <span class="cost-strike">$19.95/mo</span>
+        <span class="cost-zero">$0</span>
+      </div>
+    </section>
+
+    <section class="animate-in">
+      <h2>The Walkthrough</h2>
+      <div class="stepper-nav">
+        <button class="step-btn active" data-step="1">1</button>
+        <button class="step-btn" data-step="2">2</button>
+        <button class="step-btn" data-step="3">3</button>
+        <button class="step-btn" data-step="4">4</button>
+        <button class="step-btn" data-step="5">5</button>
+      </div>
+
+      <div class="stepper-content">
+        <div class="step-panel active" data-step="1">
+          <h3>Sign Up</h3>
+          <p>Go to <strong>chat.mistral.ai</strong> and create an account with an email address. No payment method is required.</p>
+        </div>
+        <div class="step-panel" data-step="2">
+          <h3>Source the Material</h3>
+          <p>Download a free, public-domain textbook chapter from <strong>OpenStax</strong> (openstax.org) as a PDF.</p>
+        </div>
+        <div class="step-panel" data-step="3">
+          <h3>Upload</h3>
+          <p>Start a new chat in Vibe and use the attachment icon to upload the OpenStax PDF. Vibe will index the entire document.</p>
+        </div>
+        <div class="step-panel" data-step="4">
+          <h3>Deploy the Prompt</h3>
+          <p>Paste this exact instruction to lock the AI into teaching mode:</p>
+          <p style="background: var(--paper); padding: 16px; border-radius: 8px; border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.85rem; margin-top: 12px;">
+            <span id="prompt-text">Act as a strict Socratic tutor. I am studying the attached document. Do not give me the answers or summarize the text. Ask me one guiding question at a time based on the core concepts. Wait for my response. If I am wrong, give me a subtle hint. If I am right, move to the next concept. Let's begin with the most foundational concept in this chapter.</span>
+            <button class="copy-btn" id="copy-btn" style="margin-top: 12px; display: block;">Copy</button>
+          </p>
+        </div>
+        <div class="step-panel" data-step="5">
+          <h3>Engage</h3>
+          <p>Answer the AI's questions out loud or type them. If you want to build a study guide, click the <strong>"Canvas"</strong> icon to open a side panel where the AI can build a running comparison table of the concepts you're mastering.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="callout-breaks animate-in">
+      <h3>⚠️ What Breaks</h3>
+      <p>The free tier is hard-capped at roughly <strong>25 messages per 24-hour rolling window</strong>. If you try to cram for a final exam in one 4-hour session, you will hit a paywall prompt asking you to upgrade to the $15/mo Pro plan. You must treat this as a "one concept per day" deep-work tool, not a bulk-cramming engine. It also requires the PDF to have selectable text (scanned image PDFs will fail unless you OCR them first).</p>
+    </section>
+
+    <section class="animate-in">
+      <h2>Three Things to Know</h2>
+      
+      <div class="three-things-item">
+        <h4>The Socratic Prompt Trick</h4>
+        <div class="hidden-text">The 25-message daily limit is actually a pedagogical feature if you use the Socratic prompt. By forcing the AI to ask <em>you</em> questions one at a time, you get 12 deep, active-recall turns per day, which is proven to be superior for retention than burning 25 messages asking "What is X?"</div>
+      </div>
+      
+      <div class="three-things-item">
+        <h4>The OpenStax PDF Hack</h4>
+        <div class="hidden-text">Instead of copy-pasting text (which wastes tokens and hallucinates facts), upload the free, public-domain OpenStax textbook directly into Vibe. It indexes the entire chapter, allowing you to ask "Quiz me on the section about mitochondrial DNA" with perfect accuracy.</div>
+      </div>
+      
+      <div class="three-things-item">
+        <h4>The Canvas Mode for Cheat Sheets</h4>
+        <div class="hidden-text">Vibe's "Canvas" feature lets you collaborate on a living study guide. You can ask the AI to build a table of comparisons (e.g., "Mitosis vs. Meiosis") and edit it in real-time, turning the chat into a persistent, exportable cheat sheet.</div>
+      </div>
+
+      <div class="share-bar" id="share-three"></div>
+    </section>
+
+    <section class="animate-in">
+      <h2>Try It Now & Quota Check</h2>
+      <p>Go to OpenStax, download the first chapter of "Introduction to Philosophy" or "Biology", upload it to Vibe, and let it quiz you on the first major concept.</p>
+      
+      <div class="quota-widget">
+        <p>How many questions do you want to answer per day?</p>
+        <div class="quota-buttons">
+          <button class="quota-btn" data-usage="5">5</button>
+          <button class="quota-btn" data-usage="10">10</button>
+          <button class="quota-btn" data-usage="12">12</button>
+          <button class="quota-btn" data-usage="15">15</button>
+        </div>
+        <div class="quota-result"></div>
+        <p class="quota-source">Quota source: Mistral Pricing (verified 2025-12-11)</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Free-tier terms verified 2025-12-11 against <a href="https://mistral.ai/pricing/" target="_blank">Mistral Pricing</a>.</p>
+    <p>Ladder Tier: T0 (Permanent, no card, no install).</p>
+    <p style="margin-top: 16px;"><a href="https://iggym.github.io/everyday-ai-done-right/">← Home</a> | <a href="https://iggym.github.io/everyday-ai-done-right/">Browse More Guides</a></p>
+  </footer>
+
+  <script>
+    // Theme Toggle
+    const toggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('eadr-theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      toggle.innerText = savedTheme === 'dark' ? '☀️' : '🌙';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      toggle.innerText = '☀️';
+    } else {
+      toggle.innerText = '🌙';
+    }
+    
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('eadr-theme', next);
+      toggle.innerText = next === 'dark' ? '☀️' : '🌙';
+    });
+
+    // Intersection Observer for Animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+
+    // Stepper
+    document.querySelectorAll('.step-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const step = btn.getAttribute('data-step');
+        document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelector(`.step-panel[data-step="${step}"]`).classList.add('active');
+      });
+    });
+
+    // Copy Button
+    document.getElementById('copy-btn').addEventListener('click', () => {
+      const text = document.getElementById('prompt-text').innerText;
+      const btn = document.getElementById('copy-btn');
+      navigator.clipboard.writeText(text).then(() => {
+        const original = btn.innerText;
+        btn.innerText = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerText = original;
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    });
+
+    // Three Things Reveal
+    document.querySelectorAll('.three-things-item').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('unlocked');
+      });
+    });
+
+    // Quota Checker
+    document.querySelectorAll('.quota-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const questions = parseInt(btn.getAttribute('data-usage'));
+        const messages = questions * 2; // 1 AI question + 1 user answer
+        const result = document.querySelector('.quota-result');
+        if (messages <= 25) {
+          result.innerText = `You will use ${messages} messages (${questions} AI questions + your answers). This fits comfortably inside your 25-message daily limit. Resets in 24 hours.`;
+          result.style.color = 'var(--green)';
+        } else {
+          result.innerText = `You will use ${messages} messages. This exceeds your 25-message daily limit. You'll hit the paywall after ${Math.floor(25/2)} questions. Resets in 24 hours.`;
+          result.style.color = 'var(--coral)';
+        }
+      });
+    });
+
+    // Share Links
+    const url = encodeURIComponent(window.location.href);
+    const pitchText = encodeURIComponent("Mistral's Vibe gives you 25 high-quality messages per day for free, with no credit card required, and its PDF upload turns any open-source textbook into an interactive tutor. (Tier: T0)");
+    const threeText = encodeURIComponent("The 25-message daily limit is actually a pedagogical feature if you use the Socratic prompt. By forcing the AI to ask *you* questions, you get 12 deep, active-recall turns per day.");
+
+    const shareHTML = (text) => `
+      <a href="https://twitter.com/intent/tweet?text=${text}&url=${url}" target="_blank" title="X">𝕏</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url=${url}" target="_blank" title="LinkedIn">in</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${url}" target="_blank" title="Facebook">f</a>
+      <a href="https://wa.me/?text=${text}%20${url}" target="_blank" title="WhatsApp">w</a>
+      <a href="https://www.reddit.com/submit?title=${text}&url=${url}" target="_blank" title="Reddit">r</a>
+      <a href="mailto:?subject=${text}&body=${url}" title="Email">@</a>
+      <button class="share-copy" title="Copy Link">🔗</button>
+    `;
+
+    document.getElementById('share-pitch').innerHTML = shareHTML(pitchText);
+    document.getElementById('share-three').innerHTML = shareHTML(threeText);
+
+    document.querySelectorAll('.share-copy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          const original = btn.innerText;
+          btn.innerText = '✓';
+          setTimeout(() => btn.innerText = original, 1500);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
