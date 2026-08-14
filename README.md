@@ -15,7 +15,7 @@ Pick a category below to jump straight to the step-by-step verified guide:
 > Level up your job hunt, sharpen your resume, and automate application workflows without paying career coaches.
 
 * 📄 **[Resume Critique Guide](https://iggym.github.io/everyday-ai-done-right/articles/brutally-honest-resume-critique.html)** — Get brutal, hiring-manager-grade feedback on your resume using free LLM reasoning.
-* 🎯 **[Tailored Application Engine](https://iggym.github.io/everyday-ai-done-right/articles/tailor-resume-cover-letter-to-job-posting.html)** — Adapt your cover letter and experience bullets to specific job descriptions in seconds.
+* 🎯 **[Tailored Application Engine](https://iggym.github.io/everyday-ai-done-right/articles/turn-a-raw-resume-into-a-tailored-application.html)** — Adapt your cover letter and experience bullets to specific job descriptions in seconds.
 * 🤖 **[ATS Resume Engine](https://iggym.github.io/everyday-ai-done-right/articles/beat-ats-screening-with-plain-text-resume.html)** — Format and optimize your resume to pass automated applicant tracking filters.
 
 ---
