@@ -22,5 +22,35 @@
   "reading_time_minutes": 4,
   "pinned": false,
   "verified": "2024-02-14"
+},{
+  "id": "3247",
+  "slug": "critique-resume-against-job-description",
+  "title": "Critique Your Resume Against a Real Job Description",
+  "hook": "Upload your resume PDF and a job description to Claude's free tier, get specific critique of what's wrong with each section, then rewrite the weak parts yourself.",
+  "path": "articles/critique-resume-against-job-description.html",
+  "date": "2026-03-23",
+  "status": "published",
+  "format": "guide",
+  "category": "career",
+  "tool": "Claude (Anthropic, free tier)",
+  "tags": ["resume", "job-search", "interview-prep", "career", "claude", "free-tier", "ai-tools"],
+  "reading_time_minutes": 6,
+  "pinned": false,
+  "verified": "2026-03-23"
+},{
+  "id": "0012",
+  "slug": "turn-health-screenshots-into-pattern-reports",
+  "title": "Turn Health Screenshots Into Pattern Reports",
+  "hook": "Upload a week's health app screenshots to Google Gemini 2.0 Flash on AI Studio and get back a structured day-by-day table with cross-metric pattern observations — free, no credit card.",
+  "path": "articles/turn-health-screenshots-into-pattern-reports.html",
+  "date": "2025-03-18",
+  "status": "published",
+  "format": "guide",
+  "category": "health",
+  "tool": "Gemini 2.0 Flash (Google AI Studio, free tier)",
+  "tags": ["health-tracking", "multimodal", "pattern-analysis", "google-ai-studio", "screenshot-ocr"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2025-03-18"
 }]
 }
