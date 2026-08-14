@@ -133,5 +133,39 @@
   "reading_time_minutes": 4,
   "pinned": false,
   "verified": "2026-03-11"
+}, {
+  "id": "0043",
+  "slug": "decode-legal-jargon-for-free",
+  "title": "Decode Legal Jargon in Any Document for Free",
+  "hook": "Paste any confusing lease, contract, or official notice into Microsoft Copilot and get a plain-English summary in seconds—free forever, no card, up to 30 uses a day.",
+  "path": "articles/decode-legal-jargon-for-free.html",
+  "date": "2023-11-28",
+  "status": "published",
+  "format": "guide",
+  "category": "civic",
+  "tool": "GPT-4 / GPT-4o (Microsoft Copilot Free Tier)",
+  "tool_family": "Microsoft",
+  "source_url": "https://www.microsoft.com/en-us/edge/features/copilot",
+  "tags": ["legal", "contracts", "copilot", "plain-english", "self-help", "tenant-rights"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2023-11-28"
+},{
+  "id": "0042",
+  "slug": "read-physical-labels-aloud-built-in-ai",
+  "title": "Read Physical Labels & Mail Aloud Using Built-In AI",
+  "hook": "Point and Speak uses your iPhone's Neural Engine to read physical text aloud exactly where you point your finger—completely offline, free forever, and built right into iOS.",
+  "path": "articles/read-physical-labels-aloud-built-in-ai.html",
+  "date": "2026-02-12",
+  "status": "published",
+  "format": "guide",
+  "category": "accessibility",
+  "tool": "Point and Speak (Apple iOS Magnifier)",
+  "tool_family": "OS built-in (Apple)",
+  "source_url": "https://support.apple.com/guide/iphone/detect-text-read-loud-iph29dbe3fb6/ios",
+  "tags": ["accessibility", "low-vision", "offline-ai", "ios"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2026-02-12"
 }]
 }
