@@ -52,5 +52,20 @@
   "reading_time_minutes": 4,
   "pinned": false,
   "verified": "2025-03-18"
+}, {
+"id": "3841",
+"slug": "turn-a-raw-resume-into-a-tailored-application",
+"title": "Turn a Raw Resume Into a Tailored Application",
+"hook": "Tailor your resume and draft a precise cover letter for any job description using Google AI Studio's free tier, capped at 1,500 requests per day with no credit card required.",
+"path": "articles/turn-a-raw-resume-into-a-tailored-application.html",
+"date": "2026-06-03",
+"status": "published",
+"format": "guide",
+"category": "career",
+"tool": "Google AI Studio (Gemini Flash model tier, free tier)",
+"tags": ["resume", "career", "job-search"],
+"reading_time_minutes": 4,
+"pinned": false,
+"verified": "2026-06-03"
 }]
 }
