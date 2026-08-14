@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turn a Food Photo Into a Nutrition Label — Everyday AI Done Right</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#FAFAF9;--ink:#1C1C1E;--green:#0F8A5F;--coral:#FF6B4A;
+  --card-bg:#FFFFFF;--card-border:#E5E5E3;--card-shadow:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);
+  --muted:#6B6B6B;--muted-bg:#F0F0EE;--code-bg:#F3F3F1;
+  --radius:16px;
+}
+[data-theme="dark"]{
+  --paper:#141414;--ink:#F4F4F3;--green:#22C58B;--coral:#FF8064;
+  --card-bg:#1E1E1E;--card-border:#2E2E2E;--card-shadow:0 1px 3px rgba(0,0,0,.3),0 4px 12px rgba(0,0,0,.2);
+  --muted:#999;--muted-bg:#252525;--code-bg:#1A1A1A;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);
+  line-height:1.65;font-size:16px;transition:background .3s,color .3s;
+}
+h1,h2,h3{font-family:'Manrope',system-ui,sans-serif;line-height:1.2;font-weight:700}
+code,pre,.badge,.tag,.label{font-family:'JetBrains Mono',monospace}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--card-border);
+  padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;
+  transition:background .3s,border-color .3s;
+}
+.topbar-home{font-family:'Manrope',sans-serif;font-weight:700;font-size:15px;color:var(--ink);white-space:nowrap}
+.topbar-cat{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+  background:var(--muted-bg);color:var(--muted);padding:4px 10px;border-radius:20px;
+  white-space:nowrap;
+}
+.topbar-spacer{flex:1}
+.topbar-meta{font-size:13px;color:var(--muted);white-space:nowrap}
+.theme-btn{
+  background:var(--muted-bg);border:1px solid var(--card-border);color:var(--ink);
+  font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 12px;border-radius:20px;
+  cursor:pointer;transition:background .2s,border-color .2s;white-space:nowrap;
+}
+.theme-btn:hover{background:var(--card-border)}
+
+/* Layout */
+.container{max-width:720px;margin:0 auto;padding:0 24px}
+
+/* Hero */
+.hero{padding:48px 0 32px}
+.hero h1{font-size:clamp(28px,5vw,40px);margin-bottom:16px;letter-spacing:-.02em}
+.hero-pitch{font-size:17px;color:var(--muted);line-height:1.7;margin-bottom:20px;max-width:600px}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+  padding:5px 14px;border-radius:20px;border:1px solid var(--card-border);background:var(--card-bg);
+  color:var(--ink);transition:background .3s,border-color .3s;
+}
+.badge--green{border-color:var(--green);color:var(--green)}
+.badge--muted{color:var(--muted)}
+
+/* Share Bar */
+.share-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:20px 0 0}
+.share-label{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-right:4px}
+.share-btn{
+  width:36px;height:36px;border-radius:50%;border:1px solid var(--card-border);
+  background:var(--card-bg);color:var(--ink);cursor:pointer;display:inline-flex;
+  align-items:center;justify-content:center;transition:background .2s,border-color .2s,transform .15s;
+}
+.share-btn:hover{background:var(--muted-bg);border-color:var(--muted);transform:scale(1.08)}
+.share-btn svg{width:16px;height:16px;fill:currentColor}
+
+/* Card */
+.card{
+  background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);
+  box-shadow:var(--card-shadow);padding:28px;margin:24px 0;transition:background .3s,border-color .3s,box-shadow .3s;
+}
+.card h2{font-size:20px;margin-bottom:16px}
+.card h3{font-size:17px;margin-bottom:8px}
+
+/* Cost Widget */
+.cost-widget{text-align:center;padding:36px 28px}
+.cost-original{
+  font-family:'Manrope',sans-serif;font-size:clamp(32px,6vw,48px);font-weight:800;
+  color:var(--ink);position:relative;display:inline-block;
+}
+.cost-original .strike{
+  position:absolute;left:-4px;right:-4px;top:50%;height:3px;
+  background:var(--coral);transform:scaleX(0);transform-origin:left;
+}
+.cost-original.struck .strike{animation:strikeIn .5s ease forwards}
+.cost-original.struck{opacity:0;animation:fadeAfterStrike .4s ease .5s forwards}
+.cost-zero{
+  font-family:'Manrope',sans-serif;font-size:clamp(48px,8vw,72px);font-weight:800;
+  color:var(--green);display:inline-block;opacity:0;transform:translateY(12px);
+}
+.cost-zero.show{animation:popIn .4s ease .6s forwards}
+.cost-sub{font-size:14px;color:var(--muted);margin-top:12px}
+@keyframes strikeIn{to{transform:scaleX(1)}}
+@keyframes fadeAfterStrike{to{opacity:0}}
+@keyframes popIn{to{opacity:1;transform:translateY(0)}}
+
+/* Quota Widget */
+.quota-result{font-size:15px;line-height:1.7;color:var(--muted);margin:16px 0 0}
+.quota-source{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:16px;word-break:break-all}
+
+/* Stepper */
+.stepper{margin:32px 0}
+.stepper-nav{display:flex;align-items:center;gap:0;margin-bottom:28px;position:relative}
+.step-btn{
+  width:40px;height:40px;border-radius:50%;border:2px solid var(--card-border);
+  background:var(--card-bg);color:var(--muted);font-family:'JetBrains Mono',monospace;
+  font-size:14px;font-weight:500;cursor:pointer;position:relative;z-index:2;
+  transition:all .25s;flex-shrink:0;
+}
+.step-btn:hover{border-color:var(--green);color:var(--green)}
+.step-btn.active{background:var(--green);border-color:var(--green);color:#fff}
+.step-line{
+  flex:1;height:2px;background:var(--card-border);position:relative;z-index:1;
+  margin:0 -1px;
+}
+.step-line-fill{height:100%;background:var(--green);width:0;transition:width .35s ease}
+.step-progress{font-size:13px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:20px}
+.step-panel{display:none;animation:stepFadeIn .35s ease}
+.step-panel.active{display:block}
+@keyframes stepFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.step-panel h3{font-size:18px;margin-bottom:10px;color:var(--ink)}
+.step-panel p{margin-bottom:12px;color:var(--muted);line-height:1.7}
+.step-panel p strong{color:var(--ink)}
+
+/* Prompt Block */
+.prompt-block{
+  background:var(--code-bg);border:1px solid var(--card-border);border-radius:12px;
+  padding:16px 20px;margin:12px 0 16px;position:relative;
+}
+.prompt-block pre{
+  font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;color:var(--ink);margin:0;padding-right:60px;
+}
+.copy-btn{
+  position:absolute;top:12px;right:12px;
+  background:var(--card-bg);border:1px solid var(--card-border);color:var(--ink);
+  font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 12px;border-radius:8px;
+  cursor:pointer;transition:background .2s,border-color .2s;
+}
+.copy-btn:hover{background:var(--muted-bg)}
+.copy-btn.copied{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* What Breaks */
+.breaks-box{
+  background:var(--card-bg);border:1px solid var(--coral);border-left:4px solid var(--coral);
+  border-radius:var(--radius);padding:28px;margin:32px 0;
+  box-shadow:var(--card-shadow);transition:background .3s,border-color .3s;
+}
+.breaks-box h2{color:var(--coral);font-size:20px;margin-bottom:16px}
+.breaks-box ul{list-style:none;padding:0}
+.breaks-box li{
+  padding:10px 0;border-bottom:1px solid var(--card-border);font-size:15px;
+  line-height:1.65;color:var(--muted);
+}
+.breaks-box li:last-child{border-bottom:none}
+.breaks-box li strong{color:var(--ink)}
+
+/* Three Things */
+.three-things{margin:32px 0}
+.three-things>h2{font-size:20px;margin-bottom:16px}
+.thing-item{border:1px solid var(--card-border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;transition:border-color .3s}
+.thing-item.open{border-color:var(--green)}
+.thing-toggle{
+  width:100%;display:flex;align-items:center;gap:12px;padding:16px 20px;
+  background:var(--card-bg);border:none;color:var(--ink);cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;text-align:left;
+  transition:background .2s;
+}
+.thing-toggle:hover{background:var(--muted-bg)}
+.thing-num{
+  width:28px;height:28px;border-radius:50%;background:var(--muted-bg);color:var(--muted);
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .25s,color .25s;
+}
+.thing-item.open .thing-num{background:var(--green);color:#fff}
+.thing-title{flex:1}
+.thing-arrow{
+  font-size:14px;color:var(--muted);transition:transform .3s;flex-shrink:0;
+}
+.thing-item.open .thing-arrow{transform:rotate(90deg)}
+.thing-content{
+  max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease;
+  padding:0 20px;background:var(--card-bg);
+}
+.thing-item.open .thing-content{max-height:300px;padding:0 20px 20px}
+.thing-content p{font-size:14.5px;line-height:1.7;color:var(--muted)}
+
+/* Footer */
+footer{
+  border-top:1px solid var(--card-border);margin-top:56px;padding:32px 24px;
+  font-size:13px;color:var(--muted);line-height:1.8;transition:border-color .3s;
+}
+footer a{color:var(--green)}
+footer .footer-tier{font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:8px}
+footer .footer-links{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
+
+/* Responsive */
+@media(max-width:600px){
+  .topbar{padding:0 16px;gap:10px}
+  .container{padding:0 16px}
+  .hero{padding:32px 0 24px}
+  .card,.breaks-box{padding:20px}
+  .cost-widget{padding:28px 20px}
+  .prompt-block pre{padding-right:54px;font-size:12.5px}
+  .share-bar{gap:6px}
+}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.01ms!important;animation-iteration-count:1!important;
+    transition-duration:0.01ms!important;
+  }
+  .cost-original .strike{transform:scaleX(1)}
+  .cost-original.struck{opacity:0}
+  .cost-zero{opacity:1;transform:translateY(0)}
+  .step-panel.active{animation:none}
+  .thing-content{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="https://iggym.github.io/everyday-ai-done-right/" class="topbar-home">everyday-ai-done-right</a>
+  <span class="topbar-cat">health</span>
+  <span class="topbar-spacer"></span>
+  <span class="topbar-meta">3 min read</span>
+  <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">Auto</button>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+      <h1>Turn a Food Photo Into a Nutrition Label</h1>
+      <p class="hero-pitch">Take a photo of any meal with ChatGPT's free tier and get an approximate nutrition breakdown — no credit card, no subscription, free forever with no payment method on file. The exact number of free messages you can send per day isn't published by OpenAI, so you won't know precisely when you'll be throttled until it happens.</p>
+      <div class="badge-row">
+        <span class="badge badge--green">GPT-4o mini · ChatGPT free tier</span>
+        <span class="badge badge--muted">Verified March 2025</span>
+        <span class="badge badge--muted">T0 — free forever, no card</span>
+      </div>
+
+      <!-- Share Bar: Pitch -->
+      <div class="share-bar" data-share-text="Turn a food photo into a nutrition label — free, no card, no subscription. Uses ChatGPT's free tier.">
+        <span class="share-label">Share</span>
+      </div>
+    </section>
+
+    <!-- COST WIDGET -->
+    <section class="card cost-widget" id="costWidget">
+      <div class="cost-original" id="costOriginal">
+        $19.99/mo
+        <span class="strike"></span>
+      </div>
+      <div class="cost-zero" id="costZero">$0</div>
+      <p class="cost-sub">MyFitnessPal Premium's AI photo-logging price</p>
+    </section>
+
+    <!-- WHAT THIS REPLACES -->
+    <section class="card">
+      <h2>What this replaces</h2>
+      <p style="color:var(--muted);line-height:1.7">MyFitnessPal Premium charges $19.99/month for AI-powered food photo logging — you photograph a meal and it estimates calories and macros. Lose It Premium charges $39.99/year for a similar feature. Both require a credit card upfront and convert to paid immediately after a short trial. ChatGPT's free tier handles the same core task — estimating macros, calories, and micronutrients from a photo — at $0 with no card and no trial countdown.</p>
+    </section>
+
+    <!-- QUOTA CHECKER -->
+    <section class="card" id="quotaWidget">
+      <h2>Will you hit the free limit?</h2>
+      <p style="color:var(--muted);font-size:15px;line-height:1.7">OpenAI does not publish exact free-tier message limits for ChatGPT. The specific number of messages (including photo uploads) you can send before being throttled is not disclosed on their pricing page or help center. Because no specific number exists, this checker can't calculate whether your expected usage stays under the limit.</p>
+      <div class="quota-result">
+        <strong style="color:var(--ink)">Practical guidance:</strong> In everyday use, sending a few photo analyses per session typically works without hitting the throttle. If you do get throttled, a message tells you to wait — there's no countdown timer and no way to check remaining allowance in advance. For occasional meal logging (1–3 meals/day), most users don't encounter the limit regularly.
+      </div>
+      <p class="quota-source">Quota source: <a href="https://openai.com/chatgpt/" target="_blank" rel="noopener">openai.com/chatgpt/</a> (verified 2025-03-17) — no specific free-tier limit published.</p>
+    </section>
+
+    <!-- STEPPER -->
+    <section class="stepper" id="stepper">
+      <div class="stepper-nav" id="stepperNav">
+        <button class="step-btn active" data-step="1" aria-label="Step 1">1</button>
+        <div class="step-line"><div class="step-line-fill" id="lineFill1"></div></div>
+        <button class="step-btn" data-step="2" aria-label="Step 2">2</button>
+        <div class="step-line"><div class="step-line-fill" id="lineFill2"></div></div>
+        <button class="step-btn" data-step="3" aria-label="Step 3">3</button>
+        <div class="step-line"><div class="step-line-fill" id="lineFill3"></div></div>
+        <button class="step-btn" data-step="4" aria-label="Step 4">4</button>
+        <div class="step-line"><div class="step-line-fill" id="lineFill4"></div></div>
+        <button class="step-btn" data-step="5" aria-label="Step 5">5</button>
+      </div>
+      <div class="step-progress" id="stepProgress">Step 1 of 5</div>
+
+      <div class="step-panel active" data-step="1">
+        <h3>Open ChatGPT</h3>
+        <p>Go to <a href="https://chatgpt.com" target="_blank" rel="noopener">chatgpt.com</a> in any browser. Create an account with an email address — the free tier never asks for a credit card. Start a new conversation.</p>
+      </div>
+
+      <div class="step-panel" data-step="2">
+        <h3>Photograph your meal well</h3>
+        <p>Shoot from directly above with even lighting — a well-lit kitchen table works better than a dim restaurant. Get the whole plate in frame. If you have the option, <strong>photograph components separately</strong> (the chicken, the rice, the salad each on their own) instead of the assembled plate. Separate photos produce noticeably better estimates because the model doesn't have to guess what's underneath what.</p>
+      </div>
+
+      <div class="step-panel" data-step="3">
+        <h3>Upload the photo and send the analysis prompt</h3>
+        <p>Tap the attachment icon near the text input, select your photo, then paste this prompt and send:</p>
+        <div class="prompt-block">
+          <pre id="prompt1">Analyze this food photo. For each identifiable item, estimate: portion size, calories, protein (g), carbs (g), fat (g), fiber (g), and sodium (mg). Then give a total for the entire plate. State your confidence level (high/medium/low) for each item's estimate.</pre>
+          <button class="copy-btn" data-target="prompt1">Copy</button>
+        </div>
+      </div>
+
+      <div class="step-panel" data-step="4">
+        <h3>Correct and refine</h3>
+        <p>Read the breakdown. The model will often misjudge portion sizes — it can't see depth or weight. If the rice estimate says "0.5 cups" but you know you served yourself 1.5 cups, tell it:</p>
+        <div class="prompt-block">
+          <pre id="prompt2">The rice is actually about 1.5 cups, please recalculate.</pre>
+          <button class="copy-btn" data-target="prompt2">Copy</button>
+        </div>
+        <p>Do this for any item that looks off, then copy the final table into your notes app or a spreadsheet.</p>
+      </div>
+
+      <div class="step-panel" data-step="5">
+        <h3>Ask follow-up questions without another photo</h3>
+        <p>In the same conversation, ask contextual questions that don't need a new image. For example:</p>
+        <div class="prompt-block">
+          <pre id="prompt3">If my daily protein target is 130g, how much more do I need after this meal?</pre>
+          <button class="copy-btn" data-target="prompt3">Copy</button>
+        </div>
+        <p>This uses the context of the photo you already uploaded and doesn't cost additional quota beyond a normal text message.</p>
+      </div>
+    </section>
+
+    <!-- WHAT BREAKS -->
+    <section class="breaks-box">
+      <h2>What breaks</h2>
+      <ul>
+        <li><strong>Unpublished message limits:</strong> OpenAI doesn't disclose how many messages free-tier users can send before throttling kicks in. In practice, uploading a few photos per session usually works, but during peak hours you may hit the limit faster. When throttled, a message appears telling you to wait — there's no countdown timer and no way to check your remaining allowance.</li>
+        <li><strong>Estimates, not measurements:</strong> GPT-4o mini is making educated guesses from a 2D photo. It consistently misses hidden calories from cooking oil, sauces, and dressings. It can't see portion depth — a thick burger and a thin one look similar from above. For anything that matters clinically (sodium for blood pressure, carbs for diabetes management), verify the numbers against a nutrition label or the <a href="https://fdc.nal.usda.gov/" target="_blank" rel="noopener">USDA FoodData Central</a> database.</li>
+        <li><strong>No built-in food log:</strong> ChatGPT doesn't accumulate your meals into a daily or weekly total. Each conversation is isolated. You need to copy results into your own notes or spreadsheet to track trends.</li>
+        <li><strong>Photo quality directly affects accuracy:</strong> Dark, blurry, or heavily shadowed photos produce significantly worse estimates. Overhead shots with uniform lighting are the single biggest accuracy factor you control.</li>
+        <li><strong>This is not medical advice.</strong> It's a self-tracking aid. It can't diagnose deficiencies, recommend dietary changes, or replace professional nutrition guidance.</li>
+      </ul>
+    </section>
+
+    <!-- THREE THINGS -->
+    <section class="three-things" id="threeThings">
+      <h2>Three things this guide teaches</h2>
+
+      <div class="thing-item" data-thing="1">
+        <button class="thing-toggle" aria-expanded="false">
+          <span class="thing-num">1</span>
+          <span class="thing-title">Photograph components separately, not the assembled plate</span>
+          <span class="thing-arrow">▶</span>
+        </button>
+        <div class="thing-content">
+          <p>Occlusion is the single largest source of estimation error. When sauce covers rice, or bread sits under a protein, the model can't see what's underneath and either guesses wrong or omits it entirely. Photographing each component on its own — even roughly — gives the model a clear view of each item's size and shape, and the total is more accurate than one photo of the assembled plate.</p>
+        </div>
+      </div>
+
+      <div class="thing-item" data-thing="2">
+        <button class="thing-toggle" aria-expanded="false">
+          <span class="thing-num">2</span>
+          <span class="thing-title">Cross-check critical nutrients against USDA FoodData Central</span>
+          <span class="thing-arrow">▶</span>
+        </button>
+        <div class="thing-content">
+          <p>The USDA FoodData Central database at fdc.nal.usda.gov is free, requires no account, and contains lab-tested nutrition numbers for thousands of foods. For any nutrient where accuracy matters to you clinically — sodium for blood pressure, carbs for diabetes, iron for anemia — look up the specific food there instead of trusting the photo estimate. Use ChatGPT for the quick overview and FoodData Central for the numbers you'll act on.</p>
+        </div>
+      </div>
+
+      <div class="thing-item" data-thing="3">
+        <button class="thing-toggle" aria-expanded="false">
+          <span class="thing-num">3</span>
+          <span class="thing-title">ChatGPT generates numbers; paid apps look them up — different accuracy profiles</span>
+          <span class="thing-arrow">▶</span>
+        </button>
+        <div class="thing-content">
+          <p>MyFitnessPal Premium and similar paid apps combine AI photo recognition with a large database of verified food entries — when the AI identifies "brown rice," it pulls the actual USDA data for brown rice. ChatGPT doesn't have that database lookup step; it generates the nutrition numbers directly from what it's learned about food composition. This means ChatGPT handles unusual or homemade dishes that aren't in any database, but it's less precise for common packaged foods where a database lookup would be more accurate.</p>
+        </div>
+      </div>
+
+      <!-- Share Bar: Three Things -->
+      <div class="share-bar" style="margin-top:24px" data-share-text="ChatGPT generates nutrition numbers from what it's learned; paid apps combine photo recognition with a verified database lookup. Each approach has a different accuracy profile.">
+        <span class="share-label">Share</span>
+      </div>
+    </section>
+
+    <!-- TRY IT NOW -->
+    <section class="card">
+      <h2>Try it now</h2>
+      <p style="color:var(--muted);line-height:1.7">Photograph whatever you're eating at your next meal, open <a href="https://chatgpt.com" target="_blank" rel="noopener">chatgpt.com</a>, upload the photo, and paste the prompt from step 3. Don't worry about whether the numbers are perfect — the point is to see what the output looks like and decide whether this workflow fits your routine.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>Free-tier terms verified 2025-03-17 against <a href="https://openai.com/chatgpt/" target="_blank" rel="noopener">openai.com/chatgpt/</a>. OpenAI does not publish specific free-tier message limits; this page states that honestly rather than inventing a number.</p>
+    <p class="footer-tier">Ladder tier: T0 — permanent, no card, no payment method, no trial clock.</p>
+    <div class="footer-links">
+      <a href="https://iggym.github.io/everyday-ai-done-right/">Home</a>
+      <a href="https://iggym.github.io/everyday-ai-done-right/">Browse more guides</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const PAGE_URL = 'https://iggym.github.io/everyday-ai-done-right/articles/turn-food-photo-into-nutrition-label.html';
+
+  /* ── Theme toggle ── */
+  const themeBtn = document.getElementById('themeBtn');
+  const modes = ['auto','light','dark'];
+  const modeLabels = {auto:'Auto',light:'Light',dark:'Dark'};
+
+  function applyTheme(mode){
+    let actual;
+    if(mode==='light') actual='light';
+    else if(mode==='dark') actual='dark';
+    else actual = window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', actual);
+    themeBtn.textContent = modeLabels[mode] || 'Auto';
+  }
+
+  let currentMode = localStorage.getItem('eadr-theme') || 'auto';
+  applyTheme(currentMode);
+
+  themeBtn.addEventListener('click', function(){
+    const idx = modes.indexOf(currentMode);
+    currentMode = modes[(idx+1) % modes.length];
+    localStorage.setItem('eadr-theme', currentMode);
+    applyTheme(currentMode);
+  });
+
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', function(){
+    if(currentMode === 'auto') applyTheme('auto');
+  });
+
+  /* ── Cost widget animation ── */
+  const costWidget = document.getElementById('costWidget');
+  const costOriginal = document.getElementById('costOriginal');
+  const costZero = document.getElementById('costZero');
+  let costAnimated = false;
+
+  function animateCost(){
+    if(costAnimated) return;
+    costAnimated = true;
+    costOriginal.classList.add('struck');
+    costZero.classList.add('show');
+  }
+
+  const costObs = new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){ animateCost(); costObs.disconnect(); }
+  }, {threshold:0.4});
+  costObs.observe(costWidget);
+
+  /* ── Stepper ── */
+  const stepBtns = document.querySelectorAll('.step-btn');
+  const stepPanels = document.querySelectorAll('.step-panel');
+  const stepProgress = document.getElementById('stepProgress');
+  const totalSteps = stepBtns.length;
+
+  function goToStep(n){
+    stepBtns.forEach(function(b){ b.classList.toggle('active', +b.dataset.step === n); });
+    stepPanels.forEach(function(p){ p.classList.toggle('active', +p.dataset.step === n); });
+    stepProgress.textContent = 'Step ' + n + ' of ' + totalSteps;
+    for(var i=1; i<totalSteps; i++){
+      var fill = document.getElementById('lineFill'+i);
+      if(fill) fill.style.width = (n > i) ? '100%' : '0';
+    }
+  }
+
+  stepBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){ goToStep(+btn.dataset.step); });
+  });
+
+  /* ── Copy buttons ── */
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById(btn.dataset.target);
+      if(!target) return;
+      navigator.clipboard.writeText(target.textContent).then(function(){
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(function(){
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    });
+  });
+
+  /* ── Three Things reveal ── */
+  document.querySelectorAll('.thing-toggle').forEach(function(toggle){
+    toggle.addEventListener('click', function(){
+      var item = toggle.closest('.thing-item');
+      var isOpen = item.classList.contains('open');
+      item.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', !isOpen);
+    });
+  });
+
+  /* ── Share bars ── */
+  var shareIcons = {
+    x: '<svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+    linkedin: '<svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+    facebook: '<svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+    whatsapp: '<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>',
+    reddit: '<svg viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>',
+    email: '<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>',
+    link: '<svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>'
+  };
+
+  var shareConfig = [
+    {key:'x', url:function(t,u){ return 'https://twitter.com/intent/tweet?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(u); }},
+    {key:'linkedin', url:function(t,u){ return 'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(u)+'&summary='+encodeURIComponent(t); }},
+    {key:'facebook', url:function(t,u){ return 'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(u); }},
+    {key:'whatsapp', url:function(t,u){ return 'https://wa.me/?text='+encodeURIComponent(t+' '+u); }},
+    {key:'reddit', url:function(t,u){ return 'https://www.reddit.com/submit?url='+encodeURIComponent(u)+'&title='+encodeURIComponent(t); }},
+    {key:'email', url:function(t,u){ return 'mailto:?subject='+encodeURIComponent(t)+'&body='+encodeURIComponent(t+'\n\n'+u); }},
+    {key:'link', url:null}
+  ];
+
+  document.querySelectorAll('.share-bar').forEach(function(bar){
+    var text = bar.dataset.shareText || '';
+    shareConfig.forEach(function(s){
+      var btn = document.createElement('button');
+      btn.className = 'share-btn';
+      btn.setAttribute('aria-label', s.key);
+      btn.innerHTML = shareIcons[s.key];
+      btn.addEventListener('click', function(){
+        if(s.key === 'link'){
+          navigator.clipboard.writeText(PAGE_URL).then(function(){
+            btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--green)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+            setTimeout(function(){ btn.innerHTML = shareIcons[s.key]; }, 1500);
+          });
+        } else {
+          window.open(s.url(text, PAGE_URL), '_blank', 'width=600,height=400');
+        }
+      });
+      bar.appendChild(btn);
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
