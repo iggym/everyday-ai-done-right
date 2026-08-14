@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Critique Your Resume Against a Real Job Description | Everyday AI Done Right</title>
+  <meta name="description" content="Upload your resume PDF and a job description to Claude's free tier. Get specific critique, rewrite weak parts, replace $150-500 services for $0.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #FAFAF9;
+      --ink: #1C1C1E;
+      --green: #0F8A5F;
+      --coral: #FF6B4A;
+      --shadow: 0 4px 24px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
+      --radius: 16px;
+      --font-display: 'Manrope', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="dark"] {
+      --paper: #141414;
+      --ink: #F4F4F3;
+      --green: #22C58B;
+      --coral: #FF8064;
+      --shadow: 0 4px 24px rgba(0,0,0,0.3);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--paper);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+    }
+
+    [data-theme="dark"] .topbar {
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .topbar a {
+      color: var(--ink);
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-weight: 700;
+    }
+
+    .category-badge {
+      background: var(--green);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 500;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 4rem 0 3rem;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .badge-tool {
+      background: var(--green);
+      color: white;
+    }
+
+    .badge-date {
+      background: rgba(0,0,0,0.08);
+      color: var(--ink);
+    }
+
+    [data-theme="dark"] .badge-date {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .pitch {
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    /* Cost Widget */
+    .cost-widget {
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin: 3rem 0;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .cost-widget h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cost-comparison {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .cost-item {
+      text-align: center;
+    }
+
+    .cost-label {
+      font-size: 0.875rem;
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .cost-value {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 800;
+    }
+
+    .cost-paid {
+      text-decoration: line-through;
+      opacity: 0.5;
+      animation: strikeIn 0.6s ease-out;
+    }
+
+    .cost-free {
+      color: var(--green);
+      animation: popIn 0.6s ease-out 0.3s both;
+    }
+
+    @keyframes strikeIn {
+      from { text-decoration-color: transparent; }
+      to { text-decoration-color: var(--ink); }
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cost-paid, .cost-free { animation: none; }
+    }
+
+    /* Quota Checker */
+    .quota-checker {
+      background: var(--paper);
+      border: 2px solid var(--green);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin: 3rem 0;
+      box-shadow: var(--shadow);
+    }
+
+    .quota-checker h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .quota-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .quota-input-group label {
+      font-weight: 500;
+    }
+
+    .preset-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .preset-btn {
+      background: transparent;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover, .preset-btn.active {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+
+    .quota-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 1rem;
+    }
+
+    .quota-result {
+      background: rgba(15, 138, 95, 0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    [data-theme="dark"] .quota-result {
+      background: rgba(34, 197, 139, 0.15);
+    }
+
+    .quota-result p {
+      margin-bottom: 0.5rem;
+    }
+
+    .quota-result strong {
+      color: var(--green);
+    }
+
+    /* Stepper */
+    .stepper {
+      margin: 3rem 0;
+    }
+
+    .stepper-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .step-button {
+      background: transparent;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .step-button:hover {
+      background: rgba(0,0,0,0.05);
+    }
+
+    .step-button.active {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+
+    [data-theme="dark"] .step-button:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .step-content {
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      min-height: 300px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .step-content { animation: none; }
+    }
+
+    .step-content h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .step-content p {
+      margin-bottom: 1rem;
+    }
+
+    .prompt-box {
+      background: rgba(0,0,0,0.05);
+      border: 1px solid var(--ink);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    [data-theme="dark"] .prompt-box {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--coral);
+    }
+
+    .copy-btn.copied {
+      background: var(--coral);
+    }
+
+    /* What Breaks */
+    .what-breaks {
+      background: var(--coral);
+      color: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin: 3rem 0;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .what-breaks h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .what-breaks p {
+      margin-bottom: 1rem;
+      opacity: 0.95;
+    }
+
+    .what-breaks strong {
+      font-weight: 700;
+    }
+
+    /* Three Things */
+    .three-things {
+      margin: 3rem 0;
+    }
+
+    .three-things h2 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .thing-card {
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .thing-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .thing-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .thing-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .thing-reveal {
+      font-size: 0.875rem;
+      opacity: 0.7;
+    }
+
+    .thing-content {
+      margin-top: 1rem;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .thing-card.revealed .thing-content {
+      opacity: 1;
+      max-height: 500px;
+      margin-top: 1rem;
+    }
+
+    .thing-card.revealed .thing-reveal {
+      display: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .thing-card { transition: none; }
+      .thing-content { transition: none; }
+      .thing-card.revealed .thing-content { opacity: 1; max-height: 500px; }
+    }
+
+    /* Share Bar */
+    .share-bar {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: rgba(0,0,0,0.05);
+      border-radius: var(--radius);
+    }
+
+    [data-theme="dark"] .share-bar {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .share-bar-title {
+      width: 100%;
+      text-align: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .share-btn {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .share-btn:hover {
+      background: var(--green);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-top: 4rem;
+    }
+
+    [data-theme="dark"] footer {
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    footer p {
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+
+    footer a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Utility */
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      margin: 3rem 0 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      .topbar { padding: 1rem; }
+      .hero { padding: 2rem 0; }
+      .cost-comparison { flex-direction: column; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Topbar -->
+  <nav class="topbar">
+    <div class="topbar-left">
+      <a href="https://iggym.github.io/everyday-ai-done-right/">← Home</a>
+      <span class="category-badge">Career</span>
+    </div>
+    <div class="topbar-right">
+      <span>~6 min read</span>
+      <button class="theme-toggle" id="themeToggle">Auto</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Critique Your Resume Against a Real Job Description</h1>
+      <div class="hero-badges">
+        <span class="badge badge-tool">Claude (free tier)</span>
+        <span class="badge badge-date">Verified March 23, 2026</span>
+      </div>
+      <p class="pitch">Upload your resume PDF and a job description to Claude's free tier, get a specific critique of what's wrong with each section, then rewrite the weak parts yourself. The free tier gives you roughly 15–40 messages per rolling 5-hour window — enough for a full resume review session if you're deliberate about how you use it.</p>
+      
+      <!-- Share Bar 1 -->
+      <div class="share-bar" id="shareBar1">
+        <div class="share-bar-title">Share this workflow</div>
+        <button class="share-btn" data-platform="x" data-text="Upload your resume + a job description to Claude free tier, get specific section-by-section critique, rewrite weak parts yourself. ~15-40 msgs per 5-hr rolling window. Replaces $150-500 services for $0.">𝕏 X</button>
+        <button class="share-btn" data-platform="linkedin" data-text="Upload your resume + a job description to Claude free tier, get specific section-by-section critique, rewrite weak parts yourself. ~15-40 msgs per 5-hr rolling window. Replaces $150-500 services for $0.">LinkedIn</button>
+        <button class="share-btn" data-platform="facebook">Facebook</button>
+        <button class="share-btn" data-platform="whatsapp" data-text="Upload your resume + a job description to Claude free tier, get specific section-by-section critique, rewrite weak parts yourself. ~15-40 msgs per 5-hr rolling window. Replaces $150-500 services for $0.">WhatsApp</button>
+        <button class="share-btn" data-platform="reddit" data-text="Upload your resume + a job description to Claude free tier, get specific section-by-section critique, rewrite weak parts yourself. ~15-40 msgs per 5-hr rolling window. Replaces $150-500 services for $0.">Reddit</button>
+        <button class="share-btn" data-platform="email" data-text="Upload your resume + a job description to Claude free tier, get specific section-by-section critique, rewrite weak parts yourself. ~15-40 msgs per 5-hr rolling window. Replaces $150-500 services for $0.">Email</button>
+        <button class="share-btn" data-platform="copy">📋 Copy Link</button>
+      </div>
+    </section>
+
+    <!-- Cost Widget -->
+    <div class="cost-widget">
+      <h3>What this replaces</h3>
+      <div class="cost-comparison">
+        <div class="cost-item">
+          <div class="cost-label">Professional resume review</div>
+          <div class="cost-value cost-paid">$150–$500+</div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-label">AI resume builders</div>
+          <div class="cost-value cost-paid">$10–$30/mo</div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-label">This workflow</div>
+          <div class="cost-value cost-free">$0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quota Checker -->
+    <div class="quota-checker">
+      <h3>Will you hit the limit?</h3>
+      <div class="quota-input-group">
+        <label for="messagesPerDay">How many messages per day will you send?</label>
+        <div class="preset-buttons">
+          <button class="preset-btn" data-messages="5">Light (5)</button>
+          <button class="preset-btn" data-messages="15">Moderate (15)</button>
+          <button class="preset-btn" data-messages="30">Heavy (30)</button>
+        </div>
+        <input type="number" id="messagesPerDay" class="quota-input" placeholder="Or enter your own number..." min="1">
+      </div>
+      <div class="quota-result" id="quotaResult">
+        <p><strong>Enter your usage above to see if you'll stay under the free quota.</strong></p>
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <section class="stepper">
+      <h2 class="section-title">The walkthrough</h2>
+      <div class="stepper-nav" id="stepperNav">
+        <button class="step-button active" data-step="1">Step 1</button>
+        <button class="step-button" data-step="2">Step 2</button>
+        <button class="step-button" data-step="3">Step 3</button>
+        <button class="step-button" data-step="4">Step 4</button>
+        <button class="step-button" data-step="5">Step 5</button>
+        <button class="step-button" data-step="6">Step 6</button>
+        <button class="step-button" data-step="7">Step 7</button>
+      </div>
+      <div class="step-content" id="stepContent">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- What Breaks -->
+    <div class="what-breaks">
+      <h3>What breaks</h3>
+      <p>Claude's free tier runs on a <strong>rolling 5-hour window</strong>, not a daily reset at midnight. If you send a big message at 2 PM, you might not be able to send another until 7 PM. But if you send it at 8 PM, you can send more at 1 AM. The window resets continuously as messages fall out of the 5-hour range. Plan your session accordingly — do the heavy lifting (upload, critique, rewrites) in one sitting during off-peak hours (after 8 PM ET weekdays, or any time on weekends) when limits are more generous.</p>
+      <p>Claude also has a <strong>weekly cap</strong> on top of the 5-hour window. If you're doing a lot of job searching, spread your resume work across the week rather than cramming it all into one day.</p>
+      <p>Sometimes Claude will refuse to rewrite content it thinks is inappropriate or that might violate its usage policies. Its PDF reading isn't perfect either — if your resume has unusual formatting, columns, or graphics, the text might come through garbled. Always check that Claude read your resume correctly before acting on its feedback.</p>
+      <p>Claude can also hallucinate experience or skills you don't actually have. If it suggests adding "managed a team of 12" when you've never managed anyone, ignore that suggestion. The goal is better wording, not invented credentials.</p>
+    </div>
+
+    <!-- Three Things -->
+    <section class="three-things">
+      <h2>Three things this guide teaches</h2>
+      
+      <div class="thing-card" data-thing="1">
+        <div class="thing-header">
+          <div class="thing-title">The two-document prompt structure</div>
+          <div class="thing-reveal">Click to reveal →</div>
+        </div>
+        <div class="thing-content">
+          <p>Most people just paste their resume and ask "is this good?" That gets generic feedback. Asking Claude to compare your resume against a specific job description produces feedback that's actually actionable for that application. This works because Claude can hold both files in one conversation (up to 20 files, 500MB each).</p>
+        </div>
+      </div>
+
+      <div class="thing-card" data-thing="2">
+        <div class="thing-header">
+          <div class="thing-title">Timing around the rolling 5-hour window</div>
+          <div class="thing-reveal">Click to reveal →</div>
+        </div>
+        <div class="thing-content">
+          <p>Claude's rolling 5-hour window means timing matters more than daily quotas. If you do your resume work at 3 PM on a Tuesday, you might get cut off mid-session. Do it at 9 PM or on a Saturday, and you'll have the full window to yourself. Off-peak hours (outside 8 AM–2 PM ET weekdays, all weekend) also get double the normal message limit.</p>
+        </div>
+      </div>
+
+      <div class="thing-card" data-thing="3">
+        <div class="thing-header">
+          <div class="thing-title">The "one section at a time" technique</div>
+          <div class="thing-reveal">Click to reveal →</div>
+        </div>
+        <div class="thing-content">
+          <p>Asking for section-by-section rewrites conserves your message budget and produces better results. If you ask Claude to rewrite your entire resume at once, you burn through your quota on one message and get generic rewrites. Instead, identify the 2-3 weakest sections from the critique, then rewrite each one in a separate follow-up message. This uses 4-5 messages total instead of 1, but the rewrites are more targeted and you have budget left for clarifying questions.</p>
+        </div>
+      </div>
+
+      <!-- Share Bar 2 -->
+      <div class="share-bar" id="shareBar2">
+        <div class="share-bar-title">Found this useful? Share it</div>
+        <button class="share-btn" data-platform="x" data-text="Learned how to use Claude's rolling 5-hour window strategically for resume reviews. Off-peak hours get double limits.">𝕏 X</button>
+        <button class="share-btn" data-platform="linkedin" data-text="Learned how to use Claude's rolling 5-hour window strategically for resume reviews. Off-peak hours get double limits.">LinkedIn</button>
+        <button class="share-btn" data-platform="facebook">Facebook</button>
+        <button class="share-btn" data-platform="whatsapp" data-text="Learned how to use Claude's rolling 5-hour window strategically for resume reviews. Off-peak hours get double limits.">WhatsApp</button>
+        <button class="share-btn" data-platform="reddit" data-text="Learned how to use Claude's rolling 5-hour window strategically for resume reviews. Off-peak hours get double limits.">Reddit</button>
+        <button class="share-btn" data-platform="email" data-text="Learned how to use Claude's rolling 5-hour window strategically for resume reviews. Off-peak hours get double limits.">Email</button>
+        <button class="share-btn" data-platform="copy">📋 Copy Link</button>
+      </div>
+    </section>
+
+    <!-- Try It Now -->
+    <section>
+      <h2 class="section-title">Try it now</h2>
+      <p>Open your most recent resume, find a job description you actually want to apply for, and run this workflow tonight. If it's a weekday, wait until after 8 PM ET when Claude's off-peak limits are more generous. If it's a weekend, you're good to go any time.</p>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p><strong>Verification sources:</strong> Claude Help Center, Anthropic pricing page, Forbes Vetted resume service reviews (March 2026)</p>
+    <p><a href="https://iggym.github.io/everyday-ai-done-right/">← Home</a> | <a href="https://iggym.github.io/everyday-ai-done-right/">Browse more guides</a></p>
+  </footer>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('eadr-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    let currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else if (theme === 'light') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        // Auto
+        if (prefersDark) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+      }
+      themeToggle.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+    }
+    
+    applyTheme(currentTheme);
+    
+    themeToggle.addEventListener('click', () => {
+      const themes = ['auto', 'light', 'dark'];
+      const currentIndex = themes.indexOf(currentTheme);
+      currentTheme = themes[(currentIndex + 1) % themes.length];
+      localStorage.setItem('eadr-theme', currentTheme);
+      applyTheme(currentTheme);
+    });
+
+    // Quota Checker
+    const messagesInput = document.getElementById('messagesPerDay');
+    const quotaResult = document.getElementById('quotaResult');
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    
+    const QUOTA_LIMIT = 30; // Conservative midpoint of 15-40
+    const WINDOW_HOURS = 5;
+    const PAID_TIER_COST = '$20/month';
+    
+    function updateQuotaResult(messages) {
+      if (!messages || messages <= 0) {
+        quotaResult.innerHTML = '<p><strong>Enter your usage above to see if you\'ll stay under the free quota.</strong></p>';
+        return;
+      }
+      
+      let result = '';
+      
+      if (messages <= QUOTA_LIMIT) {
+        result = `<p><strong>✓ You'll stay under the free quota.</strong></p>`;
+        result += `<p>Claude's free tier gives you roughly ${QUOTA_LIMIT} messages per rolling ${WINDOW_HOURS}-hour window. At ${messages} messages per day, you have plenty of room.</p>`;
+      } else {
+        result = `<p><strong>⚠ You might hit the limit.</strong></p>`;
+        result += `<p>At ${messages} messages per day, you could exceed the ~${QUOTA_LIMIT} message quota if they're all sent within a ${WINDOW_HOURS}-hour window.</p>`;
+        result += `<p><strong>Solution:</strong> Spread your messages out over time, or upgrade to Claude Pro for ${PAID_TIER_COST} (gives 5× the usage).</p>`;
+      }
+      
+      result += `<p style="margin-top: 1rem; opacity: 0.8; font-size: 0.875rem;"><strong>Reset timing:</strong> The window resets continuously as messages fall out of the ${WINDOW_HOURS}-hour range (not daily). Off-peak hours (after 8 PM ET weekdays, all weekend) get double the normal limit.</p>`;
+      
+      quotaResult.innerHTML = result;
+    }
+    
+    presetBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        presetBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const messages = parseInt(btn.dataset.messages);
+        messagesInput.value = messages;
+        updateQuotaResult(messages);
+      });
+    });
+    
+    messagesInput.addEventListener('input', () => {
+      presetBtns.forEach(b => b.classList.remove('active'));
+      const messages = parseInt(messagesInput.value);
+      updateQuotaResult(messages);
+    });
+
+    // Stepper
+    const stepButtons = document.querySelectorAll('.step-button');
+    const stepContent = document.getElementById('stepContent');
+    
+    const steps = [
+      {
+        title: 'Step 1: Set up Claude',
+        content: '<p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and create a free account using your email or Google sign-in. No credit card required. Start a new conversation.</p>'
+      },
+      {
+        title: 'Step 2: Upload your resume',
+        content: '<p>Click the paperclip icon (or "Upload") and attach your current resume as a PDF. Claude can read PDFs, Word docs, and plain text files up to 500MB each, with up to 20 files per conversation.</p>'
+      },
+      {
+        title: 'Step 3: Send the critique prompt',
+        content: '<p>Copy and paste this exact prompt:</p><div class="prompt-box">Read the attached resume. I\'m applying for the job described below. Critique the resume section by section: summary, experience, skills, education. For each section, tell me what\'s strong and what needs work. Be specific — don\'t give generic advice like "use more action verbs." Instead, tell me exactly which bullet points are weak and why.<button class="copy-btn" data-copy="Read the attached resume. I\'m applying for the job described below. Critique the resume section by section: summary, experience, skills, education. For each section, tell me what\'s strong and what needs work. Be specific — don\'t give generic advice like \\"use more action verbs.\\" Instead, tell me exactly which bullet points are weak and why.">Copy</button></div>'
+      },
+      {
+        title: 'Step 4: Paste the job description',
+        content: '<p>In the same message (or immediately after), paste the full job description you\'re applying for. This is the critical part — without a specific target, Claude\'s feedback will be generic. With a target, it can tell you things like "your summary doesn\'t mention Python, which the JD lists as required" or "your third bullet doesn\'t demonstrate leadership, which this role emphasizes."</p>'
+      },
+      {
+        title: 'Step 5: Read the feedback carefully',
+        content: '<p>Claude will give you a section-by-section breakdown. Pay attention to the specific bullets it flags as weak. Common issues: vague language, missing metrics, no clear connection to the JD\'s requirements.</p>'
+      },
+      {
+        title: 'Step 6: Ask for targeted rewrites',
+        content: '<p>For each section Claude flagged as weak, send a follow-up message:</p><div class="prompt-box">Rewrite my [experience/summary/skills] section to better match this job description. Keep my actual experience and dates the same. Just improve the wording, add relevant keywords from the JD, and make each bullet more specific.<button class="copy-btn" data-copy="Rewrite my [experience/summary/skills] section to better match this job description. Keep my actual experience and dates the same. Just improve the wording, add relevant keywords from the JD, and make each bullet more specific.">Copy</button></div>'
+      },
+      {
+        title: 'Step 7: Update your resume yourself',
+        content: '<p>Take Claude\'s suggestions and edit your resume manually. Don\'t copy-paste wholesale — you want to understand why the changes work so you can apply the same logic to future applications. Save the Claude conversation as a reference for next time.</p>'
+      }
+    ];
+    
+    let currentStep = 1;
+    
+    function updateStep(step) {
+      currentStep = step;
+      const stepData = steps[step - 1];
+      stepContent.innerHTML = `<h3>${stepData.title}</h3>${stepData.content}`;
+      
+      // Update button states
+      stepButtons.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.step) === step);
+      });
+      
+      // Attach copy handlers
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', handleCopy);
+      });
+    }
+    
+    stepButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const step = parseInt(btn.dataset.step);
+        updateStep(step);
+      });
+    });
+    
+    updateStep(1);
+
+    // Copy functionality
+    function handleCopy(e) {
+      const text = e.target.dataset.copy;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = e.target.textContent;
+        e.target.textContent = 'Copied!';
+        e.target.classList.add('copied');
+        setTimeout(() => {
+          e.target.textContent = originalText;
+          e.target.classList.remove('copied');
+        }, 1500);
+      });
+    }
+
+    // Three Things
+    document.querySelectorAll('.thing-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('revealed');
+      });
+    });
+
+    // Share functionality
+    document.querySelectorAll('.share-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const platform = btn.dataset.platform;
+        const text = btn.dataset.text || '';
+        const url = window.location.href;
+        
+        let shareUrl = '';
+        
+        switch(platform) {
+          case 'x':
+            shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+            break;
+          case 'linkedin':
+            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}`;
+            break;
+          case 'facebook':
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+            break;
+          case 'whatsapp':
+            shareUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+            break;
+          case 'reddit':
+            shareUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}`;
+            break;
+          case 'email':
+            shareUrl = `mailto:?subject=${encodeURIComponent('Check out this free AI workflow')}&body=${encodeURIComponent(text + '\n\n' + url)}`;
+            break;
+          case 'copy':
+            navigator.clipboard.writeText(url).then(() => {
+              const originalText = btn.innerHTML;
+              btn.innerHTML = '✓ Copied!';
+              setTimeout(() => {
+                btn.innerHTML = originalText;
+              }, 1500);
+            });
+            return;
+        }
+        
+        if (shareUrl) {
+          window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
