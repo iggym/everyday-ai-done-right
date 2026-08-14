@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATS Resume Impact Statement Engine — Everyday AI Done Right</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAF9;
+      --text: #1C1C1E;
+      --text-muted: #6E6E73;
+      --card-bg: #FFFFFF;
+      --card-border: #E5E5E7;
+      --green: #0F8A5F;
+      --green-light: #E8F5E9;
+      --coral: #FF6B4A;
+      --coral-light: #FFF0ED;
+      --code-bg: #282C34;
+      --code-text: #ABB2BF;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      --radius: 16px;
+      --font-heading: 'Manrope', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #141414;
+      --text: #F4F4F3;
+      --text-muted: #989899;
+      --card-bg: #1E1E20;
+      --card-border: #2C2C2E;
+      --green: #22C58B;
+      --green-light: rgba(34, 197, 139, 0.15);
+      --coral: #FF8064;
+      --coral-light: rgba(255, 128, 100, 0.15);
+      --code-bg: #0F0F10;
+      --code-text: #E4E4E7;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding-bottom: 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(8px);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .home-link {
+      text-decoration: none;
+      color: var(--text);
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .category-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      background: var(--card-border);
+      color: var(--text);
+      padding: 3px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .read-time {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .theme-btn {
+      background: none;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+    }
+
+    /* Container */
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 20px 0 20px;
+    }
+
+    /* Hero */
+    .hero {
+      margin-bottom: 32px;
+    }
+
+    .badges {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .badge-verified {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+
+    .badge-tool {
+      background: var(--card-border);
+      color: var(--text);
+    }
+
+    .badge-tier {
+      background: var(--coral-light);
+      color: var(--coral);
+      border: 1px solid var(--coral);
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .pitch {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    /* Cost Comparison Card */
+    .cost-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .cost-title {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .cost-row {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .cost-old {
+      font-size: 1.6rem;
+      text-decoration: line-through;
+      color: var(--coral);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+
+    .cost-new {
+      font-size: 2.2rem;
+      color: var(--green);
+      font-family: var(--font-mono);
+      font-weight: 800;
+    }
+
+    .cost-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* Quota Calculator */
+    .widget-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .widget-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .input-group label {
+      font-size: 0.95rem;
+    }
+
+    .input-group input {
+      width: 80px;
+      padding: 8px 12px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 1rem;
+    }
+
+    .preset-btns {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .preset-btn {
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .preset-btn:hover {
+      border-color: var(--green);
+    }
+
+    .quota-result {
+      padding: 16px;
+      border-radius: 8px;
+      background: var(--green-light);
+      color: var(--green);
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      transition: opacity 0.2s ease;
+    }
+
+    .quota-result.over-limit {
+      background: var(--coral-light);
+      color: var(--coral);
+    }
+
+    .source-line {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .source-line a {
+      color: var(--text-muted);
+    }
+
+    /* Stepper Walkthrough */
+    .stepper-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .stepper-progress {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .step-nav-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .step-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .step-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .step-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow);
+      min-height: 220px;
+    }
+
+    .step-content {
+      display: none;
+    }
+
+    .step-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-title {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .step-body {
+      font-size: 0.98rem;
+      margin-bottom: 16px;
+    }
+
+    /* Prompt Box & Copy Button */
+    .prompt-box {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      margin: 16px 0;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #FFF;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* What Breaks Callout */
+    .callout-break {
+      background: var(--coral-light);
+      border: 1px solid var(--coral);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    .callout-title {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      color: var(--coral);
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .callout-break ul {
+      padding-left: 20px;
+    }
+
+    .callout-break li {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    /* Three Things Interactive */
+    .three-things-container {
+      margin-bottom: 32px;
+    }
+
+    .thing-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .thing-card:hover {
+      border-color: var(--green);
+    }
+
+    .thing-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .thing-body {
+      display: none;
+      margin-top: 12px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      padding-top: 12px;
+    }
+
+    .thing-card.open .thing-body {
+      display: block;
+    }
+
+    /* Share Bar */
+    .share-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 20px 0 32px 0;
+    }
+
+    .share-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .share-btn:hover {
+      border-color: var(--text);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding-top: 24px;
+      margin-top: 48px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    footer a {
+      color: var(--text-muted);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <a href="https://iggym.github.io/everyday-ai-done-right/" class="home-link">Everyday AI</a>
+      <span class="category-badge">Job Search</span>
+    </div>
+    <div class="topbar-right">
+      <span class="read-time">3 min read</span>
+      <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">Theme</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Hero -->
+    <header class="hero">
+      <div class="badges">
+        <span class="badge badge-verified">verified 2026-03-24</span>
+        <span class="badge badge-tool">Claude 3.5 Sonnet (claude.ai)</span>
+        <span class="badge badge-tier">T0 · Free Forever, No Card</span>
+      </div>
+      <h1>Transform Work History into ATS-Proof Resume Impact Statements</h1>
+      <p class="pitch">
+        Convert raw bullet points into quantified, ATS-optimized resume impact statements using Claude's free web tier. Zero dollars required, with no trial period or credit card registration.
+      </p>
+
+      <!-- Share Bar 1 -->
+      <div class="share-bar">
+        <a class="share-btn" id="shareX1" target="_blank" rel="noopener">X</a>
+        <a class="share-btn" id="shareLI1" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="share-btn" id="shareFB1" target="_blank" rel="noopener">Facebook</a>
+        <a class="share-btn" id="shareWA1" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="share-btn" id="shareRD1" target="_blank" rel="noopener">Reddit</a>
+        <a class="share-btn" id="shareEM1" target="_blank" rel="noopener">Email</a>
+        <button class="share-btn" onclick="copyLink(this)">Copy Link</button>
+      </div>
+    </header>
+
+    <!-- Cost Comparison Widget -->
+    <div class="cost-card">
+      <div class="cost-title">Cost Comparison</div>
+      <div class="cost-row">
+        <span class="cost-old">$150.00</span>
+        <span class="cost-new">$0.00</span>
+      </div>
+      <p class="cost-sub">Replaces paid resume builders ($19–$29/mo) and human resume rewrites ($150+).</p>
+    </div>
+
+    <!-- Quota Calculator Widget -->
+    <div class="widget-card">
+      <div class="widget-title">Usage & Limit Calculator</div>
+      <div class="input-group">
+        <label for="msgInput">Expected messages in a 5-hour window:</label>
+        <input type="number" id="msgInput" value="5" min="1" max="100" oninput="calculateQuota()">
+      </div>
+      <div class="preset-buttons preset-btns">
+        <button class="preset-btn" onclick="setPreset(3)">Quick Edit (3 msgs)</button>
+        <button class="preset-btn" onclick="setPreset(12)">Full Section (12 msgs)</button>
+        <button class="preset-btn" onclick="setPreset(35)">Heavy Rewrite (35 msgs)</button>
+      </div>
+      <div class="quota-result" id="quotaResult">
+        Within Free Limits — You have plenty of capacity remaining in this 5-hour window.
+      </div>
+      <div class="source-line">
+        Quota source: <a href="https://support.anthropic.com/en/articles/8324991-about-claude-ai-free-plan" target="_blank" rel="noopener">Anthropic Free Plan Terms</a> (Verified 2026-03-24). Standard capacity: ~10–30 messages per 5 hours.
+      </div>
+    </div>
+
+    <!-- Interactive Stepper Walkthrough -->
+    <section>
+      <div class="stepper-header">
+        <span class="stepper-progress" id="stepProgress">Step 1 of 4</span>
+        <div class="step-nav-btns">
+          <button class="step-btn" id="prevBtn" onclick="changeStep(-1)" disabled>Previous</button>
+          <button class="step-btn" id="nextBtn" onclick="changeStep(1)">Next Step</button>
+        </div>
+      </div>
+
+      <div class="step-container">
+        <!-- Step 1 -->
+        <div class="step-content active" id="step1">
+          <h2 class="step-title">Step 1: Gather Raw Experience & Target Job</h2>
+          <div class="step-body">
+            Collect 3 to 5 unformatted bullet points from your work history along with the target job description. Do not spend time polishing language or correcting grammar prior to input.
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-content" id="step2">
+          <h2 class="step-title">Step 2: Execute Unified Prompt</h2>
+          <div class="step-body">
+            Navigate to <code>https://claude.ai</code>, create a free account if you haven't already, and submit the prompt template below in a single message alongside your text.
+          </div>
+          <div class="prompt-box">
+            <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            <code id="promptTemplate">You are an expert technical recruiter and resume ATS optimization specialist.
+Analyze the provided RAW EXPERIENCE and TARGET JOB DESCRIPTION.
+
+Reframe each raw experience item into a quantified bullet point using Google's "X-Y-Z" formula:
+"Accomplished [X], as measured by [Y], by doing [Z]."
+
+Rules:
+1. Align action verbs with key skills listed in the target job description.
+2. If exact numeric metrics are missing from the raw input, insert realistic bracketed placeholders like [X%] or $[Y] for me to complete.
+3. Keep each output statement under 25 words.
+4. Output only plain text bullet points without markdown bolding, special characters, or table formatting.
+
+TARGET JOB DESCRIPTION:
+[Paste Job Description Here]
+
+RAW EXPERIENCE:
+[Paste Raw Bullets Here]</code>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-content" id="step3">
+          <h2 class="step-title">Step 3: Fill Bracketed Placeholders</h2>
+          <div class="step-body">
+            Review Claude's output. Replace bracketed placeholders (such as <code>[X%]</code> or <code>$[Y]</code>) with your verified real-world metrics or estimates.
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-content" id="step4">
+          <h2 class="step-title">Step 4: Clean Format for ATS Import</h2>
+          <div class="step-body">
+            Copy the finalized plain-text bullets directly into a standard single-column document editor. Avoid inserting tables, multi-column divisions, or graphics that disrupt automated ATS scanners.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What Breaks Callout -->
+    <div class="callout-break">
+      <div class="callout-title">⚠️ What Breaks & Failure Modes</div>
+      <ul>
+        <li><strong>5-Hour Rate Limit Window:</strong> Submitting incremental revisions one message at a time consumes your 10–30 message limit rapidly. Always batch complete sections into single prompt submissions.</li>
+        <li><strong>Unverified Metric Inventions:</strong> Claude will occasionally generate specific performance statistics if placeholders are not enforced. Verify all generated metrics before copying.</li>
+        <li><strong>Formatting Parsing Errors:</strong> Converting AI outputs into visual tables or multi-column PDF templates causes text scrambling in legacy ATS databases. Stick to single-column plain text.</li>
+      </ul>
+    </div>
+
+    <!-- Three Things Interactive Reveal -->
+    <section class="three-things-container">
+      <h2 style="font-family: var(--font-heading); font-size: 1.3rem; margin-bottom: 16px;">Three Non-Obvious Strategies</h2>
+      
+      <div class="thing-card" onclick="toggleThing(this)">
+        <div class="thing-header">
+          <span>1. The "X-Y-Z" Metric Injector</span>
+          <span>+</span>
+        </div>
+        <div class="thing-body">
+          Automated screening systems prioritize verb-metric alignment over passive job duties. Forcing the formula "Accomplished [X], measured by [Y], by doing [Z]" ensures ATS software captures both key skills and business impact.
+        </div>
+      </div>
+
+      <div class="thing-card" onclick="toggleThing(this)">
+        <div class="thing-header">
+          <span>2. 5-Hour Rolling Window Batching Strategy</span>
+          <span>+</span>
+        </div>
+        <div class="thing-body">
+          Free tier limits on <code>claude.ai</code> run on a 5-hour rolling clock. By supplying your target job description, raw experience, and constraints in a single structured prompt, you complete an entire resume section in one API turn instead of consuming your allowance across multiple messages.
+        </div>
+      </div>
+
+      <div class="thing-card" onclick="toggleThing(this)">
+        <div class="thing-header">
+          <span>3. Hidden ATS Formatting Cleanser</span>
+          <span>+</span>
+        </div>
+        <div class="thing-body">
+          Fancy canvas elements, column dividers, and markdown formatting often render resumes unreadable to legacy ATS software. Converting your AI output into clean, single-column plain text eliminates structural parsing errors.
+        </div>
+      </div>
+
+      <!-- Share Bar 2 -->
+      <div class="share-bar">
+        <a class="share-btn" id="shareX2" target="_blank" rel="noopener">X</a>
+        <a class="share-btn" id="shareLI2" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="share-btn" id="shareFB2" target="_blank" rel="noopener">Facebook</a>
+        <a class="share-btn" id="shareWA2" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="share-btn" id="shareRD2" target="_blank" rel="noopener">Reddit</a>
+        <a class="share-btn" id="shareEM2" target="_blank" rel="noopener">Email</a>
+        <button class="share-btn" onclick="copyLink(this)">Copy Link</button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div>Free-tier terms verified 2026-03-24 against <a href="https://support.anthropic.com/en/articles/8324991-about-claude-ai-free-plan" target="_blank" rel="noopener">Anthropic Official Documentation</a>.</div>
+      <div>Ladder Tier: <strong>T0 — Permanent Free Tier, No Card Required</strong>.</div>
+      <div>
+        <a href="https://iggym.github.io/everyday-ai-done-right/">Home</a> · 
+        <a href="https://iggym.github.io/everyday-ai-done-right/">Browse More Guides</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme Switcher
+    function initTheme() {
+      const savedTheme = localStorage.getItem('eadr-theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', dark);
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('eadr-theme', next);
+    }
+
+    initTheme();
+
+    // Quota Calculator Logic
+    function calculateQuota() {
+      const input = document.getElementById('msgInput');
+      const val = parseInt(input.value) || 0;
+      const resultDiv = document.getElementById('quotaResult');
+
+      if (val <= 20) {
+        resultDiv.className = 'quota-result';
+        resultDiv.textContent = 'Within Free Limits — Usage fits comfortably inside the 5-hour rolling window allowance (~10–30 msgs).';
+      } else if (val <= 30) {
+        resultDiv.className = 'quota-result';
+        resultDiv.textContent = 'At Upper Free Boundary — Usage may hit rate limits during peak usage hours. Batch inputs into single messages.';
+      } else {
+        resultDiv.className = 'quota-result over-limit';
+        resultDiv.textContent = 'Exceeds Free Limits — Exceeds the ~30 msg / 5-hr limit. Limit resets continuously on a 5-hour rolling clock. Cheapest upgrade: Claude Pro ($20/mo) or Rezi ($29/mo).';
+      }
+    }
+
+    function setPreset(val) {
+      document.getElementById('msgInput').value = val;
+      calculateQuota();
+    }
+
+    // Stepper Navigation Logic
+    let currentStep = 1;
+    const totalSteps = 4;
+
+    function changeStep(delta) {
+      const nextStep = currentStep + delta;
+      if (nextStep < 1 || nextStep > totalSteps) return;
+
+      document.getElementById(`step${currentStep}`).classList.remove('active');
+      currentStep = nextStep;
+      document.getElementById(`step${currentStep}`).classList.add('active');
+
+      document.getElementById('stepProgress').textContent = `Step ${currentStep} of ${totalSteps}`;
+      document.getElementById('prevBtn').disabled = currentStep === 1;
+      document.getElementById('nextBtn').disabled = currentStep === totalSteps;
+    }
+
+    // Copy Button Handler
+    function copyPrompt(btn) {
+      const codeText = document.getElementById('promptTemplate').innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        const origText = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = origText; }, 1500);
+      });
+    }
+
+    function copyLink(btn) {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const origText = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = origText; }, 1500);
+      });
+    }
+
+    // Three Things Accordion
+    function toggleThing(card) {
+      card.classList.toggle('open');
+      const symbol = card.querySelector('.thing-header span:last-child');
+      if (symbol) {
+        symbol.textContent = card.classList.contains('open') ? '−' : '+';
+      }
+    }
+
+    // Social Share Links Setup
+    function setupShareLinks() {
+      const url = encodeURIComponent(window.location.href);
+      const pitchText = encodeURIComponent("Transform work history into ATS-proof resume impact statements using Claude's free tier:");
+      const thingText = encodeURIComponent("The Google 'X-Y-Z' formula structures resume bullets for maximum ATS compatibility:");
+
+      // Set set 1 (Pitch)
+      document.getElementById('shareX1').href = `https://twitter.com/intent/tweet?text=${pitchText}&url=${url}`;
+      document.getElementById('shareLI1').href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+      document.getElementById('shareFB1').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('shareWA1').href = `https://api.whatsapp.com/send?text=${pitchText}%20${url}`;
+      document.getElementById('shareRD1').href = `https://www.reddit.com/submit?url=${url}&title=${pitchText}`;
+      document.getElementById('shareEM1').href = `mailto:?subject=${pitchText}&body=${url}`;
+
+      // Set set 2 (Three Things)
+      document.getElementById('shareX2').href = `https://twitter.com/intent/tweet?text=${thingText}&url=${url}`;
+      document.getElementById('shareLI2').href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+      document.getElementById('shareFB2').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('shareWA2').href = `https://api.whatsapp.com/send?text=${thingText}%20${url}`;
+      document.getElementById('shareRD2').href = `https://www.reddit.com/submit?url=${url}&title=${thingText}`;
+      document.getElementById('shareEM2').href = `mailto:?subject=${thingText}&body=${url}`;
+    }
+
+    setupShareLinks();
+  </script>
+</body>
+</html>
