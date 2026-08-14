@@ -9,60 +9,13 @@ Welcome! 👋 If you’ve ever felt like every useful AI tool requires a $20/mon
 
 ## 🛠️ The Free AI Toolbox
 
-Pick a category below to jump straight to the step-by-step verified guide:
+Explore all verified, zero-cost guides directly on the interactive web directory:
+👉 **[Launch Everyday AI, Done Right Directory](https://iggym.github.io/everyday-ai-done-right/)**
 
 ### 💼 Career & Work
 > Level up your job hunt, sharpen your resume, and automate application workflows without paying career coaches.
 
-* 📄 **[Resume Critique Guide](https://iggym.github.io/everyday-ai-done-right/articles/get-a-brutally-honest-resume-critique.html)** — Get brutal, hiring-manager-grade feedback on your resume using free LLM reasoning.
-* 🎯 **[Tailored Application Engine](https://iggym.github.io/everyday-ai-done-right/articles/turn-a-raw-resume-into-a-tailored-application.html)** — Adapt your cover letter and experience bullets to specific job descriptions in seconds.
-* 🤖 **[ATS Resume Engine](https://iggym.github.io/everyday-ai-done-right/articles/beat-ats-screening-with-a-clean-text-resume.html)** — Format and optimize your resume to pass automated applicant tracking filters.
-
----
-
-### 🥗 Health & Wellness
-> Turn everyday photos and voice notes into instant health insights, meal breakdowns, and routine tracking.
-
-* 📸 **[Health Screenshots Analyzer](https://iggym.github.io/everyday-ai-done-right/articles/parse-lab-results-and-medical-bills-from-a-screenshot.html)** — Make sense of confusing lab results, portal summaries, or medical bills.
-* 🍎 **[Food Photo Nutrition Tracker](https://iggym.github.io/everyday-ai-done-right/articles/get-a-macro-breakdown-from-a-photo-of-your-meal.html)** — Snap a quick picture of your plate to get instant calorie and macro estimates.
-* 🎙️ **[Voice Memo Nutrition Logger](https://iggym.github.io/everyday-ai-done-right/articles/log-meals-and-macros-by-speaking-a-quick-voice-memo.html)** — Speak what you ate into your phone and convert it into structured nutrition data.
-
----
-
-### 🧳 Travel & Exploration
-> Plan seamless trips, translate local phrases on the fly, and build custom itineraries without paying travel agent fees.
-
-* 🗺️ **[Smart Travel Itinerary Builder](https://iggym.github.io/everyday-ai-done-right/articles/turn-trip-confirmations-into-one-checked-itinerary.html)** — Turn scattered flight and hotel confirmations into one organized itinerary.
-
----
-
-### 👁️ Accessibility & Assistive
-> Harness AI vision and speech capabilities to make the digital and physical world easier to navigate.
-
-* 📚 **[PDF Reader & Summarizer](https://iggym.github.io/everyday-ai-done-right/articles/listen-to-long-pdfs-with-natural-ai-audio.html)** — Extract key takeaways, translate, or listen to long documents effortlessly.
-* 🗣️ **[Audio Transcription Flow](https://iggym.github.io/everyday-ai-done-right/articles/free-speech-to-text-audio-transcription.html)** — Convert long audio recordings into clean, formatted text transcripts.
-* 👆 **[Point & Speak Assistant](https://iggym.github.io/everyday-ai-done-right/articles/point-and-speak-camera-assistant-for-low-vision.html)** — Use vision models to describe object photos or read real-world signage aloud.
-
----
-
-### 🎧 Learning & Study
-> Turn boring lectures, textbook notes, and research papers into personal tutor sessions.
-
-* 🎙️ **[Custom Study Podcast](https://iggym.github.io/everyday-ai-done-right/articles/turn-study-notes-into-a-personalized-podcast.html)** — Convert notes, slides, or chapters into custom audio study guides you can listen to anywhere.
-
----
-
-### 🧾 Household & Budgeting
-> Keep your money in your pocket by auditing hidden fees and cutting recurring expenses.
-
-* 🔍 **[Invoice Hidden Fee Audit](https://iggym.github.io/everyday-ai-done-right/articles/audit-contractor-invoices-and-utility-bills.html)** — Scan service bills, contractor quotes, and receipts for hidden charges or errors.
-
----
-
-### ⚖️ Civic & Legal
-> Cut through legalese, confusing bureaucracy, and dense contracts.
-
-* 📜 **[Legal Jargon Decoder](https://iggym.github.io/everyday-ai-done-right/articles/decode-lease-agreements-and-legal-jargon.html)** — Translate lease agreements, terms of service, and official letters into plain English.
+* 🎯 **[Tailored Application Engine](./articles/turn-a-raw-resume-into-a-tailored-application.html)** — Adapt your cover letter and experience bullets to specific job descriptions in seconds.
 
 ---
 
