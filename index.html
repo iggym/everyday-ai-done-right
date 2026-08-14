@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everyday AI, Done Right</title>
+<meta name="description" content="Real AI leverage. Actually free. No credit card. A verified directory of zero-cost AI workflows for anyone, anywhere.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFAF9;
+    --paper-raised:#FFFFFF;
+    --ink:#1C1C1E;
+    --ink-soft:#54545A;
+    --muted:#8A8A8F;
+    --line: rgba(28,28,30,0.10);
+    --green:#0F8A5F;
+    --green-soft: rgba(15,138,95,0.10);
+    --coral:#FF6B4A;
+    --coral-soft: rgba(255,107,74,0.10);
+    --shadow: 0 1px 2px rgba(28,28,30,0.04), 0 8px 24px rgba(28,28,30,0.06);
+    --display:'Manrope', sans-serif;
+    --body:'Inter', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+    --radius: 16px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#141414;
+      --paper-raised:#1C1C1E;
+      --ink:#F4F4F3;
+      --ink-soft:#C7C7CB;
+      --muted:#8A8A8F;
+      --line: rgba(244,244,243,0.10);
+      --green:#22C58B;
+      --green-soft: rgba(34,197,139,0.14);
+      --coral:#FF8064;
+      --coral-soft: rgba(255,128,100,0.14);
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  html[data-theme="light"]{
+    --paper:#FAFAF9; --paper-raised:#FFFFFF; --ink:#1C1C1E; --ink-soft:#54545A;
+    --muted:#8A8A8F; --line: rgba(28,28,30,0.10); --green:#0F8A5F;
+    --green-soft: rgba(15,138,95,0.10); --coral:#FF6B4A; --coral-soft: rgba(255,107,74,0.10);
+    --shadow: 0 1px 2px rgba(28,28,30,0.04), 0 8px 24px rgba(28,28,30,0.06);
+  }
+  html[data-theme="dark"]{
+    --paper:#141414; --paper-raised:#1C1C1E; --ink:#F4F4F3; --ink-soft:#C7C7CB;
+    --muted:#8A8A8F; --line: rgba(244,244,243,0.10); --green:#22C58B;
+    --green-soft: rgba(34,197,139,0.14); --coral:#FF8064; --coral-soft: rgba(255,128,100,0.14);
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:.001ms !important; transition-duration:.001ms !important; scroll-behavior:auto !important;} }
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--body); line-height:1.6; font-size:16px;
+    -webkit-font-smoothing:antialiased; transition:background .25s ease, color .25s ease;
+  }
+  a{color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+
+  /* ===== Topbar ===== */
+  .topbar{
+    position:sticky; top:0; z-index:30;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .topbar .mark{ display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink); font-family:var(--display); font-weight:800; font-size:15px; }
+  .topbar .mark .dot{ width:9px; height:9px; border-radius:50%; background:var(--green); }
+  .theme-toggle{
+    border:1px solid var(--line); background:var(--paper-raised); color:var(--ink-soft);
+    border-radius:20px; padding:7px 14px; font-size:12.5px; font-weight:600;
+    display:flex; align-items:center; gap:6px; transition:border-color .2s ease;
+  }
+  .theme-toggle:hover{ border-color:var(--green); color:var(--ink); }
+
+  /* ===== Hero ===== */
+  header.hero{ padding:72px 24px 40px; max-width:760px; margin:0 auto; text-align:center; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:0.02em;
+    color:var(--green); background:var(--green-soft); border-radius:20px;
+    padding:6px 14px; margin-bottom:24px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--green); }
+  h1{ font-family:var(--display); font-weight:800; font-size:clamp(2.2rem,5.5vw,3.4rem); margin:0 0 18px; letter-spacing:-0.02em; line-height:1.08; }
+  h1 .accent{ color:var(--green); }
+  .tagline{ font-size:1.15rem; color:var(--ink-soft); max-width:520px; margin:0 auto 8px; }
+  .desc{ font-size:14.5px; color:var(--muted); max-width:480px; margin:14px auto 0; }
+
+  /* ===== Signature: cost-comparison widget ===== */
+  .cost-widget{
+    max-width:520px; margin:44px auto 0; background:var(--paper-raised);
+    border:1px solid var(--line); border-radius:var(--radius); padding:26px 28px;
+    box-shadow:var(--shadow); text-align:left;
+  }
+  .cost-widget .label{ font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px; }
+  .cost-row{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:6px; }
+  .cost-old{
+    font-family:var(--mono); font-size:1.1rem; color:var(--muted); text-decoration:line-through;
+    text-decoration-color:var(--coral); text-decoration-thickness:2px;
+    opacity:0; animation:strike-in 0.6s ease forwards; animation-delay:0.3s;
+  }
+  @keyframes strike-in{ from{opacity:0; transform:translateX(-6px);} to{opacity:1; transform:translateX(0);} }
+  .cost-new{
+    font-family:var(--display); font-weight:800; font-size:1.4rem; color:var(--green);
+    opacity:0; animation:pop-in 0.5s cubic-bezier(.34,1.56,.64,1) forwards; animation-delay:0.9s;
+  }
+  @keyframes pop-in{ from{opacity:0; transform:scale(0.85);} to{opacity:1; transform:scale(1);} }
+  .cost-widget .item-label{ font-size:13.5px; color:var(--ink-soft); }
+  .cost-total{ border-top:1px dashed var(--line); margin-top:14px; padding-top:14px; display:flex; justify-content:space-between; align-items:baseline; }
+  .cost-total .total-label{ font-size:13px; color:var(--muted); }
+  .cost-total .total-value{ font-family:var(--display); font-weight:800; font-size:1.6rem; color:var(--green); }
+
+  /* ===== Controls ===== */
+  main{ max-width:1080px; margin:0 auto; padding:8px 24px 100px; }
+  .controls{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    margin:36px 0 20px; padding-bottom:20px; border-bottom:1px solid var(--line);
+  }
+  .search-wrap{ position:relative; flex:1; min-width:220px; max-width:340px; }
+  .search-wrap svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:0.45; }
+  #search{
+    width:100%; font-family:var(--body); font-size:14px; padding:11px 14px 11px 38px;
+    border:1px solid var(--line); border-radius:24px; background:var(--paper-raised); color:var(--ink);
+    outline:none; transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  #search:focus{ border-color:var(--green); box-shadow:0 0 0 3px var(--green-soft); }
+  .filters{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{
+    font-family:var(--body); font-size:13px; font-weight:600; padding:8px 15px;
+    border-radius:20px; border:1px solid var(--line); background:var(--paper-raised); color:var(--ink-soft);
+    transition:all .18s ease; user-select:none;
+  }
+  .chip:hover{ border-color:var(--green); color:var(--ink); }
+  .chip.active{ background:var(--ink); border-color:var(--ink); color:var(--paper); }
+  html[data-theme="dark"] .chip.active, @media (prefers-color-scheme: dark){ .chip.active{ background:var(--green); border-color:var(--green); color:#0A0A0A; } }
+
+  .result-count{ font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:20px; }
+
+  /* ===== Card grid ===== */
+  .grid-feed{ display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:18px; }
+  .card{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    opacity:0; transform:translateY(8px); animation:card-in 0.5s ease forwards;
+  }
+  @keyframes card-in{ to{opacity:1; transform:translateY(0);} }
+  .card:hover{ transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--green); }
+  .card.hidden{ display:none; }
+  .card.pinned{ grid-column:1/-1; border-color:var(--green); background:var(--green-soft); }
+  .card-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:14px; }
+  .tool-badge{
+    font-family:var(--mono); font-size:10.5px; font-weight:600; color:var(--green);
+    background:var(--green-soft); padding:4px 10px; border-radius:12px;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .tool-badge::before{ content:'●'; font-size:8px; }
+  .reading-time{ font-family:var(--mono); font-size:11px; color:var(--muted); white-space:nowrap; }
+  .card h2{ font-family:var(--display); font-weight:800; font-size:1.15rem; margin:0 0 10px; line-height:1.3; }
+  .card p.hook{ font-size:14px; color:var(--ink-soft); margin:0 0 16px; line-height:1.55; }
+  .card-bottom{ display:flex; justify-content:space-between; align-items:center; }
+  .tags{ display:flex; gap:6px; flex-wrap:wrap; }
+  .tag-pill{ font-family:var(--mono); font-size:10px; color:var(--muted); border:1px solid var(--line); padding:3px 9px; border-radius:12px; }
+  .verified{ font-family:var(--mono); font-size:10.5px; color:var(--green); display:flex; align-items:center; gap:4px; }
+
+  .empty{ text-align:center; padding:80px 20px; color:var(--muted); grid-column:1/-1; }
+  .empty .glyph{ font-family:var(--display); font-weight:800; color:var(--green); margin-bottom:10px; font-size:1.2rem; }
+  .empty p{ max-width:380px; margin:0 auto; font-size:14.5px; }
+
+  footer{ border-top:1px solid var(--line); padding:40px 24px; text-align:center; }
+  footer p{ font-size:13.5px; color:var(--muted); max-width:460px; margin:0 auto 14px; }
+  footer a.home{ font-family:var(--mono); font-size:12px; color:var(--green); text-decoration:none; border-bottom:1px solid var(--green); padding-bottom:2px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="mark" href="https://iggym.github.io/everyday-ai-done-right/"><span class="dot"></span>everyday-ai-done-right</a>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+    <span id="themeIcon">◐</span><span id="themeLabel">Auto</span>
+  </button>
+</div>
+
+<header class="hero">
+  <div class="eyebrow"><span class="dot"></span>Verified. No credit card. Ever.</div>
+  <h1>Real AI leverage.<br><span class="accent">Actually free.</span></h1>
+  <p class="tagline">A directory of the highest-leverage things you can do with AI tools that cost genuinely nothing — checked against real provider docs, not vibes.</p>
+  <p class="desc" id="site-desc">Anyone, anywhere. No paid API keys, no card on file, no "free trial" that quietly converts.</p>
+
+  <div class="cost-widget" aria-hidden="true">
+    <div class="label">What this replaces</div>
+    <div class="cost-row"><span class="item-label">Tutoring app subscription</span><span class="cost-old">$29/mo</span></div>
+    <div class="cost-row"><span class="item-label">Resume review service</span><span class="cost-old">$79</span></div>
+    <div class="cost-row"><span class="item-label">Budgeting app premium</span><span class="cost-old">$12/mo</span></div>
+    <div class="cost-total">
+      <span class="total-label">What you pay here</span>
+      <span class="cost-new">$0</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="search" type="text" placeholder="Search guides, tools, tags…">
+    </div>
+    <div class="filters" id="filters"></div>
+  </div>
+
+  <div class="result-count" id="feed-count">loading…</div>
+  <div class="grid-feed" id="feed"></div>
+</main>
+
+<footer>
+  <p id="footer-desc">Everyday AI, Done Right — every guide is verified against the provider's own current pricing before it's published, and re-checked over time.</p>
+  <a class="home" href="https://iggym.github.io/everyday-ai-done-right/">Back to top ↑</a>
+</footer>
+
+<script>
+(function(){
+  // Theme: auto (system) / light / dark, cycling on click, persisted
+  const root = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+  const icon = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  const stored = localStorage.getItem('eadr-theme');
+  function applyTheme(mode){
+    if(mode === 'auto'){ root.removeAttribute('data-theme'); icon.textContent='◐'; label.textContent='Auto'; }
+    else { root.setAttribute('data-theme', mode); icon.textContent = mode === 'dark' ? '●' : '○'; label.textContent = mode === 'dark' ? 'Dark' : 'Light'; }
+  }
+  let current = stored || 'auto';
+  applyTheme(current);
+  toggle.addEventListener('click', () => {
+    current = current === 'auto' ? 'light' : current === 'light' ? 'dark' : 'auto';
+    localStorage.setItem('eadr-theme', current);
+    applyTheme(current);
+  });
+})();
+
+(async function(){
+  const feedEl = document.getElementById('feed');
+  const countEl = document.getElementById('feed-count');
+  const filtersEl = document.getElementById('filters');
+  const searchEl = document.getElementById('search');
+  const descEl = document.getElementById('site-desc');
+  const footerDescEl = document.getElementById('footer-desc');
+
+  let activeCategory = null;
+
+  function fmtDate(iso){
+    try{ return new Date(iso+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+    catch(e){ return iso; }
+  }
+
+  function cardHTML(a, idx, isPinned){
+    const tags = (a.tags||[]).map(t=>`<span class="tag-pill">${t}</span>`).join('');
+    return `
+      <a class="card ${isPinned?'pinned':''}" href="${a.path}" style="animation-delay:${Math.min(idx*0.04,0.4)}s"
+         data-category="${a.category||''}" data-search="${(a.title+' '+(a.hook||'')+' '+(a.tool||'')+' '+(a.tags||[]).join(' ')).toLowerCase()}">
+        <div class="card-top">
+          <span class="tool-badge">${a.tool || 'Free tool'}</span>
+          <span class="reading-time">${a.reading_time_minutes || '—'} min</span>
+        </div>
+        <h2>${a.title}</h2>
+        <p class="hook">${a.hook || ''}</p>
+        <div class="card-bottom">
+          <div class="tags">${tags}</div>
+          ${a.verified ? `<span class="verified">✓ verified ${fmtDate(a.verified)}</span>` : ''}
+        </div>
+      </a>`;
+  }
+
+  function applyFilters(){
+    const q = searchEl.value.trim().toLowerCase();
+    let visible = 0;
+    document.querySelectorAll('.card').forEach(card=>{
+      const matchesCategory = !activeCategory || card.dataset.category === activeCategory;
+      const matchesSearch = !q || card.dataset.search.includes(q);
+      const show = matchesCategory && matchesSearch;
+      card.classList.toggle('hidden', !show);
+      if(show) visible++;
+    });
+    countEl.textContent = visible + (visible === 1 ? ' guide' : ' guides');
+  }
+
+  function renderFilters(articles){
+    const cats = [...new Set(articles.map(a => a.category).filter(Boolean))];
+    if(cats.length === 0){ filtersEl.innerHTML=''; return; }
+    let html = `<span class="chip active" data-cat="">All</span>`;
+    cats.forEach(c => { html += `<span class="chip" data-cat="${c}">${c.charAt(0).toUpperCase()+c.slice(1)}</span>`; });
+    filtersEl.innerHTML = html;
+    filtersEl.querySelectorAll('.chip').forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        filtersEl.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+        chip.classList.add('active');
+        activeCategory = chip.dataset.cat || null;
+        applyFilters();
+      });
+    });
+  }
+
+  function render(published, site){
+    if(site && site.description){ descEl.textContent = site.description; footerDescEl.textContent = site.description; }
+    if(published.length === 0){
+      feedEl.innerHTML = '<div class="empty"><div class="glyph">No guides published yet.</div><p>The first verified, zero-cost workflow is being researched right now. Check back soon — or if you\'re the maintainer, run the content pipeline to add one.</p></div>';
+      countEl.textContent = '0 guides';
+      return;
+    }
+    const pinned = published.filter(a=>a.pinned);
+    const rest = published.filter(a=>!a.pinned).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    let html = '';
+    pinned.forEach((a,i)=>{ html += cardHTML(a,i,true); });
+    rest.forEach((a,i)=>{ html += cardHTML(a,i+pinned.length,false); });
+    feedEl.innerHTML = html;
+    renderFilters(published);
+    applyFilters();
+  }
+
+  searchEl.addEventListener('input', applyFilters);
+
+  try{
+    const res = await fetch('./metadata.json');
+    if(!res.ok) throw new Error('metadata.json not found');
+    const data = await res.json();
+    render((data.articles || []).filter(a => a.status === 'published'), data.site);
+  }catch(err){
+    feedEl.innerHTML = '<div class="empty"><div class="glyph">No guides published yet.</div><p>The first verified, zero-cost workflow is being researched right now. Check back soon.</p></div>';
+    countEl.textContent = '0 guides';
+  }
+})();
+</script>
+</body>
+</html>
