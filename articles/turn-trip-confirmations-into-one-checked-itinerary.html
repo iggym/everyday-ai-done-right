@@ -1,0 +1,985 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-theme-mode="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Turn redacted booking confirmations into one source-tagged itinerary with OpenRouter's no-card free plan, capped at 50 requests per UTC day.">
+  <meta name="theme-color" content="#FAFAF9">
+  <meta property="og:title" content="Turn Trip Confirmations Into One Checked Itinerary">
+  <meta property="og:description" content="Build a source-tagged trip timeline for $0, then verify the few details that can derail a journey.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://iggym.github.io/everyday-ai-done-right/articles/turn-trip-confirmations-into-one-checked-itinerary.html">
+  <link rel="canonical" href="https://iggym.github.io/everyday-ai-done-right/articles/turn-trip-confirmations-into-one-checked-itinerary.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <title>Turn Trip Confirmations Into One Checked Itinerary</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #FAFAF9;
+      --paper-2: #F4F4F1;
+      --ink: #1C1C1E;
+      --muted: #68686D;
+      --green: #0F8A5F;
+      --green-soft: #E3F3EC;
+      --coral: #FF6B4A;
+      --coral-soft: #FFF0EC;
+      --line: rgba(28, 28, 30, .12);
+      --panel: #FFFFFF;
+      --shadow: 0 18px 45px rgba(28, 28, 30, .08), 0 2px 8px rgba(28, 28, 30, .05);
+      --shadow-small: 0 8px 22px rgba(28, 28, 30, .07);
+      --radius: 16px;
+      --max: 1120px;
+      --display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+      --body: "Inter", ui-sans-serif, system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --paper: #141414;
+      --paper-2: #1B1B1B;
+      --ink: #F4F4F3;
+      --muted: #AEAEAE;
+      --green: #22C58B;
+      --green-soft: #16372C;
+      --coral: #FF8064;
+      --coral-soft: #3B211B;
+      --line: rgba(244, 244, 243, .14);
+      --panel: #1F1F1F;
+      --shadow: 0 20px 55px rgba(0, 0, 0, .35), 0 2px 8px rgba(0, 0, 0, .28);
+      --shadow-small: 0 8px 22px rgba(0, 0, 0, .26);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 6%, color-mix(in srgb, var(--green) 10%, transparent), transparent 25rem),
+        var(--paper);
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: 1rem;
+      line-height: 1.65;
+      text-rendering: optimizeLegibility;
+    }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: var(--green); text-underline-offset: .2em; }
+    a:hover { text-decoration-thickness: 2px; }
+    img, svg { display: block; max-width: 100%; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+    .shell { width: min(calc(100% - 32px), var(--max)); margin-inline: auto; }
+
+    .topbar {
+      position: sticky;
+      z-index: 50;
+      top: 0;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--paper) 94%, transparent);
+    }
+    .topbar-inner {
+      min-height: 64px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+    .home-link {
+      color: var(--ink);
+      text-decoration: none;
+      font-family: var(--display);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      justify-self: start;
+    }
+    .home-link span { color: var(--green); }
+    .top-category, .read-time {
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .top-actions { justify-self: end; display: flex; align-items: center; gap: 12px; }
+    .theme-toggle {
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: var(--panel);
+      min-height: 40px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-small);
+      font-family: var(--mono);
+      font-size: .72rem;
+    }
+    .theme-toggle:hover { border-color: var(--green); }
+    .theme-symbol { font-size: 1rem; line-height: 1; }
+
+    .hero { padding: clamp(68px, 10vw, 128px) 0 54px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(280px, .7fr);
+      gap: clamp(32px, 7vw, 84px);
+      align-items: end;
+    }
+    .eyebrow, .badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .045em;
+      line-height: 1;
+    }
+    .eyebrow { color: var(--green); margin: 0 0 18px; text-transform: uppercase; }
+    h1, h2, h3 { font-family: var(--display); text-wrap: balance; }
+    h1 {
+      max-width: 850px;
+      font-size: clamp(2.7rem, 7.2vw, 6.4rem);
+      line-height: .98;
+      letter-spacing: -.065em;
+      margin: 0;
+    }
+    .pitch {
+      margin: 28px 0 0;
+      max-width: 800px;
+      font-size: clamp(1.08rem, 2vw, 1.32rem);
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .badge { padding: 10px 12px; border: 1px solid var(--line); background: var(--panel); }
+    .badge.tool { color: var(--green); background: var(--green-soft); border-color: transparent; }
+    .badge.verified::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 8px;
+    }
+    .hero-note {
+      border-left: 3px solid var(--green);
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    .hero-note strong { display: block; color: var(--ink); margin-bottom: 5px; }
+
+    .share-bar { margin-top: 28px; }
+    .share-label {
+      display: block;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .share-row { display: flex; gap: 9px; flex-wrap: wrap; }
+    .share-link {
+      width: 40px; height: 40px; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+      display: inline-grid; place-items: center; cursor: pointer; text-decoration: none;
+      box-shadow: var(--shadow-small); transition: transform .18s ease, border-color .18s ease, color .18s ease;
+    }
+    .share-link:hover { transform: translateY(-2px); border-color: var(--green); color: var(--green); }
+    .share-link svg { width: 17px; height: 17px; }
+    .share-link text { fill: currentColor; font: 700 13px var(--body); }
+    .share-status { align-self: center; color: var(--green); font-size: .78rem; min-width: 54px; }
+
+    main { padding-bottom: 88px; }
+    .section { padding: 72px 0 0; }
+    .section-kicker {
+      margin: 0 0 10px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    h2 {
+      font-size: clamp(2rem, 4.8vw, 3.75rem);
+      line-height: 1.06;
+      letter-spacing: -.05em;
+      margin: 0 0 20px;
+    }
+    h3 { font-size: 1.24rem; letter-spacing: -.025em; line-height: 1.25; }
+    .section-intro { max-width: 740px; color: var(--muted); font-size: 1.06rem; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .replace-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      margin-top: 28px;
+    }
+    .replace-card { padding: 24px; }
+    .replace-card .price-note { color: var(--muted); font-size: .9rem; }
+    .replace-card strong { font-family: var(--display); font-size: 1.16rem; }
+
+    .cost-widget { margin-top: 26px; padding: clamp(24px, 5vw, 44px); overflow: hidden; }
+    .widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: center; }
+    .cost-stage { min-height: 155px; display: flex; align-items: center; justify-content: center; gap: 22px; }
+    .paid-price, .free-price { position: relative; font-family: var(--display); font-weight: 800; letter-spacing: -.06em; }
+    .paid-price { color: var(--muted); font-size: clamp(2rem, 6vw, 4.4rem); }
+    .paid-price::after {
+      content: ""; position: absolute; left: -4%; top: 52%; height: 5px; width: 0;
+      border-radius: 10px; background: var(--coral); transform: rotate(-7deg); transform-origin: left;
+    }
+    .free-price { color: var(--green); font-size: clamp(3.2rem, 9vw, 7rem); opacity: 0; transform: translateY(14px) scale(.85); }
+    .cost-widget.is-visible .paid-price::after { animation: strike .68s .12s cubic-bezier(.2,.7,.2,1) forwards; }
+    .cost-widget.is-visible .free-price { animation: pop .52s .66s cubic-bezier(.2,.8,.2,1.2) forwards; }
+    @keyframes strike { to { width: 108%; } }
+    @keyframes pop { to { opacity: 1; transform: none; } }
+    .widget-controls { display: grid; gap: 14px; }
+    .segmented { display: flex; flex-wrap: wrap; gap: 8px; }
+    .choice, .preset {
+      border: 1px solid var(--line); background: var(--paper-2); color: var(--ink); border-radius: 999px;
+      padding: 9px 12px; cursor: pointer; font-size: .86rem;
+    }
+    .choice[aria-pressed="true"], .preset[aria-pressed="true"] { color: var(--paper); background: var(--green); border-color: var(--green); }
+    .field-label { font-weight: 700; display: block; margin-bottom: 6px; }
+    .field-help { color: var(--muted); font-size: .84rem; margin: 4px 0 0; }
+    input[type="number"] {
+      width: 100%; min-height: 48px; padding: 10px 13px;
+      border-radius: 12px; border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+    }
+    input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid color-mix(in srgb, var(--green) 35%, transparent); outline-offset: 3px; }
+    .savings-line { margin: 3px 0 0; color: var(--green); font-weight: 700; }
+    .source-line { margin: 16px 0 0; color: var(--muted); font-size: .78rem; }
+
+    .quota-widget { margin-top: 34px; padding: clamp(24px, 5vw, 40px); }
+    .quota-layout { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 30px; }
+    .quota-meter { margin-top: 16px; height: 10px; background: var(--paper-2); border-radius: 999px; overflow: hidden; }
+    .quota-fill { height: 100%; width: 0; background: var(--green); border-radius: inherit; transition: width .5s ease, background-color .2s ease; }
+    .quota-result {
+      min-height: 174px; padding: 22px; border-radius: 14px; background: var(--green-soft); border: 1px solid color-mix(in srgb, var(--green) 25%, transparent);
+    }
+    .quota-result.over { background: var(--coral-soft); border-color: color-mix(in srgb, var(--coral) 35%, transparent); }
+    .quota-result h3 { margin: 0 0 8px; }
+    .quota-result p { margin: 0 0 10px; }
+    .quota-result .reset { font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+    .quota-result.flash { animation: result-in .35s ease both; }
+    @keyframes result-in { from { opacity: .4; transform: translateY(5px); } }
+
+    .stepper { margin-top: 34px; overflow: hidden; }
+    .stepper-head { padding: 22px 24px 0; }
+    .progress-meta { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 12px; }
+    .step-count { font-family: var(--mono); font-size: .75rem; color: var(--muted); }
+    .progress-track { height: 6px; border-radius: 999px; background: var(--paper-2); overflow: hidden; }
+    .progress-bar { height: 100%; width: 16.66%; background: var(--green); transition: width .35s ease; }
+    .step-tabs {
+      display: grid; grid-template-columns: repeat(6, minmax(80px, 1fr)); gap: 8px;
+      padding: 20px 24px; overflow-x: auto;
+    }
+    .step-tab {
+      min-width: 92px; border: 1px solid var(--line); background: var(--paper-2); color: var(--muted);
+      border-radius: 12px; padding: 12px 10px; cursor: pointer; text-align: left;
+    }
+    .step-tab span { display: block; font-family: var(--mono); font-size: .68rem; margin-bottom: 4px; }
+    .step-tab strong { color: inherit; font-size: .82rem; }
+    .step-tab[aria-selected="true"] { border-color: var(--green); background: var(--green-soft); color: var(--green); }
+    .step-panels { border-top: 1px solid var(--line); }
+    .step-panel { padding: clamp(25px, 6vw, 52px); min-height: 430px; }
+    .step-panel.is-entering { animation: panel-in .36s ease both; }
+    @keyframes panel-in { from { opacity: 0; transform: translateX(12px); } }
+    .step-number { font-family: var(--mono); color: var(--green); font-size: .75rem; }
+    .step-panel h3 { font-size: clamp(1.55rem, 3vw, 2.25rem); margin: 6px 0 14px; }
+    .step-panel > p, .step-panel > ul { max-width: 780px; }
+    .checklist { padding-left: 1.2em; }
+    .checklist li + li { margin-top: 7px; }
+    .prompt-wrap { margin-top: 22px; border-radius: 14px; background: #111814; color: #EAF7F1; overflow: hidden; }
+    .prompt-head { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 11px 13px; border-bottom: 1px solid rgba(255,255,255,.13); }
+    .prompt-label { font-family: var(--mono); font-size: .7rem; color: #91D5B8; text-transform: uppercase; letter-spacing: .07em; }
+    .copy-button {
+      border: 1px solid rgba(255,255,255,.23); background: rgba(255,255,255,.08); color: #fff;
+      border-radius: 999px; padding: 7px 11px; cursor: pointer; font-family: var(--mono); font-size: .7rem;
+    }
+    pre { margin: 0; padding: 18px; overflow: auto; white-space: pre-wrap; word-break: break-word; font: 500 .8rem/1.62 var(--mono); }
+    .step-nav { display: flex; justify-content: space-between; gap: 12px; padding: 0 24px 24px; }
+    .nav-button {
+      border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; background: var(--paper-2); color: var(--ink); cursor: pointer;
+    }
+    .nav-button.primary { background: var(--green); color: var(--paper); border-color: var(--green); }
+    .nav-button:disabled { opacity: .35; cursor: not-allowed; }
+
+    .breaks {
+      margin-top: 28px; padding: clamp(26px, 5vw, 42px);
+      border: 1px solid color-mix(in srgb, var(--coral) 42%, transparent);
+      border-left: 6px solid var(--coral); border-radius: var(--radius); background: var(--coral-soft);
+    }
+    .breaks-label { color: var(--coral); font-family: var(--mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; }
+    .breaks h2 { font-size: clamp(1.8rem, 4vw, 3rem); margin-top: 8px; }
+    .breaks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 28px; }
+    .breaks-grid p { margin: 0; }
+
+    .things-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+    .thing { min-height: 250px; padding: 22px; position: relative; overflow: hidden; }
+    .thing-index { font-family: var(--mono); font-size: .72rem; color: var(--green); }
+    .thing h3 { margin: 14px 0 10px; }
+    .thing-answer { color: var(--muted); opacity: 0; transform: translateY(7px); max-height: 0; overflow: hidden; }
+    .thing.revealed .thing-answer { opacity: 1; transform: none; max-height: 300px; transition: opacity .35s ease, transform .35s ease, max-height .4s ease; }
+    .reveal-button {
+      margin-top: 14px; border: 1px solid var(--green); color: var(--green); background: transparent;
+      border-radius: 999px; padding: 8px 12px; cursor: pointer; font-family: var(--mono); font-size: .72rem;
+    }
+    .thing.revealed .reveal-button { background: var(--green-soft); }
+
+    .try-card { margin-top: 28px; padding: clamp(26px, 5vw, 44px); display: grid; grid-template-columns: 1fr auto; gap: 25px; align-items: center; }
+    .try-card h2 { font-size: clamp(1.75rem, 4vw, 3rem); margin-bottom: 10px; }
+    .try-card p { margin: 0; color: var(--muted); max-width: 680px; }
+    .try-link {
+      display: inline-flex; min-height: 48px; align-items: center; justify-content: center;
+      border-radius: 999px; padding: 11px 18px; background: var(--green); color: var(--paper); text-decoration: none; font-weight: 700;
+    }
+
+    .sources { margin-top: 52px; border-top: 1px solid var(--line); padding-top: 30px; }
+    .sources h2 { font-size: 1.35rem; letter-spacing: -.02em; }
+    .sources ol { padding-left: 1.3rem; color: var(--muted); font-size: .88rem; }
+    .sources li + li { margin-top: 8px; }
+
+    footer { border-top: 1px solid var(--line); padding: 34px 0 48px; color: var(--muted); font-size: .88rem; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr .8fr; gap: 30px; }
+    .footer-links { display: flex; justify-content: flex-end; gap: 18px; flex-wrap: wrap; }
+    .tier-line { color: var(--ink); font-weight: 700; }
+
+    .reveal-on-scroll { opacity: 0; transform: translateY(18px); }
+    .reveal-on-scroll.in-view { animation: scroll-in .55s ease forwards; }
+    @keyframes scroll-in { to { opacity: 1; transform: none; } }
+
+    @media (max-width: 800px) {
+      .topbar-inner { grid-template-columns: auto 1fr auto; }
+      .top-category { display: none; }
+      .read-time { display: none; }
+      .hero-grid, .widget-grid, .quota-layout, .footer-grid { grid-template-columns: 1fr; }
+      .hero-note { max-width: 580px; }
+      .replace-grid, .breaks-grid { grid-template-columns: 1fr; }
+      .things-grid { grid-template-columns: 1fr; }
+      .thing { min-height: 0; }
+      .try-card { grid-template-columns: 1fr; }
+      .try-link { justify-self: start; }
+      .footer-links { justify-content: flex-start; }
+    }
+    @media (max-width: 520px) {
+      .shell { width: min(calc(100% - 22px), var(--max)); }
+      .home-link { font-size: .9rem; }
+      .theme-toggle { width: 40px; padding: 0; justify-content: center; }
+      .theme-text { display: none; }
+      .hero { padding-top: 48px; }
+      .cost-stage { flex-direction: column; gap: 0; }
+      .step-tabs { padding-inline: 15px; }
+      .stepper-head { padding-inline: 16px; }
+      .step-panel { min-height: 500px; }
+      .step-nav { padding-inline: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0ms !important; transition-duration: .001ms !important; }
+      .reveal-on-scroll { opacity: 1; transform: none; }
+      .paid-price::after { width: 108%; }
+      .free-price { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="home-link" href="https://iggym.github.io/everyday-ai-done-right/" aria-label="Everyday AI Done Right home">everyday ai<span>.</span></a>
+      <span class="top-category">Travel &amp; logistics</span>
+      <div class="top-actions">
+        <span class="read-time">7 min read</span>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Theme: auto" title="Change color theme">
+          <span class="theme-symbol" aria-hidden="true">◐</span><span class="theme-text">Auto</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Travel &amp; logistics · practical workflow</p>
+          <h1 id="page-title">Turn Trip Confirmations Into One Checked Itinerary</h1>
+          <p class="pitch">OpenRouter’s Free Models Router turns pasted, redacted booking details into a source-tagged timeline and conflict checklist. It is free forever with no card, but the free plan is capped at 50 requests per UTC day and 20 per minute; the responding model can change from one request to the next.</p>
+          <div class="hero-badges" aria-label="Guide details">
+            <span class="badge tool">OpenRouter · Free Models Router</span>
+            <span class="badge verified">Verified July 18, 2026</span>
+            <span class="badge">T0 · no card</span>
+          </div>
+          <div class="share-bar" data-share-text="Turn redacted trip confirmations into one source-tagged itinerary for $0—50 free requests per UTC day, no card." aria-label="Share this guide">
+            <span class="share-label">Share this guide</span>
+            <div class="share-row"></div>
+          </div>
+        </div>
+        <aside class="hero-note">
+          <strong>Use it as a compiler, not a booking oracle.</strong>
+          Give it your own source text, then confirm time zones, airport or station codes, cancellation deadlines, and live status on official sites.
+        </aside>
+      </div>
+    </section>
+
+    <main>
+      <section class="section" aria-labelledby="replace-title">
+        <p class="section-kicker">What this replaces</p>
+        <h2 id="replace-title">The organizing part of a paid trip app</h2>
+        <p class="section-intro">This workflow substitutes for the reservation-parsing and timeline-building part of a subscription app. It does not replace live gate alerts, maps, supplier support, or a human agent. TripIt Pro lists $49 per year; Wanderlog’s own pricing material lists Pro from $39.99 per year, with prices varying by channel and promotion.</p>
+        <div class="replace-grid">
+          <article class="panel replace-card">
+            <strong>Wanderlog Pro</strong>
+            <p class="price-note">From $39.99/year. Includes a broader trip-planning app; this guide compares only the organizing job.</p>
+          </article>
+          <article class="panel replace-card">
+            <strong>TripIt Pro</strong>
+            <p class="price-note">$49/year. Includes live travel-day features that a pasted-text AI workflow does not provide.</p>
+          </article>
+        </div>
+
+        <div class="panel cost-widget reveal-on-scroll" id="costWidget" aria-labelledby="cost-title">
+          <div class="widget-grid">
+            <div>
+              <p class="section-kicker">Cost comparison</p>
+              <h3 id="cost-title">Price of the organizing workflow</h3>
+              <div class="cost-stage" aria-live="polite">
+                <span class="paid-price" id="paidPrice">$39.99</span>
+                <span class="free-price">$0</span>
+              </div>
+            </div>
+            <div class="widget-controls">
+              <div>
+                <span class="field-label">Compare against</span>
+                <div class="segmented" role="group" aria-label="Paid alternative">
+                  <button class="choice" type="button" aria-pressed="true" data-name="Wanderlog Pro" data-cost="39.99">Wanderlog · from $39.99/yr</button>
+                  <button class="choice" type="button" aria-pressed="false" data-name="TripIt Pro" data-cost="49">TripIt · $49/yr</button>
+                </div>
+              </div>
+              <label>
+                <span class="field-label">Years you would keep it</span>
+                <input id="yearsInput" type="number" inputmode="numeric" min="1" max="10" value="1">
+              </label>
+              <p class="savings-line" id="savingsLine">One-year difference: $39.99.</p>
+              <p class="field-help">This is a subscription comparison, not a claim that the workflow copies every paid feature.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="quota-title">
+        <p class="section-kicker">Free-limit check</p>
+        <h2 id="quota-title">Will 50 requests cover your trip?</h2>
+        <p class="section-intro">Each message sent to a free model counts as a request. Put all redacted confirmations into one source pack, and ask for corrections in one batch instead of spending a request on every small edit.</p>
+        <div class="panel quota-widget reveal-on-scroll">
+          <div class="quota-layout">
+            <div>
+              <label for="usageInput" class="field-label">Expected free-model requests per day</label>
+              <input id="usageInput" type="number" inputmode="numeric" min="0" max="5000" value="5">
+              <div class="segmented" role="group" aria-label="Usage presets" style="margin-top:12px">
+                <button class="preset" type="button" data-usage="5" aria-pressed="true">5</button>
+                <button class="preset" type="button" data-usage="15" aria-pressed="false">15</button>
+                <button class="preset" type="button" data-usage="50" aria-pressed="false">50</button>
+                <button class="preset" type="button" data-usage="75" aria-pressed="false">75</button>
+              </div>
+              <div class="quota-meter" aria-hidden="true"><div class="quota-fill" id="quotaFill"></div></div>
+              <p class="field-help">There is also a 20-request-per-minute cap.</p>
+            </div>
+            <div class="quota-result" id="quotaResult" aria-live="polite"></div>
+          </div>
+          <p class="source-line">Quota source: <a href="https://openrouter.ai/docs/api_reference/limits">OpenRouter limits documentation</a> (verified July 18, 2026). The docs measure daily use by the current UTC day, so the daily window restarts at 00:00 UTC.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="walkthrough-title">
+        <p class="section-kicker">Numbered walkthrough</p>
+        <h2 id="walkthrough-title">Build the itinerary, then check it</h2>
+        <p class="section-intro">The first pass extracts. The second pass audits. Only after those passes do you add dated information from an official source.</p>
+
+        <div class="panel stepper reveal-on-scroll" id="stepper">
+          <div class="stepper-head">
+            <div class="progress-meta">
+              <span class="step-count" id="stepCount">Step 1 of 6</span>
+              <span class="step-count" id="stepName">Prepare</span>
+            </div>
+            <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+          </div>
+          <div class="step-tabs" role="tablist" aria-label="Walkthrough steps">
+            <button class="step-tab" id="tab-1" role="tab" type="button" aria-selected="true" aria-controls="panel-1" data-step="0"><span>01</span><strong>Prepare</strong></button>
+            <button class="step-tab" id="tab-2" role="tab" type="button" aria-selected="false" aria-controls="panel-2" tabindex="-1" data-step="1"><span>02</span><strong>Open</strong></button>
+            <button class="step-tab" id="tab-3" role="tab" type="button" aria-selected="false" aria-controls="panel-3" tabindex="-1" data-step="2"><span>03</span><strong>Compile</strong></button>
+            <button class="step-tab" id="tab-4" role="tab" type="button" aria-selected="false" aria-controls="panel-4" tabindex="-1" data-step="3"><span>04</span><strong>Audit</strong></button>
+            <button class="step-tab" id="tab-5" role="tab" type="button" aria-selected="false" aria-controls="panel-5" tabindex="-1" data-step="4"><span>05</span><strong>Update</strong></button>
+            <button class="step-tab" id="tab-6" role="tab" type="button" aria-selected="false" aria-controls="panel-6" tabindex="-1" data-step="5"><span>06</span><strong>Save</strong></button>
+          </div>
+          <div class="step-panels">
+            <section class="step-panel" id="panel-1" role="tabpanel" aria-labelledby="tab-1">
+              <span class="step-number">Step 01</span>
+              <h3>Make one redacted source pack</h3>
+              <p>Copy the useful text from each flight, rail, hotel, rental, or event confirmation into a note. Label each block <strong>Source A</strong>, <strong>Source B</strong>, and so on. Remove passport numbers, payment details, loyalty numbers, booking links with private tokens, and confirmation codes. Keep dates, printed local times, time-zone labels, supplier names, station or airport codes, addresses, baggage rules, and cancellation deadlines.</p>
+              <p>Do not upload a whole inbox. A smaller source pack is easier to audit and gives a rotating free model fewer chances to mix unrelated details.</p>
+            </section>
+
+            <section class="step-panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden>
+              <span class="step-number">Step 02</span>
+              <h3>Select the no-cost router</h3>
+              <p>Create an OpenRouter account; the free plan does not require a payment method. Open <a href="https://openrouter.ai/chat">openrouter.ai/chat</a>, choose <strong>Add Model</strong>, search for “free,” and select <strong>Free Models Router</strong>. Check the picker before sending: a similarly named paid model is not the same route.</p>
+              <p>After each answer, note the model name shown by the chat. The router selects from available free models, so a later request may use a different model and phrase the output differently.</p>
+            </section>
+
+            <section class="step-panel" id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden>
+              <span class="step-number">Step 03</span>
+              <h3>Compile facts without adding travel claims</h3>
+              <p>Paste this prompt, then replace the bracketed area with the redacted source pack. It forces a distinction between text that appeared in a confirmation and details the model cannot find.</p>
+              <div class="prompt-wrap">
+                <div class="prompt-head"><span class="prompt-label">Itinerary compiler prompt</span><button class="copy-button" type="button" data-copy-target="prompt-compile">Copy</button></div>
+                <pre id="prompt-compile">Act as an itinerary compiler, not a travel search engine.
+
+RULES
+- Use only the source blocks I provide.
+- Do not invent or complete missing facts.
+- Preserve each date, local time, time-zone label, airport/station code, address, and deadline exactly as printed.
+- Tag every factual row [CONFIRMED FROM INPUT], [MISSING], or [CONFLICT].
+- If two sources disagree, quote both values and their source labels.
+
+OUTPUT
+1. A source ledger table: item; date; local start/end time; time zone as printed; location/code; supplier; deadline or check-in rule; source label; status.
+2. One chronological itinerary grouped by local calendar date.
+3. A conflicts and tight-connections list.
+4. A verification checklist limited to details that could cause lost money, missed transport, or denied entry.
+5. A short list of facts you deliberately did not assume.
+
+SOURCE PACK
+[Paste redacted blocks labeled Source A, Source B, Source C...]</pre>
+              </div>
+            </section>
+
+            <section class="step-panel" id="panel-4" role="tabpanel" aria-labelledby="tab-4" hidden>
+              <span class="step-number">Step 04</span>
+              <h3>Run a separate mismatch audit</h3>
+              <p>A polished timeline can hide a copied AM/PM error or a time-zone jump. Keep the source pack in the conversation and ask for an audit that returns only mismatches plus a corrected timeline. One bundled audit spends one request.</p>
+              <div class="prompt-wrap">
+                <div class="prompt-head"><span class="prompt-label">Mismatch audit prompt</span><button class="copy-button" type="button" data-copy-target="prompt-audit">Copy</button></div>
+                <pre id="prompt-audit">Audit your previous itinerary strictly against my labeled source blocks.
+
+Check, in this order: calendar date; AM/PM; local time; printed time-zone label; airport or station code; terminal; address; cancellation deadline; check-in window; baggage rule; connection duration.
+
+Return only:
+A. A mismatch table with Previous value | Source value | Source label | Correction.
+B. The corrected itinerary.
+C. Items still marked [MISSING] or [CONFLICT].
+
+Do not add web facts, estimates, transit times, entry rules, opening hours, or recommendations.</pre>
+              </div>
+            </section>
+
+            <section class="step-panel" id="panel-5" role="tabpanel" aria-labelledby="tab-5" hidden>
+              <span class="step-number">Step 05</span>
+              <h3>Add dated official facts as a new layer</h3>
+              <p>Open the airline, rail operator, hotel, border authority, or relevant government advisory yourself. Paste a short excerpt with its URL and the time you checked it. This is safer than asking the model to remember a schedule or entry rule. OpenRouter’s web-search plug-in can add cost even when the selected model is free, so it is not part of this $0 workflow.</p>
+              <div class="prompt-wrap">
+                <div class="prompt-head"><span class="prompt-label">Official update prompt</span><button class="copy-button" type="button" data-copy-target="prompt-update">Copy</button></div>
+                <pre id="prompt-update">OFFICIAL UPDATE
+Source organization: [name]
+Source URL: [URL]
+Checked at: [date, time, time zone]
+Applies to: [flight/train/hotel/destination]
+Exact excerpt: [paste only the relevant official text]
+
+Compare this update with the checked itinerary. Return:
+1. Changed or conflicting items only.
+2. The exact itinerary rows that need revision.
+3. Actions I must take, each linked to the supplied source URL.
+
+Treat the excerpt as dated information. Do not extend it to claims the excerpt does not make.</pre>
+              </div>
+            </section>
+
+            <section class="step-panel" id="panel-6" role="tabpanel" aria-labelledby="tab-6" hidden>
+              <span class="step-number">Step 06</span>
+              <h3>Export a trip sheet that works offline</h3>
+              <p>Copy the checked itinerary into a document and print it to PDF. Put the last-checked time beside every live item. Save the PDF locally, share it with a travel companion, and keep official supplier apps for status changes.</p>
+              <ul class="checklist">
+                <li>Download your destination in an offline map before departure. Organic Maps is a free, open-source option on iOS and Android; its map data can still be incomplete.</li>
+                <li>Save the hotel address and first transfer in plain text, not only behind a login.</li>
+                <li>Set calendar alerts for check-in and cancellation deadlines after comparing each one with the original confirmation.</li>
+                <li>Recheck the official itinerary and relevant advisory on departure day.</li>
+              </ul>
+            </section>
+          </div>
+          <div class="step-nav">
+            <button class="nav-button" id="prevStep" type="button" disabled>Previous</button>
+            <button class="nav-button primary" id="nextStep" type="button">Next step</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="breaks-title">
+        <div class="breaks reveal-on-scroll">
+          <span class="breaks-label">Read before relying on it</span>
+          <h2 id="breaks-title">What breaks</h2>
+          <div class="breaks-grid">
+            <p><strong>The cap:</strong> request 51 in the current UTC day can return HTTP 429. The daily window restarts at 00:00 UTC; upstream free capacity may fail earlier. Wait, retry later, or choose a paid route deliberately.</p>
+            <p><strong>The tier boundary:</strong> T0 means no trial clock, no card, and no automatic overage on the free plan. Buying at least $10 in credits raises the free-model daily cap to 1,000, but that is a paid choice, not part of this guide.</p>
+            <p><strong>The model:</strong> the Free Models Router can pick a different model per request. Output quality, latency, context handling, and availability vary. Keep the source ledger so a weaker answer is obvious.</p>
+            <p><strong>The facts and privacy:</strong> a language model can miscopy or fabricate. Never use it as the final authority for live status, visas, safety, or entry. OpenRouter does not retain prompt text by default, but upstream provider policies vary; redact sensitive travel data and review privacy settings.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="things-title">
+        <p class="section-kicker">Three things</p>
+        <h2 id="things-title">Details that make the method safer</h2>
+        <p class="section-intro">Reveal each point. These came from the quota, routing, privacy, and travel-source checks behind this guide.</p>
+        <div class="things-grid">
+          <article class="panel thing">
+            <span class="thing-index">01 · routing</span>
+            <h3>Record the model name</h3>
+            <button class="reveal-button" type="button" aria-expanded="false">Reveal</button>
+            <div class="thing-answer"><p>The free router selects from changing capacity and shows which model answered. Record that name beside the export; if a revision suddenly changes style or misses fields, you know the responder may have changed.</p></div>
+          </article>
+          <article class="panel thing">
+            <span class="thing-index">02 · quota</span>
+            <h3>Batch corrections by UTC day</h3>
+            <button class="reveal-button" type="button" aria-expanded="false">Reveal</button>
+            <div class="thing-answer"><p>The 50-request cap is account-wide for free variants, not 50 per model. A source pack, one audit, and one official update use three requests; many tiny follow-ups burn the same pool.</p></div>
+          </article>
+          <article class="panel thing">
+            <span class="thing-index">03 · source sweep</span>
+            <h3>Bring the official update to the model</h3>
+            <button class="reveal-button" type="button" aria-expanded="false">Reveal</button>
+            <div class="thing-answer"><p>The web-search plug-in can cost extra even with a free model. Paste a dated excerpt from the carrier or relevant government advisory instead, and keep its URL in the trip sheet.</p></div>
+          </article>
+        </div>
+        <div class="share-bar reveal-on-scroll" data-share-text="Paste dated official travel advisories into the model; OpenRouter web search can cost extra even when the model is free." aria-label="Share a useful detail">
+          <span class="share-label">Share this useful detail</span>
+          <div class="share-row"></div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="try-title">
+        <div class="panel try-card reveal-on-scroll">
+          <div>
+            <p class="section-kicker">Try it now</p>
+            <h2 id="try-title">Start with one confirmation</h2>
+            <p>Redact one booking email, label it Source A, and run the compiler prompt. Check the returned date, local time, code, and deadline against the email before adding the rest of the trip.</p>
+          </div>
+          <a class="try-link" href="https://openrouter.ai/chat">Open the chat playground</a>
+        </div>
+      </section>
+
+      <section class="sources" aria-labelledby="sources-title">
+        <h2 id="sources-title">Verification sources</h2>
+        <ol>
+          <li><a href="https://openrouter.ai/pricing">OpenRouter pricing</a> — free plan, chat/API access, and 50 requests/day.</li>
+          <li><a href="https://openrouter.ai/docs/api_reference/limits">OpenRouter limits</a> — 20 requests/minute, 50 requests/day below $10 lifetime credit purchases, 1,000/day at $10 or more, UTC-day usage, and 429 behavior.</li>
+          <li><a href="https://openrouter.ai/docs/guides/routing/routers/free-router">Free Models Router documentation</a> — random selection, changing availability, $0 routing, and model-name response.</li>
+          <li><a href="https://openrouter.ai/docs/guides/privacy/provider-logging">Provider logging documentation</a> — varying provider retention and training policies.</li>
+          <li><a href="https://openrouter.ai/docs/guides/features/plugins/web-search">Web-search documentation</a> — search can add cost to free-model requests.</li>
+          <li><a href="https://www.tripit.com/web/pro">TripIt Pro</a> — $49/year.</li>
+          <li><a href="https://wanderlog.com/blog/2024/09/03/the-6-best-road-trip-apps/">Wanderlog pricing material</a> — Pro from $39.99/year.</li>
+          <li><a href="https://travel.state.gov/en/international-travel/travel-advisories.html">U.S. State Department Travel Advisories</a> — an official, dated input for U.S. travelers.</li>
+          <li><a href="https://organicmaps.app/">Organic Maps</a> — free, open-source offline navigation backup.</li>
+        </ol>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="shell footer-grid">
+      <div>
+        <p><strong>Free-tier terms verified July 18, 2026</strong> against <a href="https://openrouter.ai/pricing">OpenRouter pricing</a> and <a href="https://openrouter.ai/docs/api_reference/limits">official limits documentation</a>.</p>
+        <p class="tier-line">T0 — free forever, no card. An account is required; paid credits or paid models are optional and outside this workflow.</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="https://iggym.github.io/everyday-ai-done-right/">Home</a>
+        <a href="https://iggym.github.io/everyday-ai-done-right/">Browse more guides</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const themeButton = document.getElementById('themeToggle');
+      const themeText = themeButton.querySelector('.theme-text');
+      const themeSymbol = themeButton.querySelector('.theme-symbol');
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const themeOrder = ['auto', 'light', 'dark'];
+
+      function storedTheme() {
+        try { return localStorage.getItem('eadr-theme') || 'auto'; } catch (_) { return 'auto'; }
+      }
+      function applyTheme(mode) {
+        const safeMode = themeOrder.includes(mode) ? mode : 'auto';
+        const resolved = safeMode === 'auto' ? (systemDark.matches ? 'dark' : 'light') : safeMode;
+        root.dataset.themeMode = safeMode;
+        root.dataset.theme = resolved;
+        themeText.textContent = safeMode[0].toUpperCase() + safeMode.slice(1);
+        themeSymbol.textContent = safeMode === 'auto' ? '◐' : safeMode === 'light' ? '☀' : '☾';
+        themeButton.setAttribute('aria-label', `Theme: ${safeMode}. Activate to change.`);
+        const themeColor = resolved === 'dark' ? '#141414' : '#FAFAF9';
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
+      }
+      applyTheme(storedTheme());
+      themeButton.addEventListener('click', () => {
+        const current = root.dataset.themeMode || 'auto';
+        const next = themeOrder[(themeOrder.indexOf(current) + 1) % themeOrder.length];
+        try { localStorage.setItem('eadr-theme', next); } catch (_) {}
+        applyTheme(next);
+      });
+      systemDark.addEventListener?.('change', () => {
+        if ((root.dataset.themeMode || 'auto') === 'auto') applyTheme('auto');
+      });
+
+      const revealItems = document.querySelectorAll('.reveal-on-scroll');
+      if (reducedMotion || !('IntersectionObserver' in window)) {
+        revealItems.forEach((item) => item.classList.add('in-view', 'is-visible'));
+      } else {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view', 'is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: .18 });
+        revealItems.forEach((item) => observer.observe(item));
+      }
+
+      const costChoices = [...document.querySelectorAll('.choice')];
+      const yearsInput = document.getElementById('yearsInput');
+      const paidPrice = document.getElementById('paidPrice');
+      const savingsLine = document.getElementById('savingsLine');
+      let selectedCost = 39.99;
+      let selectedName = 'Wanderlog Pro';
+      function money(value) {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: value % 1 ? 2 : 0 }).format(value);
+      }
+      function updateCost() {
+        const years = Math.max(1, Math.min(10, Number(yearsInput.value) || 1));
+        yearsInput.value = years;
+        paidPrice.textContent = money(selectedCost);
+        savingsLine.textContent = `${years}-year difference versus ${selectedName}: ${money(selectedCost * years)}.`;
+      }
+      costChoices.forEach((button) => button.addEventListener('click', () => {
+        costChoices.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        selectedCost = Number(button.dataset.cost);
+        selectedName = button.dataset.name;
+        updateCost();
+      }));
+      yearsInput.addEventListener('input', updateCost);
+      updateCost();
+
+      const usageInput = document.getElementById('usageInput');
+      const quotaResult = document.getElementById('quotaResult');
+      const quotaFill = document.getElementById('quotaFill');
+      const presets = [...document.querySelectorAll('.preset')];
+      function nextUtcReset() {
+        const now = new Date();
+        const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+        const diff = Math.max(0, next - now);
+        const hours = Math.floor(diff / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const local = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }).format(next);
+        return { local, countdown: `${hours}h ${minutes}m` };
+      }
+      function updateQuota(animate = true) {
+        const usage = Math.max(0, Math.min(5000, Number(usageInput.value) || 0));
+        const cap = 50;
+        const reset = nextUtcReset();
+        const ratio = Math.min(100, (usage / cap) * 100);
+        quotaFill.style.width = `${ratio}%`;
+        quotaFill.style.backgroundColor = usage > cap ? 'var(--coral)' : 'var(--green)';
+        quotaResult.classList.toggle('over', usage > cap);
+        if (animate && !reducedMotion) {
+          quotaResult.classList.remove('flash');
+          void quotaResult.offsetWidth;
+          quotaResult.classList.add('flash');
+        }
+        if (usage === 0) {
+          quotaResult.innerHTML = `<h3>No requests planned</h3><p>You have the full 50-request free pool available for the current UTC day.</p><p class="reset">Next daily window: ${reset.local} · in ${reset.countdown}</p>`;
+        } else if (usage <= cap) {
+          const left = cap - usage;
+          quotaResult.innerHTML = `<h3>You stay under the free cap</h3><p>${usage} request${usage === 1 ? '' : 's'} uses ${Math.round(ratio)}% of the daily pool, leaving ${left}. Keep bursts under 20 requests per minute.</p><p class="reset">Next daily window: ${reset.local} · in ${reset.countdown}</p>`;
+        } else {
+          const over = usage - cap;
+          quotaResult.innerHTML = `<h3>You exceed the free cap by ${over}</h3><p>Request 51 and later can return 429 until the UTC day changes. The sourced step-up is at least $10 in lifetime credit purchases, which raises the free-model cap to 1,000/day; paid-model costs still vary by model and tokens.</p><p class="reset">Next daily window: ${reset.local} · in ${reset.countdown}</p>`;
+        }
+      }
+      usageInput.addEventListener('input', () => {
+        presets.forEach((item) => item.setAttribute('aria-pressed', 'false'));
+        updateQuota();
+      });
+      presets.forEach((button) => button.addEventListener('click', () => {
+        usageInput.value = button.dataset.usage;
+        presets.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        updateQuota();
+      }));
+      updateQuota(false);
+      window.setInterval(() => updateQuota(false), 60000);
+
+      const tabs = [...document.querySelectorAll('.step-tab')];
+      const panels = [...document.querySelectorAll('.step-panel')];
+      const progressBar = document.getElementById('progressBar');
+      const stepCount = document.getElementById('stepCount');
+      const stepName = document.getElementById('stepName');
+      const previous = document.getElementById('prevStep');
+      const next = document.getElementById('nextStep');
+      let currentStep = 0;
+      function showStep(index, focus = false) {
+        currentStep = Math.max(0, Math.min(tabs.length - 1, index));
+        tabs.forEach((tab, i) => {
+          const active = i === currentStep;
+          tab.setAttribute('aria-selected', String(active));
+          tab.tabIndex = active ? 0 : -1;
+        });
+        panels.forEach((panel, i) => {
+          const active = i === currentStep;
+          panel.hidden = !active;
+          panel.classList.remove('is-entering');
+          if (active && !reducedMotion) {
+            void panel.offsetWidth;
+            panel.classList.add('is-entering');
+          }
+        });
+        progressBar.style.width = `${((currentStep + 1) / tabs.length) * 100}%`;
+        stepCount.textContent = `Step ${currentStep + 1} of ${tabs.length}`;
+        stepName.textContent = tabs[currentStep].querySelector('strong').textContent;
+        previous.disabled = currentStep === 0;
+        next.disabled = currentStep === tabs.length - 1;
+        next.textContent = currentStep === tabs.length - 1 ? 'Complete' : 'Next step';
+        if (focus) tabs[currentStep].focus();
+      }
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => showStep(Number(tab.dataset.step)));
+        tab.addEventListener('keydown', (event) => {
+          if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+            event.preventDefault();
+            const delta = event.key === 'ArrowRight' ? 1 : -1;
+            showStep((currentStep + delta + tabs.length) % tabs.length, true);
+          }
+        });
+      });
+      previous.addEventListener('click', () => showStep(currentStep - 1));
+      next.addEventListener('click', () => showStep(currentStep + 1));
+      showStep(0);
+
+      function copyText(text, button) {
+        const original = button.textContent;
+        const done = () => {
+          button.textContent = 'Copied';
+          window.setTimeout(() => { button.textContent = original; }, 1500);
+        };
+        const fallback = () => {
+          const area = document.createElement('textarea');
+          area.value = text;
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          try { document.execCommand('copy'); done(); } finally { area.remove(); }
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(fallback);
+        } else fallback();
+      }
+      document.querySelectorAll('[data-copy-target]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const target = document.getElementById(button.dataset.copyTarget);
+          copyText(target.textContent.trim(), button);
+        });
+      });
+
+      document.querySelectorAll('.reveal-button').forEach((button) => {
+        button.addEventListener('click', () => {
+          const card = button.closest('.thing');
+          const shown = card.classList.toggle('revealed');
+          button.setAttribute('aria-expanded', String(shown));
+          button.textContent = shown ? 'Hide' : 'Reveal';
+        });
+      });
+
+      const pageUrl = document.querySelector('link[rel="canonical"]').href;
+      const icon = (kind) => {
+        const common = 'viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+        if (kind === 'x') return `<svg ${common}><text x="7" y="17">X</text></svg>`;
+        if (kind === 'linkedin') return `<svg ${common}><text x="4" y="17">in</text></svg>`;
+        if (kind === 'facebook') return `<svg ${common}><text x="8" y="18">f</text></svg>`;
+        if (kind === 'whatsapp') return `<svg ${common}><path d="M5 20l1.2-3.5A7.7 7.7 0 1 1 9 19.2L5 20Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 8.5c.7 2 1.8 3.2 4 4.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+        if (kind === 'reddit') return `<svg ${common}><circle cx="12" cy="13" r="6.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="9.5" cy="12.5" r="1" fill="currentColor"/><circle cx="14.5" cy="12.5" r="1" fill="currentColor"/><path d="M9 15c1.8 1.3 4.2 1.3 6 0M14 6l1-3 3 1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+        if (kind === 'email') return `<svg ${common}><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>`;
+        return `<svg ${common}><path d="M9 15l6-6M8 17H6a4 4 0 0 1 0-8h3M16 7h2a4 4 0 1 1 0 8h-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+      };
+      function shareUrls(text) {
+        const e = encodeURIComponent;
+        return {
+          x: `https://twitter.com/intent/tweet?text=${e(text)}&url=${e(pageUrl)}`,
+          linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${e(pageUrl)}&title=${e(document.title)}&summary=${e(text)}`,
+          facebook: `https://www.facebook.com/sharer/sharer.php?u=${e(pageUrl)}`,
+          whatsapp: `https://wa.me/?text=${e(`${text} ${pageUrl}`)}`,
+          reddit: `https://www.reddit.com/submit?url=${e(pageUrl)}&title=${e(text)}`,
+          email: `mailto:?subject=${e(document.title)}&body=${e(`${text}\n\n${pageUrl}`)}`
+        };
+      }
+      document.querySelectorAll('.share-bar').forEach((bar) => {
+        const text = bar.dataset.shareText;
+        const urls = shareUrls(text);
+        const row = bar.querySelector('.share-row');
+        const labels = { x: 'X', linkedin: 'LinkedIn', facebook: 'Facebook', whatsapp: 'WhatsApp', reddit: 'Reddit', email: 'Email' };
+        Object.entries(labels).forEach(([key, label]) => {
+          const link = document.createElement('a');
+          link.className = 'share-link';
+          link.href = urls[key];
+          link.target = key === 'email' ? '_self' : '_blank';
+          link.rel = 'noopener noreferrer';
+          link.setAttribute('aria-label', `Share on ${label}`);
+          link.title = label;
+          link.innerHTML = icon(key);
+          row.appendChild(link);
+        });
+        const copy = document.createElement('button');
+        copy.type = 'button';
+        copy.className = 'share-link';
+        copy.setAttribute('aria-label', 'Copy link');
+        copy.title = 'Copy link';
+        copy.innerHTML = icon('copy');
+        const status = document.createElement('span');
+        status.className = 'share-status';
+        status.setAttribute('aria-live', 'polite');
+        copy.addEventListener('click', () => {
+          const done = () => {
+            status.textContent = 'Copied';
+            window.setTimeout(() => { status.textContent = ''; }, 1500);
+          };
+          const fallbackLinkCopy = () => {
+            const area = document.createElement('textarea');
+            area.value = pageUrl;
+            area.style.position = 'fixed';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.select();
+            try { document.execCommand('copy'); done(); } finally { area.remove(); }
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(pageUrl).then(done).catch(fallbackLinkCopy);
+          } else fallbackLinkCopy();
+        });
+        row.append(copy, status);
+      });
+    })();
+  </script>
+</body>
+</html>
