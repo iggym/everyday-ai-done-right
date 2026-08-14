@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turn Health Screenshots Into Pattern Reports | everyday-ai-done-right</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#FAFAF9;--ink:#1C1C1E;--green:#0F8A5F;--coral:#FF6B4A;
+  --green-light:#E8F5EF;--coral-light:#FFF0EC;--border:#E5E5E3;
+  --surface:#FFFFFF;--surface2:#F5F5F3;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --radius:16px;--radius-sm:10px;
+  --font-d:'Manrope',sans-serif;--font-b:'Inter',sans-serif;--font-m:'JetBrains Mono',monospace;
+}
+[data-theme="dark"]{
+  --paper:#141414;--ink:#F4F4F3;--green:#22C58B;--coral:#FF8064;
+  --green-light:#1A2E25;--coral-light:#2A1A16;--border:#2A2A2A;
+  --surface:#1E1E1E;--surface2:#252525;
+  --shadow:0 1px 3px rgba(0,0,0,.2),0 1px 2px rgba(0,0,0,.15);
+  --shadow-md:0 4px 12px rgba(0,0,0,.3),0 2px 4px rgba(0,0,0,.2);
+}
+body{font-family:var(--font-b);background:var(--paper);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+.mono{font-family:var(--font-m)}
+h1,h2,h3,h4{font-family:var(--font-d);line-height:1.25}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .animate-strike,.animate-pop,.fade-in{animation:none!important;opacity:1!important}
+}
+
+/* ─── TOPBAR ─── */
+.topbar{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;transition:background .3s}
+.topbar-home{font-family:var(--font-d);font-weight:700;font-size:14px;color:var(--ink);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.topbar-home svg{width:16px;height:16px}
+.topbar-cat{font-family:var(--font-m);font-size:11px;background:var(--green-light);color:var(--green);padding:3px 10px;border-radius:20px;white-space:nowrap}
+.topbar-spacer{flex:1}
+.topbar-reading{font-family:var(--font-m);font-size:11px;color:var(--ink);opacity:.5;white-space:nowrap}
+.theme-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:4px;font-family:var(--font-m);color:var(--ink);transition:background .2s,border-color .2s}
+.theme-btn:hover{background:var(--surface2)}
+.theme-btn svg{width:14px;height:14px}
+
+/* ─── CONTAINER ─── */
+.container{max-width:720px;margin:0 auto;padding:0 24px}
+
+/* ─── HERO ─── */
+.hero{padding:48px 0 32px}
+.hero h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.02em;margin-bottom:16px}
+.hero-pitch{font-size:17px;line-height:1.6;margin-bottom:20px;opacity:.85}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.badge{font-family:var(--font-m);font-size:11px;padding:4px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:5px}
+.badge-tool{background:var(--green-light);color:var(--green)}
+.badge-verified{background:var(--surface2);color:var(--ink);opacity:.7;border:1px solid var(--border)}
+.badge-verified svg{width:12px;height:12px}
+
+/* ─── COST WIDGET ─── */
+.cost-widget{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow)}
+.cost-widget h2{font-size:18px;font-weight:700;margin-bottom:20px}
+.cost-rows{display:flex;flex-direction:column;gap:16px}
+.cost-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cost-label{font-size:14px;flex:1;min-width:140px}
+.cost-paid{font-family:var(--font-m);font-size:16px;font-weight:500;position:relative;display:inline-block;color:var(--ink);opacity:.5}
+.cost-paid.strike-animate .cost-line{position:absolute;top:50%;left:-4px;right:-4px;height:2px;background:var(--coral);transform:scaleX(0);transform-origin:left;transition:transform .5s ease}
+.cost-paid.strike-animate.active .cost-line{transform:scaleX(1)}
+.cost-free{font-family:var(--font-m);font-size:20px;font-weight:700;color:var(--green);opacity:0;transform:scale(.7);transition:opacity .4s ease .4s,transform .4s ease .4s}
+.cost-free.pop-animate{opacity:1;transform:scale(1)}
+
+/* ─── QUOTA WIDGET ─── */
+.quota-widget{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin:32px 0;box-shadow:var(--shadow)}
+.quota-widget h2{font-size:18px;font-weight:700;margin-bottom:6px}
+.quota-subtitle{font-size:13px;opacity:.6;margin-bottom:20px;font-family:var(--font-m)}
+.quota-presets{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.quota-preset{font-family:var(--font-m);font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;color:var(--ink);transition:background .15s,border-color .15s}
+.quota-preset:hover,.quota-preset.active{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.quota-input-row{display:flex;gap:10px;align-items:center;margin-bottom:20px}
+.quota-input{font-family:var(--font-m);font-size:14px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink);width:100px;transition:border-color .15s}
+.quota-input:focus{outline:none;border-color:var(--green)}
+.quota-input-label{font-size:13px;opacity:.6}
+.quota-result{padding:16px;border-radius:var(--radius-sm);font-size:14px;line-height:1.6;opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s ease}
+.quota-result.visible{opacity:1;transform:translateY(0)}
+.quota-result.ok{background:var(--green-light);color:var(--green)}
+.quota-result.warn{background:var(--coral-light);color:var(--coral)}
+
+/* ─── STEPPER ─── */
+.stepper{margin:40px 0}
+.stepper-header{display:flex;gap:4px;margin-bottom:24px}
+.stepper-dot{flex:1;height:4px;border-radius:2px;background:var(--border);cursor:pointer;transition:background .25s}
+.stepper-dot.active{background:var(--green)}
+.stepper-dot.done{background:var(--green);opacity:.4}
+.stepper-step-label{font-family:var(--font-m);font-size:11px;opacity:.5;margin-bottom:8px}
+.stepper-content{min-height:180px}
+.step-panel{display:none}
+.step-panel.active{display:block;animation:fadeInStep .35s ease}
+@keyframes fadeInStep{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.step-panel h3{font-size:20px;font-weight:700;margin-bottom:12px}
+.step-panel p{font-size:15px;line-height:1.7;margin-bottom:12px}
+.step-nav{display:flex;gap:12px;margin-top:24px;align-items:center}
+.step-btn{font-family:var(--font-d);font-size:13px;font-weight:600;padding:8px 20px;border-radius:10px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink);transition:background .15s}
+.step-btn:hover{background:var(--surface2)}
+.step-btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
+.step-btn.primary:hover{opacity:.9}
+.step-btn:disabled{opacity:.3;cursor:default}
+.step-counter{font-family:var(--font-m);font-size:12px;opacity:.5}
+
+/* ─── PROMPT BLOCK ─── */
+.prompt-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;margin:16px 0;position:relative;font-family:var(--font-m);font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-x:auto}
+.copy-btn{position:absolute;top:12px;right:12px;font-family:var(--font-m);font-size:11px;padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--ink);cursor:pointer;transition:background .15s}
+.copy-btn:hover{background:var(--green-light);color:var(--green);border-color:var(--green)}
+.copy-btn.copied{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* ─── WHAT BREAKS ─── */
+.breaks-box{background:var(--coral-light);border:2px solid var(--coral);border-radius:var(--radius);padding:28px;margin:40px 0}
+.breaks-box h2{font-size:18px;font-weight:700;color:var(--coral);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.breaks-box h2 svg{width:20px;height:20px}
+.breaks-box ul{list-style:none;display:flex;flex-direction:column;gap:14px}
+.breaks-box li{font-size:14px;line-height:1.65;padding-left:0}
+.breaks-box li strong{color:var(--coral)}
+
+/* ─── THREE THINGS ─── */
+.three-things{margin:40px 0}
+.three-things>h2{font-size:18px;font-weight:700;margin-bottom:16px}
+.things-grid{display:flex;flex-direction:column;gap:12px}
+.thing-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.thing-card:hover{border-color:var(--green);box-shadow:var(--shadow-md)}
+.thing-card.revealed{cursor:default;border-color:var(--green)}
+.thing-title{font-family:var(--font-d);font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.thing-title .thing-num{font-family:var(--font-m);font-size:11px;background:var(--green-light);color:var(--green);width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.thing-title .thing-lock{margin-left:auto;font-size:12px;opacity:.4;transition:opacity .2s}
+.thing-card.revealed .thing-lock{display:none}
+.thing-body{font-size:14px;line-height:1.65;margin-top:12px;max-height:0;overflow:hidden;opacity:0;transition:max-height .4s ease,opacity .3s ease,margin .3s ease}
+.thing-card.revealed .thing-body{max-height:200px;opacity:1;margin-top:14px}
+
+/* ─── TRY IT ─── */
+.try-it{background:var(--green-light);border-radius:var(--radius);padding:24px 28px;margin:32px 0;font-size:15px;line-height:1.6}
+.try-it strong{color:var(--green);font-weight:700}
+
+/* ─── SHARE BAR ─── */
+.share-bar{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0;align-items:center}
+.share-bar .share-label{font-family:var(--font-m);font-size:11px;opacity:.5;margin-right:4px}
+.share-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .15s;color:var(--ink)}
+.share-btn:hover{background:var(--green-light);border-color:var(--green)}
+.share-btn svg{width:16px;height:16px;fill:currentColor}
+.share-btn.copied{background:var(--green);border-color:var(--green);color:#fff}
+
+/* ─── FOOTER ─── */
+.footer{margin-top:48px;padding:24px 0;border-top:1px solid var(--border);font-size:13px;opacity:.6;line-height:1.7}
+.footer a{color:var(--ink)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px){
+  .container{padding:0 16px}
+  .hero{padding:32px 0 24px}
+  .cost-widget,.quota-widget,.breaks-box,.try-it{padding:20px}
+  .topbar{padding:8px 12px}
+  .topbar-cat{display:none}
+  .topbar-reading{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <a href="https://iggym.github.io/everyday-ai-done-right/" class="topbar-home">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 8l6-6 6 6M4 8v5h3v-3h2v3h3V8"/></svg>
+    everyday-ai-done-right
+  </a>
+  <span class="topbar-cat">Health &amp; wellness</span>
+  <span class="topbar-spacer"></span>
+  <span class="topbar-reading">4 min read</span>
+  <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>
+    <span id="themeLabel">auto</span>
+  </button>
+</header>
+
+<main class="container">
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <h1>Turn Health Screenshots Into Pattern Reports</h1>
+  <p class="hero-pitch">Upload a week's health app screenshots to Google Gemini 2.0 Flash on AI Studio and get back a structured day-by-day table with cross-metric pattern observations — free with a Google account, no credit card, 1,500 requests per day resetting at midnight Pacific Time.</p>
+  <div class="hero-badges">
+    <span class="badge badge-tool">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12"><circle cx="8" cy="8" r="6"/></svg>
+      Gemini 2.0 Flash
+    </span>
+    <span class="badge badge-verified">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8l3 3 7-7"/></svg>
+      Verified Mar 18, 2025
+    </span>
+  </div>
+  <!-- Share bar under pitch -->
+  <div class="share-bar" data-share-text="Upload a week's health app screenshots to Gemini 2.0 Flash (free, no card) and get a day-by-day table with cross-metric pattern observations — replaces $10/mo analytics apps for $0.">
+    <span class="share-label">Share</span>
+  </div>
+</section>
+
+<!-- ═══ COST WIDGET ═══ -->
+<section class="cost-widget" id="costWidget">
+  <h2>What this replaces</h2>
+  <p style="font-size:14px;opacity:.65;margin-bottom:20px">Paid apps that charge for the "aggregate and find patterns" step you're about to do for free.</p>
+  <div class="cost-rows">
+    <div class="cost-row">
+      <span class="cost-label">Bearable Premium<br><small style="opacity:.6">symptom-correlation analytics</small></span>
+      <span class="cost-paid strike-animate" data-paid="$9.99/mo">$9.99/mo<span class="cost-line"></span></span>
+      <span class="cost-free">$0</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Heads Up Health<br><small style="opacity:.6">integrative health dashboards</small></span>
+      <span class="cost-paid strike-animate" data-paid="$8.33/mo">$8.33/mo<span class="cost-line"></span></span>
+      <span class="cost-free">$0</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Health coach session<br><small style="opacity:.6">weekly data review</small></span>
+      <span class="cost-paid strike-animate" data-paid="$50–150">$50–150<span class="cost-line"></span></span>
+      <span class="cost-free">$0</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ QUOTA WIDGET ═══ -->
+<section class="quota-widget">
+  <h2>Will you hit the free limit?</h2>
+  <p class="quota-subtitle">Free tier: 1,500 requests/day · Resets midnight Pacific Time</p>
+  <div class="quota-presets" id="quotaPresets">
+    <button class="quota-preset" data-val="1">1×/day</button>
+    <button class="quota-preset" data-val="5">5×/day</button>
+    <button class="quota-preset" data-val="10">10×/day</button>
+    <button class="quota-preset" data-val="50">50×/day</button>
+    <button class="quota-preset" data-val="100">100×/day</button>
+  </div>
+  <div class="quota-input-row">
+    <input type="number" class="quota-input" id="quotaInput" min="0" max="10000" placeholder="Custom">
+    <span class="quota-input-label">requests per day</span>
+  </div>
+  <div class="quota-result" id="quotaResult"></div>
+</section>
+
+<!-- ═══ STEPPER ═══ -->
+<section class="stepper" id="stepper">
+  <div class="stepper-header" id="stepperHeader"></div>
+  <div class="stepper-step-label" id="stepperLabel">Step 1 of 5</div>
+  <div class="stepper-content" id="stepperContent">
+
+    <div class="step-panel" data-step="1">
+      <h3>Collect your screenshots</h3>
+      <p>Open the health apps you already have — Apple Health, Google Fit, Oura, MyFitnessPal, a mood tracker, a sleep app, whatever you actually use. Take screenshots of the daily views for the past 7 days.</p>
+      <p>Use daily views, not monthly overviews — the per-day numbers are larger on screen and far easier for the model to read from an image. You don't need every metric; grab whatever you naturally check.</p>
+    </div>
+
+    <div class="step-panel" data-step="2">
+      <h3>Open Google AI Studio</h3>
+      <p>Go to <a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a> and sign in with a Google account. No credit card — the free tier activates on sign-in. You'll see a prompt interface.</p>
+      <p>The default model should be Gemini 2.0 Flash, which is the free-tier model you want. If a different model is selected, switch to Gemini 2.0 Flash in the model dropdown at the top.</p>
+    </div>
+
+    <div class="step-panel" data-step="3">
+      <h3>Upload your screenshots</h3>
+      <p>Click the image upload icon in the prompt area (or drag-and-drop your files). Upload all 7–10 screenshots in a single request — they'll appear as thumbnail previews.</p>
+      <p>The model processes all of them in one go thanks to its multimodal input and 1M-token context window. You do <strong>not</strong> need to send one screenshot per request.</p>
+    </div>
+
+    <div class="step-panel" data-step="4">
+      <h3>Paste the prompt template and run</h3>
+      <p>Copy the template below into the text area alongside your uploaded images, then click <strong>Run</strong>. The model reads each screenshot, extracts the visible metrics, builds a day-by-day table, and lists cross-metric patterns it observes in your data.</p>
+      <div class="prompt-block" id="promptBlock">I'm sharing screenshots from my health and wellness apps covering the past week. For each screenshot:
+
+1. Extract the key daily metrics visible (sleep hours, steps, calories, heart rate, mood rating, active minutes — whatever each screenshot shows)
+2. Organize everything into a single day-by-day table with dates as rows and metrics as columns
+3. List any patterns or correlations you notice across the week (e.g., "days with higher step counts tended to have longer sleep that night")
+4. Flag any single day that's unusual compared to the weekly average for that metric
+
+This is personal data summarization, not medical advice. I want observations about patterns in my own data, not health recommendations or concerns.<button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+    </div>
+
+    <div class="step-panel" data-step="5">
+      <h3>Save what matters</h3>
+      <p>Copy the output table into a note or spreadsheet. The real value is in the "patterns" and "unusual days" sections — that's the insight your individual apps can't surface because each one only sees its own slice of your data.</p>
+      <p>Gemini sees all your metrics at once, which is the entire point of this workflow.</p>
+    </div>
+
+  </div>
+  <div class="step-nav">
+    <button class="step-btn" id="prevBtn" onclick="navStep(-1)">Previous</button>
+    <button class="step-btn primary" id="nextBtn" onclick="navStep(1)">Next</button>
+    <span class="step-counter" id="stepCounter"></span>
+  </div>
+</section>
+
+<!-- ═══ WHAT BREAKS ═══ -->
+<section class="breaks-box">
+  <h2>
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2L1 18h18L10 2z"/><path d="M10 8v4M10 14.5v.5"/></svg>
+    What breaks
+  </h2>
+  <ul>
+    <li><strong>Safety filters block medical-advice phrasing.</strong> "What patterns do you observe?" works. "Should I be worried about this heart rate?" gets blocked. This is the correct boundary for a non-medical tool — work within it. The prompt template is already phrased to stay on the safe side.</li>
+    <li><strong>Screenshot OCR is imperfect.</strong> Small text, graph lines, overlapping chart elements, and low-contrast numbers get misread. If a number in the output looks wrong, check the original screenshot. Don't make decisions based on a single extracted number you haven't verified.</li>
+    <li><strong>1,500 requests/day resets at midnight Pacific Time.</strong> Not a rolling 24-hour window — a fixed clock reset. Hit the limit at 11:30 PM PT and you're back in 30 minutes. Hit it at 9 AM PT and you wait 15 hours.</li>
+    <li><strong>Your prompts and images go to Google.</strong> The free tier may use inputs to improve models. Check <a href="https://ai.google.dev/policies" target="_blank" rel="noopener">ai.google.dev/policies</a> for the current data retention policy. Don't upload anything you wouldn't store in any cloud service.</li>
+    <li><strong>No memory between sessions.</strong> Each prompt starts fresh. If you want to compare this week's patterns to last week's, paste both summaries into a single new prompt — the 1M-token context window handles it easily.</li>
+  </ul>
+</section>
+
+<!-- ═══ THREE THINGS ═══ -->
+<section class="three-things">
+  <h2>Three things this teaches beyond "here's a free tool"</h2>
+  <div class="things-grid">
+
+    <div class="thing-card" onclick="revealThing(this)">
+      <div class="thing-title">
+        <span class="thing-num">1</span>
+        Batch a full week in one request
+        <span class="thing-lock">▸ click</span>
+      </div>
+      <div class="thing-body">Gemini 2.0 Flash's 1M-token context window means you can upload 7–10 screenshots in a single prompt and get a unified analysis. Most people assume they need to do one screenshot per request, which wastes quota and loses the cross-day pattern visibility that makes this workflow useful in the first place.</div>
+    </div>
+
+    <div class="thing-card" onclick="revealThing(this)">
+      <div class="thing-title">
+        <span class="thing-num">2</span>
+        Observations in, advice out
+        <span class="thing-lock">▸ click</span>
+      </div>
+      <div class="thing-body">The exact phrasing of your prompt determines whether Gemini responds or blocks. "What patterns do you observe?" passes the safety filter. "Should I be concerned?" does not. This isn't a bug — it's the correct boundary for a tool that isn't your doctor, and the prompt template is engineered to stay on the passing side.</div>
+    </div>
+
+    <div class="thing-card" onclick="revealThing(this)">
+      <div class="thing-title">
+        <span class="thing-num">3</span>
+        Midnight PT reset is exploitable
+        <span class="thing-lock">▸ click</span>
+      </div>
+      <div class="thing-body">The 1,500-request quota resets at a fixed clock time (midnight Pacific), not a rolling 24-hour window from your last request. This means if you hit the limit at 11:30 PM PT, you get quota back in 30 minutes. Most API quotas roll from your last request, so this fixed-reset behavior is unusual and worth planning around.</div>
+    </div>
+
+  </div>
+  <!-- Share bar under Three Things -->
+  <div class="share-bar" data-share-text="Batch a full week of health screenshots into one Gemini request — the 1M token context window handles it, so don't waste your daily quota on one-at-a-time uploads." style="margin-top:24px">
+    <span class="share-label">Share</span>
+  </div>
+</section>
+
+<!-- ═══ TRY IT ═══ -->
+<section class="try-it">
+  <strong>Try it now:</strong> Screenshot last week's sleep data from any app on your phone. Open <a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a>, upload it with the prompt template. You'll have your first pattern observation in under two minutes.
+</section>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="container footer">
+  <p>Verification source: <a href="https://ai.google.dev/pricing" target="_blank" rel="noopener">ai.google.dev/pricing</a> (Google AI Studio free-tier rate limits, accessed Mar 2025). Paid-alternative prices from <a href="https://bearable.app" target="_blank" rel="noopener">bearable.app</a> and <a href="https://www.headsuphealth.com" target="_blank" rel="noopener">headsuphealth.com</a>.</p>
+  <p style="margin-top:8px"><a href="https://iggym.github.io/everyday-ai-done-right/">← Home</a> · <a href="https://iggym.github.io/everyday-ai-done-right/">Browse more guides</a></p>
+</footer>
+
+<script>
+(function(){
+  /* ── Constants ── */
+  const PAGE_URL = 'https://iggym.github.io/everyday-ai-done-right/articles/turn-health-screenshots-into-pattern-reports.html';
+  const PROMPT_TEXT = `I'm sharing screenshots from my health and wellness apps covering the past week. For each screenshot:\n\n1. Extract the key daily metrics visible (sleep hours, steps, calories, heart rate, mood rating, active minutes — whatever each screenshot shows)\n2. Organize everything into a single day-by-day table with dates as rows and metrics as columns\n3. List any patterns or correlations you notice across the week (e.g., "days with higher step counts tended to have longer sleep that night")\n4. Flag any single day that's unusual compared to the weekly average for that metric\n\nThis is personal data summarization, not medical advice. I want observations about patterns in my own data, not health recommendations or concerns.`;
+  const FREE_QUOTA = 1500;
+  const CHEAPEST_PAID = '$8.33/month (Heads Up Health)';
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Theme ── */
+  const themeBtn = document.getElementById('themeToggle');
+  const themeLabel = document.getElementById('themeLabel');
+  const themes = ['auto','light','dark'];
+  const themeIcons = {
+    auto: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>',
+    light: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>',
+    dark: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1a7 7 0 109 9A5.5 5.5 0 018 1z"/></svg>'
+  };
+
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t === 'auto' ? (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light') : t);
+    themeLabel.textContent = t;
+    themeBtn.innerHTML = themeIcons[t] + '<span id="themeLabel">' + t + '</span>';
+  }
+
+  function initTheme(){
+    const saved = localStorage.getItem('eadr-theme') || 'auto';
+    applyTheme(saved);
+    window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', ()=>{
+      if((localStorage.getItem('eadr-theme')||'auto')==='auto') applyTheme('auto');
+    });
+  }
+
+  themeBtn.addEventListener('click', ()=>{
+    const cur = localStorage.getItem('eadr-theme') || 'auto';
+    const next = themes[(themes.indexOf(cur)+1)%themes.length];
+    localStorage.setItem('eadr-theme', next);
+    applyTheme(next);
+  });
+
+  initTheme();
+
+  /* ── Copy to clipboard ── */
+  window.copyPrompt = function(btn){
+    navigator.clipboard.writeText(PROMPT_TEXT).then(()=>{
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+    });
+  };
+
+  function copyLink(btn){
+    navigator.clipboard.writeText(PAGE_URL).then(()=>{
+      btn.classList.add('copied');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l3 3 7-7"/></svg>';
+      setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML = orig; }, 1500);
+    });
+  }
+
+  /* ── Stepper ── */
+  const totalSteps = 5;
+  let currentStep = 1;
+  const header = document.getElementById('stepperHeader');
+  const content = document.getElementById('stepperContent');
+  const panels = content.querySelectorAll('.step-panel');
+  const label = document.getElementById('stepperLabel');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const counter = document.getElementById('stepCounter');
+
+  // Build step dots
+  for(let i=1;i<=totalSteps;i++){
+    const dot = document.createElement('div');
+    dot.className = 'stepper-dot' + (i===1?' active':'');
+    dot.dataset.step = i;
+    dot.addEventListener('click', ()=>goToStep(i));
+    header.appendChild(dot);
+  }
+
+  function goToStep(n){
+    n = Math.max(1, Math.min(totalSteps, n));
+    currentStep = n;
+    panels.forEach(p=>{
+      p.classList.toggle('active', parseInt(p.dataset.step)===n);
+      if(!reducedMotion && parseInt(p.dataset.step)===n){
+        p.style.animation = 'none';
+        p.offsetHeight; // trigger reflow
+        p.style.animation = '';
+      }
+    });
+    header.querySelectorAll('.stepper-dot').forEach(d=>{
+      const s = parseInt(d.dataset.step);
+      d.className = 'stepper-dot' + (s===n?' active':'') + (s<n?' done':'');
+    });
+    label.textContent = 'Step ' + n + ' of ' + totalSteps;
+    prevBtn.disabled = n===1;
+    nextBtn.textContent = n===totalSteps ? 'Done' : 'Next';
+    counter.textContent = n + ' / ' + totalSteps;
+  }
+
+  window.navStep = function(dir){
+    if(currentStep===totalSteps && dir===1) return;
+    goToStep(currentStep + dir);
+  };
+
+  goToStep(1);
+
+  /* ── Quota Checker ── */
+  const quotaInput = document.getElementById('quotaInput');
+  const quotaResult = document.getElementById('quotaResult');
+  const presetBtns = document.querySelectorAll('.quota-preset');
+
+  presetBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      presetBtns.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      quotaInput.value = btn.dataset.val;
+      checkQuota(parseInt(btn.dataset.val));
+    });
+  });
+
+  quotaInput.addEventListener('input', ()=>{
+    presetBtns.forEach(b=>b.classList.remove('active'));
+    const v = parseInt(quotaInput.value);
+    if(!isNaN(v) && v >= 0) checkQuota(v);
+    else quotaResult.className = 'quota-result';
+  });
+
+  function checkQuota(usage){
+    if(isNaN(usage) || usage < 0) return;
+    if(usage <= FREE_QUOTA){
+      quotaResult.className = 'quota-result ok' + (reducedMotion ? ' visible' : '');
+      quotaResult.innerHTML = '<strong>✓ You\'re within the free tier.</strong> ' + usage + ' out of 1,500 daily requests. Quota resets at midnight Pacific Time.';
+    } else {
+      const over = usage - FREE_QUOTA;
+      quotaResult.className = 'quota-result warn' + (reducedMotion ? ' visible' : '');
+      quotaResult.innerHTML = '<strong>✗ You\'d exceed the free quota by ' + over + ' requests/day.</strong> The free tier allows 1,500 requests/day, resetting at midnight Pacific Time. The cheapest paid alternative is ' + CHEAPEST_PAID + ', which covers unlimited usage.';
+    }
+    if(!reducedMotion){
+      requestAnimationFrame(()=> quotaResult.classList.add('visible'));
+    }
+  }
+
+  /* ── Three Things Reveal ── */
+  window.revealThing = function(card){
+    if(card.classList.contains('revealed')) return;
+    card.classList.add('revealed');
+  };
+
+  /* ── Cost Animation (Intersection Observer) ── */
+  const costWidget = document.getElementById('costWidget');
+  let costAnimated = false;
+
+  function animateCost(){
+    if(costAnimated) return;
+    costAnimated = true;
+    const paidEls = costWidget.querySelectorAll('.cost-paid');
+    const freeEls = costWidget.querySelectorAll('.cost-free');
+    paidEls.forEach((el, i)=>{
+      setTimeout(()=>{
+        el.classList.add('active');
+      }, i * 200);
+    });
+    freeEls.forEach((el, i)=>{
+      setTimeout(()=>{
+        el.classList.add('pop-animate');
+      }, 400 + i * 200);
+    });
+  }
+
+  if('IntersectionObserver' in window){
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ animateCost(); obs.unobserve(e.target); }});
+    }, {threshold: 0.3});
+    obs.observe(costWidget);
+  } else {
+    // Fallback: animate on load
+    setTimeout(animateCost, 500);
+  }
+
+  // For reduced motion, just show final state
+  if(reducedMotion){
+    costWidget.querySelectorAll('.cost-paid').forEach(el=> el.classList.add('active'));
+    costWidget.querySelectorAll('.cost-free').forEach(el=>{ el.classList.add('pop-animate'); el.style.opacity='1'; el.style.transform='scale(1)'; });
+  }
+
+  /* ── Share Bars ── */
+  const shareSVGs = {
+    x: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M9.5 7L15 .5h-2L8.5 5.5 4.5.5H1l5.5 7L.5 15.5h2l5-5.5 4.5 5.5h3.5L9.5 7z"/></svg>',
+    linkedin: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 1h3v14H1V1zm5 5h3v1.5C9.5 6.5 10.5 5.5 12 5.5c2 0 3 1.5 3 4V15h-3V9.5c0-1-.5-1.5-1.5-1.5S9 9 9 10V15H6V6z"/><circle cx="2.5" cy="2.5" r="1.5"/></svg>',
+    facebook: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M9 16V9h3l.5-3H9V4.5C9 3.5 9.5 3 10.5 3H12V0h-2C7.5 0 6 1.5 6 4v2H3v3h3v7h3z"/></svg>',
+    whatsapp: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.6 0 0 3.6 0 8c0 1.5.4 2.9 1.1 4.1L0 16l4-.9C5.1 15.6 6.5 16 8 16c4.4 0 8-3.6 8-8s-3.6-8-8-8zm4.1 11.3c-.2.5-1 .9-1.4.9-.4 0-3.6-.9-5.4-3.1-.8-1-1.2-2-1.2-2.6 0-.8.5-1.3.7-1.5.2-.2.4-.2.5-.2h.4c.1 0 .3 0 .4.3l.6 1.4c.1.2 0 .4-.1.5-.1.1-.3.3-.3.4 0 .1.1.2.2.4.3.3.6.7.8 1 .2.2.4.2.5.1.1-.1.5-.5.6-.6.2-.2.3-.2.5-.1l1.4.1c.2.1.3.0 .3.1z"/></svg>',
+    reddit: '<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="4" cy="10" r="1.5"/><circle cx="12" cy="10" r="1.5"/><path d="M8 1l1 3h3l-2.5 2 1 3L8 7 5.5 9l1-3L4 4h3z"/><ellipse cx="8" cy="10" rx="6" ry="4.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>',
+    email: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M1 3l7 5 7-5"/></svg>',
+    link: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6.5 9.5a3 3 0 004.2-.2l2-2a3 3 0 00-4.2-4.2l-1 1M9.5 6.5a3 3 0 00-4.2.2l-2 2a3 3 0 004.2 4.2l1-1"/></svg>'
+  };
+
+  function buildShareBar(container, shareText){
+    const encodedUrl = encodeURIComponent(PAGE_URL);
+    const encodedText = encodeURIComponent(shareText);
+    const combinedText = encodeURIComponent(shareText + ' ' + PAGE_URL);
+
+    const platforms = [
+      {key:'x', url:'https://twitter.com/intent/tweet?text='+combinedText, title:'Share on X'},
+      {key:'linkedin', url:'https://www.linkedin.com/sharing/share-offsite/?url='+encodedUrl, title:'Share on LinkedIn'},
+      {key:'facebook', url:'https://www.facebook.com/sharer/sharer.php?u='+encodedUrl, title:'Share on Facebook'},
+      {key:'whatsapp', url:'https://wa.me/?text='+combinedText, title:'Share on WhatsApp'},
+      {key:'reddit', url:'https://reddit.com/submit?url='+encodedUrl+'&title='+encodedText, title:'Share on Reddit'},
+      {key:'email', url:'mailto:?subject='+encodedText+'&body='+encodedUrl, title:'Share via Email'},
+    ];
+
+    platforms.forEach(p=>{
+      const btn = document.createElement('a');
+      btn.className = 'share-btn';
+      btn.href = p.url;
+      btn.target = '_blank';
+      btn.rel = 'noopener noreferrer';
+      btn.title = p.title;
+      btn.setAttribute('aria-label', p.title);
+      btn.innerHTML = shareSVGs[p.key];
+      container.appendChild(btn);
+    });
+
+    // Copy Link button
+    const linkBtn = document.createElement('button');
+    linkBtn.className = 'share-btn';
+    linkBtn.title = 'Copy link';
+    linkBtn.setAttribute('aria-label', 'Copy link');
+    linkBtn.innerHTML = shareSVGs.link;
+    linkBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      copyLink(linkBtn);
+    });
+    container.appendChild(linkBtn);
+  }
+
+  // Initialize all share bars
+  document.querySelectorAll('.share-bar').forEach(bar=>{
+    const text = bar.dataset.shareText || '';
+    buildShareBar(bar, text);
+  });
+
+})();
+</script>
+</body>
+</html>
