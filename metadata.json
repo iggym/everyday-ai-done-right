@@ -184,5 +184,22 @@
   "reading_time_minutes": 3,
   "pinned": false,
   "verified": "2026-03-24"
+},{
+  "id": "2002",
+  "slug": "turn-voice-memos-into-structured-daily-nutrition-tables",
+  "title": "Turn Voice Memos into Structured Daily Nutrition & Wellness Tables",
+  "hook": "Convert messy daily voice dictations into clean macro and activity tables without paying for subscription tracking apps or surrendering personal data to ad networks.",
+  "path": "articles/turn-voice-memos-into-structured-daily-nutrition-tables.html",
+  "date": "2026-03-18",
+  "status": "published",
+  "format": "guide",
+  "category": "health",
+  "tool": "Claude 3.5 Sonnet (Anthropic, free tier)",
+  "tool_family": "Anthropic",
+  "source_url": "https://support.anthropic.com/en/articles/8114521-how-does-the-free-tier-work",
+  "tags": ["health", "nutrition", "voice-memos", "claude", "privacy"],
+  "reading_time_minutes": 5,
+  "pinned": false,
+  "verified": "2026-03-18"
 }]
 }
