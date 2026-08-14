@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Source-Grounded AI Study Engine — Everyday AI Done Right</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAF9;
+      --text: #1C1C1E;
+      --text-muted: #6E6E73;
+      --card-bg: #FFFFFF;
+      --card-border: #E5E5E7;
+      --green: #0F8A5F;
+      --green-light: #E8F5E9;
+      --coral: #FF6B4A;
+      --coral-light: #FFF0ED;
+      --code-bg: #282C34;
+      --code-text: #ABB2BF;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      --radius: 16px;
+      --font-heading: 'Manrope', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #141414;
+      --text: #F4F4F3;
+      --text-muted: #989899;
+      --card-bg: #1E1E20;
+      --card-border: #2C2C2E;
+      --green: #22C58B;
+      --green-light: rgba(34, 197, 139, 0.15);
+      --coral: #FF8064;
+      --coral-light: rgba(255, 128, 100, 0.15);
+      --code-bg: #0F0F10;
+      --code-text: #E4E4E7;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
+
+    .topbar { position: sticky; top: 0; z-index: 100; background: var(--bg); border-bottom: 1px solid var(--card-border); backdrop-filter: blur(8px); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .home-link { text-decoration: none; color: var(--text); font-family: var(--font-heading); font-weight: 800; font-size: 0.95rem; }
+    .category-badge { font-family: var(--font-mono); font-size: 0.75rem; background: var(--card-border); color: var(--text); padding: 3px 8px; border-radius: 12px; text-transform: uppercase; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .read-time { font-size: 0.85rem; color: var(--text-muted); }
+    .theme-btn { background: none; border: 1px solid var(--card-border); color: var(--text); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 32px 20px 0 20px; }
+    .hero { margin-bottom: 32px; }
+    .badges { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .badge { font-family: var(--font-mono); font-size: 0.8rem; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+    .badge-verified { background: var(--green-light); color: var(--green); border: 1px solid var(--green); }
+    .badge-tool { background: var(--card-border); color: var(--text); }
+    .badge-tier { background: var(--coral-light); color: var(--coral); border: 1px solid var(--coral); }
+
+    h1 { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .pitch { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 24px; }
+
+    .cost-card, .widget-card, .step-container, .callout-break { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 24px; margin-bottom: 32px; box-shadow: var(--shadow); }
+    .cost-title, .widget-title { font-family: var(--font-heading); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 12px; }
+    .cost-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+    .cost-old { font-size: 1.6rem; text-decoration: line-through; color: var(--coral); font-family: var(--font-mono); font-weight: 700; }
+    .cost-new { font-size: 2.2rem; color: var(--green); font-family: var(--font-mono); font-weight: 800; }
+    .cost-sub { font-size: 0.9rem; color: var(--text-muted); margin-top: 8px; }
+
+    .input-group { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
+    .input-group input { width: 80px; padding: 8px 12px; border: 1px solid var(--card-border); border-radius: 8px; background: var(--bg); color: var(--text); font-family: var(--font-mono); font-size: 1rem; }
+    .preset-btns { display: flex; gap: 8px; margin-bottom: 16px; }
+    .preset-btn { background: var(--bg); border: 1px solid var(--card-border); color: var(--text); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+    .quota-result { padding: 16px; border-radius: 8px; background: var(--green-light); color: var(--green); font-weight: 600; font-size: 0.95rem; margin-bottom: 12px; }
+    .quota-result.over-limit { background: var(--coral-light); color: var(--coral); }
+    .source-line { font-size: 0.75rem; color: var(--text-muted); }
+
+    .stepper-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .stepper-progress { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); }
+    .step-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+    .step-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .step-content { display: none; }
+    .step-content.active { display: block; }
+    .step-title { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; }
+
+    .prompt-box { background: var(--code-bg); color: var(--code-text); border-radius: 12px; padding: 16px; position: relative; margin: 16px 0; font-family: var(--font-mono); font-size: 0.85rem; white-space: pre-wrap; overflow-x: auto; }
+    .copy-btn { position: absolute; top: 12px; right: 12px; background: rgba(255, 255, 255, 0.15); border: none; color: #FFF; padding: 4px 10px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.75rem; cursor: pointer; }
+
+    .callout-break { background: var(--coral-light); border-color: var(--coral); }
+    .callout-title { font-family: var(--font-heading); font-weight: 800; color: var(--coral); font-size: 1.1rem; margin-bottom: 12px; }
+
+    .thing-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; cursor: pointer; }
+    .thing-header { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-heading); font-weight: 700; }
+    .thing-body { display: none; margin-top: 12px; font-size: 0.95rem; color: var(--text-muted); border-top: 1px solid var(--card-border); padding-top: 12px; }
+    .thing-card.open .thing-body { display: block; }
+
+    .share-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0 32px 0; }
+    .share-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-family: var(--font-mono); cursor: pointer; }
+
+    footer { border-top: 1px solid var(--card-border); padding-top: 24px; margin-top: 48px; font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <a href="https://iggym.github.io/everyday-ai-done-right/" class="home-link">Everyday AI</a>
+      <span class="category-badge">Learning</span>
+    </div>
+    <div class="topbar-right">
+      <span class="read-time">3 min read</span>
+      <button class="theme-btn" onclick="toggleTheme()">Theme</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <header class="hero">
+      <div class="badges">
+        <span class="badge badge-verified">verified 2025-12-09</span>
+        <span class="badge badge-tool">NotebookLM (Google)</span>
+        <span class="badge badge-tier">T0 · Free Forever, No Card</span>
+      </div>
+      <h1>Build a Source-Grounded AI Study Engine from Any Textbook</h1>
+      <p class="pitch">
+        Convert dense PDF textbooks, lecture slides, and primary sources into an interactive, zero-hallucination study engine using NotebookLM. Zero dollars required, with no subscription tier or card required.
+      </p>
+
+      <div class="share-bar">
+        <a class="share-btn" id="shareX1" target="_blank" rel="noopener">X</a>
+        <a class="share-btn" id="shareLI1" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="share-btn" id="shareFB1" target="_blank" rel="noopener">Facebook</a>
+        <a class="share-btn" id="shareWA1" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="share-btn" id="shareRD1" target="_blank" rel="noopener">Reddit</a>
+        <a class="share-btn" id="shareEM1" target="_blank" rel="noopener">Email</a>
+        <button class="share-btn" onclick="copyLink(this)">Copy Link</button>
+      </div>
+    </header>
+
+    <div class="cost-card">
+      <div class="cost-title">Cost Comparison</div>
+      <div class="cost-row">
+        <span class="cost-old">$19.99/mo</span>
+        <span class="cost-new">$0.00</span>
+      </div>
+      <p class="cost-sub">Replaces PDF chat tools ($19.99/mo), flashcard apps ($35.99/yr), and private tutoring ($40+/hr).</p>
+    </div>
+
+    <div class="widget-card">
+      <div class="widget-title">Source Count Quota Checker</div>
+      <div class="input-group">
+        <label for="sourceInput">Sources to upload in one notebook:</label>
+        <input type="number" id="sourceInput" value="12" min="1" max="100" oninput="calculateQuota()">
+      </div>
+      <div class="preset-btns">
+        <button class="preset-btn" onclick="setPreset(5)">Chapter Review (5)</button>
+        <button class="preset-btn" onclick="setPreset(25)">Midterm Deck (25)</button>
+        <button class="preset-btn" onclick="setPreset(55)">Full Course (55)</button>
+      </div>
+      <div class="quota-result" id="quotaResult">
+        Within Free Limits — Usage fits inside the 50 sources per notebook capacity.
+      </div>
+      <div class="source-line">
+        Quota source: <a href="https://support.google.com/notebooklm/answer/14271120" target="_blank" rel="noopener">Google NotebookLM Documentation</a> (Verified 2025-12-09). Limits: 50 sources/notebook, 500k words/source.
+      </div>
+    </div>
+
+    <section>
+      <div class="stepper-header">
+        <span class="stepper-progress" id="stepProgress">Step 1 of 4</span>
+        <div class="step-nav-btns">
+          <button class="step-btn" id="prevBtn" onclick="changeStep(-1)" disabled>Previous</button>
+          <button class="step-btn" id="nextBtn" onclick="changeStep(1)">Next Step</button>
+        </div>
+      </div>
+
+      <div class="step-container">
+        <div class="step-content active" id="step1">
+          <h2 class="step-title">Step 1: Upload Primary Learning Sources</h2>
+          <div class="step-body">
+            Log in to <code>notebooklm.google.com</code> and create a new topic notebook. Upload up to 50 PDF files, text documents, or open-access textbook chapters.
+          </div>
+        </div>
+
+        <div class="step-content" id="step2">
+          <h2 class="step-title">Step 2: Submit Socratic Prompt</h2>
+          <div class="step-body">
+            Paste the prompt below into the notebook chat bar to establish active recall testing grounded strictly in your files.
+          </div>
+          <div class="prompt-box">
+            <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            <code id="promptTemplate">You are an expert academic tutor specializing in active recall and source-grounded learning.
+Analyze all uploaded sources in this notebook.
+
+Your objective:
+1. Conduct a diagnostic active-recall session testing my comprehension of key concepts.
+2. Ask me ONE targeted question at a time. Do not provide the answer upfront.
+3. Wait for my response before evaluating my accuracy.
+4. When evaluating my response, cite exact page numbers or section titles from the uploaded sources to back up your assessment.
+5. If my answer is incorrect, provide a subtle hint pointing to the relevant section rather than giving the solution directly.
+
+Begin by stating the top 3 core themes covered across these sources, then ask the first diagnostic question.</code>
+          </div>
+        </div>
+
+        <div class="step-content" id="step3">
+          <h2 class="step-title">Step 3: Respond Without Looking at Notes</h2>
+          <div class="step-body">
+            Answer the diagnostic question directly in the chat bar. The system evaluates your retention against exact source citations.
+          </div>
+        </div>
+
+        <div class="step-content" id="step4">
+          <h2 class="step-title">Step 4: Generate Citation-Backed Study Sheet</h2>
+          <div class="step-body">
+            Prompt NotebookLM to summarize your identified knowledge gaps into a single structured revision sheet with page-referenced inline citations.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="callout-break">
+      <div class="callout-title">⚠️ What Breaks & Failure Modes</div>
+      <ul>
+        <li><strong>Out-of-Scope Fallbacks:</strong> The system strictly ignores topics outside uploaded files. It will not fetch external web answers.</li>
+        <li><strong>Unindexed Scanned PDFs:</strong> Image-only PDF scans without embedded OCR text layers cannot be indexed. Ensure text is selectable before uploading.</li>
+        <li><strong>50-Source Cap per Workspace:</strong> Exceeding 50 files requires creating a secondary notebook workspace.</li>
+      </ul>
+    </div>
+
+    <section>
+      <h2 style="font-family: var(--font-heading); font-size: 1.3rem; margin-bottom: 16px;">Three Non-Obvious Strategies</h2>
+      
+      <div class="thing-card" onclick="toggleThing(this)">
+        <div class="thing-header">
+          <span>1. Source-Grounded Citation Anchor</span>
+          <span>+</span>
+        </div>
+        <div class="thing-body">
+          Every statement generated links directly to exact source snippets in your files, removing hallucinated answers common in open web models.
+        </div>
+      </div>
+
+      <div class="thing-card" onclick="toggleThing(this)">
+        <div class="thing-header">
+          <span>2. Synthetic Socratic Questioning Loop</span>
+          <span>+</span>
+        </div>
+        <div class="thing-body">
+          Forcing the AI to query you one item at a time builds neural retention far better than passively reading pre-generated bullet point lists.
+        </div>
+      </div>
+
+      <div class="thing-card" onclick="toggleThing(this)">
+        <div class="thing-header">
+          <span>3. Multi-Document Cross-Synthesis</span>
+          <span>+</span>
+        </div>
+        <div class="thing-body">
+          Uploading lecture slides alongside textbooks enables the engine to link professor emphasis points directly to textbook definitions.
+        </div>
+      </div>
+
+      <div class="share-bar">
+        <a class="share-btn" id="shareX2" target="_blank" rel="noopener">X</a>
+        <a class="share-btn" id="shareLI2" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="share-btn" id="shareFB2" target="_blank" rel="noopener">Facebook</a>
+        <a class="share-btn" id="shareWA2" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="share-btn" id="shareRD2" target="_blank" rel="noopener">Reddit</a>
+        <a class="share-btn" id="shareEM2" target="_blank" rel="noopener">Email</a>
+        <button class="share-btn" onclick="copyLink(this)">Copy Link</button>
+      </div>
+    </section>
+
+    <footer>
+      <div>Free-tier terms verified 2025-12-09 against <a href="https://support.google.com/notebooklm/answer/14271120" target="_blank" rel="noopener">Google NotebookLM Official Documentation</a>.</div>
+      <div>Ladder Tier: <strong>T0 — Permanent Free Tier, No Card Required</strong>.</div>
+      <div>
+        <a href="https://iggym.github.io/everyday-ai-done-right/">Home</a> · 
+        <a href="https://iggym.github.io/everyday-ai-done-right/">Browse More Guides</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+    }
+
+    function calculateQuota() {
+      const input = document.getElementById('sourceInput');
+      const val = parseInt(input.value) || 0;
+      const resultDiv = document.getElementById('quotaResult');
+
+      if (val <= 50) {
+        resultDiv.className = 'quota-result';
+        resultDiv.textContent = `Within Free Limits — ${val} source(s) fits inside the 50 sources per notebook allowance.`;
+      } else {
+        resultDiv.className = 'quota-result over-limit';
+        resultDiv.textContent = `Exceeds Single Notebook Limit — ${val} sources exceeds the 50-source limit per workspace. Split sources across 2 notebooks.`;
+      }
+    }
+
+    function setPreset(val) {
+      document.getElementById('sourceInput').value = val;
+      calculateQuota();
+    }
+
+    let currentStep = 1;
+    const totalSteps = 4;
+
+    function changeStep(delta) {
+      const nextStep = currentStep + delta;
+      if (nextStep < 1 || nextStep > totalSteps) return;
+
+      document.getElementById(`step${currentStep}`).classList.remove('active');
+      currentStep = nextStep;
+      document.getElementById(`step${currentStep}`).classList.add('active');
+
+      document.getElementById('stepProgress').textContent = `Step ${currentStep} of ${totalSteps}`;
+      document.getElementById('prevBtn').disabled = currentStep === 1;
+      document.getElementById('nextBtn').disabled = currentStep === totalSteps;
+    }
+
+    function copyPrompt(btn) {
+      const codeText = document.getElementById('promptTemplate').innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+      });
+    }
+
+    function copyLink(btn) {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy Link'; }, 1500);
+      });
+    }
+
+    function toggleThing(card) {
+      card.classList.toggle('open');
+      const symbol = card.querySelector('.thing-header span:last-child');
+      if (symbol) {
+        symbol.textContent = card.classList.contains('open') ? '−' : '+';
+      }
+    }
+
+    function setupShareLinks() {
+      const url = encodeURIComponent(window.location.href);
+      const pitchText = encodeURIComponent("Build a source-grounded AI study engine from any textbook using NotebookLM:");
+
+      document.getElementById('shareX1').href = `https://twitter.com/intent/tweet?text=${pitchText}&url=${url}`;
+      document.getElementById('shareLI1').href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+      document.getElementById('shareFB1').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('shareWA1').href = `https://api.whatsapp.com/send?text=${pitchText}%20${url}`;
+      document.getElementById('shareRD1').href = `https://www.reddit.com/submit?url=${url}&title=${pitchText}`;
+      document.getElementById('shareEM1').href = `mailto:?subject=${pitchText}&body=${url}`;
+
+      document.getElementById('shareX2').href = `https://twitter.com/intent/tweet?text=${pitchText}&url=${url}`;
+      document.getElementById('shareLI2').href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+      document.getElementById('shareFB2').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('shareWA2').href = `https://api.whatsapp.com/send?text=${pitchText}%20${url}`;
+      document.getElementById('shareRD2').href = `https://www.reddit.com/submit?url=${url}&title=${pitchText}`;
+      document.getElementById('shareEM2').href = `mailto:?subject=${pitchText}&body=${url}`;
+    }
+
+    setupShareLinks();
+  </script>
+</body>
+</html>
