@@ -12,50 +12,57 @@ Welcome! 👋 If you’ve ever felt like every useful AI tool requires a $20/mon
 Pick a category below to jump straight to the step-by-step verified guide:
 
 ### 💼 Career & Work
-> Level up your job hunt, sharpen your resume, and automate application workflow without paying career coaches.
+> Level up your job hunt, sharpen your resume, and automate application workflows without paying career coaches.
 
-* 📄 **[Resume Critique Guide](./articles/career-resume-critique.md)** — Get brutal, hiring-manager-grade feedback on your resume using free LLM reasoning.
-* 🎯 **[Tailored Application Engine](./articles/career-tailored-application.md)** — Adapt your cover letter and experience bullets to specific job descriptions in seconds.
-* 🤖 **[ATS Resume Engine](./articles/career-ats-resume.md)** — Format and optimize your resume to pass automated applicant tracking filters.
+* 📄 **[Resume Critique Guide](https://iggym.github.io/everyday-ai-done-right/articles/brutally-honest-resume-critique.html)** — Get brutal, hiring-manager-grade feedback on your resume using free LLM reasoning.
+* 🎯 **[Tailored Application Engine](https://iggym.github.io/everyday-ai-done-right/articles/tailor-resume-cover-letter-to-job-posting.html)** — Adapt your cover letter and experience bullets to specific job descriptions in seconds.
+* 🤖 **[ATS Resume Engine](https://iggym.github.io/everyday-ai-done-right/articles/beat-ats-screening-with-plain-text-resume.html)** — Format and optimize your resume to pass automated applicant tracking filters.
 
 ---
 
 ### 🥗 Health & Wellness
 > Turn everyday photos and voice notes into instant health insights, meal breakdowns, and routine tracking.
 
-* 📸 **[Health Screenshots Analyzer](./articles/health-screenshots.md)** — Make sense of confusing lab results, portal summaries, or medical bills.
-* 🍎 **[Food Photo Nutrition Tracker](./articles/health-food-photo-nutrition.md)** — Snap a quick picture of your plate to get instant calorie and macro estimates.
-* 🎙️ **[Voice Memo Nutrition Logger](./articles/health-voice-memo-nutrition.md)** — Speak what you ate into your phone and convert it into structured nutrition data.
+* 📸 **[Health Screenshots Analyzer](https://iggym.github.io/everyday-ai-done-right/articles/parse-lab-results-and-medical-bills.html)** — Make sense of confusing lab results, portal summaries, or medical bills.
+* 🍎 **[Food Photo Nutrition Tracker](https://iggym.github.io/everyday-ai-done-right/articles/food-photo-nutrition-breakdown.html)** — Snap a quick picture of your plate to get instant calorie and macro estimates.
+* 🎙️ **[Voice Memo Nutrition Logger](https://iggym.github.io/everyday-ai-done-right/articles/voice-memo-nutrition-and-meal-logger.html)** — Speak what you ate into your phone and convert it into structured nutrition data.
+
+---
+
+### 🧳 Travel & Exploration
+> Plan seamless trips, translate local phrases on the fly, and build custom itineraries without paying travel agent fees.
+
+* 🗺️ **[Smart Travel Itinerary Builder](https://iggym.github.io/everyday-ai-done-right/articles/turn-trip-confirmations-into-one-checked-itinerary.html)** — Turn scattered flight and hotel confirmations into one organized itinerary.
 
 ---
 
 ### 👁️ Accessibility & Assistive
 > Harness AI vision and speech capabilities to make the digital and physical world easier to navigate.
 
-* 📚 **[PDF Reader & Summarizer](./articles/accessibility-pdf-reader.md)** — Extract key takeaways, translate, or listen to long documents effortless.
-* 🗣️ **[Audio Transcription Flow](./articles/accessibility-audio-transcription.md)** — Convert long audio recordings into clean, formatted text transcripts.
-* 👆 **[Point & Speak Assistant](./articles/accessibility-point-and-speak.md)** — Use vision models to describe object photos or read real-world signage aloud.
+* 📚 **[PDF Reader & Summarizer](https://iggym.github.io/everyday-ai-done-right/articles/listen-to-long-pdfs-with-natural-ai-audio.html)** — Extract key takeaways, translate, or listen to long documents effortlessly.
+* 🗣️ **[Audio Transcription Flow](https://iggym.github.io/everyday-ai-done-right/articles/free-speech-to-text-audio-transcription.html)** — Convert long audio recordings into clean, formatted text transcripts.
+* 👆 **[Point & Speak Assistant](https://iggym.github.io/everyday-ai-done-right/articles/point-and-speak-camera-assistant-for-low-vision.html)** — Use vision models to describe object photos or read real-world signage aloud.
 
 ---
 
 ### 🎧 Learning & Study
 > Turn boring lectures, textbook notes, and research papers into personal tutor sessions.
 
-* 🎙️ **[Custom Study Podcast](./articles/learning-custom-study-podcast.md)** — Convert notes, slides, or chapters into custom audio study guides you can listen to anywhere.
+* 🎙️ **[Custom Study Podcast](https://iggym.github.io/everyday-ai-done-right/articles/turn-study-notes-into-a-personalized-podcast.html)** — Convert notes, slides, or chapters into custom audio study guides you can listen to anywhere.
 
 ---
 
 ### 🧾 Household & Budgeting
 > Keep your money in your pocket by auditing hidden fees and cutting recurring expenses.
 
-* 🔍 **[Invoice Hidden Fee Audit](./articles/household-invoice-hidden-fee-audit.md)** — Scan service bills, contractor quotes, and receipts for hidden charges or errors.
+* 🔍 **[Invoice Hidden Fee Audit](https://iggym.github.io/everyday-ai-done-right/articles/audit-contractor-invoices-and-utility-bills.html)** — Scan service bills, contractor quotes, and receipts for hidden charges or errors.
 
 ---
 
 ### ⚖️ Civic & Legal
 > Cut through legalese, confusing bureaucracy, and dense contracts.
 
-* 📜 **[Legal Jargon Decoder](./articles/civic-legal-jargon-decoder.md)** — Translate lease agreements, terms of service, and official letters into plain English.
+* 📜 **[Legal Jargon Decoder](https://iggym.github.io/everyday-ai-done-right/articles/decode-lease-agreements-and-legal-jargon.html)** — Translate lease agreements, terms of service, and official letters into plain English.
 
 ---
 
