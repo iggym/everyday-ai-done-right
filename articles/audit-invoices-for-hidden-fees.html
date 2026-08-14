@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Invoices for Hidden Fees | Everyday AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF9;
+    --ink: #1C1C1E;
+    --green: #0F8A5F;
+    --coral: #FF6B4A;
+    --card-bg: #FFFFFF;
+    --border: #E5E5E5;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  }
+
+  [data-theme="dark"] {
+    --paper: #141414;
+    --ink: #F4F4F3;
+    --green: #22C58B;
+    --coral: #FF8064;
+    --card-bg: #1E1E1E;
+    --border: #333333;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; line-height: 1.2; }
+  code, pre, .badge, .mono { font-family: 'JetBrains Mono', monospace; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Topbar */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--paper); border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(8px);
+  }
+  .home-link { color: var(--ink); text-decoration: none; font-weight: 800; font-family: 'Manrope', sans-serif; }
+  .category-badge {
+    background: var(--green); color: white; padding: 0.25rem 0.75rem;
+    border-radius: 99px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 1rem; }
+  .read-time { font-size: 0.85rem; opacity: 0.7; }
+  #theme-toggle {
+    background: none; border: 1px solid var(--border); border-radius: 50%;
+    width: 36px; height: 36px; cursor: pointer; font-size: 1.2rem; display: flex;
+    align-items: center; justify-content: center; color: var(--ink);
+  }
+
+  /* Container */
+  .container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+
+  /* Hero */
+  .hero { margin-bottom: 3rem; }
+  .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+  .pitch { font-size: 1.15rem; margin-bottom: 1.5rem; opacity: 0.9; }
+  .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .badge {
+    padding: 0.35rem 0.85rem; border-radius: 99px; font-size: 0.8rem; font-weight: 500;
+    border: 1px solid var(--border); background: var(--card-bg);
+  }
+  .badge.tool { border-color: var(--green); color: var(--green); }
+  .badge.verified { border-color: var(--coral); color: var(--coral); }
+
+  /* Cost Widget */
+  .cost-widget {
+    display: flex; justify-content: space-around; align-items: center;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow);
+  }
+  .cost-item { text-align: center; }
+  .label { display: block; font-size: 0.9rem; margin-bottom: 0.5rem; opacity: 0.7; }
+  .price { font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; }
+  .strike { text-decoration: line-through; color: var(--coral); animation: strikeIn 0.6s ease-out forwards; }
+  .zero { color: var(--green); animation: popIn 0.6s ease-out 0.4s forwards; opacity: 0; }
+
+  @keyframes strikeIn { from { text-decoration-color: transparent; } to { text-decoration-color: var(--coral); } }
+  @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+  /* Quota Widget */
+  .widget-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow);
+  }
+  .widget-card h3 { margin-bottom: 1rem; font-size: 1.25rem; }
+  .quota-slider { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+  .quota-slider input[type="range"] { flex: 1; accent-color: var(--green); }
+  .result-text {
+    padding: 1rem; border-radius: 8px; background: var(--paper); border: 1px solid var(--border);
+    min-height: 50px; font-weight: 500; transition: all 0.3s ease;
+  }
+  .quota-source { font-size: 0.75rem; opacity: 0.6; margin-top: 1rem; }
+  .quota-source a { color: var(--green); }
+
+  /* Stepper */
+  .stepper { margin-bottom: 2rem; }
+  .progress { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--green); margin-bottom: 1rem; font-weight: 600; }
+  .step-content {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 2rem; margin-bottom: 1rem; box-shadow: var(--shadow); display: none;
+  }
+  .step-content.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .step-content h4 { margin-bottom: 1rem; color: var(--green); }
+  .step-content a { color: var(--green); text-decoration: underline; }
+  
+  .prompt-box {
+    background: var(--paper); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1rem; position: relative; margin: 1rem 0;
+  }
+  .prompt-box pre { white-space: pre-wrap; font-size: 0.85rem; color: var(--ink); }
+  .copy-btn {
+    position: absolute; top: 0.5rem; right: 0.5rem; background: var(--green); color: white;
+    border: none; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.75rem;
+    cursor: pointer; font-family: 'JetBrains Mono', monospace;
+  }
+
+  .stepper-nav { display: flex; justify-content: space-between; gap: 1rem; }
+  .stepper-nav button {
+    flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--card-bg); color: var(--ink); font-weight: 600; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .stepper-nav button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .stepper-nav button:hover:not(:disabled) { border-color: var(--green); color: var(--green); }
+  .stepper-nav #next-btn { background: var(--green); color: white; border-color: var(--green); }
+
+  /* Breaks Widget */
+  .breaks-widget {
+    background: var(--card-bg); border: 2px solid var(--coral); border-radius: 16px;
+    padding: 1.5rem; margin-bottom: 2rem;
+  }
+  .breaks-widget h3 { color: var(--coral); margin-bottom: 1rem; }
+  .breaks-widget ul { padding-left: 1.5rem; }
+  .breaks-widget li { margin-bottom: 0.75rem; }
+
+  /* Three Things */
+  .three-things { margin-bottom: 2rem; }
+  .three-things h3 { margin-bottom: 1.5rem; }
+  .thing {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.5rem; margin-bottom: 1rem; box-shadow: var(--shadow);
+  }
+  .thing h4 { margin-bottom: 0.5rem; }
+  .hidden-text {
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height 0.4s ease, margin-top 0.4s ease, opacity 0.4s ease;
+  }
+  .thing[data-revealed="true"] .hidden-text { max-height: 300px; opacity: 1; margin-top: 1rem; }
+  .reveal-btn {
+    margin-top: 0.5rem; background: none; border: 1px solid var(--green); color: var(--green);
+    padding: 0.35rem 0.85rem; border-radius: 99px; font-size: 0.8rem; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .thing[data-revealed="true"] .reveal-btn { display: none; }
+
+  /* Share Bar */
+  .share-bar {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0;
+    padding: 1rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+  }
+  .share-pill {
+    padding: 0.4rem 0.8rem; border-radius: 99px; border: 1px solid var(--border);
+    text-decoration: none; color: var(--ink); font-size: 0.8rem; font-weight: 500;
+    transition: all 0.2s;
+  }
+  .share-pill:hover { border-color: var(--green); color: var(--green); }
+
+  /* Footer */
+  footer {
+    margin-top: 4rem; padding: 2rem; text-align: center; border-top: 1px solid var(--border);
+    font-size: 0.85rem; opacity: 0.7;
+  }
+  footer a { color: var(--green); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="https://iggym.github.io/everyday-ai-done-right/" class="home-link">Everyday AI</a>
+  <span class="category-badge">Household & Admin</span>
+  <div class="topbar-right">
+    <span class="read-time">4 min read</span>
+    <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <h1>Audit Invoices for Hidden Fees</h1>
+    <p class="pitch">Turn a dense, multi-page contractor invoice or medical Explanation of Benefits (EOB) into a clean, itemized spreadsheet to spot double-billing and hidden fees—using Mistral Le Chat, which is completely free forever with no credit card required, though it soft-caps at about 25 document chats per day.</p>
+    <div class="badges">
+      <span class="badge tool">Mistral Le Chat</span>
+      <span class="badge verified">Verified March 11, 2026</span>
+    </div>
+  </section>
+
+  <div class="share-bar" id="share-top">
+    <strong style="width:100%; margin-bottom:0.5rem;">Share this workflow:</strong>
+    <a href="https://twitter.com/intent/tweet?text=Stop%20overpaying%20for%20contractor%20or%20medical%20bills.%20Turn%20dense%20PDFs%20into%20itemized%20spreadsheets%20using%20Mistral%20Le%20Chat's%20free%20OCR.&url=" target="_blank" class="share-pill x">𝕏</a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=" target="_blank" class="share-pill linkedin">LinkedIn</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" class="share-pill fb">Facebook</a>
+    <a href="https://wa.me/?text=Stop%20overpaying%20for%20bills.%20Use%20Mistral%20Le%20Chat%20free%20OCR:%20" target="_blank" class="share-pill wa">WhatsApp</a>
+    <a href="https://www.reddit.com/submit?title=Audit%20Invoices%20for%20Hidden%20Fees&url=" target="_blank" class="share-pill reddit">Reddit</a>
+    <a href="mailto:?subject=Audit%20Invoices%20for%20Hidden%20Fees&body=Stop%20overpaying%20for%20bills.%20Use%20Mistral%20Le%20Chat%20free%20OCR:%20" class="share-pill email">Email</a>
+    <button class="share-pill copy-link-btn">Copy Link</button>
+  </div>
+
+  <div class="cost-widget">
+    <div class="cost-item">
+      <span class="label">Medical Billing Advocate</span>
+      <span class="price strike">$75/hr</span>
+    </div>
+    <div class="cost-item">
+      <span class="label">Your Cost</span>
+      <span class="price zero">$0</span>
+    </div>
+  </div>
+
+  <div class="widget-card quota-widget">
+    <h3>Quota Checker: Will you hit the limit?</h3>
+    <p>Le Chat free tier soft-caps at ~25 document chats per day.</p>
+    <div class="quota-slider">
+      <label for="doc-slider">Docs today:</label>
+      <input type="range" id="doc-slider" min="1" max="50" value="10">
+      <span id="slider-val" class="mono" style="font-weight:bold; color:var(--green);">10</span>
+    </div>
+    <div id="quota-result" class="result-text">You're well under the ~25 daily soft cap.</div>
+    <p class="quota-source">Quota source: <a href="https://mistral.ai/pricing" target="_blank">mistral.ai/pricing</a> (verified March 11, 2026)</p>
+  </div>
+
+  <div class="stepper">
+    <div class="progress">Step <span id="current-step">1</span> of 4</div>
+    
+    <div class="step-content active" id="step-1">
+      <h4>1. Create a free account</h4>
+      <p>Go to <a href="https://chat.mistral.ai" target="_blank">chat.mistral.ai</a> and sign up with an email or SSO. No credit card is required.</p>
+    </div>
+    
+    <div class="step-content" id="step-2">
+      <h4>2. Upload the document</h4>
+      <p>Click the attachment (paperclip) icon and upload your multi-page PDF (invoice, EOB, or estimate).</p>
+    </div>
+    
+    <div class="step-content" id="step-3">
+      <h4>3. Run the extraction prompt</h4>
+      <p>Paste the following text into the chat box:</p>
+      <div class="prompt-box">
+        <pre><code id="prompt-text">Extract every line item from this document into a CSV format inside a code block with these exact columns: Date, Description, Quantity, Unit Price, Total, Suspected Category, and Notes.
+
+Do not summarize or omit any rows. If you see duplicate line items, or fees that look like standard hidden markups (e.g., "admin fee", "processing fee", or "miscellaneous" over 3% of the total), flag them in the "Notes" column.</code></pre>
+        <button class="copy-btn" data-target="prompt-text">Copy</button>
+      </div>
+    </div>
+    
+    <div class="step-content" id="step-4">
+      <h4>4. Export and audit</h4>
+      <p>Copy the code block Mistral generates, paste it into a blank text file, and save it as <code>audit.csv</code>. Open it in Excel or Google Sheets, sort by the "Total" column, and review the "Notes" column for flagged errors.</p>
+    </div>
+
+    <div class="stepper-nav">
+      <button id="prev-btn" disabled>Previous</button>
+      <button id="next-btn">Next</button>
+    </div>
+  </div>
+
+  <div class="breaks-widget">
+    <h3>What breaks</h3>
+    <ul>
+      <li><strong>The Daily Cap:</strong> The free tier soft-caps at roughly 25 messages per day. If you are auditing a massive 50-page construction invoice that requires multiple back-and-forth prompts, you might hit the limit and have to wait until the next day.</li>
+      <li><strong>Reset Timing:</strong> The limit resets daily, but Mistral does not publish the exact UTC hour the counter rolls over.</li>
+      <li><strong>Scan Quality:</strong> Like all OCR, it struggles with severely blurred thermal scans or heavily creased receipts.</li>
+      <li><strong>Ladder Tier:</strong> T0 (Free forever, no card required).</li>
+    </ul>
+  </div>
+
+  <div class="three-things">
+    <h3>Three non-obvious things this teaches</h3>
+    
+    <div class="thing" data-revealed="false">
+      <h4>1. The CSV Code Block Trick</h4>
+      <p class="hidden-text">Asking for CSV format specifically "inside a code block" forces the LLM to maintain strict column alignment and comma separation, preventing the "markdown table" formatting issues that break when you try to paste them into Excel.</p>
+      <button class="reveal-btn">Reveal</button>
+    </div>
+
+    <div class="thing" data-revealed="false">
+      <h4>2. The "Suspected Category" Semantic Check</h4>
+      <p class="hidden-text">Adding a "Suspected Category" column forces the OCR model to semantically evaluate each line item. This catches miscoded medical procedures (e.g., an "admin fee" that is actually a duplicate lab charge) because the model has to assign it a logical bucket.</p>
+      <button class="reveal-btn">Reveal</button>
+    </div>
+
+    <div class="thing" data-revealed="false">
+      <h4>3. The Library Benefit Dead End</h4>
+      <p class="hidden-text">Searching for "free receipt scanner app library card" reveals that while libraries offer great free tech, they don't currently offer AI document extraction benefits—meaning you have to rely on lab free tiers like Mistral's rather than assuming your local library has a software license for you.</p>
+      <button class="reveal-btn">Reveal</button>
+    </div>
+  </div>
+
+  <div class="share-bar" id="share-bottom">
+    <strong style="width:100%; margin-bottom:0.5rem;">Found this useful?</strong>
+    <a href="https://twitter.com/intent/tweet?text=The%20CSV%20Code%20Block%20Trick%20for%20AI%20OCR.&url=" target="_blank" class="share-pill x">𝕏</a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=" target="_blank" class="share-pill linkedin">LinkedIn</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" class="share-pill fb">Facebook</a>
+    <a href="https://wa.me/?text=The%20CSV%20Code%20Block%20Trick%20for%20AI%20OCR:%20" target="_blank" class="share-pill wa">WhatsApp</a>
+    <a href="https://www.reddit.com/submit?title=Audit%20Invoices%20for%20Hidden%20Fees&url=" target="_blank" class="share-pill reddit">Reddit</a>
+    <a href="mailto:?subject=Audit%20Invoices%20for%20Hidden%20Fees&body=The%20CSV%20Code%20Block%20Trick:%20" class="share-pill email">Email</a>
+    <button class="share-pill copy-link-btn">Copy Link</button>
+  </div>
+
+</main>
+
+<footer>
+  <p>Free-tier terms verified March 11, 2026 against <a href="https://mistral.ai/pricing" target="_blank">mistral.ai/pricing</a>.</p>
+  <p>Ladder Tier: T0 (Permanent, no card).</p>
+  <p style="margin-top: 1rem;"><a href="https://iggym.github.io/everyday-ai-done-right/">Home</a> · <a href="https://iggym.github.io/everyday-ai-done-right/">Browse more guides</a></p>
+</footer>
+
+<script>
+  // Theme Toggle
+  const toggle = document.getElementById('theme-toggle');
+  const savedTheme = localStorage.getItem('eadr-theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+  toggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('eadr-theme', next);
+    toggle.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+  if (document.documentElement.getAttribute('data-theme') === 'dark') toggle.textContent = '☀️';
+
+  // Quota Checker
+  const slider = document.getElementById('doc-slider');
+  const sliderVal = document.getElementById('slider-val');
+  const quotaResult = document.getElementById('quota-result');
+  
+  slider.addEventListener('input', () => {
+    const val = parseInt(slider.value);
+    sliderVal.textContent = val;
+    if (val <= 25) {
+      quotaResult.textContent = "You're well under the ~25 daily soft cap.";
+      quotaResult.style.color = "var(--green)";
+    } else {
+      quotaResult.textContent = "You'll likely hit the daily soft cap. The limit resets daily (exact hour not published). If you exceed it, Le Chat Pro is $14.99/month.";
+      quotaResult.style.color = "var(--coral)";
+    }
+  });
+
+  // Stepper
+  let currentStep = 1;
+  const totalSteps = 4;
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const currentStepSpan = document.getElementById('current-step');
+
+  function updateStepper() {
+    document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+    document.getElementById(`step-${currentStep}`).classList.add('active');
+    currentStepSpan.textContent = currentStep;
+    prevBtn.disabled = currentStep === 1;
+    nextBtn.textContent = currentStep === totalSteps ? 'Finish' : 'Next';
+  }
+
+  prevBtn.addEventListener('click', () => { if (currentStep > 1) { currentStep--; updateStepper(); } });
+  nextBtn.addEventListener('click', () => { if (currentStep < totalSteps) { currentStep++; updateStepper(); } });
+
+  // Copy Buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.target;
+      const text = document.getElementById(targetId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = "Copied";
+        setTimeout(() => { btn.innerText = originalText; }, 1500);
+      });
+    });
+  });
+
+  // Three Things Reveal
+  document.querySelectorAll('.reveal-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.parentElement.setAttribute('data-revealed', 'true');
+    });
+  });
+
+  // Share Links & Copy Link
+  const pageUrl = encodeURIComponent(window.location.href);
+  document.querySelectorAll('.share-bar a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href.endsWith('=')) a.setAttribute('href', href + pageUrl);
+  });
+
+  document.querySelectorAll('.copy-link-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = "Copied";
+        setTimeout(() => { btn.innerText = originalText; }, 1500);
+      });
+    });
+  });
+</script>
+</body>
+</html>
