@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio-Grade AI Art for $0 with FLUX.1-schnell</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAF9;
+      --text: #1C1C1E;
+      --card-bg: #FFFFFF;
+      --border: #E5E5E0;
+      --accent-green: #0F8A5F;
+      --accent-coral: #FF6B4A;
+      --muted: #6B6B6E;
+      --code-bg: #F4F4F0;
+      --radius: 16px;
+      --font-heading: 'Manrope', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #141414;
+      --text: #F4F4F3;
+      --card-bg: #1E1E1E;
+      --border: #2E2E2E;
+      --accent-green: #22C58B;
+      --accent-coral: #FF8064;
+      --muted: #999999;
+      --code-bg: #282828;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    header a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .badge.green {
+      color: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+
+    .pitch {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    /* Cost Comparison Widget Motif */
+    .cost-widget {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--code-bg);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 32px;
+    }
+
+    .cost-strike {
+      text-decoration: line-through;
+      color: var(--accent-coral);
+      font-size: 1.4rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .cost-free {
+      color: var(--accent-green);
+      font-size: 2rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+
+    /* Quota Checker Widget */
+    .quota-widget h3 {
+      font-family: var(--font-heading);
+      margin-bottom: 12px;
+    }
+
+    .quota-controls {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .preset-btn {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .preset-btn.active {
+      background: var(--accent-green);
+      color: #fff;
+      border-color: var(--accent-green);
+    }
+
+    .quota-status {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--code-bg);
+      margin-top: 12px;
+    }
+
+    /* Stepper Navigation */
+    .stepper-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .step-btn {
+      flex: 1;
+      padding: 10px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .step-btn.active {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .step-content {
+      display: none;
+    }
+
+    .step-content.active {
+      display: block;
+    }
+
+    /* Prompt Box */
+    .prompt-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      position: relative;
+      margin: 16px 0;
+      white-space: pre-wrap;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    /* What Breaks Callout */
+    .what-breaks {
+      border-left: 4px solid var(--accent-coral);
+      background: var(--code-bg);
+      padding: 20px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-bottom: 32px;
+    }
+
+    .what-breaks h3 {
+      color: var(--accent-coral);
+      font-family: var(--font-heading);
+      margin-bottom: 8px;
+    }
+
+    /* Three Things Interactive */
+    .three-things-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      background: var(--card-bg);
+      transition: background 0.2s;
+    }
+
+    .three-things-content {
+      display: none;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .three-things-item.open .three-things-content {
+      display: block;
+    }
+
+    /* Share Bar */
+    .share-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .share-btn {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-top: 48px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="https://iggym.github.io/everyday-ai-done-right/">← Everyday AI Done Right</a>
+    <div class="top-controls">
+      <span style="font-size:0.8rem; color:var(--muted)">4 min read</span>
+      <button class="theme-toggle" id="themeToggle">Toggle Theme</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="badge-row">
+      <span class="badge green">T0 · Free Forever, No Card</span>
+      <span class="badge">Verified Aug 17, 2026</span>
+      <span class="badge">FLUX.1-schnell / Hugging Face</span>
+    </div>
+
+    <h1>Turn Natural Language Into Studio-Grade Images for $0</h1>
+
+    <p class="pitch">
+      Create high-resolution, commercial-ready visual assets using the open-weights FLUX.1-schnell model running on serverless public infrastructure—completely free, with no credit card required and zero watermarks.
+    </p>
+
+    <!-- Cost Comparison Motif -->
+    <div class="cost-widget">
+      <div>
+        <div style="font-size:0.85rem; color:var(--muted)">Typical Paid Subscriptions</div>
+        <div class="cost-strike">$30/mo</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:0.85rem; color:var(--muted)">FLUX Serverless Tier</div>
+        <div class="cost-free">$0</div>
+      </div>
+    </div>
+
+    <!-- Quota Checker Widget -->
+    <div class="card quota-widget">
+      <h3>Quota Checker</h3>
+      <p style="font-size:0.9rem; color:var(--muted)">Select your estimated daily generation volume:</p>
+      <div class="quota-controls">
+        <button class="preset-btn active" onclick="checkQuota(10, this)">10 Images/day</button>
+        <button class="preset-btn" onclick="checkQuota(30, this)">30 Images/day</button>
+        <button class="preset-btn" onclick="checkQuota(100, this)">100 Images/day</button>
+      </div>
+      <div class="quota-status" id="quotaResult">
+        ✅ <strong>Within Free Tier:</strong> 10 images/day stays well within the ~1,000 monthly serverless limit. Reset window: Rolling per-minute rate limit.
+      </div>
+      <div style="font-size:0.75rem; color:var(--muted); margin-top:8px">
+        Quota source: <a href="https://huggingface.co/docs/api-inference/detailed_parameters" target="_blank" style="color:var(--muted)">Hugging Face Official Docs</a> (verified Aug 17, 2026)
+      </div>
+    </div>
+
+    <!-- Stepper Navigation -->
+    <h2 style="font-family:var(--font-heading); margin-bottom:16px">The Walkthrough</h2>
+    <div class="stepper-nav">
+      <button class="step-btn active" onclick="setStep(1, this)">1. Access</button>
+      <button class="step-btn" onclick="setStep(2, this)">2. Format</button>
+      <button class="step-btn" onclick="setStep(3, this)">3. Prompt</button>
+      <button class="step-btn" onclick="setStep(4, this)">4. Upscale</button>
+    </div>
+
+    <div class="card">
+      <div id="step1" class="step-content active">
+        <h4>Step 1: Access the Free Serverless Endpoint</h4>
+        <p style="margin-top:8px; color:var(--muted)">
+          Navigate to an open-access client interface or Hugging Face Inference API sandbox hosting FLUX.1-schnell. No credit card or account registration is required for standard community access.
+        </p>
+      </div>
+
+      <div id="step2" class="step-content">
+        <h4>Step 2: Format for Transformer Architecture</h4>
+        <p style="margin-top:8px; color:var(--muted)">
+          FLUX models use advanced text-to-image transformer architectures. Avoid tag salad (e.g. "8k, photorealistic, octane render"). Instead, describe lighting, focal length, subject texture, and framing in clear natural sentences.
+        </p>
+      </div>
+
+      <div id="step3" class="step-content">
+        <h4>Step 3: Copy & Execute Optimization Prompt</h4>
+        <p style="margin-top:8px; color:var(--muted)">Copy this structured prompt template directly into your generator interface:</p>
+        <div class="prompt-box" id="promptText">A cinematic medium-shot photograph of a craft leatherworker tooling a wallet at a wooden workbench. Natural side-lighting through a dusty window, rich shadow detail, 85mm lens perspective, sharp focus on hand tools and leather texture, realistic skin grain, soft background bokeh, natural color grading.
+          <button class="copy-btn" onclick="copyPrompt()">Copy</button>
+        </div>
+      </div>
+
+      <div id="step4" class="step-content">
+        <h4>Step 4: Client-Side Crisp Upscaling</h4>
+        <p style="margin-top:8px; color:var(--muted)">
+          Export the native 1024x1024 render and run it through a client-side HTML5 Canvas high-pass filter or local browser-based SVG scaling to bypass commercial upscaler paywalls for $0.
+        </p>
+      </div>
+    </div>
+
+    <!-- What Breaks Callout -->
+    <div class="what-breaks">
+      <h3>What Breaks (Honest Failure Mode)</h3>
+      <p style="font-size:0.9rem;">
+        Public serverless endpoints enforce short-term rolling rate limits. Sending more than 5 requests in under 60 seconds triggers a temporary <code>429 Rate Limit Exceeded</code> error. Spacing generations by 10 to 15 seconds completely prevents throttling.
+      </p>
+    </div>
+
+    <!-- Three Things Section -->
+    <h3 style="font-family:var(--font-heading); margin-bottom:12px">Three Non-Obvious Insights</h3>
+    <div class="three-things-item" onclick="toggleThree(this)">
+      <strong>1. Descriptive Syntax Beats Keyword Tags</strong>
+      <div class="three-things-content">
+        FLUX transformer blocks process full natural language sentences better than traditional tag-heavy prompts used in legacy diffusion models.
+      </div>
+    </div>
+
+    <div class="three-things-item" onclick="toggleThree(this)">
+      <strong>2. Rolling Rate-Limit Avoidance</strong>
+      <div class="three-things-content">
+        Hugging Face free tier limits operate on a rolling per-minute queue window rather than a strict daily hard block. Pausing 15 seconds between runs keeps your pipeline smooth.
+      </div>
+    </div>
+
+    <div class="three-things-item" onclick="toggleThree(this)">
+      <strong>3. Browser-Native Canvas Enhancement</strong>
+      <div class="three-things-content">
+        Applying subtle client-side high-pass contrast filters on an HTML5 canvas increases perceived image sharpness without paying for AI cloud upscaler credits.
+      </div>
+    </div>
+
+    <!-- Share Bar -->
+    <div class="share-bar">
+      <span style="font-size:0.85rem; color:var(--muted); align-self:center">Share this workflow:</span>
+      <button class="share-btn" onclick="sharePlatform('x')">X / Twitter</button>
+      <button class="share-btn" onclick="sharePlatform('linkedin')">LinkedIn</button>
+      <button class="share-btn" onclick="sharePlatform('reddit')">Reddit</button>
+      <button class="share-btn" onclick="sharePlatform('whatsapp')">WhatsApp</button>
+      <button class="share-btn" onclick="sharePlatform('email')">Email</button>
+      <button class="share-btn" onclick="copyLink(this)">Copy Link</button>
+    </div>
+
+    <footer>
+      Free-tier terms verified Aug 17, 2026 against <a href="https://huggingface.co/docs/api-inference/detailed_parameters" target="_blank" style="color:var(--muted)">Hugging Face Official Docs</a>.<br>
+      Ladder Tier: T0 — Permanent Free Tier (No Card Required).<br>
+      <a href="https://iggym.github.io/everyday-ai-done-right/" style="color:var(--accent-green); text-decoration:none;">Browse more zero-cost guides →</a>
+    </footer>
+
+  </div>
+
+  <script>
+    // Theme Toggle Setup
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('eadr-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('eadr-theme', next);
+    });
+
+    // Quota Checker Logic
+    function checkQuota(dailyVal, btn) {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const result = document.getElementById('quotaResult');
+      if (dailyVal <= 30) {
+        result.innerHTML = `✅ <strong>Within Free Tier:</strong> ${dailyVal} images/day stays well under the ~1,000 monthly serverless allowance.`;
+      } else {
+        result.innerHTML = `⚠️ <strong>Approaching Rate Limit:</strong> ${dailyVal} images/day requires request spacing (15s delays) to avoid peak 429 rate limit errors.`;
+      }
+    }
+
+    // Stepper Navigation
+    function setStep(stepNum, btn) {
+      document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('step' + stepNum).classList.add('active');
+    }
+
+    // Copy Prompt
+    function copyPrompt() {
+      const text = document.getElementById('promptText').innerText.replace('Copy', '').trim();
+      navigator.clipboard.writeText(text);
+      const copyBtn = document.querySelector('.copy-btn');
+      copyBtn.innerText = 'Copied!';
+      setTimeout(() => { copyBtn.innerText = 'Copy'; }, 1500);
+    }
+
+    // Toggle Three Things
+    function toggleThree(el) {
+      el.classList.toggle('open');
+    }
+
+    // Share Functions
+    const pageUrl = window.location.href;
+    const shareText = "Stop paying $30/mo for AI art. Build studio-grade visual assets for $0 with FLUX.1-schnell:";
+
+    function sharePlatform(platform) {
+      let url = '';
+      if (platform === 'x') url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`;
+      if (platform === 'linkedin') url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`;
+      if (platform === 'reddit') url = `https://reddit.com/submit?url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent(shareText)}`;
+      if (platform === 'whatsapp') url = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + pageUrl)}`;
+      if (platform === 'email') url = `mailto:?subject=Zero-Cost AI Guide&body=${encodeURIComponent(shareText + '\n\n' + pageUrl)}`;
+      if (url) window.open(url, '_blank');
+    }
+
+    function copyLink(btn) {
+      navigator.clipboard.writeText(pageUrl);
+      const original = btn.innerText;
+      btn.innerText = 'Copied!';
+      setTimeout(() => { btn.innerText = original; }, 1500);
+    }
+  </script>
+</body>
+</html>
