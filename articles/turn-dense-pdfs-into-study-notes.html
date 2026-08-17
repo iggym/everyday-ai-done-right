@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turn Dense PDFs Into Structured Study Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #FAFAF9;
+  --ink: #1C1C1E;
+  --green: #0F8A5F;
+  --coral: #FF6B4A;
+  --gray: #888;
+  --border: #E5E5E4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141414;
+    --ink: #F4F4F3;
+    --green: #22C58B;
+    --coral: #FF8064;
+    --gray: #888;
+    --border: #2A2A2A;
+  }
+}
+[data-theme="dark"] {
+  --paper: #141414;
+  --ink: #F4F4F3;
+  --green: #22C58B;
+  --coral: #FF8064;
+  --gray: #888;
+  --border: #2A2A2A;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; line-height: 1.6; transition: background 0.3s, color 0.3s; }
+.topbar { position: sticky; top: 0; background: var(--paper); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+.topbar a { color: var(--ink); text-decoration: none; font-family: 'Manrope', sans-serif; font-weight: 700; }
+.topbar-info { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; opacity: 0.7; display: flex; gap: 1rem; align-items: center; }
+.theme-toggle { cursor: pointer; background: none; border: 1px solid var(--border); border-radius: 12px; padding: 0.3rem 0.6rem; font-family: 'JetBrains Mono', monospace; color: var(--ink); }
+.container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+.hero h1 { font-family: 'Manrope', sans-serif; font-size: 2.5rem; margin-bottom: 1rem; line-height: 1.2; }
+.pitch { font-size: 1.1rem; margin-bottom: 1.5rem; opacity: 0.9; }
+.badges { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.badge { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 0.3rem 0.6rem; border-radius: 12px; border: 1px solid var(--border); }
+.badge-green { color: var(--green); border-color: var(--green); }
+.badge-coral { color: var(--coral); border-color: var(--coral); }
+.widget-card { background: var(--paper); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.cost-widget { text-align: center; }
+.strike-price { font-family: 'Manrope', sans-serif; font-size: 1.5rem; color: var(--gray); text-decoration: line-through; position: relative; animation: strikeIn 1s forwards; }
+.free-price { font-family: 'Manrope', sans-serif; font-size: 2.5rem; color: var(--green); display: inline-block; animation: popIn 0.5s 0.5s backwards; }
+@keyframes strikeIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
+@keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.stepper { margin-bottom: 2rem; }
+.step-progress { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; margin-bottom: 1rem; color: var(--gray); }
+.step-content { min-height: 150px; padding: 1rem; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1rem; }
+.step-content h3 { font-family: 'Manrope', sans-serif; margin-bottom: 0.5rem; }
+.step-nav { display: flex; gap: 0.5rem; }
+.step-btn { flex: 1; padding: 0.5rem; text-align: center; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; transition: background 0.2s; }
+.step-btn.active { background: var(--green); color: white; border-color: var(--green); }
+.prompt-box { position: relative; background: var(--ink); color: var(--paper); padding: 1rem; border-radius: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin: 1rem 0; white-space: pre-wrap; }
+.copy-btn { position: absolute; top: 10px; right: 10px; background: var(--paper); color: var(--ink); border: none; padding: 0.3rem 0.6rem; border-radius: 8px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+.copied-msg { color: var(--green); font-size: 0.75rem; margin-left: 0.5rem; display: none; }
+.breaks-box { border-left: 4px solid var(--coral); padding-left: 1rem; margin-bottom: 2rem; font-style: italic; }
+.three-things-btn { width: 100%; padding: 1rem; background: none; border: 1px dashed var(--border); border-radius: 12px; cursor: pointer; color: var(--ink); font-family: 'Manrope', sans-serif; font-weight: 600; margin-bottom: 2rem; transition: background 0.2s; }
+.three-things-content { display: none; margin-bottom: 2rem; }
+.three-things-content ul { list-style-type: none; }
+.three-things-content li { padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+.share-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.share-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 50%; cursor: pointer; font-size: 1rem; transition: transform 0.2s; text-decoration: none; color: var(--ink); }
+.share-btn:hover { transform: scale(1.1); }
+.quota-checker { display: flex; flex-direction: column; gap: 1rem; }
+.quota-input { padding: 0.8rem; border-radius: 12px; border: 1px solid var(--border); background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; }
+.quota-input:focus { outline: 2px solid var(--green); }
+.quota-result { font-weight: 600; }
+.quota-source { font-size: 0.75rem; color: var(--gray); margin-top: 0.5rem; word-break: break-all; }
+footer { border-top: 1px solid var(--border); padding-top: 2rem; font-size: 0.8rem; color: var(--gray); }
+footer a { color: var(--green); }
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="https://iggym.github.io/everyday-ai-done-right/">Home</a>
+  <div class="topbar-info">
+    <span>Learning</span>
+    <span>5 min read</span>
+    <button class="theme-toggle" onclick="toggleTheme()">Theme</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="hero">
+    <h1>Turn Dense PDFs Into Structured Study Notes</h1>
+    <p class="pitch" id="pitch-text">Upload a 100-page textbook PDF into Google AI Studio's free tier and generate structured, page-referenced study notes and flashcards—no credit card required, up to 1,500 requests a day.</p>
+    <div class="badges">
+      <span class="badge badge-green">Verified May 19, 2024</span>
+      <span class="badge badge-coral">Gemini 1.5 Flash</span>
+      <span class="badge">T0: Free, No Card</span>
+    </div>
+  </div>
+
+  <div class="widget-card cost-widget">
+    <div class="strike-price">$7.99/mo (Quizlet Plus)</div>
+    <div class="free-price">$0</div>
+  </div>
+
+  <div class="share-bar" id="share-bar-top"></div>
+
+  <div class="stepper">
+    <div class="step-progress" id="step-progress">Step 1 of 5</div>
+    <div class="step-content" id="step-content"></div>
+    <div class="step-nav" id="step-nav"></div>
+  </div>
+
+  <div class="prompt-box">
+    Read the uploaded PDF. Generate comprehensive study notes grouped by major topic. 
+    For every key concept, provide a 2-sentence summary. 
+    At the end, generate a code block containing flashcards in CSV format (Front, Back). 
+    Append the page number [p. X] to the end of every summary and flashcard answer 
+    to ground the information in the source text.
+    <button class="copy-btn" onclick="copyPrompt()">Copy</button>
+    <span class="copied-msg" id="copy-msg">Copied!</span>
+  </div>
+
+  <div class="breaks-box widget-card">
+    <strong>What breaks:</strong><br>
+    The free tier limits you to 15 requests per minute. If you spam the "Run" button, you will hit a 429 rate limit error and must wait 60 seconds. You also have 1,500 requests per day. If you exceed this, you are locked out until midnight Pacific Time. Do not upload highly sensitive documents as data may be used to improve services.
+  </div>
+
+  <button class="three-things-btn" onclick="toggleThreeThings()">Click to unlock "Three Things" you learned</button>
+  <div class="three-things-content" id="three-things-content">
+    <ul>
+      <li><strong>Bypass web app limits:</strong> Hosted chat apps cap uploads, but AI Studio allows processing massive textbooks (up to 1M tokens) for free.</li>
+      <li><strong>CSV output for Anki:</strong> Formatting flashcards as raw CSV allows direct import into open-source study apps like Anki.</li>
+      <li><strong>Page-referenced citations:</strong> Forcing the AI to append [p. X] grounds the output in the source text, preventing hallucinated study material.</li>
+    </ul>
+  </div>
+
+  <div class="widget-card quota-checker">
+    <h3>Quota Checker</h3>
+    <p>Will you hit the limit?</p>
+    <input type="number" class="quota-input" id="req-input" placeholder="Expected requests per day" oninput="checkQuota()">
+    <div class="quota-result" id="quota-result">Enter a number to check.</div>
+    <div class="quota-source">Quota source: <a href="https://ai.google.dev/pricing" target="_blank">https://ai.google.dev/pricing</a> (verified May 19, 2024)</div>
+  </div>
+
+  <div class="share-bar" id="share-bar-bottom"></div>
+
+  <footer>
+    <p>Free-tier terms verified May 19, 2024 against <a href="https://ai.google.dev/pricing" target="_blank">https://ai.google.dev/pricing</a>.</p>
+    <p>Ladder Tier: T0 — PERMANENT, NO CARD. Free forever, no payment method, no trial clock.</p>
+    <br>
+    <a href="https://iggym.github.io/everyday-ai-done-right/">Home</a> | <a href="https://iggym.github.io/everyday-ai-done-right/">browse more guides</a>
+  </footer>
+</div>
+
+<script>
+const steps = [
+  { title: "Open Google AI Studio", content: "Go to aistudio.google.com and sign in with a standard Google account. You do not need to enter billing information." },
+  { title: "Create a new prompt", content: 'Click "Create new prompt" and select "Chat prompt" from the dropdown menu.' },
+  { title: "Upload your material", content: 'Click the "+" button in the left panel, choose "Upload File," and select your PDF textbook chapter or lecture notes.' },
+  { title: "Run the prompt", content: "Copy and paste the prompt template below into the chat box and hit Run." },
+  { title: "Export your flashcards", content: "Take the CSV code block the AI generates, save it as a .txt file, and import it directly into Anki or your preferred study app." }
+];
+
+let currentStep = 0;
+const stepContent = document.getElementById('step-content');
+const stepNav = document.getElementById('step-nav');
+const stepProgress = document.getElementById('step-progress');
+
+function renderStep() {
+  stepProgress.innerText = `Step ${currentStep + 1} of ${steps.length}`;
+  stepContent.innerHTML = `<h3>${steps[currentStep].title}</h3><p>${steps[currentStep].content}</p>`;
+  
+  stepNav.innerHTML = '';
+  steps.forEach((step, index) => {
+    const btn = document.createElement('div');
+    btn.className = `step-btn ${index === currentStep ? 'active' : ''}`;
+    btn.innerText = `Step ${index + 1}`;
+    btn.onclick = () => { currentStep = index; renderStep(); };
+    stepNav.appendChild(btn);
+  });
+}
+renderStep();
+
+function copyPrompt() {
+  const promptText = `Read the uploaded PDF. Generate comprehensive study notes grouped by major topic. 
+For every key concept, provide a 2-sentence summary. 
+At the end, generate a code block containing flashcards in CSV format (Front, Back). 
+Append the page number [p. X] to the end of every summary and flashcard answer 
+to ground the information in the source text.`;
+  navigator.clipboard.writeText(promptText);
+  document.getElementById('copy-msg').style.display = 'inline';
+  setTimeout(() => { document.getElementById('copy-msg').style.display = 'none'; }, 1500);
+}
+
+function toggleThreeThings() {
+  const content = document.getElementById('three-things-content');
+  if(content.style.display === 'block') {
+    content.style.display = 'none';
+  } else {
+    content.style.display = 'block';
+  }
+}
+
+function checkQuota() {
+  const input = document.getElementById('req-input').value;
+  const result = document.getElementById('quota-result');
+  if (!input) { result.innerText = "Enter a number to check."; return; }
+  
+  const reqs = parseInt(input);
+  if (reqs > 1500) {
+    result.innerText = `Exceeds free tier. You need ${reqs - 1500} more requests. Locked out until midnight Pacific Time.`;
+    result.style.color = 'var(--coral)';
+  } else if (reqs > 15) {
+    result.innerText = `Within daily limit, but do not send more than 15 per minute to avoid 429 errors.`;
+    result.style.color = 'var(--coral)';
+  } else {
+    result.innerText = `Stays under free quota. Safe to proceed.`;
+    result.style.color = 'var(--green)';
+  }
+}
+
+const shareLinks = [
+  { name: "X", url: "https://twitter.com/intent/tweet?text=" + encodeURIComponent("Turn dense PDFs into structured study notes and flashcards for free using Google AI Studio. No credit card required! 📚 #AI #StudyTools") },
+  { name: "in", url: "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(window.location.href) },
+  { name: "f", url: "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location.href) },
+  { name: "W", url: "https://api.whatsapp.com/send?text=" + encodeURIComponent("Turn dense PDFs into structured study notes and flashcards for free using Google AI Studio. No credit card required! 📚") },
+  { name: "R", url: "http://www.reddit.com/submit?url=" + encodeURIComponent(window.location.href) + "&title=" + encodeURIComponent("Turn Dense PDFs Into Structured Study Notes") },
+  { name: "@", url: "mailto:?subject=Turn%20Dense%20PDFs%20Into%20Structured%20Study%20Notes&body=" + encodeURIComponent("Turn dense PDFs into structured study notes and flashcards for free using Google AI Studio. No credit card required! 📚") }
+];
+
+function renderShareBars() {
+  const topBar = document.getElementById('share-bar-top');
+  const bottomBar = document.getElementById('share-bar-bottom');
+  
+  shareLinks.forEach(link => {
+    const a = document.createElement('a');
+    a.href = link.url;
+    a.target = "_blank";
+    a.className = "share-btn";
+    a.innerText = link.name;
+    topBar.appendChild(a.cloneNode(true));
+    bottomBar.appendChild(a);
+  });
+
+  const copyLink = document.createElement('div');
+  copyLink.className = "share-btn";
+  copyLink.innerText = "🔗";
+  copyLink.onclick = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Link Copied!");
+  };
+  topBar.appendChild(copyLink.cloneNode(true));
+  bottomBar.appendChild(copyLink);
+}
+renderShareBars();
+
+function toggleTheme() {
+  const current = localStorage.getItem('eadr-theme') || 'auto';
+  let newTheme = current === 'dark' ? 'light' : 'dark';
+  if (current === 'auto') newTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('eadr-theme', newTheme);
+}
+
+(function initTheme(){
+  const saved = localStorage.getItem('eadr-theme') || 'auto';
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  else if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+})();
+</script>
+</body>
+</html>
