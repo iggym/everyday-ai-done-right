@@ -8,6 +8,26 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "1024",
+  "slug": "prompt-injection-detector",
+  "title": "Prompt Injection Detector",
+  "hook": "Stop LLM hijacks. Drop a system prompt and watch injection vectors cluster.",
+  "path": "tools/prompt-injection-detector.html",
+  "date": "2026-08-16",
+  "status": "published",
+  "format": "tool",
+  "solution_mode": "browser-native",
+  "how_free": "Browser Native JS - $0 forever, no external APIs needed",
+  "source_url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+  "produces": "JSON",
+  "accepts": ["text/plain"],
+  "tags": ["ai-syseng", "security", "browser-native", "regex"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-16",
+  "visuals": ["why-chart", "how-flow", "utility-dashboard", "sortable-table"],
+  "prompt_targets": ["openai", "anthropic", "google", "open-weight"]
+},{
   "id": "0014",
   "slug": "turn-40-page-pdf-into-plain-language-answers",
   "title": "Turn a 40-Page PDF Into Plain-Language Answers",
