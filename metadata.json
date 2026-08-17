@@ -9,6 +9,23 @@
   },
   "articles": [
     {
+  "id": "0052",
+  "slug": "clean-noisy-voice-recordings-free",
+  "title": "Clean Noisy Voice Recordings for Free",
+  "hook": "Remove steady background noise and room echo from spoken-word audio with Adobe Podcast’s free plan: no card, but audio only, 30 minutes per file and 60 minutes per day.",
+  "path": "articles/clean-noisy-voice-recordings-free.html",
+  "date": "2026-08-17",
+  "status": "published",
+  "format": "guide",
+  "category": "creative",
+  "tool": "Adobe Podcast Enhance Speech (Adobe, free plan)",
+  "tool_family": "Adobe (Podcast)",
+  "source_url": "https://podcast.adobe.com/en/plans",
+  "tags": ["audio-cleanup", "voice-recording", "creative"],
+  "reading_time_minutes": 7,
+  "pinned": false,
+  "verified": "2026-08-17"
+},{
   "id": "5001",
   "slug": "lift-subjects-from-photos-free-built-in-os",
   "title": "Lift Subjects From Photos for Free Using Built-In OS Tools",
