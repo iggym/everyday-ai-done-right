@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0001",
+  "slug": "turn-dense-pdfs-into-study-notes",
+  "title": "Turn Dense PDFs Into Structured Study Notes",
+  "hook": "Upload a 100-page textbook PDF into Google AI Studio's free tier and generate structured, page-referenced study notes and flashcards—no credit card required.",
+  "path": "articles/turn-dense-pdfs-into-study-notes.html",
+  "date": "May 19, 2024",
+  "status": "published",
+  "format": "guide",
+  "category": "learning",
+  "tool": "Gemini 1.5 Flash (Google AI Studio, free tier)",
+  "tool_family": "Google (Gemini/AI Studio)",
+  "source_url": "https://ai.google.dev/pricing",
+  "tags": ["learning", "pdf", "study-notes", "gemini", "google-ai-studio"],
+  "reading_time_minutes": 5,
+  "pinned": false,
+  "verified": "May 19, 2024"
+},{
   "id": "0014"
   "slug": "turn-40-page-pdf-into-plain-language-answers",
   "title": "Turn a 40-Page PDF Into Plain-Language Answers",
