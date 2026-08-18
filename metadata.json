@@ -7,8 +7,50 @@
     "audience": "Anyone, anywhere, seeking practical 100% free AI workflows — no paid API keys, no credit card, no subscription tier",
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
-  "articles": [
-  {
+  "articles": [{
+  "id": "5003",
+  "slug": "custom-ai-storybook-coloring-sheet-generator",
+  "title": "Create Custom AI Storybooks and Coloring Pages for $0",
+  "hook": "Generate personalized 3-chapter children's bedtime stories and printable line-art coloring sheets using Pollinations.ai's open endpoints—100% free, no credit card, no account required.",
+  "path": "articles/custom-ai-storybook-coloring-sheet-generator.html",
+  "date": "2026-08-18",
+  "status": "published",
+  "format": "guide",
+  "category": "family",
+  "tool": "Pollinations.ai Open Endpoints",
+  "tool_family": "Pollinations",
+  "source_url": "https://pollinations.ai",
+  "tags": ["family", "parenting", "storybook", "coloring-pages", "pollinations", "free-tier"],
+  "reading_time_minutes": 5,
+  "pinned": false,
+  "verified": "2026-08-18"
+},{
+  "id": "1050",
+  "slug": "turn-paper-mail-into-calendar-reminders",
+  "title": "Turn Paper Mail & Notices Into Calendar Reminders",
+  "hook": "Snap a photo of jury summons, tax bills, or school flyers with Google Gemini's free tier to extract dates, action items, and create structured calendar events without paid OCR apps.",
+  "path": "articles/turn-paper-mail-into-calendar-reminders.html",
+  "date": "2026-08-18",
+  "status": "published",
+  "format": "guide",
+  "category": "household",
+  "tool": "Gemini 2.0 Flash (Google AI Studio, free tier)",
+  "tool_family": "Google",
+  "source_url": "https://ai.google.dev/pricing",
+  "tags": [
+    "paper-mail",
+    "ocr",
+    "calendar",
+    "scheduling",
+    "household-admin",
+    "gemini",
+    "google-ai-studio",
+    "free-tier"
+  ],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2026-08-18"
+},{
   "id": "0003",
   "slug": "turn-long-school-newsletters-into-actionable-family-calendars-for-free",
   "title": "Turn Long School Newsletters Into Actionable Family Calendars for Free",
