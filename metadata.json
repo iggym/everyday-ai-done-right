@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0004",
+  "slug": "vectorize-hand-drawn-sketches-clean-svgs-free",
+  "title": "Vectorize Hand-Drawn Sketches Into Clean SVGs for Free",
+  "hook": "Upload a photo of your pen-and-paper sketch to Claude's free tier and instantly receive clean, scalable SVG code you can use in digital designs—no credit card required, but limited to roughly 10–15 messages per 8-hour window.",
+  "path": "articles/vectorize-hand-drawn-sketches-clean-svgs-free.html",
+  "date": "2026-08-18",
+  "status": "published",
+  "format": "guide",
+  "category": "Creative",
+  "tool": "Claude 3.5 Sonnet (claude.ai, free tier)",
+  "tool_family": "Anthropic",
+  "source_url": "https://support.anthropic.com/en/articles/8324991-about-claude-ai-free-plan",
+  "tags": ["creative", "design", "svg", "vector", "claude", "free-tier"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-18"
+},{
   "id": "5003",
   "slug": "custom-ai-storybook-coloring-sheet-generator",
   "title": "Create Custom AI Storybooks and Coloring Pages for $0",
