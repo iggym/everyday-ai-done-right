@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom AI Storybook & Coloring Page Generator — Everyday AI, Done Right</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-card: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --border: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        p.description {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background-color: var(--bg-card);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--bg-surface);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            height: fit-content;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid var(--accent);
+            border-color: transparent;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: var(--accent);
+            color: #0f172a;
+            font-weight: 700;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        button:disabled {
+            background-color: var(--border);
+            cursor: not-allowed;
+            color: var(--text-muted);
+        }
+
+        .output-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .story-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+
+        .story-card h2 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .chapter {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chapter:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .chapter h3 {
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+
+        .coloring-image {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            border-radius: 0.5rem;
+            border: 2px solid #ffffff;
+            margin-top: 1rem;
+            background-color: #ffffff;
+            display: block;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #0f172a;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+                padding: 0;
+            }
+            .panel, header, .badge-container, button {
+                display: none !important;
+            }
+            .grid {
+                display: block;
+            }
+            .story-card {
+                border: none;
+                background: transparent;
+                padding: 0;
+            }
+            .chapter {
+                page-break-after: always;
+                border-bottom: none;
+            }
+            .coloring-image {
+                border: 1px solid #000000;
+                filter: grayscale(100%) contrast(200%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Custom AI Storybook Generator</h1>
+        <p class="description">Generate personalized children's stories with matching printable coloring pages for free using Pollinations.ai.</p>
+        <div class="badge-container">
+            <span class="badge">100% Free</span>
+            <span class="badge">No Credit Card</span>
+            <span class="badge">No Account Required</span>
+            <span class="badge">Print-Ready Output</span>
+        </div>
+    </header>
+
+    <div class="grid">
+        <aside class="panel">
+            <form id="storyForm">
+                <div class="form-group">
+                    <label for="childName">Child's Name</label>
+                    <input type="text" id="childName" placeholder="e.g., Maya" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="heroType">Main Character / Companion</label>
+                    <input type="text" id="heroType" placeholder="e.g., a friendly blue dragon" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="setting">Setting</label>
+                    <input type="text" id="setting" placeholder="e.g., an enchanted cloud kingdom" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="theme">Story Lesson / Theme</label>
+                    <select id="theme">
+                        <option value="sharing and generosity">Sharing & Generosity</option>
+                        <option value="courage and curiosity">Courage & Curiosity</option>
+                        <option value="kindness to animals">Kindness to Animals</option>
+                        <option value="solving problems together">Teamwork & Problem Solving</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="submitBtn">Generate Story & Coloring Pages</button>
+            </form>
+        </aside>
+
+        <main class="output-container">
+            <article class="story-card" id="outputCard">
+                <h2>Your Custom Storybook Will Appear Here</h2>
+                <p style="color: var(--text-muted);">Fill out the parameters on the left and click generate to create a custom 3-chapter story with line-art coloring sheets.</p>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('storyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const outputCard = document.getElementById('outputCard');
+
+            const childName = document.getElementById('childName').value.trim();
+            const heroType = document.getElementById('heroType').value.trim();
+            const setting = document.getElementById('setting').value.trim();
+            const theme = document.getElementById('theme').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading-spinner"></span>Writing Story...';
+
+            outputCard.innerHTML = '<h2>Writing story and generating coloring pages...</h2><p style="color: var(--text-muted);">This takes approximately 10-15 seconds.</p>';
+
+            try {
+                const promptText = `Write a 3-chapter children's story for a child named ${childName}. The companion is ${heroType}, set in ${setting}. Theme: ${theme}. Format response as valid JSON with structure: {"title": "Story Title", "chapters": [{"heading": "Chapter 1 Title", "text": "Chapter body text..."}, {"heading": "Chapter 2 Title", "text": "Chapter body text..."}, {"heading": "Chapter 3 Title", "text": "Chapter body text..."}]}. Output raw JSON only.`;
+
+                const textApiUrl = `https://text.pollinations.ai/${encodeURIComponent(promptText)}?json=true`;
+                const response = await fetch(textApiUrl);
+                const rawText = await response.text();
+
+                let storyData;
+                try {
+                    storyData = JSON.parse(rawText);
+                } catch(err) {
+                    // Fallback parser if JSON mode returns wrapped markdown
+                    const cleaned = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                    storyData = JSON.parse(cleaned);
+                }
+
+                outputCard.innerHTML = `<h2>${escapeHtml(storyData.title)}</h2>`;
+
+                for (let i = 0; i < storyData.chapters.length; i++) {
+                    const chap = storyData.chapters[i];
+                    const chapterNum = i + 1;
+
+                    // Image Prompt designed for black and white coloring page outline
+                    const imagePrompt = `Black and white coloring book page for kids, clean line art, high contrast vector outline, white background, no shading, no color: ${heroType} and ${childName} in ${setting}, chapter ${chapterNum}`;
+                    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=800&height=600&nologo=true&seed=${Math.floor(Math.random() * 100000)}`;
+
+                    const chapDiv = document.createElement('div');
+                    chapDiv.className = 'chapter';
+                    chapDiv.innerHTML = `
+                        <h3>${escapeHtml(chap.heading)}</h3>
+                        <p>${escapeHtml(chap.text)}</p>
+                        <img class="coloring-image" src="${imageUrl}" alt="Coloring Page Outline for Chapter ${chapterNum}" loading="lazy">
+                    `;
+                    outputCard.appendChild(chapDiv);
+                }
+
+            } catch (error) {
+                console.error(error);
+                outputCard.innerHTML = `<h2>Error Generating Story</h2><p style="color: #ef4444;">Could not fetch story data. Please check your network connection and try again.</p>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Generate Story & Coloring Pages';
+            }
+        });
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
+        }
+    </script>
+</body>
+</html>
