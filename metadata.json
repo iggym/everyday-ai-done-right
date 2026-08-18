@@ -9,6 +9,23 @@
   },
   "articles": [
   {
+  "id": "5002",
+  "slug": "process-unstructured-business-emails-crm-json",
+  "title": "Process Unstructured Business Emails into Clean CRM JSON for Free",
+  "hook": "Convert incoming client inquiry emails into structured JSON data ready for your database or CRM using Cloudflare Workers AI free tier—up to 150 daily runs, no credit card required.",
+  "path": "articles/process-unstructured-business-emails-crm-json.html",
+  "date": "2026-08-18",
+  "status": "published",
+  "format": "guide",
+  "category": "business",
+  "tool": "Cloudflare Workers AI (@cf/meta/llama-3-8b-instruct)",
+  "tool_family": "Cloudflare",
+  "source_url": "https://developers.cloudflare.com/workers-ai/platform/pricing/",
+  "tags": ["business", "crm", "json-extraction", "cloudflare", "free-tier", "llama3"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2026-08-18"
+},{
   "id": "0053",
   "slug": "turn-messy-meeting-notes-into-structured-action-items",
   "title": "Turn Messy Meeting Notes Into Structured Action Items for Free",
