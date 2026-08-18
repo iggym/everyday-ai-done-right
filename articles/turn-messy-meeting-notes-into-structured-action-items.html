@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turn Messy Meeting Notes Into Structured Action Items for Free | Everyday AI, Done Right</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1a1a1a;
+      --accent: #2563eb;
+      --coral: #ff7f50;
+      --code-bg: #f3f4f6;
+      --border: #e5e7eb;
+      --card-bg: #f9fafb;
+    }
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --text: #f8fafc;
+      --accent: #3b82f6;
+      --coral: #ff7f50;
+      --code-bg: #1e293b;
+      --border: #334155;
+      --card-bg: #1e293b;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
+    h1, h2, h3 { font-family: 'Manrope', sans-serif; margin-top: 0; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    .container { max-width: 800px; margin: 0 auto; padding: 0 1.5rem; }
+    
+    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 100; }
+    .top-bar a { text-decoration: none; color: var(--text); font-weight: 700; font-family: 'Manrope', sans-serif; }
+    .theme-toggle { background: var(--code-bg); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; }
+    
+    .hero { padding: 3rem 0; text-align: center; }
+    .badge { display: inline-block; background: var(--accent); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; }
+    
+    .cost-widget { display: flex; justify-content: center; gap: 1.5rem; margin: 2rem 0; flex-wrap: wrap; }
+    .cost-card { padding: 1.5rem; border: 1px solid var(--border); border-radius: 8px; text-align: center; min-width: 200px; background: var(--card-bg); flex: 1; }
+    .strike { text-decoration: line-through; color: #9ca3af; }
+    
+    .quota-calc { background: var(--code-bg); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; border: 1px solid var(--border); }
+    .quota-calc label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    .quota-calc input { width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text); margin-bottom: 1rem; }
+    
+    .stepper { margin: 2rem 0; }
+    .step { display: none; background: var(--card-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border); }
+    .step.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .step-nav { display: flex; justify-content: space-between; margin-top: 1.5rem; }
+    .btn { padding: 0.6rem 1.2rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-family: 'Inter', sans-serif; }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-secondary { background: var(--code-bg); color: var(--text); border: 1px solid var(--border); }
+    
+    .prompt-box { background: var(--code-bg); padding: 1rem; border-radius: 6px; border: 1px solid var(--border); position: relative; margin: 1rem 0; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--accent); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.875rem; }
+    
+    .what-breaks { border-left: 4px solid var(--coral); background: rgba(255, 127, 80, 0.1); padding: 1.5rem; border-radius: 0 8px 8px 0; margin: 2rem 0; }
+    
+    .three-things { margin: 2rem 0; }
+    .reveal-btn { width: 100%; padding: 1rem; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; text-align: left; font-weight: 600; color: var(--text); font-family: 'Inter', sans-serif; }
+    .reveal-content { display: none; padding: 1rem; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; background: var(--card-bg); }
+    .reveal-content.open { display: block; }
+    
+    .share-bar { display: flex; gap: 1rem; justify-content: center; margin: 3rem 0; flex-wrap: wrap; }
+    .share-btn { padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; color: white; font-weight: 600; font-size: 0.9rem; }
+    .share-twitter { background: #1da1f2; }
+    .share-linkedin { background: #0077b5; }
+    .share-copy { background: var(--text); color: var(--bg); border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a href="https://iggym.github.io/everyday-ai-done-right/">Everyday AI, Done Right</a>
+    <button class="theme-toggle" id="theme-toggle">Toggle Theme</button>
+  </div>
+
+  <div class="container">
+    <section class="hero">
+      <span class="badge">Verified Free • No Credit Card</span>
+      <h1>Turn Messy Meeting Notes Into Structured Action Items for Free</h1>
+      <p>Paste messy meeting notes into Groq’s free playground and instantly get a structured table of action items, owners, and a ready-to-send follow-up email. No credit card, no subscription, capped at 14,400 requests per day.</p>
+    </section>
+
+    <section class="cost-widget">
+      <div class="cost-card">
+        <h3>Traditional Tools</h3>
+        <p class="strike">$10–$30 / month</p>
+        <p>Otter.ai, Fireflies, manual formatting</p>
+      </div>
+      <div class="cost-card" style="border-color: var(--accent);">
+        <h3>This Workflow</h3>
+        <p style="color: var(--accent); font-weight: 800; font-size: 1.5rem;">$0.00</p>
+        <p>Groq Cloud Playground (Free Tier)</p>
+      </div>
+    </section>
+
+    <section class="quota-calc">
+      <h3>Interactive Quota Calculator</h3>
+      <label for="meetings-input">How many meetings do you process per week?</label>
+      <input type="number" id="meetings-input" value="5" min="1">
+      <p id="quota-result">You can process up to <strong>2,057</strong> meetings per week on the free tier. You are using <strong>0.2%</strong> of your weekly capacity.</p>
+    </section>
+
+    <section class="stepper">
+      <h2>Step-by-Step Walkthrough</h2>
+      <div class="step active" id="step-1">
+        <h3>Step 1: Access the Playground</h3>
+        <p>Navigate to the <a href="https://console.groq.com/playground" target="_blank">Groq Cloud Playground</a> and create a free account using only an email address. No credit card is required.</p>
+        <div class="step-nav">
+          <span></span>
+          <button class="btn btn-primary" onclick="showStep(2)">Next →</button>
+        </div>
+      </div>
+      <div class="step" id="step-2">
+        <h3>Step 2: Configure the Model</h3>
+        <p>Select the <code>llama-3.3-70b-versatile</code> model from the model dropdown menu to ensure high-quality structured data extraction.</p>
+        <div class="step-nav">
+          <button class="btn btn-secondary" onclick="showStep(1)">← Back</button>
+          <button class="btn btn-primary" onclick="showStep(3)">Next →</button>
+        </div>
+      </div>
+      <div class="step" id="step-3">
+        <h3>Step 3: Use the Prompt Template</h3>
+        <p>Copy the prompt below, paste it into the chat window, and append your raw notes at the bottom.</p>
+        <div class="prompt-box">
+          <button class="copy-btn" onclick="copyPrompt()">Copy</button>
+          <pre id="prompt-text" style="margin:0; white-space: pre-wrap;">You are an expert executive assistant. Analyze the following raw meeting notes. Output exactly three sections:
+1. A Markdown table of Action Items with columns: Task, Owner, Deadline.
+2. A 3-sentence summary of key decisions made.
+3. A polite, professional follow-up email draft to all attendees summarizing the above.
+
+Raw Notes: [PASTE YOUR NOTES HERE]</pre>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn-secondary" onclick="showStep(2)">← Back</button>
+          <button class="btn btn-primary" onclick="showStep(4)">Next →</button>
+        </div>
+      </div>
+      <div class="step" id="step-4">
+        <h3>Step 4: Execute and Export</h3>
+        <p>Click "Run". Copy the structured output directly into your preferred documentation or project management tool.</p>
+        <div class="step-nav">
+          <button class="btn btn-secondary" onclick="showStep(3)">← Back</button>
+          <a href="https://console.groq.com/playground" target="_blank" class="btn btn-primary" style="text-decoration:none; display:inline-block; text-align:center;">Try It Now</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="what-breaks">
+      <h3>⚠️ What Breaks (Limitations)</h3>
+      <ul>
+        <li>The free tier enforces a hard limit of 30 requests per minute and 14,400 requests per day.</li>
+        <li>The context window is finite; very long transcripts (exceeding ~8,000 words) must be split into two separate requests.</li>
+        <li>During peak global usage, Groq may occasionally return a "429 Rate limit exceeded" error. Wait 60 seconds and retry.</li>
+      </ul>
+    </section>
+
+    <section class="three-things">
+      <button class="reveal-btn" onclick="toggleReveal()">▼ Three Things to Remember Before You Start</button>
+      <div class="reveal-content" id="reveal-content">
+        <ol>
+          <li><strong>Anonymize sensitive data:</strong> Remove real names, financial figures, or confidential client details before pasting into any third-party AI tool.</li>
+          <li><strong>Pacing:</strong> The 30 requests/minute limit means you can process about one meeting note every 2 seconds. Batch processing is highly efficient.</li>
+          <li><strong>Error handling:</strong> If you hit a rate limit, the playground will return a 429 error. Do not refresh; simply wait 60 seconds and click Run again.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="share-bar">
+      <a href="https://twitter.com/intent/tweet?text=Turn%20messy%20meeting%20notes%20into%20structured%20action%20items%20and%20follow-up%20emails%20for%20%240.%20No%20credit%20card,%20no%20subscription.%20Just%20Groq%27s%20free%20playground.%20Try%20it%3A%20https%3A%2F%2Figgym.github.io%2Feveryday-ai-done-right%2Farticles%2Fturn-messy-meeting-notes-into-structured-action-items.html" target="_blank" class="share-btn share-twitter">Share on X</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://iggym.github.io/everyday-ai-done-right/articles/turn-messy-meeting-notes-into-structured-action-items.html" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
+      <button class="share-btn share-copy" onclick="copyShareLink()">Copy Link</button>
+    </section>
+  </div>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('eadr-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    themeToggle.addEventListener('click', () => {
+      const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('eadr-theme', newTheme);
+    });
+
+    // Stepper
+    function showStep(step) {
+      document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+      document.getElementById(`step-${step}`).classList.add('active');
+    }
+
+    // Copy Prompt
+    function copyPrompt() {
+      const text = document.getElementById('prompt-text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => { btn.innerText = originalText; }, 2000);
+      });
+    }
+
+    // Reveal Section
+    function toggleReveal() {
+      const content = document.getElementById('reveal-content');
+      content.classList.toggle('open');
+    }
+
+    // Quota Calculator
+    const meetingsInput = document.getElementById('meetings-input');
+    const quotaResult = document.getElementById('quota-result');
+    function updateQuota() {
+      const meetings = parseInt(meetingsInput.value) || 0;
+      const maxWeekly = Math.floor(14400 / 7);
+      const percentage = ((meetings / maxWeekly) * 100).toFixed(1);
+      quotaResult.innerHTML = `You can process up to <strong>${maxWeekly.toLocaleString()}</strong> meetings per week on the free tier. You are using <strong>${percentage}%</strong> of your weekly capacity.`;
+    }
+    meetingsInput.addEventListener('input', updateQuota);
+    updateQuota();
+
+    // Copy Share Link
+    function copyShareLink() {
+      const url = "https://iggym.github.io/everyday-ai-done-right/articles/turn-messy-meeting-notes-into-structured-action-items.html";
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Link copied to clipboard!");
+      });
+    }
+  </script>
+</body>
+</html>
