@@ -9,6 +9,23 @@
   },
   "articles": [
     {
+  "id": "5002",
+  "slug": "extract-action-items-meeting-transcripts-free-groq",
+  "title": "Extract Action Items & Decision Logs from Business Meeting Transcripts for $0",
+  "hook": "Convert raw, unformatted meeting transcripts into structured action matrices and decision logs using Groq Cloud's Llama 3.3 70B—free, 14,400 requests/day, capped at 6k tokens/min with no credit card required.",
+  "path": "articles/extract-action-items-meeting-transcripts-free-groq.html",
+  "date": "2026-08-18",
+  "status": "published",
+  "format": "guide",
+  "category": "business",
+  "tool": "Llama 3.3 70B (Groq Cloud Playground, free tier)",
+  "tool_family": "Groq",
+  "source_url": "https://console.groq.com/docs/rate-limits",
+  "tags": ["business", "meeting-notes", "transcripts", "action-items", "groq", "llama-3.3", "free-tier"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2026-08-18"
+},{
       "id": "0052",
       "slug": "clean-noisy-voice-recordings-free",
       "title": "Clean Noisy Voice Recordings for Free",
