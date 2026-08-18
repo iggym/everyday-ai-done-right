@@ -8,7 +8,41 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [
-    {
+  {
+  "id": "0053",
+  "slug": "turn-messy-meeting-notes-into-structured-action-items",
+  "title": "Turn Messy Meeting Notes Into Structured Action Items for Free",
+  "hook": "Paste messy meeting notes into Groq’s free playground and instantly get a structured table of action items, owners, and a ready-to-send follow-up email—no credit card, capped at 14,400 requests per day.",
+  "path": "articles/turn-messy-meeting-notes-into-structured-action-items.html",
+  "date": "2026-08-19",
+  "status": "published",
+  "format": "guide",
+  "category": "business",
+  "tool": "Groq Cloud Playground (Groq, free tier)",
+  "tool_family": "Groq",
+  "source_url": "https://console.groq.com/docs/rate-limits",
+  "tags": ["meeting-notes", "business-admin", "groq", "free-tier", "no-credit-card"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2026-08-19"
+},{
+  "id": "0002",
+  "slug": "translate-foreign-menus-flag-allergens-photos-travel",
+  "title": "Translate Foreign Menus and Flag Allergens From Photos While Traveling",
+  "hook": "Upload a photo of any foreign-language menu to Google AI Studio's free tier and get a dish-by-dish translation with allergen flags for your specific dietary restrictions—no credit card, up to 1,500 requests per day.",
+  "path": "articles/translate-foreign-menus-flag-allergens-photos-travel.html",
+  "date": "2025-07-18",
+  "status": "published",
+  "format": "guide",
+  "category": "travel",
+  "tool": "Gemini 2.0 Flash (Google AI Studio, free tier)",
+  "tool_family": "Google",
+  "source_url": "https://ai.google.dev/pricing",
+  "tags": ["travel", "translation", "allergens", "food-safety", "multimodal", "google-ai-studio"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2025-07-18"
+},{
   "id": "5002",
   "slug": "extract-action-items-meeting-transcripts-free-groq",
   "title": "Extract Action Items & Decision Logs from Business Meeting Transcripts for $0",
