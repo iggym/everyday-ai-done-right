@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Business Document Analysis with Google Gemini | Everyday AI Done Right</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --secondary-text: #4a4a4a;
+            --border-color: #e5e5e5;
+            --code-bg: #f5f5f5;
+            --accent-color: #0066cc;
+            --accent-hover: #0055aa;
+            --coral-color: #ff6b6b;
+            --coral-bg: #fff5f5;
+            --green-color: #10b981;
+            --green-bg: #f0fdf4;
+            --badge-bg: #f0f7ff;
+            --badge-text: #0066cc;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --secondary-text: #b0b0b0;
+            --border-color: #333333;
+            --code-bg: #1e1e1e;
+            --accent-color: #4da6ff;
+            --accent-hover: #3d96ef;
+            --coral-color: #ff8a8a;
+            --coral-bg: #2a1a1a;
+            --green-color: #34d399;
+            --green-bg: #1a2e1a;
+            --badge-bg: #1a2a3a;
+            --badge-text: #4da6ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-bar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--code-bg);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 60px 0 40px;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-text {
+            font-size: 18px;
+            color: var(--secondary-text);
+            margin-bottom: 30px;
+        }
+
+        .verification-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .badge-free {
+            background-color: var(--green-bg);
+            color: var(--green-color);
+        }
+
+        .badge-verified {
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+        }
+
+        .badge-no-card {
+            background-color: var(--green-bg);
+            color: var(--green-color);
+        }
+
+        /* Cost Comparison Widget */
+        .cost-comparison {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cost-comparison h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cost-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cost-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .cost-name {
+            font-weight: 500;
+        }
+
+        .cost-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .cost-price.strike-through {
+            text-decoration: line-through;
+            color: var(--coral-color);
+            opacity: 0;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .cost-price.strike-through.visible {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .cost-price.free {
+            color: var(--green-color);
+            font-weight: 700;
+        }
+
+        .savings-summary {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--green-color);
+        }
+
+        /* Quota Calculator */
+        .quota-calculator {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .quota-calculator h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .quota-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .quota-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .quota-input-group label {
+            font-weight: 500;
+        }
+
+        .quota-input-group input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .quota-result {
+            padding: 16px;
+            background-color: var(--badge-bg);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        /* Stepper */
+        .stepper {
+            margin-bottom: 40px;
+        }
+
+        .stepper h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            margin-bottom: 30px;
+            border-left: 3px solid var(--border-color);
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .step-number {
+            position: absolute;
+            left: -14px;
+            width: 28px;
+            height: 28px;
+            background-color: var(--border-color);
+            color: var(--text-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .step.active .step-number {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 18px;
+            margin-left: 16px;
+        }
+
+        .step-content {
+            color: var(--secondary-text);
+        }
+
+        .step-content ol, .step-content ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .step-content li {
+            margin-bottom: 8px;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            position: relative;
+            margin: 16px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: var(--border-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        .copy-button:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .code-content {
+            padding: 16px;
+            background-color: var(--code-bg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        /* What Breaks Section */
+        .what-breaks {
+            background-color: var(--coral-bg);
+            border-left: 4px solid var(--coral-color);
+            padding: 24px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 40px;
+        }
+
+        .what-breaks h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--coral-color);
+        }
+
+        .what-breaks ul {
+            margin-left: 20px;
+        }
+
+        .what-breaks li {
+            margin-bottom: 8px;
+            color: var(--secondary-text);
+        }
+
+        /* Three Things Reveal */
+        .three-things {
+            margin-bottom: 40px;
+        }
+
+        .three-things h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .thing-item {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .thing-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .thing-header:hover {
+            background-color: var(--border-color);
+        }
+
+        .thing-toggle {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .thing-item.active .thing-toggle {
+            transform: rotate(45deg);
+        }
+
+        .thing-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .thing-item.active .thing-content {
+            max-height: 200px;
+        }
+
+        .thing-content-inner {
+            padding: 0 16px 16px;
+            color: var(--secondary-text);
+        }
+
+        /* Try It Now */
+        .try-it-now {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .try-it-now h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .try-it-now ol {
+            text-align: left;
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .try-it-now li {
+            margin-bottom: 8px;
+        }
+
+        .try-it-now a {
+            display: inline-block;
+            background-color: white;
+            color: var(--accent-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .try-it-now a:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Share Bar */
+        .share-bar {
+            margin-bottom: 60px;
+        }
+
+        .share-bar h3 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .share-button:hover {
+            background-color: var(--code-bg);
+        }
+
+        .share-button.twitter {
+            background-color: #1da1f2;
+            color: white;
+            border-color: #1da1f2;
+        }
+
+        .share-button.twitter:hover {
+            background-color: #0d8ddb;
+        }
+
+        .share-button.linkedin {
+            background-color: #0077b5;
+            color: white;
+            border-color: #0077b5;
+        }
+
+        .share-button.linkedin:hover {
+            background-color: #00669c;
+        }
+
+        .share-button.facebook {
+            background-color: #1877f2;
+            color: white;
+            border-color: #1877f2;
+        }
+
+        .share-button.facebook:hover {
+            background-color: #1466d6;
+        }
+
+        .share-button.copy-link {
+            background-color: var(--green-color);
+            color: white;
+            border-color: var(--green-color);
+        }
+
+        .share-button.copy-link:hover {
+            background-color: #0ea371;
+        }
+
+        /* Footer */
+        footer {
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .hero-text {
+                font-size: 16px;
+            }
+
+            .verification-badges {
+                flex-direction: column;
+            }
+
+            .share-buttons {
+                flex-direction: column;
+            }
+
+            .share-button {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <a href="https://iggym.github.io/everyday-ai-done-right/" class="logo">Everyday AI <span>Done Right</span></a>
+            <button class="theme-toggle" id="theme-toggle">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Dark</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="container">
+            <span class="category-badge">Business</span>
+            <h1>Free Business Document Analysis with Google Gemini</h1>
+            <p class="hero-text">Google Gemini's free tier lets you analyze business documents (PDFs, Word files, spreadsheets) up to 20MB each with a limit of 15 requests per minute—no credit card required.</p>
+            
+            <div class="verification-badges">
+                <span class="badge badge-free">✓ 100% Free</span>
+                <span class="badge badge-verified">✓ Verified June 2025</span>
+                <span class="badge badge-no-card">✓ No Credit Card</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cost Comparison Widget -->
+    <div class="container">
+        <div class="cost-comparison" id="cost-comparison">
+            <h2>Cost Comparison</h2>
+            <div class="cost-items">
+                <div class="cost-item">
+                    <span class="cost-name">Adobe Acrobat Pro DC</span>
+                    <span class="cost-price strike-through" id="cost1">$22.99/month</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">ChatGPT Plus</span>
+                    <span class="cost-price strike-through" id="cost2">$20.00/month</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Document Analysis Services</span>
+                    <span class="cost-price strike-through" id="cost3">$5-$50 per document</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Google Gemini</span>
+                    <span class="cost-price free">$0.00</span>
+                </div>
+            </div>
+            <div class="savings-summary">
+                Annual savings: $275-$875 for occasional users
+            </div>
+        </div>
+
+        <!-- Quota Calculator -->
+        <div class="quota-calculator">
+            <h2>Free Tier Quota Calculator</h2>
+            <div class="quota-inputs">
+                <div class="quota-input-group">
+                    <label for="documents-per-day">How many documents do you analyze per day?</label>
+                    <input type="number" id="documents-per-day" min="1" max="100" value="5">
+                </div>
+                <div class="quota-input-group">
+                    <label for="questions-per-document">Average questions per document?</label>
+                    <input type="number" id="questions-per-document" min="1" max="50" value="3">
+                </div>
+            </div>
+            <div class="quota-result" id="quota-result">
+                With your usage, you'll make 15 requests per day, which is well within the free tier limit of 15 requests per minute.
+            </div>
+        </div>
+
+        <!-- Stepper -->
+        <div class="stepper">
+            <h2>Step-by-Step Walkthrough</h2>
+            
+            <div class="step active" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Set Up Your Free Account</div>
+                </div>
+                <div class="step-content">
+                    <ol>
+                        <li>Visit <a href="https://gemini.google.com" target="_blank">gemini.google.com</a></li>
+                        <li>Sign in with your Google account (or create one)</li>
+                        <li>Accept the terms of service</li>
+                        <li>You're ready to start—no payment information needed</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Upload Your Business Document</div>
+                </div>
+                <div class="step-content">
+                    <ol>
+                        <li>Click the "+" button or attachment icon in the chat interface</li>
+                        <li>Select your document (PDF, DOCX, XLSX, PPTX, or image)</li>
+                        <li>Wait for the upload confirmation (files up to 20MB accepted)</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Analyze with Targeted Prompts</div>
+                </div>
+                <div class="step-content">
+                    <p>Use these specialized prompts for different document types:</p>
+                    
+                    <h3>For Contract Analysis:</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Contract Analysis Prompt</span>
+                            <button class="copy-button" data-copy="contract-prompt">📋 Copy</button>
+                        </div>
+                        <div class="code-content" id="contract-prompt">Analyze this contract and identify:
+1. Key obligations for each party
+2. Termination conditions and notice periods
+3. Liability limitations
+4. Any unusual or potentially problematic clauses
+5. Missing standard protections that should be added
+
+Format your response as a structured summary with specific clause references.</div>
+                    </div>
+                    
+                    <h3>For Financial Document Analysis:</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Financial Analysis Prompt</span>
+                            <button class="copy-button" data-copy="financial-prompt">📋 Copy</button>
+                        </div>
+                        <div class="code-content" id="financial-prompt">Review this financial document and extract:
+1. Key financial metrics (revenue, expenses, profit margins)
+2. Year-over-year comparisons if applicable
+3. Notable trends or anomalies
+4. Potential red flags or areas of concern
+5. Questions a business owner should ask their accountant about
+
+Present findings in a clear, structured format with specific data points.</div>
+                    </div>
+                    
+                    <h3>For Business Plan Review:</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Business Plan Review Prompt</span>
+                            <button class="copy-button" data-copy="business-prompt">📋 Copy</button>
+                        </div>
+                        <div class="code-content" id="business-prompt">Evaluate this business plan across these dimensions:
+1. Market analysis completeness and accuracy
+2. Financial projections reasonableness
+3. Competitive positioning clarity
+4. Operational feasibility
+5. Risk assessment thoroughness
+
+Rate each dimension 1-5 and provide specific improvement suggestions for any area scoring below 4.</div>
+                    </div>
+                    
+                    <h3>For Spreadsheet Data Analysis:</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Spreadsheet Analysis Prompt</span>
+                            <button class="copy-button" data-copy="spreadsheet-prompt">📋 Copy</button>
+                        </div>
+                        <div class="code-content" id="spreadsheet-prompt">Analyze this spreadsheet data and:
+1. Identify the key trends and patterns
+2. Highlight any outliers or anomalies
+3. Calculate relevant summary statistics
+4. Suggest visualizations that would best represent this data
+5. Draw 3-5 business-relevant conclusions
+
+Be specific with data points and avoid generic observations.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Follow-Up and Refine</div>
+                </div>
+                <div class="step-content">
+                    <ol>
+                        <li>Ask follow-up questions about specific sections</li>
+                        <li>Request more detail on areas of concern</li>
+                        <li>Ask for alternative interpretations</li>
+                        <li>Request simplified explanations of complex sections</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- What Breaks Section -->
+        <div class="what-breaks">
+            <h2>What Breaks (Limitations)</h2>
+            <ul>
+                <li><strong>Rate Limits:</strong> 15 requests per minute, 1 million tokens per minute</li>
+                <li><strong>File Size:</strong> Maximum 20MB per document</li>
+                <li><strong>Accuracy:</strong> May miss nuanced legal interpretations; always verify critical contract points with a professional</li>
+                <li><strong>Complexity:</strong> Struggles with extremely complex financial instruments or highly specialized legal documents</li>
+                <li><strong>Privacy:</strong> Documents are processed by Google; avoid uploading highly sensitive or confidential information</li>
+                <li><strong>Context Window:</strong> For very long documents, may not maintain full context across the entire file</li>
+            </ul>
+        </div>
+
+        <!-- Three Things Reveal -->
+        <div class="three-things">
+            <h2>Three Things to Know</h2>
+            
+            <div class="thing-item" id="thing1">
+                <div class="thing-header">
+                    <span>1. Gemini works best with structured documents</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        While Gemini can handle various document types, it performs best with well-structured documents like standard contracts, formatted financial reports, and organized spreadsheets. Scanned documents or poorly formatted PDFs may yield less accurate results.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="thing-item" id="thing2">
+                <div class="thing-header">
+                    <span>2. You can combine multiple documents in one analysis</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Upload multiple related documents (like a contract and its amendments) in a single conversation to get comparative analysis. This is particularly useful for version comparisons or understanding how different documents relate to each other.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="thing-item" id="thing3">
+                <div class="thing-header">
+                    <span>3. The free tier is sufficient for most small business needs</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Most small businesses analyze fewer than 50 documents per month. At 15 requests per minute, you could theoretically analyze over 20,000 documents per day if needed. The free tier is designed to handle typical small business workloads without hitting limits.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Try It Now -->
+        <div class="try-it-now">
+            <h2>Try It Now</h2>
+            <ol>
+                <li>Find a recent business document you need to analyze</li>
+                <li>Go to <a href="https://gemini.google.com" target="_blank">gemini.google.com</a></li>
+                <li>Upload the document and try one of the prompts above</li>
+                <li>Note how much time you save compared to manual review</li>
+            </ol>
+            <a href="https://gemini.google.com" target="_blank">Start Analyzing Documents</a>
+        </div>
+
+        <!-- Share Bar -->
+        <div class="share-bar">
+            <h3>Share This Guide</h3>
+            <div class="share-buttons">
+                <button class="share-button twitter" id="share-twitter">Twitter</button>
+                <button class="share-button linkedin" id="share-linkedin">LinkedIn</button>
+                <button class="share-button facebook" id="share-facebook">Facebook</button>
+                <button class="share-button copy-link" id="share-copy-link">Copy Link</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Everyday AI Done Right — Practical, free AI workflows for everyone</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+        
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('eadr-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        
+        if (currentTheme === 'dark') {
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Light';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('eadr-theme', newTheme);
+            
+            if (newTheme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark';
+            }
+        });
+        
+        // Cost Comparison Animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const costItems = document.querySelectorAll('.cost-price.strike-through');
+            costItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('visible');
+                }, 500 + (index * 300));
+            });
+        });
+        
+        // Quota Calculator
+        const documentsPerDay = document.getElementById('documents-per-day');
+        const questionsPerDocument = document.getElementById('questions-per-document');
+        const quotaResult = document.getElementById('quota-result');
+        
+        function updateQuotaResult() {
+            const docs = parseInt(documentsPerDay.value) || 0;
+            const questions = parseInt(questionsPerDocument.value) || 0;
+            const totalRequests = docs * questions;
+            
+            let message = '';
+            if (totalRequests === 0) {
+                message = 'Please enter values to calculate your usage.';
+            } else if (totalRequests <= 15) {
+                message = `With your usage, you'll make ${totalRequests} requests per day, which is well within the free tier limit of 15 requests per minute.`;
+            } else if (totalRequests <= 60) {
+                message = `With your usage, you'll make ${totalRequests} requests per day. This exceeds the 15 requests per minute limit but can be managed by spacing out your analysis sessions.`;
+            } else {
+                message = `With your usage, you'll make ${totalRequests} requests per day. This significantly exceeds the 15 requests per minute limit, and you may need to spread analysis across multiple days or consider a paid tier for high-volume needs.`;
+            }
+            
+            quotaResult.textContent = message;
+        }
+        
+        documentsPerDay.addEventListener('input', updateQuotaResult);
+        questionsPerDocument.addEventListener('input', updateQuotaResult);
+        
+        // Interactive Stepper
+        const steps = document.querySelectorAll('.step');
+        steps.forEach(step => {
+            step.addEventListener('click', () => {
+                // Remove active class from all steps
+                steps.forEach(s => s.classList.remove('active'));
+                // Add active class to clicked step
+                step.classList.add('active');
+            });
+        });
+        
+        // Copy Buttons for Prompts
+        const copyButtons = document.querySelectorAll('.copy-button');
+        copyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-copy');
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    const text = targetElement.textContent;
+                    navigator.clipboard.writeText(text).then(() => {
+                        const originalText = button.innerHTML;
+                        button.innerHTML = '✓ Copied!';
+                        setTimeout(() => {
+                            button.innerHTML = originalText;
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+                }
+            });
+        });
+        
+        // Three Things Reveal
+        const thingItems = document.querySelectorAll('.thing-item');
+        thingItems.forEach(item => {
+            const header = item.querySelector('.thing-header');
+            header.addEventListener('click', () => {
+                item.classList.toggle('active');
+            });
+        });
+        
+        // Share Buttons
+        const pageUrl = window.location.href;
+        const shareText = "Analyze business docs for free with Google Gemini (no card needed). Save $275-$875/year vs paid tools.";
+        
+        document.getElementById('share-twitter').addEventListener('click', () => {
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`, '_blank');
+        });
+        
+        document.getElementById('share-linkedin').addEventListener('click', () => {
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`, '_blank');
+        });
+        
+        document.getElementById('share-facebook').addEventListener('click', () => {
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`, '_blank');
+        });
+        
+        document.getElementById('share-copy-link').addEventListener('click', () => {
+            navigator.clipboard.writeText(pageUrl).then(() => {
+                const button = document.getElementById('share-copy-link');
+                const originalText = button.innerHTML;
+                button.innerHTML = '✓ Link Copied!';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy link: ', err);
+            });
+        });
+    </script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

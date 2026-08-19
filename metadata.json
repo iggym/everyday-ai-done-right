@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0001",
+  "slug": "free-business-document-analysis-with-google-gemini",
+  "title": "Free Business Document Analysis with Google Gemini",
+  "hook": "Google Gemini's free tier lets you analyze business documents (PDFs, Word files, spreadsheets) up to 20MB each with a limit of 15 requests per minute—no credit card required.",
+  "path": "articles/free-business-document-analysis-with-google-gemini.html",
+  "date": "2025-06-17",
+  "status": "published",
+  "format": "guide",
+  "category": "business",
+  "tool": "Google Gemini",
+  "tool_family": "Google",
+  "source_url": "https://ai.google.dev/docs/gemini_api_overview",
+  "tags": ["document analysis", "business", "free tier", "no credit card"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2025-06-17"
+},{
   "id": "0054",
   "slug": "generate-structured-design-systems-css-from-prompts-free",
   "title": "Generate Structured Design Systems (CSS) from Prompts for Free",
