@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The 5 Legal Fires Everyday Folks Face — Free Triage Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbfaf7;--card:#fff;--text:#1a1a1e;--muted:#6b7280;--line:#eae6de;--coral:#ff6b5a;--coral-2:#ffedea;--accent:#111827;--ok:#16a34a}
+@media(prefers-color-scheme:dark){:root{--bg:#0f0f10;--card:#1a1a1e;--text:#f5f3ef;--muted:#9aa0aa;--line:#2a2a2e;--coral-2:#2a1816;--accent:#f5f3ef}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;line-height:1.6}
+h1,h2,h3{font-family:Manrope,sans-serif;letter-spacing:-0.02em}
+.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--line)}
+.badge{display:inline-flex;padding:4px 10px;border-radius:999px;background:var(--line);font-size:12px;font-weight:600}
+.badge.ok{background:#dcfce7;color:#166534}.badge.free{background:#dbeafe;color:#1e40af}
+.wrap{max-width:880px;margin:0 auto;padding:24px}
+.hero{padding:28px;border:1px solid var(--line);background:var(--card);border-radius:20px;margin:20px 0}
+.hero h1{font-size:31px;line-height:1.15;margin:8px 0 12px}
+.meta{color:var(--muted);font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:18px}
+.cost-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+.cost-old{text-decoration:line-through;opacity:.6;transition:.6s}.cost-old.active{color:var(--coral)}
+.mono{font-family:"JetBrains Mono",monospace}
+.btn{cursor:pointer;border:1px solid var(--line);background:var(--accent);color:var(--bg);padding:10px 14px;border-radius:10px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--text)}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.step{padding:8px 12px;border-radius:999px;border:1px solid var(--line);cursor:pointer}.step.active{background:var(--text);color:var(--bg)}
+.step-content{display:none}.step-content.active{display:block}
+.callout{border-left:4px solid var(--coral);background:var(--coral-2);padding:14px 16px;border-radius:12px}
+.reveal{border:1px dashed var(--coral);border-radius:12px;padding:12px;cursor:pointer;margin-top:8px}.reveal .hidden{display:none;margin-top:8px}.reveal.open .hidden{display:block}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+pre{background:#0f1115;color:#e5e7eb;padding:14px;border-radius:12px;overflow:auto;position:relative}.copy{position:absolute;top:8px;right:8px}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid var(--line);padding:8px;text-align:left;font-size:13px}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div style="font-family:Manrope;font-weight:800">Everyday AI, Done Right</div>
+<div style="display:flex;gap:8px;align-items:center">
+<span class="badge ok">✓ Verified 2026-08-19</span>
+<span class="badge free">T4 Public • No Card • Everyday Issues</span>
+<button id="themeBtn" class="btn ghost" style="padding:6px 10px">Toggle theme</button>
+</div>
+</div>
+<div class="wrap">
+<div class="hero">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span class="badge">Category: Civic/Legal</span>
+<span class="badge">Focus: Top 5 LSC Issues — Housing, Family, Consumer, Employment, Benefits</span>
+<span class="badge">Tools: LawHelp.org + HUD + DOL + CFPB + Court Self-Help</span>
+<span class="badge ok">100% free, no card, unlimited</span>
+</div>
+<h1>The 5 Legal Fires Everyday Folks Face — And How to Build a Free Response Kit Before Your Rights Are Abused</h1>
+<p class="meta">Pitch: LSC data shows most common civil legal problems are family law (20.5%), employment (12.3%), housing disputes (12.1%), and consumer issues (9.8%), plus government services/benefits (7.2%). This kit turns any notice — eviction, collection, wage issue, custody letter, benefits denial — into a plain-English triage file using only free public law (Cornell LII no-cost access, CFPB free public DB, HUD free counseling, DOL Wage and Hour free, LawHelp.org free legal aid directory). Limit: not legal advice — organizing official info and templates to bring to legal aid; 50-state differences apply.</p>
+<div class="grid2" style="margin-top:16px">
+<div class="card">
+<h3 style="margin:0 0 8px">Cost Comparison</h3>
+<div class="cost-row"><span>Legal letter drafting service</span><span class="cost-old mono">$49/mo</span></div>
+<div class="cost-row"><span>Eviction response kit (paid)</span><span class="cost-old mono">$35 one-time</span></div>
+<div class="cost-row"><span>Attorney consult (1 hr)</span><span class="cost-old mono">$250+</span></div>
+<div class="cost-row"><strong>This Triage Kit (public law)</strong><strong class="mono" style="color:var(--ok)">$0 • unlimited</strong></div>
+<button id="animateCosts" class="btn ghost" style="margin-top:10px">Animate savings</button>
+</div>
+<div class="card">
+<h3 style="margin:0 0 8px">Quota Calculator</h3>
+<p class="meta">How many issues are you juggling right now?</p>
+<input id="issues" type="range" min="1" max="5" value="2"><div id="issuesVal" class="mono">2 issues</div>
+<div id="calcOut" class="mono" style="font-size:13px;margin-top:8px"></div>
+<p class="meta" style="font-size:12px">Sources: LSC most common: family law 20.5%, employment 12.3%, housing 12.1%, consumer 9.8%, government services 7.2%【1750502119461937872†L5-L8】, LSC common practice areas include evictions, debt collection, foreclosures, divorces, child custody, wage claims【1750502119461937872†L46-L49】</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>The 5 Fires — What Counts as Everyday Legal</h2>
+<table>
+<tr><th>#</th><th>Everyday Legal Fire (LSC)</th><th>First Free Move (T4)</th><th>Quota</th></tr>
+<tr><td>1</td><td><b>Housing</b> — eviction notice, deposit withheld, unsafe conditions (12.1%)【1750502119461937872†L5-L8】</td><td>HUD free housing counselor + LII state landlord-tenant statute</td><td>Unlimited free</td></tr>
+<tr><td>2</td><td><b>Family</b> — custody, support, protective order (20.5%)【1750502119461937872†L5-L8】</td><td>State court self-help forms + LawHelp.org</td><td>Unlimited free</td></tr>
+<tr><td>3</td><td><b>Consumer</b> — debt collection, fees, scams (9.8%)【1750502119461937872†L5-L8】</td><td>CFPB complaint DB free public, no key</td><td>Unlimited free</td></tr>
+<tr><td>4</td><td><b>Employment</b> — wage theft, unpaid overtime (12.3%)【1750502119461937872†L5-L8】</td><td>DOL Wage & Hour free complaint</td><td>Unlimited free</td></tr>
+<tr><td>5</td><td><b>Benefits</b> — SNAP/Medicaid/unemployment denial (7.2% + 5%)【1750502119461937872†L5-L8】</td><td>USA.gov Benefits + state appeal self-help</td><td>Unlimited free</td></tr>
+</table>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Walkthrough — interactive stepper</h2>
+<div class="stepper" id="stepper"></div>
+<div id="steps"></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Copyable prompts — one-click copy</h2>
+<div style="position:relative"><pre id="p1"><code>TRIAGE KIT — EVERYDAY LEGAL TRANSLATOR
+You are a legal information organizer, NOT a lawyer.
+Paste notice letter OCR text below, then:
+1. Identify which of the 5 fires it is: Housing / Family / Consumer / Employment / Benefits (per LSC data)
+2. For each clause, rewrite in 1-sentence plain English
+3. Flag: illegal waiver, hidden fee, retaliation risk, missed deadline (e.g., eviction 3-day vs 30-day, wage 2-year lookback)
+4. For each flag, cite where to verify: LII state law link, HUD counseling, CFPB rule, DOL WHD, or LawHelp
+5. Draft: a calm 150-word response letter template + list of 3 documents to gather
+
+Format: Table with Fire Type | Clause | Plain English | Flag | Verify Link | Action
+
+Paste OCR here:
+[PASTE]</code></pre><button class="btn copy" data-copy="p1">Copy</button></div>
+<div style="position:relative"><pre id="p2"><code>EVERYDAY RIGHTS — EVIDENCE PACK CHECKLIST
+
+For ANY fire, create folder:
+- /01_OriginalNotice (scan)
+- /02_PlainEnglishTable (from prompt 1)
+- /03_LawCitations (LII links, screenshot reference range)
+- /04_Timeline (dates: notice received, deadline to respond per state law)
+- /05_Proof (photos, paystubs, lease pages, payment receipts)
+- /06_DraftLetter (calm, cites law, no threats)
+
+Before sending: run checklist:
+[ ] Did I redact SSN/account #?
+[ ] Did I verify my state's deadline via LII State Law Links?
+[ ] Did I check CFPB DB for same company pattern (consumer)?
+[ ] Did I find legal aid via LawHelp.org?
+[ ] Did I keep original + copy?</code></pre><button class="btn copy" data-copy="p2">Copy</button></div>
+</div>
+
+<div class="callout" style="margin-top:16px">
+<h3 style="margin:0 0 6px">What Breaks — coral callout</h3>
+<ul style="margin:0">
+<li>Not legal advice. This kit organizes public law for research; LII and agencies provide info, not counsel.</li>
+<li>50-state variance: eviction notice periods (3 vs 30 days), wage claim lookback (2 vs 3 years), non-compete bans — always check your state via LII State Law Links.</li>
+<li>Deadlines matter most: housing and benefits denials often have 10-30 day appeal windows — file first, perfect later.</li>
+<li>Privacy: redact SSN, DOB, full account numbers before OCR/upload to any AI. Keep evidence pack local.</li>
+<li>CFPB DB lag ~15 days; HUD counselors free but busy — book early.</li>
+</ul>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Three Things to Try Now — click to reveal</h3>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>1. Eviction notice → 10-min triage</strong><div class="hidden">Photo notice → Drive OCR → Prompt 1 flags if notice period illegal per your state. Immediate action: find HUD free counselor (hud.gov/counseling) and LII state landlord-tenant statute link. LSC notes evictions are among most frequent cases【1750502119461937872†L46-L49】.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>2. Paystub short — wage theft check</strong><div class="hidden">Scan last 2 paystubs, calculate hours × rate vs paid. DOL WHD free complaint tool checks federal; LII state wage law shows if overtime after 8h (CA) vs 40h. Consumer/worker issues are core LSC types【1750502119461937872†L46-L49】.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>3. Collection letter → pattern proof</strong><div class="hidden">OCR letter, search CFPB Complaint Database for collector name — free public resource. If 200 others report same illegal threat, export narratives as exhibit for dispute letter + LawHelp.org intake.</div></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Share</h3>
+<div class="share">
+<button class="btn ghost" onclick="navigator.clipboard.writeText(location.href)">Copy link</button>
+<a class="btn ghost" href="https://twitter.com/intent/tweet?text=The%205%20legal%20fires%20everyday%20folks%20face%20%E2%80%94%20housing%2C%20family%2C%20consumer%2C%20employment%2C%20benefits%20%E2%80%94%20free%20triage%20kit%20using%20public%20law" target="_blank">Post to X</a>
+</div>
+</div>
+</div>
+<script>
+const themeKey='eadr-theme'; const applyTheme=v=>{document.documentElement.dataset.theme=v; document.documentElement.style.colorScheme=v==='dark'?'dark':'light'}; const saved=localStorage.getItem(themeKey); if(saved) applyTheme(saved); else if(window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
+document.getElementById('themeBtn').onclick=()=>{const cur=document.documentElement.dataset.theme==='dark'?'light':'dark'; applyTheme(cur); localStorage.setItem(themeKey,cur);}
+const stepsData=[
+{t:"1. Scan notice",h:`<p>Drive app → Scan → photo any legal notice (eviction, collection, termination, benefits denial). Open with Docs for OCR. Redact SSN.</p>`},
+{t:"2. Classify fire",h:`<p>Use Prompt 1 to classify into 1 of 5 LSC top issues: family 20.5%, employment 12.3%, housing 12.1%, consumer 9.8%, gov services 7.2%【1750502119461937872†L5-L8】. This sets which free agency to use.</p>`},
+{t:"3. Verify law free",h:`<p>Housing → LII state landlord-tenant + HUD free counseling. Consumer → CFPB DB free public. Employment → DOL WHD free. Family/Benefits → Court self-help forms + LawHelp.org free directory. All unlimited free.</p>`},
+{t:"4. Build evidence pack",h:`<p>Create 6 folders per checklist Prompt 2. Gather proof: lease pages, paystubs, payment receipts, photos of conditions. Timeline is critical — eviction and benefits often 10-30 days.</p>`},
+{t:"5. Draft calm response",h:`<p>Use template from Prompt 1: cites LII statute link, states facts, asks for correction, no threats. Send certified mail + keep copy. Bring pack to legal aid intake — you now have organized citations.</p>`}
+];
+const stepperEl=document.getElementById('stepper'); const stepsEl=document.getElementById('steps');
+stepsData.forEach((s,i)=>{const b=document.createElement('div'); b.className='step'+(i===0?' active':''); b.textContent=(i+1)+'. '+s.t; b.onclick=()=>activate(i); stepperEl.appendChild(b); const c=document.createElement('div'); c.className='step-content'+(i===0?' active':''); c.innerHTML=s.h; stepsEl.appendChild(c);});
+function activate(i){[...stepperEl.children].forEach((el,j)=>el.classList.toggle('active',j===i)); [...stepsEl.children].forEach((el,j)=>el.classList.toggle('active',j===i));}
+document.querySelectorAll('[data-copy]').forEach(btn=>{btn.onclick=()=>{const id=btn.dataset.copy; navigator.clipboard.writeText(document.getElementById(id).innerText); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',1200);}});
+document.getElementById('animateCosts').onclick=()=>{document.querySelectorAll('.cost-old').forEach(el=>el.classList.add('active'));};
+const issues=document.getElementById('issues'); const issuesVal=document.getElementById('issuesVal'); const calcOut=document.getElementById('calcOut');
+function calc(){const v=+issues.value; issuesVal.textContent=v+' issue'+(v>1?'s':''); const time=v*15; const agencies=v===1?'1 free agency (HUD or CFPB or DOL or LawHelp)':'up to '+v+' free agencies'; calcOut.innerHTML=`Time to triage: ~${time} min first time<br>Agencies needed: <b>${agencies}</b> — all free public, no card<br>Evidence pack: ${v*6} folders, 1 timeline critical`;} issues.oninput=calc; calc();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

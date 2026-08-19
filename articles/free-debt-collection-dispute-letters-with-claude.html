@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Debt Collection Dispute Letters with Claude | Everyday AI Done Right</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --secondary-text: #4a4a4a;
+            --border-color: #e5e5e5;
+            --code-bg: #f5f5f5;
+            --accent-color: #0066cc;
+            --accent-hover: #0055aa;
+            --coral-color: #ff6b6b;
+            --coral-bg: #fff5f5;
+            --green-color: #10b981;
+            --green-bg: #f0fdf4;
+            --badge-bg: #f0f7ff;
+            --badge-text: #0066cc;
+            --stepper-inactive-bg: #e5e5e5;
+            --stepper-inactive-text: #999999;
+            --privacy-color: #d97706;
+            --privacy-bg: #fffbeb;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --secondary-text: #b0b0b0;
+            --border-color: #333333;
+            --code-bg: #1e1e1e;
+            --accent-color: #4da6ff;
+            --accent-hover: #3d96ef;
+            --coral-color: #ff8a8a;
+            --coral-bg: #2a1a1a;
+            --green-color: #34d399;
+            --green-bg: #1a2e1a;
+            --badge-bg: #1a2a3a;
+            --badge-text: #4da6ff;
+            --stepper-inactive-bg: #333333;
+            --stepper-inactive-text: #666666;
+            --privacy-color: #fbbf24;
+            --privacy-bg: #2a2010;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+        .top-bar {
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .logo span { color: var(--accent-color); }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .theme-toggle:hover { background-color: var(--code-bg); }
+
+        .hero { padding: 60px 0 40px; }
+
+        .category-badge {
+            display: inline-block;
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 20px;
+        }
+
+        .hero-text {
+            font-size: 18px;
+            color: var(--secondary-text);
+            margin-bottom: 30px;
+        }
+
+        .verification-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .badge-free { background-color: var(--green-bg); color: var(--green-color); }
+        .badge-verified { background-color: var(--badge-bg); color: var(--badge-text); }
+        .badge-no-card { background-color: var(--green-bg); color: var(--green-color); }
+        .badge-privacy { background-color: var(--privacy-bg); color: var(--privacy-color); }
+
+        .legal-callout {
+            background-color: var(--coral-bg);
+            border-left: 4px solid var(--coral-color);
+            padding: 20px 24px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+        }
+
+        .legal-callout p {
+            color: var(--secondary-text);
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .legal-callout p:last-child { margin-bottom: 0; }
+        .legal-callout strong { color: var(--coral-color); }
+
+        .stat-bar {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .stat-item {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Manrope', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--secondary-text);
+            margin-top: 4px;
+        }
+
+        .cost-comparison {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cost-comparison h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cost-items { display: flex; flex-direction: column; gap: 16px; }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cost-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .cost-name { font-weight: 500; font-size: 15px; }
+
+        .cost-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .cost-price.strike-through {
+            text-decoration: line-through;
+            color: var(--coral-color);
+            opacity: 0;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .cost-price.strike-through.visible {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .cost-price.free { color: var(--green-color); font-weight: 700; }
+
+        .savings-summary {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--green-color);
+        }
+
+        .quota-calculator {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .quota-calculator h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .quota-note {
+            font-size: 14px;
+            color: var(--secondary-text);
+            margin-bottom: 20px;
+        }
+
+        .quota-inputs { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+        .quota-input-group { display: flex; flex-direction: column; gap: 6px; }
+        .quota-input-group label { font-weight: 500; }
+
+        .quota-input-group input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            width: 100%;
+        }
+
+        .quota-result {
+            padding: 16px;
+            background-color: var(--badge-bg);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .stepper { margin-bottom: 40px; }
+
+        .stepper h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            margin-bottom: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .step.active { border-color: var(--accent-color); }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            cursor: pointer;
+            gap: 16px;
+            user-select: none;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+            background-color: var(--stepper-inactive-bg);
+            color: var(--stepper-inactive-text);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .step.active .step-number { background-color: var(--accent-color); color: white; }
+        .step-title { font-weight: 600; font-size: 17px; flex: 1; }
+        .step-subtitle { font-size: 13px; color: var(--secondary-text); font-weight: 400; }
+
+        .step-chevron {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            color: var(--secondary-text);
+            flex-shrink: 0;
+        }
+
+        .step.active .step-chevron { transform: rotate(180deg); }
+
+        .step-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .step.active .step-content { max-height: 6000px; }
+
+        .step-content-inner {
+            padding: 0 20px 20px 68px;
+            color: var(--secondary-text);
+        }
+
+        .step-content-inner ol,
+        .step-content-inner ul { margin-left: 20px; margin-bottom: 16px; }
+        .step-content-inner li { margin-bottom: 8px; }
+        .step-content-inner p { margin-bottom: 12px; }
+        .step-content-inner a { color: var(--accent-color); }
+
+        .code-block {
+            position: relative;
+            margin: 16px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: var(--border-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .copy-button:hover { background-color: rgba(0,0,0,0.1); }
+        [data-theme="dark"] .copy-button:hover { background-color: rgba(255,255,255,0.1); }
+
+        .code-content {
+            padding: 16px;
+            background-color: var(--code-bg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .what-breaks {
+            background-color: var(--coral-bg);
+            border-left: 4px solid var(--coral-color);
+            padding: 24px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 40px;
+        }
+
+        .what-breaks h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--coral-color);
+        }
+
+        .what-breaks ul { margin-left: 20px; }
+        .what-breaks li { margin-bottom: 10px; color: var(--secondary-text); }
+        .what-breaks li strong { color: var(--text-color); }
+
+        .three-things { margin-bottom: 40px; }
+
+        .three-things h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .thing-item {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .thing-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .thing-header:hover { background-color: var(--border-color); }
+
+        .thing-toggle {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+            color: var(--secondary-text);
+        }
+
+        .thing-item.active .thing-toggle { transform: rotate(45deg); }
+        .thing-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .thing-item.active .thing-content { max-height: 500px; }
+
+        .thing-content-inner {
+            padding: 0 16px 16px;
+            color: var(--secondary-text);
+            line-height: 1.7;
+        }
+
+        .try-it-now {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .try-it-now h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .try-it-now ol { text-align: left; margin-left: 20px; margin-bottom: 24px; }
+        .try-it-now li { margin-bottom: 8px; }
+
+        .try-it-now a {
+            display: inline-block;
+            background-color: white;
+            color: var(--accent-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .try-it-now a:hover { background-color: rgba(255,255,255,0.9); transform: translateY(-1px); }
+
+        .share-bar { margin-bottom: 60px; }
+
+        .share-bar h3 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .share-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .share-button:hover { background-color: var(--code-bg); }
+        .share-button:active { transform: scale(0.97); }
+        .share-button.twitter { background-color: #1da1f2; color: white; border-color: #1da1f2; }
+        .share-button.twitter:hover { background-color: #0d8ddb; }
+        .share-button.linkedin { background-color: #0077b5; color: white; border-color: #0077b5; }
+        .share-button.linkedin:hover { background-color: #00669c; }
+        .share-button.facebook { background-color: #1877f2; color: white; border-color: #1877f2; }
+        .share-button.facebook:hover { background-color: #1466d6; }
+        .share-button.copy-link { background-color: var(--green-color); color: white; border-color: var(--green-color); }
+        .share-button.copy-link:hover { background-color: #0ea371; }
+
+        footer {
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 26px; }
+            .hero-text { font-size: 16px; }
+            .verification-badges { flex-direction: column; }
+            .stat-bar { flex-direction: column; gap: 16px; }
+            .share-buttons { flex-direction: column; }
+            .share-button { justify-content: center; }
+            .step-content-inner { padding-left: 20px; }
+            .step-subtitle { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <a href="https://iggym.github.io/everyday-ai-done-right/" class="logo">Everyday AI <span>Done Right</span></a>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Dark</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <span class="category-badge">Civic / Legal</span>
+            <h1>Free Debt Collection Dispute Letters with Claude</h1>
+            <p class="hero-text">Claude's free tier helps you draft debt validation requests, cease-communication notices, and credit bureau dispute letters based on your rights under the FDCPA and FCRA—these are federal statutes, but Claude may describe their provisions inaccurately, and this is not legal advice; if you've been sued, you need an attorney, not an AI.</p>
+            <div class="verification-badges">
+                <span class="badge badge-free">✓ 100% Free</span>
+                <span class="badge badge-verified">✓ Verified June 2025</span>
+                <span class="badge badge-no-card">✓ No Credit Card</span>
+                <span class="badge badge-privacy">⚠ Not Legal Advice</span>
+            </div>
+
+            <div class="legal-callout">
+                <p><strong>If you've been served with a lawsuit:</strong> Stop here. A debt dispute letter does not substitute for a legal answer filed with the court. Missing a court deadline can result in a default judgment against you. Contact a consumer law attorney or your local legal aid office immediately.</p>
+            </div>
+
+            <div class="stat-bar">
+                <div class="stat-item">
+                    <div class="stat-number">700K+</div>
+                    <div class="stat-label">CFPB debt collection complaints in 2024</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1 in 3</div>
+                    <div class="stat-label">Americans have debt in collections</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30 days</div>
+                    <div class="stat-label">FDCPA validation window</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="cost-comparison" id="cost-comparison">
+            <h2>Cost Comparison</h2>
+            <div class="cost-items">
+                <div class="cost-item">
+                    <span class="cost-name">Consumer law attorney (single letter)</span>
+                    <span class="cost-price strike-through" id="cost1">$200–$500</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Debt relief/settlement company</span>
+                    <span class="cost-price strike-through" id="cost2">$500–$2,000+</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Credit repair company (6–12 mo)</span>
+                    <span class="cost-price strike-through" id="cost3">$474–$1,548</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Legal aid society</span>
+                    <span class="cost-price strike-through" id="cost4">Free (waitlist)</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Claude (Anthropic)</span>
+                    <span class="cost-price free">$0.00</span>
+                </div>
+            </div>
+            <div class="savings-summary">Per-letter savings: $200–$500 vs. attorney; $500–$2,000+ vs. debt settlement companies</div>
+        </div>
+
+        <div class="quota-calculator">
+            <h2>Free Tier Quota Calculator</h2>
+            <p class="quota-note">Anthropic doesn't publish exact free-tier limits. This uses the commonly observed ~40 messages per 8-hour window. Actual limits may vary.</p>
+            <div class="quota-inputs">
+                <div class="quota-input-group">
+                    <label for="collection-letters">How many collection letters did you receive this month?</label>
+                    <input type="number" id="collection-letters" min="1" max="20" value="1">
+                </div>
+                <div class="quota-input-group">
+                    <label for="letters-per-debt">How many letters do you need per debt (validation + follow-ups + credit bureau disputes)?</label>
+                    <input type="number" id="letters-per-debt" min="1" max="10" value="2">
+                </div>
+            </div>
+            <div class="quota-result" id="quota-result">Loading...</div>
+        </div>
+
+        <div class="stepper">
+            <h2>Step-by-Step Walkthrough</h2>
+
+            <div class="step active" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">
+                        Open Claude and Set the Ground Rules
+                        <div class="step-subtitle">Establish boundaries before drafting any letters</div>
+                    </div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <ol>
+                            <li>Go to <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> and sign up with your email (no payment info required)</li>
+                            <li>Start a new conversation and paste the preamble below</li>
+                        </ol>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Ground Rules Preamble</span>
+                                <button class="copy-button" data-copy="ground-rules">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="ground-rules">I need help drafting letters related to debt collection. Here are the ground rules:
+
+- You are helping me draft personal correspondence to exercise rights under federal law (FDCPA and FCRA). You are NOT acting as my attorney and are NOT giving legal advice.
+- Base all letter content on the actual text of the relevant federal statutes. If you are unsure about a specific provision, say so rather than guessing.
+- Do not tell me whether I should or should not pay a debt, whether a debt is valid, or what my legal strategy should be.
+- Do not include case law citations. Stick to the statute itself.
+- Every letter must include a clear statement that it is not legal advice.
+
+Confirm you understand these rules before we proceed.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">
+                        Debt Validation Request
+                        <div class="step-subtitle">The 30-day letter — FDCPA §1692g</div>
+                    </div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>Under FDCPA §1692g, you have 30 days from a collector's first communication to request validation. Until they provide it, they must stop all collection activity. This is the single most important letter to send.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Debt Validation Prompt</span>
+                                <button class="copy-button" data-copy="validation-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="validation-prompt">I received a debt collection letter and need to send a debt validation request under FDCPA §1692g. Here are the details from the letter I received:
+
+Collector name: [name from letter]
+Collector address: [address from letter]
+Collector phone: [phone from letter]
+Account/reference number: [number from letter]
+Amount claimed: [amount from letter]
+Original creditor listed: [if shown on letter]
+Date I received the letter: [date]
+Date of the collector's first communication to me: [date, if different]
+
+Additional context: [any relevant details — e.g., "I don't recognize this debt," "this might be from a medical bill I thought insurance covered," "the amount seems wrong," or leave blank if you're unsure]
+
+Draft a debt validation request letter that:
+1. References the specific account number
+2. Explicitly invokes my right under 15 U.S.C. § 1692g(b) to request validation of the debt
+3. Requests the name and address of the original creditor (if not already provided)
+4. Requests verification of the amount owed
+5. Requests copies of any judgment (if applicable)
+6. States that I dispute the debt (use this exact language — it triggers additional protections)
+7. Instructs them to cease all communication until validation is provided
+8. Includes the "not legal advice" disclaimer we agreed on
+9. Is addressed and formatted for printing and mailing via USPS Certified Mail
+
+Keep the tone factual and unemotional. Do not explain why I'm disputing or offer any payment information.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">
+                        Cease Communication Request
+                        <div class="step-subtitle">Stop calls, texts, and workplace contact — FDCPA §1692c</div>
+                    </div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>If a collector is calling repeatedly, showing up at your workplace, or contacting family members, you can demand they stop under §1692c(c).</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Cease Communication Prompt</span>
+                                <button class="copy-button" data-copy="cease-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="cease-prompt">A debt collector is contacting me in ways I want to stop. Here are the details:
+
+Collector name: [name]
+Collector address: [address]
+Account/reference number: [number]
+The specific behaviors I want to stop: [e.g., "calling my cell phone multiple times per day," "calling my workplace," "contacting my family members," "sending text messages," "all of the above"]
+
+Draft a cease communication letter under 15 U.S.C. § 1692c(c) that:
+1. References the specific account number
+2. Explicitly invokes my right under §1692c(c) to request that all communication cease
+3. Specifies any exceptions — e.g., if I want them to communicate only in writing by mail, say that instead of a total cease
+4. States that any further communication after receipt of this letter (except as permitted by law) will be documented and may be reported to the CFPB and my state attorney general
+5. Includes the "not legal advice" disclaimer
+6. Is formatted for printing and mailing via USPS Certified Mail
+
+Keep it brief and formal. No explanations, no offers to pay, no emotional language.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">
+                        Credit Bureau Dispute Letter
+                        <div class="step-subtitle">Remove inaccurate items from your credit report — FCRA §1681i</div>
+                    </div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>If a debt appears on your credit report that you believe is inaccurate, dispute it directly with each bureau where it appears. Send a separate letter to each bureau.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Credit Bureau Dispute Prompt</span>
+                                <button class="copy-button" data-copy="fcra-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="fcra-prompt">I need to dispute an item on my credit report under FCRA §1681i. Here are the details:
+
+Credit bureau I'm sending this to: [Equifax / Experian / TransUnion — send a separate letter to each if disputing at multiple bureaus]
+My full legal name: [name]
+My current address: [address]
+My date of birth: [DOB]
+My Social Security Number: [include only if the bureau requires it; you may omit the last 4 digits if uncomfortable]
+The disputed item: [describe exactly as it appears on your credit report — account name, account number, amount, etc.]
+Why I'm disputing it: [choose: "I have no knowledge of this account" / "The amount is incorrect" / "This account was discharged in bankruptcy" / "This account was paid in full" / "This is not my account" / other specific reason]
+Any supporting evidence: [e.g., "I have attached a copy of the bankruptcy discharge" / "I have attached a bank statement showing payment" / "None at this time"]
+
+Draft a dispute letter that:
+1. Clearly identifies me and the disputed item
+2. States the specific reason for the dispute
+3. Requests investigation under 15 U.S.C. § 1681i
+4. Requests that the item be deleted or corrected if the bureau cannot verify it
+5. Requests written notice of the results within the 30-day period required by law
+6. Includes the "not legal advice" disclaimer
+7. Is formatted for printing and mailing via USPS Certified Mail
+
+Note: I should attach a copy of my credit report with the disputed item highlighted, and any supporting documentation I mentioned.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="what-breaks">
+            <h2>What Breaks (Limitations)</h2>
+            <ul>
+                <li><strong>Not Legal Advice:</strong> Claude is not an attorney. These letters help you exercise rights you already have under federal law—they do not create new rights, and Claude cannot tell you whether exercising a particular right is the best strategy for your situation. If a collector has filed a lawsuit against you, you must respond through proper legal channels (an answer filed with the court), not with a letter to the collector.</li>
+                <li><strong>Statute Accuracy:</strong> While the prompts instruct Claude to base content on actual FDCPA/FCRA text, it may still misstate provisions, omit required elements, or add language that isn't in the statute. <strong>Always compare Claude's output against the CFPB's official debt collection resources</strong> (consumerfinance.gov) before sending any letter.</li>
+                <li><strong>State Laws Vary:</strong> Many states have debt collection laws that provide additional protections beyond the FDCPA. Claude's letters address only federal law. Check your state attorney general's website for state-specific information.</li>
+                <li><strong>30-Day Window Is Real:</strong> The FDCPA's validation right under §1692g(b) applies only within 30 days of the collector's initial communication. After that window closes, you lose the right to demand validation (though you can still dispute the debt at any time). Claude can't calculate this deadline for you—mark your calendar from the date on the letter.</li>
+                <li><strong>Sending the Letter Doesn't Erase the Debt:</strong> A validation request forces the collector to prove the debt, but it doesn't make the debt disappear. If the collector provides valid verification, collection can resume.</li>
+                <li><strong>Original Creditors Are Exempt:</strong> The FDCPA applies to third-party debt collectors and debt buyers, not to the original creditor (e.g., the bank that issued your credit card). If you're dealing directly with the original creditor, these letters won't apply.</li>
+                <li><strong>No Memory Between Conversations:</strong> If you need letters for multiple debts, keep each debt's details clearly labeled within one conversation or use separate conversations to avoid Claude mixing up account numbers or collector details.</li>
+            </ul>
+        </div>
+
+        <div class="three-things">
+            <h2>Three Things to Know</h2>
+
+            <div class="thing-item" id="thing1">
+                <div class="thing-header">
+                    <span>1. The 30-day clock starts from the collector's first communication, not from when you read it</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Under FDCPA §1692g(a), the 30-day window begins when you receive the collector's initial written notice—which must include the validation rights notice. If the first contact was a phone call, the written notice must be sent within 5 days of that call, and the 30 days run from when you receive the written notice. Date-stamp your mail when it arrives. If you're close to the deadline, send the letter immediately rather than waiting to draft a perfect version.
+                    </div>
+                </div>
+            </div>
+
+            <div class="thing-item" id="thing2">
+                <div class="thing-header">
+                    <span>2. Debt buyers often can't actually validate the debt</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Many collection agencies buy bundled debt portfolios for pennies on the dollar—sometimes 2–5 cents per dollar of face value. They receive minimal documentation: often just a spreadsheet with names and amounts. When you request validation under §1692g, they may be unable to produce the original contract, account statements, or a chain of custody showing they own your specific debt. If they can't validate, they must cease collection and may have to delete the item from your credit report.
+                    </div>
+                </div>
+            </div>
+
+            <div class="thing-item" id="thing3">
+                <div class="thing-header">
+                    <span>3. Never admit the debt is yours in any communication</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Saying "I can't pay right now," "I'll pay next month," or even "I need more time" can be construed as an acknowledgment that the debt is valid. This can undermine your validation request and restart the statute of limitations in some states. The letters generated by the prompts above are specifically designed to avoid any acknowledgment—stick to the template language and don't add personal explanations about your financial situation.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="try-it-now">
+            <h2>Try It Now</h2>
+            <ol>
+                <li>Open <a href="https://claude.ai" target="_blank" rel="noopener" style="color:white;text-decoration:underline;">claude.ai</a> and sign up for a free account</li>
+                <li>Find a collection letter you've received (or pull a recent one from your files)</li>
+                <li>Paste the ground-rules prompt (Step 1), wait for confirmation, then paste the Debt Validation prompt (Step 2)</li>
+                <li>Before mailing, compare the output against the CFPB's sample validation letter at <a href="https://consumerfinance.gov" target="_blank" rel="noopener" style="color:white;text-decoration:underline;">consumerfinance.gov</a></li>
+                <li>Send via USPS Certified Mail with return receipt—the tracking number is your proof of delivery</li>
+            </ol>
+            <a href="https://claude.ai" target="_blank" rel="noopener">Start Drafting Your Letter</a>
+        </div>
+
+        <div class="share-bar">
+            <h3>Share This Guide</h3>
+            <div class="share-buttons">
+                <button class="share-button twitter" id="share-twitter">Twitter</button>
+                <button class="share-button linkedin" id="share-linkedin">LinkedIn</button>
+                <button class="share-button facebook" id="share-facebook">Facebook</button>
+                <button class="share-button copy-link" id="share-copy-link">Copy Link</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Everyday AI Done Right — Practical, free AI workflows for everyone</p>
+        </div>
+    </footer>
+
+    <script>
+    (function() {
+        var themeToggle = document.getElementById('theme-toggle');
+        var themeIcon = document.getElementById('theme-icon');
+        var themeText = document.getElementById('theme-text');
+        var saved = localStorage.getItem('eadr-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        if (saved === 'dark') { themeIcon.textContent = '☀️'; themeText.textContent = 'Light'; }
+
+        themeToggle.addEventListener('click', function() {
+            var cur = document.documentElement.getAttribute('data-theme');
+            var nxt = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', nxt);
+            localStorage.setItem('eadr-theme', nxt);
+            themeIcon.textContent = nxt === 'dark' ? '☀️' : '🌙';
+            themeText.textContent = nxt === 'dark' ? 'Light' : 'Dark';
+        });
+
+        var costIds = ['cost1','cost2','cost3','cost4'];
+        costIds.forEach(function(id, i) {
+            setTimeout(function() { document.getElementById(id).classList.add('visible'); }, 400 + i * 250);
+        });
+
+        var lettersInput = document.getElementById('collection-letters');
+        var perDebtInput = document.getElementById('letters-per-debt');
+        var quotaResult = document.getElementById('quota-result');
+
+        function calcQuota() {
+            var letters = parseInt(lettersInput.value) || 0;
+            var perDebt = parseInt(perDebtInput.value) || 0;
+            var total = letters * perDebt;
+            if (total === 0) {
+                quotaResult.textContent = 'Enter values to see your estimated usage.';
+                quotaResult.style.color = 'var(--secondary-text)';
+            } else if (total <= 8) {
+                quotaResult.textContent = 'You\'ll need about ' + total + ' messages this month. This is a tiny fraction of the observed ~40 message window. No rate-limit concerns.';
+                quotaResult.style.color = 'var(--green-color)';
+            } else if (total <= 25) {
+                quotaResult.textContent = 'You\'ll need about ' + total + ' messages this month. Still well within the free tier. Spread across a couple of sessions and you won\'t notice any limits.';
+                quotaResult.style.color = 'var(--green-color)';
+            } else {
+                quotaResult.textContent = 'You\'ll need about ' + total + ' messages this month. At higher volumes, plan for 2–3 separate sessions on different days to stay comfortable within rate limits.';
+                quotaResult.style.color = 'var(--privacy-color)';
+            }
+        }
+
+        lettersInput.addEventListener('input', calcQuota);
+        perDebtInput.addEventListener('input', calcQuota);
+        calcQuota();
+
+        var steps = document.querySelectorAll('.step');
+        steps.forEach(function(step) {
+            step.querySelector('.step-header').addEventListener('click', function() {
+                var wasActive = step.classList.contains('active');
+                steps.forEach(function(s) { s.classList.remove('active'); });
+                if (!wasActive) step.classList.add('active');
+            });
+        });
+
+        function doCopy(el) {
+            return navigator.clipboard.writeText(el.textContent).catch(function() {
+                var ta = document.createElement('textarea');
+                ta.value = el.textContent;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            });
+        }
+
+        document.querySelectorAll('.copy-button').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var el = document.getElementById(btn.getAttribute('data-copy'));
+                if (!el) return;
+                var orig = btn.innerHTML;
+                doCopy(el).then(function() {
+                    btn.innerHTML = '✓ Copied!';
+                    setTimeout(function() { btn.innerHTML = orig; }, 2000);
+                });
+            });
+        });
+
+        document.querySelectorAll('.thing-item').forEach(function(item) {
+            item.querySelector('.thing-header').addEventListener('click', function() {
+                item.classList.toggle('active');
+            });
+        });
+
+        var pageUrl = window.location.href;
+        var shareText = 'Fight back against debt collectors for free with Claude. Draft FDCPA validation letters, cease-contact notices, and credit bureau disputes. No card, no attorney fees.';
+
+        document.getElementById('share-twitter').addEventListener('click', function() {
+            window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(pageUrl), '_blank');
+        });
+        document.getElementById('share-linkedin').addEventListener('click', function() {
+            window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(pageUrl), '_blank');
+        });
+        document.getElementById('share-facebook').addEventListener('click', function() {
+            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(pageUrl), '_blank');
+        });
+        document.getElementById('share-copy-link').addEventListener('click', function() {
+            var btn = document.getElementById('share-copy-link');
+            var orig = btn.innerHTML;
+            navigator.clipboard.writeText(pageUrl).then(function() {
+                btn.innerHTML = '✓ Link Copied!';
+                setTimeout(function() { btn.innerHTML = orig; }, 2000);
+            }).catch(function() {
+                var ta = document.createElement('textarea');
+                ta.value = pageUrl; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+                btn.innerHTML = '✓ Link Copied!';
+                setTimeout(function() { btn.innerHTML = orig; }, 2000);
+            });
+        });
+    })();
+    </script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
