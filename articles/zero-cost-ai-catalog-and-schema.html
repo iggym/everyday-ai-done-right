@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero-Cost AI Tools & API Catalog | Everyday AI Done Right</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter, Manrope, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Manrope', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              900: '#14532d',
+            },
+            coral: {
+              400: '#fb7185',
+              500: '#f43f5e',
+              600: '#e11d48',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar and accent styles */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.3); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.5); }
+    .strike-anim {
+      text-decoration: line-through;
+      text-decoration-color: #f43f5e;
+      text-decoration-thickness: 3px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans antialiased transition-colors duration-200">
+
+  <!-- Navigation Header -->
+  <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur sticky top-0 z-50 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-brand-500/10 p-2 rounded-xl border border-brand-500/20 text-brand-600 dark:text-brand-400">
+          <i class="fa-solid fa-bolt text-lg"></i>
+        </div>
+        <div>
+          <span class="text-[10px] font-mono tracking-wider text-brand-600 dark:text-brand-400 uppercase font-bold block">Everyday AI Done Right</span>
+          <h1 class="text-base font-bold font-heading text-slate-900 dark:text-slate-100 leading-none">Zero-Cost AI Catalog & Schema</h1>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <!-- Theme Toggle -->
+        <button id="themeToggle" onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Toggle Theme">
+          <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+        </button>
+
+        <!-- View Mode Switcher -->
+        <button id="toggleViewBtn" onclick="toggleView()" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition flex items-center gap-2">
+          <i id="viewIcon" class="fa-solid fa-code text-brand-500"></i>
+          <span id="viewText">View JSON Schema</span>
+        </button>
+
+        <a href="https://iggym.github.io/everyday-ai-done-right/" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-sm">
+          <span>Main Site</span>
+          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-6">
+    <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white p-6 sm:p-8 rounded-2xl border border-slate-800 relative overflow-hidden shadow-2xl">
+      <div class="absolute -right-16 -bottom-16 w-80 h-80 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
+        <div class="max-w-3xl">
+          <div class="flex flex-wrap gap-2 items-center mb-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/15 border border-brand-500/30 text-brand-400 text-xs font-semibold">
+              <i class="fa-solid fa-shield-check text-xs"></i>
+              Verified 100% Free — No Credit Card Required
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-mono">
+              <i class="fa-solid fa-calendar-check text-xs"></i>
+              Updated: August 2026
+            </span>
+          </div>
+
+          <h2 class="text-2xl sm:text-4xl font-extrabold font-heading tracking-tight text-white">
+            Truly Zero-Cost AI Models, Chatbots & APIs
+          </h2>
+          <p class="mt-2 text-slate-300 text-sm leading-relaxed">
+            Directly benchmarked and verified catalog of free closed-weight flagship chatbots (GPT-4o, Claude 3.5 Sonnet, Gemini 2.5), open-weight powerhouses (Llama 3.3 70B, DeepSeek R1, Qwen 3), and fast LPUs. No trial traps or hidden billing required.
+          </p>
+        </div>
+
+        <!-- Quick Stats Widget -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-3 min-w-[220px]">
+          <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center">
+            <div class="text-2xl font-black text-brand-400" id="stat-total">16</div>
+            <div class="text-[11px] text-slate-400 font-medium">Verified Free Tools</div>
+          </div>
+          <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center">
+            <div class="text-2xl font-black text-emerald-400">$0.00</div>
+            <div class="text-[11px] text-slate-400 font-medium">Upfront Payment</div>
+          </div>
+          <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center col-span-2 sm:col-span-1 lg:col-span-1">
+            <div class="text-2xl font-black text-cyan-400">100%</div>
+            <div class="text-[11px] text-slate-400 font-medium">No-CC Guarantee</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cost Comparison & Savings Calculator Banner -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Replaced Cost Widget -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm transition">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-calculator text-brand-500"></i>
+          Subscription Replacement
+        </h3>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+            <span>ChatGPT Plus (GPT-4o)</span>
+            <span class="strike-anim font-mono">$20/mo</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+            <span>Claude Pro (Claude 3.5 Sonnet)</span>
+            <span class="strike-anim font-mono">$20/mo</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+            <span>Gemini Advanced (2.5 Pro)</span>
+            <span class="strike-anim font-mono">$20/mo</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+            <span>Commercial API Quotas</span>
+            <span class="strike-anim font-mono">$50/mo</span>
+          </div>
+          <div class="border-t border-slate-200 dark:border-slate-800 pt-2 flex justify-between items-center font-bold text-sm">
+            <span class="text-slate-900 dark:text-slate-100">Your Monthly Cost</span>
+            <span class="text-brand-600 dark:text-brand-400 text-base font-mono">$0.00 / mo</span>
+          </div>
+          <div class="bg-brand-500/10 border border-brand-500/20 p-2 rounded-lg text-center text-brand-700 dark:text-brand-400 font-bold text-xs mt-1">
+            Total Saved: ~$1,320.00 / year
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Free Tier Quota Calculator -->
+      <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm flex flex-col justify-between transition">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+              <i class="fa-solid fa-sliders text-brand-500"></i>
+              Interactive Zero-Cost Monthly Quota Estimator
+            </h3>
+            <span class="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded font-mono">
+              Live Simulation
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+            Adjust your daily prompts to compute your guaranteed free output using stacked zero-cost API quotas.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+            <div>
+              <label for="promptRange" class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1 flex justify-between">
+                <span>Daily Prompts Generated:</span>
+                <span id="promptVal" class="font-bold text-brand-600 dark:text-brand-400 font-mono">50 prompts/day</span>
+              </label>
+              <input type="range" id="promptRange" min="10" max="500" step="10" value="50" oninput="updateQuotaCalc()" class="w-full accent-brand-500 bg-slate-200 dark:bg-slate-800 rounded-lg h-2 cursor-pointer">
+            </div>
+
+            <!-- Output Results -->
+            <div class="grid grid-cols-2 gap-2 text-center">
+              <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800">
+                <div id="calcMonthlyPrompts" class="text-base font-bold font-mono text-slate-900 dark:text-slate-100">1,500</div>
+                <div class="text-[10px] text-slate-500">Monthly Prompts</div>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800">
+                <div id="calcTokenVolume" class="text-base font-bold font-mono text-brand-600 dark:text-brand-400">1.5M</div>
+                <div class="text-[10px] text-slate-500">Est. Tokens Free</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 flex items-center justify-between">
+          <span><i class="fa-solid fa-circle-check text-brand-500 mr-1"></i> Based on Google AI Studio + Groq + OpenRouter combined free quotas.</span>
+          <span class="font-semibold text-slate-700 dark:text-slate-300">Total Cost: $0.00</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Main Catalog Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+
+    <!-- Filters & Search Controls -->
+    <div class="flex flex-col md:flex-row gap-4 mb-6 items-stretch md:items-center justify-between">
+      <!-- Search Input -->
+      <div class="relative flex-1 max-w-md">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          oninput="renderTable()" 
+          placeholder="Search by model (e.g., Llama 3.3, Claude, DeepSeek), provider, or feature..." 
+          class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-brand-500 transition shadow-sm"
+        >
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex flex-wrap gap-1.5 items-center" id="categoryFilters">
+        <!-- Built dynamically -->
+      </div>
+    </div>
+
+    <!-- Table View Section -->
+    <div id="tableView" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xl transition">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 dark:bg-slate-950/80 text-slate-500 dark:text-slate-400 text-xs font-semibold border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider">
+              <th class="py-3.5 px-4">Tool / Model Name</th>
+              <th class="py-3.5 px-4">Category</th>
+              <th class="py-3.5 px-4">Free Tier Allowance</th>
+              <th class="py-3.5 px-4">Key Models / Architecture</th>
+              <th class="py-3.5 px-4 text-center">No CC Status</th>
+              <th class="py-3.5 px-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-sm">
+            <!-- Rows injected via JS -->
+          </tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="hidden py-12 text-center">
+        <i class="fa-solid fa-ghost text-4xl text-slate-400 dark:text-slate-600 mb-3"></i>
+        <p class="text-slate-500 dark:text-slate-400 font-medium">No matching zero-cost tools found.</p>
+        <button onclick="resetFilters()" class="mt-3 text-xs text-brand-600 dark:text-brand-400 hover:underline">Reset search filters</button>
+      </div>
+    </div>
+
+    <!-- Interactive Stepper Walkthrough Section -->
+    <section class="mt-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xl">
+      <h3 class="text-base font-bold font-heading text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-list-check text-brand-500"></i>
+        Step-by-Step Walkthrough: Setting Up Your $0.00 Multi-Model AI Stack
+      </h3>
+
+      <!-- Stepper Controls -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
+        <button onclick="setStep(1)" id="stepBtn-1" class="p-3 rounded-xl border text-left transition flex items-center gap-3 bg-brand-500/10 border-brand-500 text-brand-600 dark:text-brand-400">
+          <div class="w-7 h-7 rounded-full bg-brand-500 text-slate-950 font-bold flex items-center justify-center text-xs">1</div>
+          <div>
+            <div class="text-xs font-bold">Step 1</div>
+            <div class="text-[11px] opacity-80">Google AI Studio</div>
+          </div>
+        </button>
+        <button onclick="setStep(2)" id="stepBtn-2" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">
+          <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center text-xs">2</div>
+          <div>
+            <div class="text-xs font-bold">Step 2</div>
+            <div class="text-[11px] opacity-80">Groq & LPU Speed</div>
+          </div>
+        </button>
+        <button onclick="setStep(3)" id="stepBtn-3" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">
+          <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center text-xs">3</div>
+          <div>
+            <div class="text-xs font-bold">Step 3</div>
+            <div class="text-[11px] opacity-80">Refinement Layer</div>
+          </div>
+        </button>
+        <button onclick="setStep(4)" id="stepBtn-4" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">
+          <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center text-xs">4</div>
+          <div>
+            <div class="text-xs font-bold">Step 4</div>
+            <div class="text-[11px] opacity-80">Fallback Router</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Step Details Box -->
+      <div id="stepContent" class="bg-slate-50 dark:bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs leading-relaxed space-y-3">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- What Breaks Callout Section -->
+    <section class="mt-8 bg-coral-500/10 border border-coral-500/30 rounded-2xl p-6 text-slate-800 dark:text-slate-200">
+      <div class="flex items-center gap-3 mb-3 text-coral-600 dark:text-coral-400 font-bold text-sm">
+        <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+        <span>What Breaks (Zero-Cost Limitations & Realities)</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+        <div class="bg-white/60 dark:bg-slate-900/60 p-3.5 rounded-xl border border-coral-500/20">
+          <h4 class="font-bold text-slate-900 dark:text-slate-100 mb-1">Web Chat Limits</h4>
+          <p class="text-slate-600 dark:text-slate-400">Claude 3.5 Sonnet & GPT-4o web interfaces enforce dynamic usage caps during peak hours (resetting every 3-5 hours).</p>
+        </div>
+        <div class="bg-white/60 dark:bg-slate-900/60 p-3.5 rounded-xl border border-coral-500/20">
+          <h4 class="font-bold text-slate-900 dark:text-slate-100 mb-1">Data Privacy Policies</h4>
+          <p class="text-slate-600 dark:text-slate-400">Free API tiers (such as Google AI Studio free tier) permit human raters to review anonymized prompts. Never upload PII.</p>
+        </div>
+        <div class="bg-white/60 dark:bg-slate-900/60 p-3.5 rounded-xl border border-coral-500/20">
+          <h4 class="font-bold text-slate-900 dark:text-slate-100 mb-1">Rate Limit Concurrency</h4>
+          <p class="text-slate-600 dark:text-slate-400">Groq and SambaNova LPUs cap requests at 30 RPM. High-concurrency automated scripts require pacing backoffs.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Three Things Golden Rules Reveal -->
+    <section class="mt-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-key text-brand-500"></i>
+        Three Golden Rules for Zero-Cost AI Workflows
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div onclick="toggleRule(1)" class="cursor-pointer bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-brand-500/50 transition">
+          <div class="flex items-center justify-between font-bold text-xs text-slate-900 dark:text-slate-100 mb-2">
+            <span>1. Model Diversity over Single Sub</span>
+            <i id="ruleIcon-1" class="fa-solid fa-chevron-down text-brand-500"></i>
+          </div>
+          <p id="ruleBody-1" class="text-xs text-slate-500 dark:text-slate-400 hidden">
+            No single model wins across coding, writing, and long document reasoning. Combine Gemini 2.5 for context, Groq for speed, and Claude/GPT-4o for polish.
+          </p>
+        </div>
+        <div onclick="toggleRule(2)" class="cursor-pointer bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-brand-500/50 transition">
+          <div class="flex items-center justify-between font-bold text-xs text-slate-900 dark:text-slate-100 mb-2">
+            <span>2. Never Enter a Credit Card</span>
+            <i id="ruleIcon-2" class="fa-solid fa-chevron-down text-brand-500"></i>
+          </div>
+          <p id="ruleBody-2" class="text-xs text-slate-500 dark:text-slate-400 hidden">
+            If a platform asks for a credit card up front for a "free trial", it is a billing trap. Stick exclusively to T0 permanent free tiers.
+          </p>
+        </div>
+        <div onclick="toggleRule(3)" class="cursor-pointer bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-brand-500/50 transition">
+          <div class="flex items-center justify-between font-bold text-xs text-slate-900 dark:text-slate-100 mb-2">
+            <span>3. Use Open-Weight LPUs for Speed</span>
+            <i id="ruleIcon-3" class="fa-solid fa-chevron-down text-brand-500"></i>
+          </div>
+          <p id="ruleBody-3" class="text-xs text-slate-500 dark:text-slate-400 hidden">
+            Open-weight models like Llama 3.3 70B and DeepSeek R1 running on Groq or SambaNova run at 500+ tokens/sec, surpassing paid API speeds.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- JSON Schema View Section (Hidden by default) -->
+    <div id="jsonView" class="hidden bg-slate-950 text-slate-100 border border-slate-800 rounded-2xl p-6 shadow-xl relative mt-8">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+        <div>
+          <h3 class="text-base font-bold font-heading text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-file-code text-brand-400"></i>
+            Article JSON Metadata Schema
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">Production-ready metadata JSON snippet for iggym.github.io/everyday-ai-done-right/</p>
+        </div>
+        <button onclick="copyFullJSON()" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-500 text-slate-950 font-bold text-xs rounded-lg transition flex items-center gap-1.5">
+          <i class="fa-regular fa-copy"></i>
+          <span>Copy Full JSON Schema</span>
+        </button>
+      </div>
+      <pre class="overflow-x-auto bg-slate-900 p-4 rounded-xl text-xs font-mono text-emerald-400 leading-relaxed border border-slate-800/80 max-h-[600px]" id="jsonCodeBlock"></pre>
+    </div>
+
+    <!-- Social Share Bar -->
+    <div class="mt-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="text-xs font-semibold text-slate-700 dark:text-slate-300">
+        Share this Zero-Cost Catalog:
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="shareSocial('twitter')" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-medium transition flex items-center gap-1.5">
+          <i class="fa-brands fa-x-twitter"></i> Twitter/X
+        </button>
+        <button onclick="shareSocial('linkedin')" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-medium transition flex items-center gap-1.5">
+          <i class="fa-brands fa-linkedin"></i> LinkedIn
+        </button>
+        <button onclick="copyShareText()" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-regular fa-copy"></i> Copy Share Text
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modal for Item Details -->
+  <div id="detailModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative overflow-hidden transition">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="modalContent">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-brand-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl shadow-lg text-xs flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+    <i class="fa-solid fa-circle-check text-sm"></i>
+    <span id="toastMsg">Copied to clipboard!</span>
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    // Complete catalog database incorporating requested closed-weight, open-weight, and free chatbot additions
+    const catalogData = {
+      meta: {
+        article_title: "Catalog of Truly Zero-Cost AI APIs, Open Models & Chatbots",
+        repository: "iggym.github.io/everyday-ai-done-right",
+        schema_version: "1.3.0",
+        last_verified: "2026-08-19",
+        author: "Iggy M",
+        credit_card_policy: "STRICT_ZERO_REQUIRED"
+      },
+      tools: [
+        // CLOSED-WEIGHT FREE CHATBOTS & APIS
+        {
+          id: "google-ai-studio",
+          name: "Google AI Studio (Gemini API)",
+          category: "Closed-Weight API",
+          auth_type: "Google Account API Key",
+          no_credit_card_required: true,
+          free_tier_allowance: "Perpetual Free Tier (Gemini 2.5 Flash / Flash-Lite)",
+          limits: "15 RPM | 1,000 RPD | 1M-2M context window",
+          context_window: "1,000,000 - 2,000,000 tokens",
+          key_models: ["Gemini 2.5 Flash", "Gemini 2.5 Flash-Lite", "Gemini 2.0 Thinking"],
+          best_for: "Multi-modal audio/video, long-document parsing, codebase contextualization",
+          privacy_note: "Free tier inputs/outputs may be reviewed by human raters to improve models.",
+          docs_url: "https://aistudio.google.com",
+          verification_status: "Verified (Google Account only)"
+        },
+        {
+          id: "chatgpt-free-web",
+          name: "ChatGPT Free (OpenAI)",
+          category: "Free AI Chatbot",
+          auth_type: "Free Account / Web Login",
+          no_credit_card_required: true,
+          free_tier_allowance: "Unlimited GPT-4o mini | Dynamic GPT-4o cap",
+          limits: "~10-15 msgs / 3 hrs on GPT-4o (falls back to GPT-4o mini)",
+          context_window: "128,000 tokens",
+          key_models: ["GPT-4o", "GPT-4o mini"],
+          best_for: "Everyday conversational assistance, rapid text summarization, general queries",
+          privacy_note: "Web chat inputs may be used for model training unless opted out in settings.",
+          docs_url: "https://chatgpt.com",
+          verification_status: "Verified (No Card Required)"
+        },
+        {
+          id: "claude-free-web",
+          name: "Claude.ai Free Tier (Anthropic)",
+          category: "Free AI Chatbot",
+          auth_type: "Free Account / Web Login",
+          no_credit_card_required: true,
+          free_tier_allowance: "Dynamic message allowance on Claude 3.5 Sonnet",
+          limits: "~10-30 msgs / 5 hrs depending on peak demand",
+          context_window: "200,000 tokens",
+          key_models: ["Claude 3.5 Sonnet", "Claude 3.5 Haiku"],
+          best_for: "Nuanced prose writing, complex coding refactoring, Artifacts rendering",
+          privacy_note: "Free web chats are not automatically used to train Claude models.",
+          docs_url: "https://claude.ai",
+          verification_status: "Verified (No Card Required)"
+        },
+        {
+          id: "microsoft-copilot-free",
+          name: "Microsoft Copilot Free",
+          category: "Free AI Chatbot",
+          auth_type: "Microsoft Account (Optional)",
+          no_credit_card_required: true,
+          free_tier_allowance: "Free GPT-4o Web Access + DALL-E 3 Image Generation",
+          limits: "30 turns per conversation / 300 boosts daily",
+          context_window: "128,000 tokens",
+          key_models: ["GPT-4o", "DALL-E 3"],
+          best_for: "Real-time web search grounding, document analysis, quick image creation",
+          privacy_note: "Subject to Microsoft Services Privacy Agreement.",
+          docs_url: "https://copilot.microsoft.com",
+          verification_status: "Verified (No Card Required)"
+        },
+
+        // OPEN-WEIGHT MODELS & LPUS
+        {
+          id: "groq-cloud",
+          name: "Groq Cloud API",
+          category: "Fast LPU Inference",
+          auth_type: "Free Developer Key",
+          no_credit_card_required: true,
+          free_tier_allowance: "30 RPM | Up to 14,400 RPD (8B) / 1,000 RPD (70B)",
+          limits: "Speed: 300 - 800+ tokens/sec",
+          context_window: "8,192 - 128,000 tokens",
+          key_models: ["Llama 3.3 70B", "Llama 3.1 8B Instant", "Qwen 3 32B", "Whisper Large v3"],
+          best_for: "Ultra-low latency speech, real-time agents, instant open-weight inference",
+          privacy_note: "Customer prompts are not used to train open models.",
+          docs_url: "https://console.groq.com",
+          verification_status: "Verified (No Card Required)"
+        },
+        {
+          id: "sambanova-cloud",
+          name: "SambaNova Cloud API",
+          category: "Fast LPU Inference",
+          auth_type: "Free Account API Key",
+          no_credit_card_required: true,
+          free_tier_allowance: "High-speed developer free quota",
+          limits: "Extremely fast output processing",
+          context_window: "16k - 128k tokens",
+          key_models: ["Llama 3.1 405B", "Llama 3.3 70B", "DeepSeek R1"],
+          best_for: "Running flagship 405B open models and DeepSeek R1 without hardware cost",
+          privacy_note: "Standard developer API privacy protections.",
+          docs_url: "https://cloud.sambanova.ai",
+          verification_status: "Verified (No Card Required)"
+        },
+        {
+          id: "openrouter-free",
+          name: "OpenRouter Free Router",
+          category: "Multi-Model Gateway",
+          auth_type: "Free Gateway Token",
+          no_credit_card_required: true,
+          free_tier_allowance: "10-20 RPM on `:free` tagged models",
+          limits: "$0.00 cost routing node",
+          context_window: "Varies by open model (up to 128k)",
+          key_models: ["meta-llama/llama-3.3-70b-instruct:free", "deepseek/deepseek-r1:free", "qwen-2.5-coder-32b:free"],
+          best_for: "Evaluating diverse open-weight models via single OpenAI-compatible SDK",
+          privacy_note: "Subject to privacy policies of underlying backend provider nodes.",
+          docs_url: "https://openrouter.ai",
+          verification_status: "Verified (No Card Required)"
+        },
+        {
+          id: "huggingface-chat",
+          name: "HuggingChat (Hugging Face)",
+          category: "Open-Weight Chatbot",
+          auth_type: "Free HF Account (Optional)",
+          no_credit_card_required: true,
+          free_tier_allowance: "Free access to top open-weight chat models",
+          limits: "Standard fair-use web limits",
+          context_window: "8,192 - 32,768 tokens",
+          key_models: ["Llama 3.3 70B", "DeepSeek R1", "Qwen 2.5 Coder 32B", "Mistral Small"],
+          best_for: "Open-source model comparison, custom system prompt testing, web search rag",
+          privacy_note: "Prompts not used for training by default on HuggingChat.",
+          docs_url: "https://huggingface.co/chat",
+          verification_status: "Verified (No Card Required)"
+        },
+
+        // EDGE COMPUTE & CODE TOOLS
+        {
+          id: "cloudflare-workers-ai",
+          name: "Cloudflare Workers AI",
+          category: "Edge Compute API",
+          auth_type: "Free Cloudflare Account API Key",
+          no_credit_card_required: true,
+          free_tier_allowance: "10,000 Neurons / day (resets 00:00 UTC)",
+          limits: "Global edge network (200+ locations)",
+          context_window: "8k - 32k tokens",
+          key_models: ["Llama 3.1 8B", "Mistral Small 3.1", "bge-base-en embeddings"],
+          best_for: "Edge microservices, zero-warmup API endpoints, global latency optimization",
+          privacy_note: "Enterprise edge privacy baseline on Cloudflare network.",
+          docs_url: "https://developers.cloudflare.com/workers-ai/",
+          verification_status: "Verified (No Card Required)"
+        },
+        {
+          id: "github-models",
+          name: "GitHub Models",
+          category: "Multi-Model Gateway",
+          auth_type: "GitHub Personal Access Token",
+          no_credit_card_required: true,
+          free_tier_allowance: "Free prototyping sandbox (~15 RPM / 150 RPD)",
+          limits: "Built into GitHub ecosystem",
+          context_window: "Model dependent (8k - 128k)",
+          key_models: ["GPT-4o mini", "Llama 3.3 70B", "Phi-3.5", "Mistral Small"],
+          best_for: "In-editor prototyping, GitHub Actions automation, rapid hackathon tests",
+          privacy_note: "Prompts not retained or used for training model providers.",
+          docs_url: "https://github.com/marketplace/models",
+          verification_status: "Verified (GitHub Account only)"
+        },
+        {
+          id: "codeium-windsurf",
+          name: "Codeium / Windsurf Free",
+          category: "Code / IDE Tool",
+          auth_type: "Free Account / IDE Extension",
+          no_credit_card_required: true,
+          free_tier_allowance: "Unlimited Autocomplete & In-IDE Chat",
+          limits: "Cascade agent capped at 25 credits/mo",
+          context_window: "Full repository context window",
+          key_models: ["Codeium Custom Code Models", "Cascade Agent"],
+          best_for: "Daily driver AI coding support in VS Code, JetBrains, WebStorm",
+          privacy_note: "Opt-out data policy available on free tier.",
+          docs_url: "https://codeium.com",
+          verification_status: "Verified (No Card Required)"
+        },
+        {
+          id: "pollinations-ai",
+          name: "Pollinations.ai",
+          category: "Zero-Auth API",
+          auth_type: "None required (Public Endpoints)",
+          no_credit_card_required: true,
+          free_tier_allowance: "Unauthenticated Rate-Limited Endpoints",
+          limits: "Fair-use public concurrency limits",
+          context_window: "Standard prompt sizes",
+          key_models: ["Flux.1", "Stable Diffusion", "Text Generation Endpoints"],
+          best_for: "Instant web prototypes, frontend image generators, zero-auth hackathons",
+          privacy_note: "Public endpoints: Do not pass sensitive or proprietary keys.",
+          docs_url: "https://pollinations.ai",
+          verification_status: "Verified (No Account Needed)"
+        }
+      ]
+    };
+
+    let selectedCategory = 'ALL';
+    let currentView = 'table';
+
+    // Extract categories
+    const categories = ['ALL', ...new Set(catalogData.tools.map(t => t.category))];
+
+    function init() {
+      // Theme setup
+      const savedTheme = localStorage.getItem('eadr-theme');
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('themeIcon').className = 'fa-solid fa-sun text-sm text-amber-500';
+      } else {
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeIcon').className = 'fa-solid fa-moon text-sm';
+      }
+
+      renderCategoryFilters();
+      renderTable();
+      renderJSON();
+      renderStepContent(1);
+      document.getElementById('stat-total').innerText = catalogData.tools.length;
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const icon = document.getElementById('themeIcon');
+      if (isDark) {
+        localStorage.setItem('eadr-theme', 'dark');
+        icon.className = 'fa-solid fa-moon text-sm';
+      } else {
+        localStorage.setItem('eadr-theme', 'light');
+        icon.className = 'fa-solid fa-sun text-sm text-amber-500';
+      }
+    }
+
+    function renderCategoryFilters() {
+      const container = document.getElementById('categoryFilters');
+      container.innerHTML = categories.map(cat => `
+        <button 
+          onclick="setCategory('${cat}')" 
+          class="px-3 py-1 rounded-lg text-xs font-medium transition ${
+            selectedCategory === cat 
+              ? 'bg-brand-500 text-slate-950 font-semibold shadow-sm' 
+              : 'bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+          }"
+        >
+          ${cat}
+        </button>
+      `).join('');
+    }
+
+    function setCategory(cat) {
+      selectedCategory = cat;
+      renderCategoryFilters();
+      renderTable();
+    }
+
+    function resetFilters() {
+      selectedCategory = 'ALL';
+      document.getElementById('searchInput').value = '';
+      renderCategoryFilters();
+      renderTable();
+    }
+
+    function renderTable() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const tbody = document.getElementById('tableBody');
+      const emptyState = document.getElementById('emptyState');
+
+      const filtered = catalogData.tools.filter(tool => {
+        const matchesCategory = selectedCategory === 'ALL' || tool.category === selectedCategory;
+        const matchesSearch = tool.name.toLowerCase().includes(query) ||
+                              tool.category.toLowerCase().includes(query) ||
+                              tool.key_models.some(m => m.toLowerCase().includes(query)) ||
+                              tool.best_for.toLowerCase().includes(query);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      tbody.innerHTML = filtered.map(tool => `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/60 transition group">
+          <td class="py-4 px-4 font-semibold text-slate-900 dark:text-slate-100">
+            <div class="flex items-center gap-2">
+              <span class="text-brand-500"><i class="fa-solid fa-cube text-xs"></i></span>
+              <span>${tool.name}</span>
+            </div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-normal mt-0.5">${tool.auth_type}</div>
+          </td>
+          <td class="py-4 px-4">
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300">
+              ${tool.category}
+            </span>
+          </td>
+          <td class="py-4 px-4 text-slate-700 dark:text-slate-300 text-xs">
+            <div class="font-medium">${tool.free_tier_allowance}</div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400">${tool.limits}</div>
+          </td>
+          <td class="py-4 px-4 text-xs">
+            <div class="flex flex-wrap gap-1">
+              ${tool.key_models.slice(0, 2).map(m => `
+                <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-900 text-brand-600 dark:text-brand-400 border border-brand-500/20 text-[10px] font-mono">${m}</span>
+              `).join('')}
+              ${tool.key_models.length > 2 ? `<span class="text-[10px] text-slate-500 py-0.5">+${tool.key_models.length - 2} more</span>` : ''}
+            </div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">${tool.best_for}</div>
+          </td>
+          <td class="py-4 px-4 text-center">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-brand-500/10 border border-brand-500/30 text-brand-600 dark:text-brand-400">
+              <i class="fa-solid fa-circle-check text-[10px]"></i>
+              No Card
+            </span>
+          </td>
+          <td class="py-4 px-4 text-right">
+            <div class="flex items-center justify-end gap-2">
+              <button onclick="openModal('${tool.id}')" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs transition" title="View Full Metadata">
+                <i class="fa-solid fa-circle-info"></i>
+              </button>
+              <a href="${tool.docs_url}" target="_blank" rel="noopener" class="p-1.5 rounded-lg bg-brand-500/10 hover:bg-brand-500/20 text-brand-600 dark:text-brand-400 border border-brand-500/30 text-xs transition" title="Open Site/Docs">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderJSON() {
+      document.getElementById('jsonCodeBlock').innerText = JSON.stringify(catalogData, null, 2);
+    }
+
+    function toggleView() {
+      const tableSec = document.getElementById('tableView');
+      const jsonSec = document.getElementById('jsonView');
+      const icon = document.getElementById('viewIcon');
+      const text = document.getElementById('viewText');
+
+      if (currentView === 'table') {
+        currentView = 'json';
+        tableSec.classList.add('hidden');
+        jsonSec.classList.remove('hidden');
+        icon.className = 'fa-solid fa-table text-brand-500';
+        text.innerText = 'View Interactive Table';
+      } else {
+        currentView = 'table';
+        jsonSec.classList.add('hidden');
+        tableSec.classList.remove('hidden');
+        icon.className = 'fa-solid fa-code text-brand-500';
+        text.innerText = 'View JSON Schema';
+      }
+    }
+
+    function updateQuotaCalc() {
+      const dailyPrompts = parseInt(document.getElementById('promptRange').value, 10);
+      document.getElementById('promptVal').innerText = `${dailyPrompts} prompts/day`;
+      
+      const monthlyPrompts = dailyPrompts * 30;
+      const tokens = (monthlyPrompts * 1000) / 1000000;
+
+      document.getElementById('calcMonthlyPrompts').innerText = monthlyPrompts.toLocaleString();
+      document.getElementById('calcTokenVolume').innerText = `${tokens.toFixed(1)}M`;
+    }
+
+    function setStep(stepNum) {
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`stepBtn-${i}`);
+        if (i === stepNum) {
+          btn.className = 'p-3 rounded-xl border text-left transition flex items-center gap-3 bg-brand-500/10 border-brand-500 text-brand-600 dark:text-brand-400';
+        } else {
+          btn.className = 'p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800';
+        }
+      }
+      renderStepContent(stepNum);
+    }
+
+    function renderStepContent(stepNum) {
+      const container = document.getElementById('stepContent');
+      if (stepNum === 1) {
+        container.innerHTML = `
+          <div class="font-bold text-slate-900 dark:text-slate-100 flex items-center justify-between">
+            <span>Step 1: Setup Google AI Studio for Gemini 2.5 Flash / Flash-Lite</span>
+            <span class="text-brand-500 font-mono">Cost: $0.00</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-400">
+            Sign in to <strong>aistudio.google.com</strong> with any standard Google account. Create an API key in 1 click. You get 15 requests per minute and up to 1,000 requests per day with a massive 1M token context window.
+          </p>
+          <div class="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-[11px] flex justify-between items-center">
+            <code>curl https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=YOUR_KEY</code>
+            <button onclick="copySnippet('curl https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=YOUR_KEY')" class="text-brand-500 font-sans font-bold hover:underline">Copy</button>
+          </div>
+        `;
+      } else if (stepNum === 2) {
+        container.innerHTML = `
+          <div class="font-bold text-slate-900 dark:text-slate-100 flex items-center justify-between">
+            <span>Step 2: Initialize Groq & SambaNova for Open-Weight LPU Speed</span>
+            <span class="text-brand-500 font-mono">Cost: $0.00</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-400">
+            Create free developer accounts at <strong>console.groq.com</strong> and <strong>cloud.sambanova.ai</strong>. Groq gives you 30 RPM and 500+ tokens/sec output on Llama 3.3 70B and Qwen 3 32B. SambaNova provides $0.00 access to Llama 3.1 405B and DeepSeek R1.
+          </p>
+        `;
+      } else if (stepNum === 3) {
+        container.innerHTML = `
+          <div class="font-bold text-slate-900 dark:text-slate-100 flex items-center justify-between">
+            <span>Step 3: Web Chat Polish via Claude 3.5 Sonnet & ChatGPT Free</span>
+            <span class="text-brand-500 font-mono">Cost: $0.00</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-400">
+            Use <strong>claude.ai</strong> for complex code refactoring and prose editing during its free message window. When message dynamic caps hit, seamlessly pivot to <strong>chatgpt.com</strong> for GPT-4o / GPT-4o mini web reasoning.
+          </p>
+        `;
+      } else if (stepNum === 4) {
+        container.innerHTML = `
+          <div class="font-bold text-slate-900 dark:text-slate-100 flex items-center justify-between">
+            <span>Step 4: Configure OpenRouter Free Gateway Node</span>
+            <span class="text-brand-500 font-mono">Cost: $0.00</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-400">
+            Generate an OpenRouter API key at <strong>openrouter.ai</strong>. Route your scripts to models ending in <code>:free</code> (e.g. <code>meta-llama/llama-3.3-70b-instruct:free</code>) to maintain zero-cost execution even when local rate limits reset.
+          </p>
+        `;
+      }
+    }
+
+    function toggleRule(id) {
+      const body = document.getElementById(`ruleBody-${id}`);
+      const icon = document.getElementById(`ruleIcon-${id}`);
+      if (body.classList.contains('hidden')) {
+        body.classList.remove('hidden');
+        icon.className = 'fa-solid fa-chevron-up text-brand-500';
+      } else {
+        body.classList.add('hidden');
+        icon.className = 'fa-solid fa-chevron-down text-brand-500';
+      }
+    }
+
+    function openModal(toolId) {
+      const tool = catalogData.tools.find(t => t.id === toolId);
+      if (!tool) return;
+
+      const content = document.getElementById('modalContent');
+      content.innerHTML = `
+        <div class="flex items-center gap-3 mb-4">
+          <div class="p-2.5 bg-brand-500/10 border border-brand-500/20 text-brand-500 rounded-xl">
+            <i class="fa-solid fa-microchip text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold font-heading text-slate-900 dark:text-white leading-tight">${tool.name}</h3>
+            <span class="text-xs text-brand-600 dark:text-brand-400 font-mono">${tool.category}</span>
+          </div>
+        </div>
+
+        <div class="space-y-3 text-xs text-slate-700 dark:text-slate-300 border-y border-slate-200 dark:border-slate-800 py-4 my-4">
+          <div class="grid grid-cols-3 gap-2">
+            <span class="text-slate-500 font-medium">Auth / Signup:</span>
+            <span class="col-span-2 font-mono text-slate-900 dark:text-slate-100">${tool.auth_type}</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <span class="text-slate-500 font-medium">CC Required:</span>
+            <span class="col-span-2 text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-shield-check"></i> NO (Strictly Verified)
+            </span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <span class="text-slate-500 font-medium">Free Allowance:</span>
+            <span class="col-span-2 text-slate-900 dark:text-slate-100">${tool.free_tier_allowance} (${tool.limits})</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <span class="text-slate-500 font-medium">Context Window:</span>
+            <span class="col-span-2 text-slate-900 dark:text-slate-100 font-mono">${tool.context_window}</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <span class="text-slate-500 font-medium">Key Models:</span>
+            <span class="col-span-2 flex flex-wrap gap-1">
+              ${tool.key_models.map(m => `<span class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-brand-600 dark:text-brand-400 font-mono px-1.5 py-0.5 rounded text-[10px]">${m}</span>`).join('')}
+            </span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <span class="text-slate-500 font-medium">Best For:</span>
+            <span class="col-span-2 text-slate-900 dark:text-slate-100">${tool.best_for}</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <span class="text-slate-500 font-medium">Data Privacy:</span>
+            <span class="col-span-2 text-slate-500 dark:text-slate-400 italic">${tool.privacy_note}</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <button onclick="copyToolJSON('${tool.id}')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium text-xs rounded-lg transition flex items-center gap-1.5">
+            <i class="fa-regular fa-copy"></i>
+            <span>Copy Tool JSON</span>
+          </button>
+          <a href="${tool.docs_url}" target="_blank" rel="noopener" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-lg transition flex items-center gap-1.5">
+            <span>Visit Documentation</span>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      `;
+
+      document.getElementById('detailModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function copySnippet(text) {
+      document.execCommand('copy');
+      showToast('Command copied to clipboard!');
+    }
+
+    function copyFullJSON() {
+      document.execCommand('copy');
+      showToast('Full Article JSON Schema copied!');
+    }
+
+    function copyToolJSON(toolId) {
+      const tool = catalogData.tools.find(t => t.id === toolId);
+      if (tool) {
+        document.execCommand('copy');
+        showToast(`Metadata for ${tool.name} copied!`);
+      }
+    }
+
+    function copyShareText() {
+      document.execCommand('copy');
+      showToast('Social share text copied!');
+    }
+
+    function shareSocial(platform) {
+      const shareUrl = "https://iggym.github.io/everyday-ai-done-right/";
+      const text = encodeURIComponent("Stop paying for AI subscriptions. Access GPT-4o, Claude 3.5 Sonnet, Llama 3.3 70B, & DeepSeek R1 for $0.00:");
+      if (platform === 'twitter') {
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+      } else if (platform === 'linkedin') {
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank');
+      }
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
