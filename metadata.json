@@ -8,6 +8,31 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0056",
+  "slug": "build-socratic-flashcards-deepseek-r1-free",
+  "title": "Build Interactive Socratic Flashcards Free via DeepSeek R1",
+  "hook": "Transform lecture notes and textbook chapters into interactive active-recall study flashcards using DeepSeek R1's free reasoning interface—100% free with no credit card required.",
+  "path": "articles/build-socratic-flashcards-deepseek-r1-free.html",
+  "date": "2026-08-19",
+  "status": "published",
+  "format": "guide",
+  "category": "learning",
+  "tool": "DeepSeek R1 (Web Chat)",
+  "tool_family": "DeepSeek",
+  "source_url": "https://chat.deepseek.com",
+  "tags": [
+    "learning",
+    "study-tools",
+    "active-recall",
+    "flashcards",
+    "deepseek-r1",
+    "free-tier",
+    "no-credit-card"
+  ],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2026-08-19"
+},{
   "id": "0055",
   "slug": "convert-articles-to-audiobooks-in-browser-kokoro-webgpu",
   "title": "Convert Articles to Spoken Audiobooks via Kokoro-TTS WebGPU",
