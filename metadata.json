@@ -8,6 +8,30 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0057",
+  "slug": "audit-pantry-generate-zero-waste-meal-plans-free",
+  "title": "Audit Your Pantry & Generate Zero-Waste Meal Plans for Free",
+  "hook": "Transform photos of your pantry shelves or receipt text into a zero-waste household meal plan using local browser AI—100% free with no credit card required, though vision OCR may misread illegible labels.",
+  "path": "articles/audit-pantry-generate-zero-waste-meal-plans-free.html",
+  "date": "2026-08-19",
+  "status": "published",
+  "format": "guide",
+  "category": "household",
+  "tool": "Open Food Facts AI & WebGPU Local Models",
+  "tool_family": "Open Food Facts",
+  "source_url": "https://world.openfoodfacts.org/",
+  "tags": [
+    "household",
+    "pantry-audit",
+    "meal-planning",
+    "zero-waste",
+    "free-tier",
+    "no-credit-card"
+  ],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-19"
+},{
   "id": "0001",
   "slug": "free-business-document-analysis-with-google-gemini",
   "title": "Free Business Document Analysis with Google Gemini",
