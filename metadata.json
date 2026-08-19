@@ -8,6 +8,31 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0011",
+  "slug": "zero-cost-ai-catalog-and-schema",
+  "title": "Truly Zero-Cost AI Models, Chatbots & APIs",
+  "hook": "Comprehensive catalog and JSON schema for free closed-weight chatbots, top open-weight models, and fast LPUs requiring zero credit card upfront.",
+  "path": "articles/zero-cost-ai-catalog-and-schema.html",
+  "date": "2026-08-19",
+  "status": "published",
+  "format": "guide",
+  "category": "creative",
+  "tool": "Multi-Model Free Stack (Google, OpenAI, Groq, Anthropic, OpenRouter)",
+  "tool_family": "Multi-Provider Aggregate",
+  "source_url": "https://iggym.github.io/everyday-ai-done-right/",
+  "tags": [
+    "zero-cost",
+    "open-weight",
+    "closed-weight",
+    "llm-apis",
+    "free-chatbots",
+    "groq",
+    "gemini"
+  ],
+  "reading_time_minutes": 3,
+  "pinned": true,
+  "verified": "2026-08-19"
+},{
   "id": "0004",
   "slug": "vectorize-hand-drawn-sketches-clean-svgs-free",
   "title": "Vectorize Hand-Drawn Sketches Into Clean SVGs for Free",
