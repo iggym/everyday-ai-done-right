@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build a Family Care Notebook That Answers Questions From a Parent's Paperwork — Everyday AI, Done Right</title>
+<meta name="description" content="Load up to 50 of an aging parent's documents into Gemini Notebook (NotebookLM) Standard and get cited answers plus an audio brief for siblings. Free with a Google account, capped at 50 chats and 3 audio overviews per day.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbfaf8; --surface:#ffffff; --surface-2:#f4f2ee; --line:#e3ded6;
+    --ink:#191714; --ink-2:#4d4740; --ink-3:#7a7268;
+    --accent:#0f5c4a; --accent-soft:#e2f0ea; --coral:#e2513c; --coral-soft:#fdeae6;
+    --amber:#b06b00; --amber-soft:#fdf1dc;
+    --shadow:0 1px 2px rgba(25,23,20,.05),0 8px 24px rgba(25,23,20,.06);
+    --radius:16px; --maxw:920px;
+  }
+  html[data-theme="dark"]{
+    --bg:#12110f; --surface:#1b1a17; --surface-2:#232120; --line:#332f2b;
+    --ink:#f4f1ec; --ink-2:#c3bcb2; --ink-3:#8f877c;
+    --accent:#5fd3ae; --accent-soft:#123027; --coral:#ff7a63; --coral-soft:#37201c;
+    --amber:#f0b357; --amber-soft:#332616;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  }
+  @media (prefers-color-scheme: dark){
+    html:not([data-theme]) { color-scheme: dark; }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:'Manrope',system-ui,sans-serif; line-height:1.2; letter-spacing:-.02em; margin:0 0 .5em}
+  h1{font-size:clamp(2rem,5vw,3.1rem); font-weight:800}
+  h2{font-size:clamp(1.4rem,3.2vw,2rem); font-weight:800; margin-top:0}
+  h3{font-size:1.15rem; font-weight:700}
+  p{margin:0 0 1em}
+  a{color:var(--accent)}
+  code,kbd,.mono{font-family:'JetBrains Mono',ui-monospace,monospace; font-size:.92em}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+  section{padding:52px 0; border-top:1px solid var(--line)}
+  section:first-of-type{border-top:none}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(10px);
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:var(--maxw); margin:0 auto; padding:10px 20px; display:flex; align-items:center; gap:14px}
+  .brand{display:flex; align-items:center; gap:9px; font-family:'Manrope'; font-weight:800; letter-spacing:-.02em; text-decoration:none; color:var(--ink); font-size:.98rem}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--accent); box-shadow:0 0 0 4px var(--accent-soft)}
+  .topnav{margin-left:auto; display:flex; align-items:center; gap:6px}
+  .topnav a{font-size:.86rem; color:var(--ink-2); text-decoration:none; padding:7px 10px; border-radius:9px}
+  .topnav a:hover{background:var(--surface-2); color:var(--ink)}
+  @media(max-width:720px){ .topnav a.hide-sm{display:none} }
+  .tbtn{
+    border:1px solid var(--line); background:var(--surface); color:var(--ink);
+    width:38px;height:38px;border-radius:10px; cursor:pointer; font-size:1rem;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .tbtn:hover{border-color:var(--accent)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:46px 0 40px}
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-family:'Manrope'; font-weight:700; font-size:.74rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:6px 12px; border-radius:999px}
+  .lede{font-size:1.16rem; color:var(--ink-2); max-width:64ch}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:22px}
+  .badge{
+    display:inline-flex; align-items:center; gap:7px; font-size:.8rem; font-weight:600;
+    padding:7px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2);
+  }
+  .badge b{color:var(--ink); font-weight:700}
+  .badge.ok{border-color:color-mix(in srgb,var(--accent) 40%,var(--line)); background:var(--accent-soft); color:var(--accent)}
+  .badge.ok b{color:var(--accent)}
+  .meta-row{display:flex; flex-wrap:wrap; gap:18px; margin-top:26px; padding-top:20px; border-top:1px dashed var(--line); font-size:.85rem; color:var(--ink-3)}
+  .meta-row b{display:block; color:var(--ink); font-family:'Manrope'; font-weight:700; font-size:.95rem}
+
+  /* ---------- generic cards ---------- */
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media(max-width:720px){ .grid2{grid-template-columns:1fr} }
+
+  /* ---------- cost comparison ---------- */
+  .cost-list{display:flex; flex-direction:column; gap:10px; margin-top:18px}
+  .cost-row{
+    display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px;
+    padding:14px 16px; border:1px solid var(--line); border-radius:12px; background:var(--surface);
+  }
+  .cost-row .what{font-weight:600}
+  .cost-row .sub{display:block; font-size:.8rem; color:var(--ink-3); font-weight:400}
+  .price{position:relative; font-family:'JetBrains Mono'; font-size:1rem; color:var(--ink-2); white-space:nowrap}
+  .price::after{
+    content:""; position:absolute; left:-4px; top:52%; height:2px; width:0;
+    background:var(--coral); border-radius:2px; transition:width .7s cubic-bezier(.2,.8,.2,1);
+  }
+  .cost-list.struck .price::after{width:calc(100% + 8px)}
+  .cost-list.struck .price{color:var(--ink-3)}
+  .cost-row.total{border-color:var(--accent); background:var(--accent-soft)}
+  .cost-row.total .price{color:var(--accent); font-weight:600; font-size:1.35rem}
+  .cost-row.total .price::after{display:none}
+  .cost-total-note{margin-top:12px; font-size:.85rem; color:var(--ink-3)}
+  .replay{margin-top:14px; font-size:.8rem; background:none; border:1px dashed var(--line); color:var(--ink-3); padding:6px 12px; border-radius:999px; cursor:pointer}
+  .replay:hover{color:var(--accent); border-color:var(--accent)}
+
+  /* ---------- quota calculator ---------- */
+  .calc{display:grid; grid-template-columns:1fr 1fr; gap:26px}
+  @media(max-width:760px){ .calc{grid-template-columns:1fr} }
+  .field{margin-bottom:18px}
+  .field label{display:flex; justify-content:space-between; align-items:baseline; font-size:.88rem; font-weight:600; margin-bottom:7px}
+  .field label span{font-family:'JetBrains Mono'; color:var(--accent); font-size:.95rem}
+  input[type=range]{width:100%; accent-color:var(--accent)}
+  .gauge{margin-bottom:16px}
+  .gauge-head{display:flex; justify-content:space-between; font-size:.85rem; margin-bottom:6px}
+  .gauge-head .cap{color:var(--ink-3); font-family:'JetBrains Mono'; font-size:.78rem}
+  .bar{height:11px; border-radius:99px; background:var(--surface-2); overflow:hidden; border:1px solid var(--line)}
+  .bar > i{display:block; height:100%; width:0; border-radius:99px; background:var(--accent); transition:width .45s ease, background .3s ease}
+  .bar.over > i{background:var(--coral)}
+  .verdict{margin-top:16px; padding:14px 16px; border-radius:12px; font-size:.92rem; border:1px solid var(--line); background:var(--surface-2)}
+  .verdict.good{border-color:color-mix(in srgb,var(--accent) 45%,var(--line)); background:var(--accent-soft); color:var(--accent)}
+  .verdict.warn{border-color:color-mix(in srgb,var(--amber) 45%,var(--line)); background:var(--amber-soft); color:var(--amber)}
+  .verdict.bad{border-color:color-mix(in srgb,var(--coral) 45%,var(--line)); background:var(--coral-soft); color:var(--coral)}
+
+  /* ---------- stepper ---------- */
+  .stepper-nav{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:18px}
+  .snum{
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-3);
+    font-family:'Manrope'; font-weight:700; font-size:.85rem; width:40px; height:40px; border-radius:11px; cursor:pointer;
+  }
+  .snum[aria-current="true"]{background:var(--accent); border-color:var(--accent); color:#fff}
+  .snum.done{color:var(--accent); border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+  .step{display:none}
+  .step.active{display:block; animation:fade .35s ease}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1;transform:none}}
+  .step h3{margin-bottom:4px}
+  .step .tag{font-size:.74rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); font-weight:700}
+  .step ul{margin:0 0 4px; padding-left:20px}
+  .step li{margin-bottom:6px}
+  .stepper-foot{display:flex; align-items:center; gap:10px; margin-top:20px}
+  .btn{
+    font-family:'Manrope'; font-weight:700; font-size:.9rem; border-radius:11px; padding:11px 18px; cursor:pointer;
+    border:1px solid var(--accent); background:var(--accent); color:#fff;
+  }
+  html[data-theme="dark"] .btn{color:#0b1a15}
+  .btn.ghost{background:transparent; color:var(--accent)}
+  .btn:disabled{opacity:.4; cursor:not-allowed}
+  .progress{margin-left:auto; font-size:.82rem; color:var(--ink-3); font-family:'JetBrains Mono'}
+
+  /* ---------- prompt blocks ---------- */
+  .prompt{border:1px solid var(--line); border-radius:12px; background:var(--surface-2); margin:14px 0}
+  .prompt-head{display:flex; align-items:center; gap:10px; padding:9px 12px; border-bottom:1px solid var(--line)}
+  .prompt-head .name{font-size:.78rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3)}
+  .copy{
+    margin-left:auto; border:1px solid var(--line); background:var(--surface); color:var(--ink-2);
+    font-size:.78rem; font-weight:600; padding:5px 11px; border-radius:8px; cursor:pointer;
+  }
+  .copy:hover{border-color:var(--accent); color:var(--accent)}
+  .copy.copied{background:var(--accent); border-color:var(--accent); color:#fff}
+  .prompt pre{margin:0; padding:14px; overflow-x:auto; font-family:'JetBrains Mono'; font-size:.83rem; line-height:1.6; white-space:pre-wrap; color:var(--ink-2)}
+
+  /* ---------- what breaks ---------- */
+  .breaks{border:1px solid color-mix(in srgb,var(--coral) 40%,var(--line)); border-left:5px solid var(--coral); background:var(--coral-soft); border-radius:14px; padding:22px}
+  .breaks h2{color:var(--coral); display:flex; align-items:center; gap:10px}
+  .breaks ul{padding-left:20px; margin:0}
+  .breaks li{margin-bottom:10px; color:var(--ink-2)}
+  .breaks li b{color:var(--ink)}
+
+  /* ---------- three things ---------- */
+  .three{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px}
+  @media(max-width:760px){ .three{grid-template-columns:1fr} }
+  .tt{border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:18px; cursor:pointer; text-align:left; font:inherit; color:inherit; transition:transform .2s ease, border-color .2s ease}
+  .tt:hover{transform:translateY(-2px); border-color:var(--accent)}
+  .tt .n{font-family:'JetBrains Mono'; font-size:.78rem; color:var(--accent)}
+  .tt h3{margin:8px 0 0; font-size:1.02rem}
+  .tt .body{max-height:0; overflow:hidden; transition:max-height .4s ease, margin .3s ease; color:var(--ink-2); font-size:.92rem}
+  .tt[aria-expanded="true"] .body{max-height:400px; margin-top:10px}
+  .tt .hint{font-size:.76rem; color:var(--ink-3); margin-top:10px}
+  .tt[aria-expanded="true"] .hint{display:none}
+
+  /* ---------- try it ---------- */
+  .cta{background:var(--accent); color:#fff; border-radius:var(--radius); padding:30px; text-align:center}
+  html[data-theme="dark"] .cta{color:#07130f}
+  .cta h2{color:inherit}
+  .cta p{opacity:.92; max-width:52ch; margin:0 auto 20px}
+  .cta .btn{background:#fff; color:var(--accent); border-color:#fff; text-decoration:none; display:inline-block}
+  html[data-theme="dark"] .cta .btn{background:#07130f; color:var(--accent); border-color:#07130f}
+
+  /* ---------- share bar ---------- */
+  .share{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+  .share a, .share button{
+    display:inline-flex; align-items:center; gap:7px; font-size:.84rem; font-weight:600; text-decoration:none;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-2);
+    padding:9px 14px; border-radius:10px; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .share a:hover, .share button:hover{border-color:var(--accent); color:var(--accent)}
+  .share-text{font-size:.86rem; color:var(--ink-3); font-family:'JetBrains Mono'; background:var(--surface-2); border:1px dashed var(--line); border-radius:10px; padding:12px; margin-top:14px}
+
+  footer{padding:34px 0 60px; color:var(--ink-3); font-size:.84rem; border-top:1px solid var(--line)}
+  .src{font-size:.84rem; color:var(--ink-3)}
+  .src a{color:var(--accent)}
+  .kv{display:grid; grid-template-columns:auto 1fr; gap:6px 14px; font-size:.9rem; margin:0}
+  .kv dt{color:var(--ink-3)}
+  .kv dd{margin:0; font-weight:600}
+  .toast{
+    position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px); opacity:0; pointer-events:none;
+    background:var(--ink); color:var(--bg); padding:11px 18px; border-radius:11px; font-size:.86rem; font-weight:600; z-index:99;
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .toast.show{opacity:1; transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="https://iggym.github.io/everyday-ai-done-right/"><span class="dot"></span>Everyday AI, Done Right</a>
+    <nav class="topnav">
+      <a class="hide-sm" href="#cost">Cost</a>
+      <a class="hide-sm" href="#calculator">Quota</a>
+      <a href="#walkthrough">Walkthrough</a>
+      <a class="hide-sm" href="#breaks">What breaks</a>
+      <button class="tbtn" id="themeBtn" aria-label="Toggle colour theme" title="Toggle colour theme">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Family · Guide 0054</span>
+    <h1>Build a Family Care Notebook That Answers Questions From a Parent's Paperwork</h1>
+    <p class="lede">
+      Load up to 50 of an aging parent's documents — discharge summaries, insurance letters, medication
+      lists, benefit notices, even a recorded appointment — into <b>Gemini Notebook (NotebookLM) Standard</b>
+      and ask questions that get answered with a citation pointing at the exact line in the exact document.
+      It costs nothing and needs no credit card. The hard ceilings: <b>50 sources per notebook, 50 chats per day,
+      3 audio overviews per day</b>, and it only knows what you put in it.
+    </p>
+
+    <div class="badges">
+      <span class="badge ok">✓ <b>T0</b> — permanent free, no card</span>
+      <span class="badge ok">✓ Quotas <b>published by Google</b></span>
+      <span class="badge">LVAZ score <b>11/12</b></span>
+      <span class="badge">Verified <b>19 Aug 2026</b></span>
+      <span class="badge">Reading time <b>4 min</b></span>
+    </div>
+
+    <div class="meta-row">
+      <div>Tool<b>Gemini Notebook (NotebookLM) Standard</b></div>
+      <div>Provider<b>Google</b></div>
+      <div>Ladder tier<b>T0 · Permanent free</b></div>
+      <div>Account needed<b>Google account only</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PITCH / WHY ================= -->
+<section>
+  <div class="wrap">
+    <h2>The problem this solves</h2>
+    <p>
+      When a parent gets sick, the paperwork arrives faster than anyone can read it: a four-page hospital
+      discharge summary, a medication list that changed twice, an explanation of benefits that denies a claim
+      in language nobody can parse, a Medicare notice with a deadline buried on page three, a pharmacy printout,
+      a home-care contract. It ends up in a shoebox, a Gmail thread, and three siblings' phones.
+    </p>
+    <p>
+      A general chatbot forgets it all next session. A notebook does not. Gemini Notebook keeps your documents
+      as a fixed source set and answers only from them, with inline citations you can click to see the sentence
+      it used. That difference matters when the answer is "which of Dad's three discharge papers actually lists
+      the follow-up appointment, and when is it?"
+    </p>
+
+    <div class="card" style="margin-top:22px">
+      <h3 style="margin-bottom:10px">What you get in one sitting</h3>
+      <ul style="margin:0; padding-left:20px; color:var(--ink-2)">
+        <li>Every date, dollar figure, and deadline pulled out of the pile into one dated list, each with a citation.</li>
+        <li>A medication table built from the actual documents, with conflicts between versions flagged as questions for the pharmacist — not as advice.</li>
+        <li>A plain-language explanation of a denial letter, next to the policy language it contradicts.</li>
+        <li>A 6–12 minute audio brief your siblings can listen to on a commute instead of reading 40 pages.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COST COMPARISON ================= -->
+<section id="cost">
+  <div class="wrap">
+    <h2>Replaced costs</h2>
+    <p class="src">What families normally pay for the same coordination work. Figures are market ranges from
+      published 2026 sources, not quotes.</p>
+
+    <div class="cost-list" id="costList">
+      <div class="cost-row">
+        <span class="what">Geriatric care manager, hourly
+          <span class="sub">Aging Life Care Professional; private pay, not covered by Medicare</span></span>
+        <span class="price">$100–$200 / hr</span>
+      </div>
+      <div class="cost-row">
+        <span class="what">Initial care assessment + written plan
+          <span class="sub">2–4 hours plus a document review</span></span>
+        <span class="price">$300–$1,500 once</span>
+      </div>
+      <div class="cost-row">
+        <span class="what">Ongoing coordination retainer
+          <span class="sub">Active month-to-month case management</span></span>
+        <span class="price">$500–$1,500 / mo</span>
+      </div>
+      <div class="cost-row">
+        <span class="what">Google AI Plus / AI Pro subscription
+          <span class="sub">Only raises the daily caps — every feature is already in the free tier</span></span>
+        <span class="price">$7.99–$19.99 / mo</span>
+      </div>
+      <div class="cost-row total">
+        <span class="what">This workflow
+          <span class="sub">Google account, no card, no trial clock</span></span>
+        <span class="price">$0.00</span>
+      </div>
+    </div>
+    <p class="cost-total-note">
+      A care manager does things software cannot: home visits, provider phone calls, judgement about a
+      person. This does not replace one. It replaces the four unpaid hours you spend re-reading the pile
+      before you can ask anyone a useful question.
+    </p>
+    <button class="replay" id="replayCost">↻ Replay comparison</button>
+  </div>
+</section>
+
+<!-- ================= QUOTA CALCULATOR ================= -->
+<section id="calculator">
+  <div class="wrap">
+    <h2>Will the free tier hold your case?</h2>
+    <p class="src">
+      Every ceiling below is Google's published Standard-tier number: 100 notebooks per user, 50 sources per
+      notebook, 500,000 words or 200&nbsp;MB per source, 50 chats/day, 3 audio overviews/day, 3 video
+      overviews/day, 10 reports/day, 10 Deep Research runs/month. Daily quotas reset after 24 hours, monthly
+      quotas after 30 days.
+    </p>
+
+    <div class="card" style="margin-top:18px">
+      <div class="calc">
+        <div>
+          <div class="field">
+            <label for="docs">Documents you want to load <span id="docsV">18</span></label>
+            <input type="range" id="docs" min="1" max="140" value="18">
+          </div>
+          <div class="field">
+            <label for="qs">Questions you'll ask on a busy day <span id="qsV">22</span></label>
+            <input type="range" id="qs" min="1" max="120" value="22">
+          </div>
+          <div class="field">
+            <label for="au">Audio briefs per day (for siblings) <span id="auV">1</span></label>
+            <input type="range" id="au" min="0" max="8" value="1">
+          </div>
+          <div class="field">
+            <label for="rep">Written reports per day <span id="repV">2</span></label>
+            <input type="range" id="rep" min="0" max="20" value="2">
+          </div>
+          <div class="field">
+            <label for="people">Family members with their own logins <span id="peopleV">3</span></label>
+            <input type="range" id="people" min="1" max="8" value="3">
+          </div>
+        </div>
+
+        <div>
+          <div class="gauge">
+            <div class="gauge-head"><span>Sources <b id="g1n"></b></span><span class="cap">cap 50 / notebook</span></div>
+            <div class="bar" id="g1"><i></i></div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-head"><span>Chats today <b id="g2n"></b></span><span class="cap">cap 50 / day</span></div>
+            <div class="bar" id="g2"><i></i></div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-head"><span>Audio overviews <b id="g3n"></b></span><span class="cap">cap 3 / day</span></div>
+            <div class="bar" id="g3"><i></i></div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-head"><span>Reports <b id="g4n"></b></span><span class="cap">cap 10 / day</span></div>
+            <div class="bar" id="g4"><i></i></div>
+          </div>
+          <div class="verdict" id="verdict"></div>
+          <dl class="kv" style="margin-top:14px">
+            <dt>Notebooks needed</dt><dd id="nbCount">1 of 100</dd>
+            <dt>Cost at this usage</dt><dd style="color:var(--accent)">$0.00</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WALKTHROUGH ================= -->
+<section id="walkthrough">
+  <div class="wrap">
+    <h2>Step-by-step walkthrough</h2>
+    <p class="src">Six steps, about 25 minutes for a first notebook. Prompts are copyable — replace the bracketed parts.</p>
+
+    <div class="card" style="margin-top:18px">
+      <div class="stepper-nav" id="stepNav"></div>
+
+      <div class="step active" data-title="Create the notebook">
+        <span class="tag">Step 1 · 2 min</span>
+        <h3>Create one notebook per person, not per problem</h3>
+        <p>Go to <span class="mono">notebook.google.com</span> and sign in with a personal Google account.
+        Select <b>Create new</b> and name it for the person and the year — "Mom — Care 2026". One person per
+        notebook keeps the 50-source cap meaningful and stops the model from mixing two people's medications.</p>
+        <ul>
+          <li>No credit card, no trial timer, no upgrade prompt required to finish this guide.</li>
+          <li>Check availability: the free tier requires you to be over your country's age of consent and in a supported region.</li>
+        </ul>
+      </div>
+
+      <div class="step" data-title="Load sources">
+        <span class="tag">Step 2 · 10 min</span>
+        <h3>Load the pile, worst-scanned documents included</h3>
+        <p>Select <b>Add</b> and upload. Each source can be up to 500,000 words or 200&nbsp;MB, and up to
+        50 sources fit in one notebook. Useful source types for a care notebook:</p>
+        <ul>
+          <li><b>PDFs and photos</b> — discharge summaries, EOBs, denial letters, pill-bottle photos, a scanned Medicare notice (avif, heic, jpg, png, tiff and more are accepted).</li>
+          <li><b>Audio</b> — a recording of an appointment, transcribed on import. Record only with everyone's consent, and check your state's recording law first.</li>
+          <li><b>Web URLs</b> — the plan's coverage page, a hospital's discharge-instruction page, a state benefit page. Paywalled pages will not import.</li>
+          <li><b>Google Drive files</b> — these auto-sync every few minutes; uploaded files do not, so re-upload a corrected version rather than assuming it updated.</li>
+          <li><b>Pasted text</b> — the message from the care agency, the pharmacist's email.</li>
+        </ul>
+        <p>Before uploading, black out anything you don't want stored: full Social Security numbers, bank
+        account numbers, account passwords. Nothing in this workflow needs them.</p>
+      </div>
+
+      <div class="step" data-title="Build the care map">
+        <span class="tag">Step 3 · 5 min</span>
+        <h3>Ask for the care map first</h3>
+        <p>The first question should map the whole pile so you know what you have. Paste this into the chat box.</p>
+        <div class="prompt">
+          <div class="prompt-head"><span class="name">Prompt 1 — Care map</span>
+            <button class="copy">Copy</button></div>
+<pre>Act as a careful records clerk working only from the sources in this notebook.
+Do not use outside knowledge, and do not guess.
+
+Produce four sections:
+
+1. WHO AND WHAT — one line per source: what the document is, who issued it,
+   what date it carries.
+2. TIMELINE — every date mentioned anywhere, in chronological order, with what
+   happens on that date and which source it came from.
+3. MONEY — every dollar amount, who owes it, to whom, and the due date if one
+   is stated.
+4. OPEN LOOPS — anything the documents say must be done, but that no document
+   confirms was done.
+
+Cite the source for every line. If two sources disagree, show both values side
+by side and label the row CONFLICT. If a date or amount is not stated anywhere,
+write "not stated in sources" rather than estimating.</pre>
+        </div>
+      </div>
+
+      <div class="step" data-title="Medication cross-check">
+        <span class="tag">Step 4 · 5 min</span>
+        <h3>Turn the medication mess into questions for the pharmacist</h3>
+        <p>This is the highest-value query in the notebook, and the one that needs the tightest framing.
+        You are extracting and comparing what the documents say — not asking for medical advice.</p>
+        <div class="prompt">
+          <div class="prompt-head"><span class="name">Prompt 2 — Medication reconciliation</span>
+            <button class="copy">Copy</button></div>
+<pre>Using only the sources in this notebook, build a medication table with these
+columns: medicine name, dose, how often, prescriber, the source it came from,
+and the date of that source.
+
+Then add two sections:
+
+A. DISCREPANCIES — any medicine that appears with a different dose, frequency,
+   or spelling across sources; any medicine listed in an older source and absent
+   from a newer one; any medicine with no stated dose. Quote both versions.
+
+B. QUESTIONS FOR THE PHARMACIST — turn each discrepancy into one short, specific
+   question a caregiver can read aloud at the pharmacy counter, naming the
+   documents involved.
+
+Do not recommend a dose, do not say whether a combination is safe, and do not
+add medicines that are not named in the sources. If the sources are unclear,
+say so.</pre>
+        </div>
+        <p class="src">Print section B, take it to the pharmacy, and let a licensed human answer it. That is the
+        whole point of the step.</p>
+      </div>
+
+      <div class="step" data-title="Decode a denial">
+        <span class="tag">Step 5 · 3 min</span>
+        <h3>Put the denial letter next to the policy language</h3>
+        <p>Insurance denials are written to be re-read. With both the denial and the coverage document loaded
+        as sources, the notebook can line them up.</p>
+        <div class="prompt">
+          <div class="prompt-head"><span class="name">Prompt 3 — Denial vs. policy</span>
+            <button class="copy">Copy</button></div>
+<pre>From the sources only:
+
+1. State in plain language what was denied, the exact reason code or wording the
+   insurer gave, and the date of the letter.
+2. Quote the passage from the plan or coverage source that the denial relies on.
+3. Quote any passage in the sources that appears to support coverage instead.
+4. List the appeal deadline, where the appeal must be sent, and every document
+   the letter says must be attached. Mark anything the letter does not state as
+   "not stated — call and confirm".
+5. Draft a one-page appeal letter that quotes only language present in these
+   sources, with blanks in [BRACKETS] for anything I still need to supply.
+
+Do not invent policy numbers, deadlines, addresses, or clinical justifications.</pre>
+        </div>
+      </div>
+
+      <div class="step" data-title="Brief the family">
+        <span class="tag">Step 6 · 5 min</span>
+        <h3>Generate the sibling brief, then the audio version</h3>
+        <p>Open the <b>Studio</b> panel. Generate a written report first (10/day), then an Audio Overview
+        (3/day) with a custom instruction so it briefs rather than chats.</p>
+        <div class="prompt">
+          <div class="prompt-head"><span class="name">Prompt 4 — Audio Overview instruction</span>
+            <button class="copy">Copy</button></div>
+<pre>Audience: two adult siblings who live out of state and have read none of these
+documents. Keep it under 10 minutes.
+
+Cover, in this order: what changed most recently, the medication picture and its
+open questions, money owed and by when, every deadline in the next 60 days, and
+the three decisions the family has to make. Name the source document for each
+claim as you go.
+
+Skip pleasantries, skip speculation about prognosis, and say clearly when a
+detail is missing from the documents rather than filling the gap.</pre>
+        </div>
+        <p>Sharing the notebook itself needs Google accounts and gives collaborators access to the underlying
+        documents; sending the exported report or the audio file is usually the safer default.</p>
+      </div>
+
+      <div class="stepper-foot">
+        <button class="btn ghost" id="prevBtn">← Back</button>
+        <button class="btn" id="nextBtn">Next step →</button>
+        <span class="progress" id="progText">Step 1 / 6</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHAT BREAKS ================= -->
+<section id="breaks">
+  <div class="wrap">
+    <div class="breaks">
+      <h2>⚠ What breaks</h2>
+      <ul>
+        <li><b>50 chats a day, and reconciliation burns them fast.</b> Follow-up questions each count. Batch
+          several asks into one structured prompt instead of chatting line by line. The counter resets 24 hours
+          after use, not at local midnight.</li>
+        <li><b>3 audio overviews a day.</b> Get the written report right first, then generate audio once. A
+          regeneration because you forgot a source costs one of the three.</li>
+        <li><b>50 sources per notebook is a real wall.</b> A long hospitalisation plus a year of EOBs can exceed
+          it. Split by year or by topic, and accept that two notebooks cannot answer one question together.</li>
+        <li><b>It answers only from the sources.</b> That is the feature and the trap: if the discharge summary
+          never states the follow-up date, the notebook cannot tell you it. "Not stated in sources" is the
+          correct answer, and you still have to make the phone call.</li>
+        <li><b>Scanned faxes and handwriting degrade badly.</b> Image sources go through OCR; a crooked photo of
+          a pill bottle can read "50mg" as "5.0mg". Spot-check every number that matters against the paper.</li>
+        <li><b>Uploaded files are frozen copies.</b> Only Google Drive sources auto-sync. Correcting a file on
+          your desktop changes nothing inside the notebook.</li>
+        <li><b>This is not medical, legal, or insurance advice</b>, and the notebook is not a clinician. It
+          organises documents and produces questions. Dose changes, appeals strategy, and treatment decisions
+          belong to the pharmacist, the doctor, the plan, or a licensed advocate.</li>
+        <li><b>It is not a HIPAA-covered service.</b> Google states that your data is not used to train the
+          model unless you submit feedback — and that submitting feedback lets reviewers see your queries,
+          uploads, and responses. Redact identifiers you don't need, and don't send feedback on a notebook
+          holding a parent's medical records.</li>
+        <li><b>Limits are marked "subject to change."</b> Google says so on the same page that publishes them.
+          Re-check before you build a routine on a specific number.</li>
+        <li><b>Availability is gated.</b> Personal Google account, over the age of consent, in a supported
+          country; the mobile app supports fewer features than the browser.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THREE THINGS ================= -->
+<section>
+  <div class="wrap">
+    <h2>Three things most people miss</h2>
+    <p class="src">Tap each card.</p>
+    <div class="three">
+      <button class="tt" aria-expanded="false">
+        <span class="n">01</span>
+        <h3>Audio files become searchable sources</h3>
+        <div class="body">An appointment recording, a voicemail from the care agency, or a five-minute memo you
+          dictate in the parking lot is transcribed at import and becomes a citable source like any PDF. Consent
+          first — recording law varies by state and country — but it turns the conversation you half-remember
+          into evidence you can query.</div>
+        <div class="hint">Reveal →</div>
+      </button>
+      <button class="tt" aria-expanded="false">
+        <span class="n">02</span>
+        <h3>Select sources before you ask</h3>
+        <div class="body">In the sources panel you can tick only the documents a question concerns. Asking the
+          medication question against three medication documents instead of all 40 sources produces sharper
+          answers and fewer wrong citations. Naming the document in the question — "in the 12 August discharge
+          summary" — helps too.</div>
+        <div class="hint">Reveal →</div>
+      </button>
+      <button class="tt" aria-expanded="false">
+        <span class="n">03</span>
+        <h3>Deep Research runs 10 times a month, free</h3>
+        <div class="body">Separate from the 50 daily chats, the Standard tier includes 10 Deep Research runs per
+          month. Spend them on the questions the paperwork can't answer — what a specific state's Medicaid waiver
+          covers, what the local Area Agency on Aging offers — and pull the findings back in as sources.</div>
+        <div class="hint">Reveal →</div>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRY IT ================= -->
+<section>
+  <div class="wrap">
+    <div class="cta">
+      <h2>Try it now</h2>
+      <p>Start with three documents, not thirty: the most recent discharge or visit summary, the current
+        medication list, and the letter you least want to read. Run Prompt 1. That is a ten-minute test of
+        whether this belongs in your family's routine.</p>
+      <a class="btn" href="https://notebook.google.com/" target="_blank" rel="noopener">Open Gemini Notebook →</a>
+    </div>
+
+    <p class="src" style="margin-top:22px">
+      Quota source (official): <a href="https://support.google.com/gemininotebook/answer/16213268?hl=en" target="_blank" rel="noopener">Google — Upgrade Gemini Notebook (Standard column, usage limits)</a>.
+      Source-size and file-type limits: <a href="https://support.google.com/gemininotebook/answer/16215270?hl=en" target="_blank" rel="noopener">Google — Add or discover new sources</a>.
+      Care-manager pricing ranges are 2026 market figures from secondary industry sources and vary by region and credential.
+      Verified 19 August 2026.
+    </p>
+  </div>
+</section>
+
+<!-- ================= SHARE ================= -->
+<section>
+  <div class="wrap">
+    <h2>Share this</h2>
+    <div class="share" id="shareBar">
+      <a data-net="x" href="#" target="_blank" rel="noopener">𝕏 Post</a>
+      <a data-net="fb" href="#" target="_blank" rel="noopener">Facebook</a>
+      <a data-net="li" href="#" target="_blank" rel="noopener">LinkedIn</a>
+      <a data-net="rd" href="#" target="_blank" rel="noopener">Reddit</a>
+      <a data-net="wa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+      <a data-net="tg" href="#" target="_blank" rel="noopener">Telegram</a>
+      <a data-net="em" href="#">Email</a>
+      <button id="copyLink">Copy link</button>
+      <button id="nativeShare" hidden>Share…</button>
+    </div>
+    <div class="share-text" id="shareText">A parent's medical paperwork is unreadable in a pile. Load up to 50 documents into Gemini Notebook (NotebookLM) free tier and get cited answers plus an audio brief for siblings. No card. 50 chats/day, 3 audio/day.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    Everyday AI, Done Right — real AI leverage, actually free, no credit card.
+    Guide 0054 · family · published and verified 19 August 2026. Not medical, legal, or insurance advice.
+  </div>
+</footer>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- theme ---------- */
+  var root = document.documentElement, KEY = 'eadr-theme';
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch(e){}
+  function apply(t){ root.setAttribute('data-theme', t); }
+  if (stored === 'light' || stored === 'dark') {
+    apply(stored);
+  } else {
+    apply(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e){
+      var s = null; try { s = localStorage.getItem(KEY); } catch(err){}
+      if (s !== 'light' && s !== 'dark') apply(e.matches ? 'dark' : 'light');
+    });
+  }
+  document.getElementById('themeBtn').addEventListener('click', function(){
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(next);
+    try { localStorage.setItem(KEY, next); } catch(e){}
+  });
+
+  /* ---------- toast ---------- */
+  var toastEl = document.getElementById('toast'), toastT;
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.classList.add('show');
+    clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.classList.remove('show'); }, 1600);
+  }
+
+  /* ---------- cost strike-through ---------- */
+  var costList = document.getElementById('costList');
+  function strike(){ costList.classList.add('struck'); }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting) { setTimeout(strike, 260); io.disconnect(); } });
+    }, { threshold: 0.35 });
+    io.observe(costList);
+  } else { strike(); }
+  document.getElementById('replayCost').addEventListener('click', function(){
+    costList.classList.remove('struck'); setTimeout(strike, 120);
+  });
+
+  /* ---------- quota calculator ---------- */
+  var CAP = { sources:50, chats:50, audio:3, reports:10, notebooks:100, deep:10 };
+  var ids = ['docs','qs','au','rep','people'];
+  var el = {};
+  ids.forEach(function(i){ el[i] = document.getElementById(i); el[i+'V'] = document.getElementById(i+'V'); });
+
+  function gauge(id, used, cap){
+    var box = document.getElementById(id);
+    var pct = Math.min(100, (used / cap) * 100);
+    box.querySelector('i').style.width = pct + '%';
+    box.classList.toggle('over', used > cap);
+    document.getElementById(id + 'n').textContent = used + ' / ' + cap;
+  }
+
+  function recalc(){
+    var docs = +el.docs.value, qs = +el.qs.value, au = +el.au.value, rep = +el.rep.value, ppl = +el.people.value;
+    ids.forEach(function(i){ el[i+'V'].textContent = el[i].value; });
+
+    var notebooks = Math.ceil(docs / CAP.sources);
+    var perNotebook = Math.min(docs, CAP.sources);
+    gauge('g1', perNotebook, CAP.sources);
+    gauge('g2', qs, CAP.chats);
+    gauge('g3', au, CAP.audio);
+    gauge('g4', rep, CAP.reports);
+
+    document.getElementById('nbCount').textContent = notebooks + ' of ' + CAP.notebooks +
+      (ppl > 1 ? ' (each of the ' + ppl + ' logins gets its own 100)' : '');
+
+    var v = document.getElementById('verdict'), msgs = [], cls = 'good';
+    if (docs > CAP.sources) {
+      cls = 'warn';
+      msgs.push('Your ' + docs + ' documents need ' + notebooks + ' notebooks (50 sources each). Split them by year or by topic — a single question cannot read across two notebooks.');
+    }
+    if (qs > CAP.chats) {
+      cls = 'bad';
+      msgs.push('At ' + qs + ' questions you exceed the 50-chat daily cap by ' + (qs - CAP.chats) + '. Either spread the work over ' + Math.ceil(qs / CAP.chats) + ' days, or combine questions into structured multi-part prompts like the ones above.');
+    }
+    if (au > CAP.audio) {
+      if (cls !== 'bad') cls = 'warn';
+      msgs.push('Audio overviews are capped at 3/day; ' + au + ' means waiting ' + (Math.ceil(au / CAP.audio) - 1) + ' more day(s) or exporting the written report instead.');
+    }
+    if (rep > CAP.reports) {
+      if (cls !== 'bad') cls = 'warn';
+      msgs.push('Reports are capped at 10/day.');
+    }
+    if (!msgs.length) {
+      msgs.push('Everything fits inside the free Standard tier with room left: ' + (CAP.chats - qs) + ' chats, ' + (CAP.audio - au) + ' audio overviews and ' + (CAP.reports - rep) + ' reports still available today. Cost: $0.00.');
+    }
+    v.className = 'verdict ' + cls;
+    v.textContent = msgs.join(' ');
+  }
+  ids.forEach(function(i){ el[i].addEventListener('input', recalc); });
+  recalc();
+
+  /* ---------- stepper ---------- */
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var nav = document.getElementById('stepNav');
+  var prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn');
+  var progText = document.getElementById('progText');
+  var cur = 0;
+
+  steps.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.className = 'snum'; b.type = 'button'; b.textContent = i + 1;
+    b.title = s.getAttribute('data-title');
+    b.setAttribute('aria-label', 'Step ' + (i+1) + ': ' + s.getAttribute('data-title'));
+    b.addEventListener('click', function(){ go(i); });
+    nav.appendChild(b);
+  });
+  var numBtns = Array.prototype.slice.call(nav.children);
+
+  function go(i){
+    cur = Math.max(0, Math.min(steps.length - 1, i));
+    steps.forEach(function(s, k){ s.classList.toggle('active', k === cur); });
+    numBtns.forEach(function(b, k){
+      b.setAttribute('aria-current', k === cur ? 'true' : 'false');
+      b.classList.toggle('done', k < cur);
+    });
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = cur === steps.length - 1;
+    nextBtn.textContent = cur === steps.length - 1 ? 'Done ✓' : 'Next step →';
+    progText.textContent = 'Step ' + (cur + 1) + ' / ' + steps.length;
+  }
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){ go(cur + 1); });
+  go(0);
+
+  /* ---------- copy buttons ---------- */
+  function copyText(text, done){
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+    } else { fallback(text, done); }
+  }
+  function fallback(text, done){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly',''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch(e){}
+    document.body.removeChild(ta); done();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.prompt .copy'), function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.closest('.prompt').querySelector('pre');
+      copyText(pre.innerText, function(){
+        btn.classList.add('copied'); btn.textContent = 'Copied ✓'; toast('Prompt copied');
+        setTimeout(function(){ btn.classList.remove('copied'); btn.textContent = 'Copy'; }, 1800);
+      });
+    });
+  });
+
+  /* ---------- three things ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('.tt'), function(card){
+    card.addEventListener('click', function(){
+      card.setAttribute('aria-expanded', card.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+    });
+  });
+
+  /* ---------- share bar ---------- */
+  var shareMsg = document.getElementById('shareText').textContent.trim();
+  var pageUrl = 'https://iggym.github.io/everyday-ai-done-right/articles/family-care-notebook-answers-parent-paperwork.html';
+  var u = encodeURIComponent(pageUrl), t = encodeURIComponent(shareMsg);
+  var links = {
+    x:  'https://twitter.com/intent/tweet?text=' + t + '&url=' + u,
+    fb: 'https://www.facebook.com/sharer/sharer.php?u=' + u,
+    li: 'https://www.linkedin.com/sharing/share-offsite/?url=' + u,
+    rd: 'https://www.reddit.com/submit?url=' + u + '&title=' + t,
+    wa: 'https://api.whatsapp.com/send?text=' + t + '%20' + u,
+    tg: 'https://t.me/share/url?url=' + u + '&text=' + t,
+    em: 'mailto:?subject=' + encodeURIComponent('A free way to make sense of a parent\u2019s medical paperwork') + '&body=' + t + '%0A%0A' + u
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('#shareBar a[data-net]'), function(a){
+    a.href = links[a.getAttribute('data-net')];
+  });
+  document.getElementById('copyLink').addEventListener('click', function(){
+    copyText(pageUrl, function(){ toast('Link copied'); });
+  });
+  if (navigator.share) {
+    var ns = document.getElementById('nativeShare');
+    ns.hidden = false;
+    ns.addEventListener('click', function(){
+      navigator.share({ title: document.title, text: shareMsg, url: pageUrl }).catch(function(){});
+    });
+  }
+})();
+</script>
+</body>
+</html>
