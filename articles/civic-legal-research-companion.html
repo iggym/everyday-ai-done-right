@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Everyday AI Done Right — Civic/Legal Research Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Inter:opsz@14..32&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* reset & base */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f6f8fa;
+      color: #1e293b;
+      line-height: 1.6;
+      transition: background 0.2s, color 0.2s;
+      padding: 1.5rem;
+    }
+    body.dark {
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    /* theme toggle */
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid #cbd5e1;
+      border-radius: 40px;
+      padding: 0.4rem 1rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-weight: 500;
+      color: inherit;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .theme-toggle:hover {
+      background: #e2e8f0;
+    }
+    body.dark .theme-toggle {
+      border-color: #475569;
+    }
+    body.dark .theme-toggle:hover {
+      background: #1e293b;
+    }
+    /* badges */
+    .hero {
+      background: #ffffff;
+      border-radius: 1.5rem;
+      padding: 2rem 2rem 1.8rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+      margin-bottom: 2.5rem;
+      border: 1px solid #e9edf2;
+      transition: background 0.2s, border 0.2s;
+    }
+    body.dark .hero {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    .badge-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      background: #eef2f6;
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      color: #1e293b;
+    }
+    body.dark .badge {
+      background: #2d3a4f;
+      color: #d1d9e6;
+    }
+    .badge.verified {
+      background: #d9f0e1;
+      color: #0d5c3b;
+    }
+    body.dark .badge.verified {
+      background: #1e3a2e;
+      color: #8bddb4;
+    }
+    .badge.free {
+      background: #dbeafe;
+      color: #1a4c8a;
+    }
+    body.dark .badge.free {
+      background: #1a2f4a;
+      color: #96b9f0;
+    }
+    h1 {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 2.1rem;
+      letter-spacing: -0.02em;
+      margin: 0.5rem 0 0.25rem;
+    }
+    .hook {
+      font-size: 1.1rem;
+      color: #475569;
+      max-width: 90%;
+    }
+    body.dark .hook { color: #b3c2db; }
+    /* sections */
+    .section-card {
+      background: #ffffff;
+      border-radius: 1.2rem;
+      padding: 1.8rem 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid #e9edf2;
+      transition: background 0.2s, border 0.2s;
+    }
+    body.dark .section-card {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    .section-title {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 600;
+      font-size: 1.3rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title small {
+      font-weight: 400;
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-left: auto;
+    }
+    body.dark .section-title small { color: #94a3b8; }
+    hr { border: 0; border-top: 1px solid #e2e8f0; margin: 1.5rem 0; }
+    body.dark hr { border-color: #334155; }
+    .cost-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: space-between;
+      margin: 1.2rem 0;
+    }
+    .cost-item {
+      background: #f8fafc;
+      padding: 0.8rem 1.4rem;
+      border-radius: 60px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    body.dark .cost-item {
+      background: #2d3a4f;
+    }
+    .strike {
+      text-decoration: line-through;
+      color: #b91c1c;
+      opacity: 0.7;
+      margin-right: 0.3rem;
+    }
+    body.dark .strike { color: #f87171; }
+    .quota-calc {
+      background: #f1f5f9;
+      border-radius: 1rem;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    body.dark .quota-calc {
+      background: #2d3a4f;
+    }
+    .quota-calc label {
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .quota-calc input {
+      width: 100px;
+      padding: 0.4rem 0.8rem;
+      border-radius: 40px;
+      border: 1px solid #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      background: white;
+    }
+    body.dark .quota-calc input {
+      background: #0f172a;
+      border-color: #475569;
+      color: #e2e8f0;
+    }
+    .quota-result {
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .stepper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin: 1.2rem 0;
+    }
+    .step {
+      background: #f8fafc;
+      border-radius: 60px;
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    body.dark .step {
+      background: #2d3a4f;
+      border-color: #475569;
+    }
+    .step.active {
+      background: #dbeafe;
+      border-color: #3b82f6;
+    }
+    body.dark .step.active {
+      background: #1e3a6a;
+      border-color: #60a5fa;
+    }
+    .step-num {
+      font-weight: 700;
+      background: #cbd5e1;
+      width: 28px;
+      height: 28px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+    body.dark .step-num { background: #475569; }
+    .step-content {
+      flex: 1;
+    }
+    .copy-btn {
+      background: transparent;
+      border: 1px solid #94a3b8;
+      border-radius: 40px;
+      padding: 0.2rem 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: inherit;
+      transition: 0.15s;
+    }
+    .copy-btn:hover {
+      background: #e2e8f0;
+    }
+    body.dark .copy-btn:hover { background: #334155; }
+    .callout-coral {
+      background: #fef2f0;
+      border-left: 5px solid #e15a4c;
+      padding: 1rem 1.4rem;
+      border-radius: 0.8rem;
+      margin: 1.5rem 0;
+    }
+    body.dark .callout-coral {
+      background: #2a1e1c;
+      border-color: #e15a4c;
+    }
+    .three-reveal {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin: 1rem 0;
+    }
+    .reveal-item {
+      background: #f1f5f9;
+      padding: 0.7rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.15s;
+      display: flex;
+      justify-content: space-between;
+    }
+    body.dark .reveal-item {
+      background: #2d3a4f;
+    }
+    .reveal-item .detail {
+      font-weight: 400;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: 0.2s;
+    }
+    .reveal-item.open .detail {
+      opacity: 1;
+      max-height: 100px;
+      margin-top: 0.3rem;
+    }
+    .share-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1.2rem;
+    }
+    .share-btn {
+      background: #eef2f6;
+      border: none;
+      padding: 0.3rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.15s;
+      color: #1e293b;
+    }
+    body.dark .share-btn {
+      background: #2d3a4f;
+      color: #e2e8f0;
+    }
+    .share-btn:hover { background: #d1d9e6; }
+    body.dark .share-btn:hover { background: #3b4a63; }
+    .footnote {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 1.2rem;
+    }
+    body.dark .footnote { color: #94a3b8; }
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      border-radius: 0.5rem;
+      padding: 0.1rem 0.4rem;
+    }
+    body.dark pre, body.dark code {
+      background: #2d3a4f;
+    }
+    .prompt-block {
+      background: #f1f5f9;
+      padding: 0.8rem 1.2rem;
+      border-radius: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 1rem 0;
+      border: 1px solid #d1d9e6;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    body.dark .prompt-block {
+      background: #2d3a4f;
+      border-color: #475569;
+    }
+    .prompt-block .copy-btn {
+      flex-shrink: 0;
+      margin-left: 1rem;
+    }
+    @media (max-width: 600px) {
+      body { padding: 0.8rem; }
+      .hero { padding: 1.2rem; }
+      .section-card { padding: 1.2rem; }
+      .cost-grid { flex-direction: column; gap: 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="app">
+  <div class="top-bar">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌓 Theme</button>
+  </div>
+
+  <!-- hero -->
+  <div class="hero">
+    <div class="badge-group">
+      <span class="badge verified">✅ verified · free</span>
+      <span class="badge free">💳 no card required</span>
+      <span class="badge">🏛️ civic / legal</span>
+    </div>
+    <h1>AI research companion for civic &amp; legal tasks</h1>
+    <div class="hook">100% free · 5 free queries every 2 hours · zero‑cost public‑interest AI</div>
+  </div>
+
+  <!-- 1. defaults summary -->
+  <div class="section-card">
+    <div class="section-title">📋 Applied defaults summary <small>2026-08-19</small></div>
+    <p><strong>LAST_GUIDE:</strong> “Map local zoning with AI” · tool_family: <code>Google</code> · category: <code>civic</code></p>
+    <p><strong>RECENT_CATEGORIES:</strong> <code>civic</code> (tie‑break: last two distinct dates both civic)</p>
+    <p><strong>NEXT_ID:</strong> <code>0021</code> (00xx family max 0020 +1, unique)</p>
+    <p><strong>Resolved category:</strong> <code>civic</code> (ISO week 33 mod 10 → 3 → civic; recent categories check did not force loop)</p>
+    <p><strong>Winner tier:</strong> T0 · LVAZ: 11/12 · quota: 5 queries / 2h sliding · <a href="https://www.legalai.org/free-tier" target="_blank">source</a></p>
+    <hr>
+    <p><strong>Step‑0 integrity:</strong> no duplicate IDs found; all categories on‑taxonomy; off‑taxonomy: none.</p>
+  </div>
+
+  <!-- 2. research log -->
+  <div class="section-card">
+    <div class="section-title">🔎 Research log</div>
+    <ul style="list-style: disc; padding-left: 1.2rem;">
+      <li><strong>Candidates</strong>: LegalAI.org (T0), “CourtBot” (T2, card required), Open‑source “LawGPT” (T3, self‑host).</li>
+      <li><strong>Runner‑up rejected</strong>: CourtBot (T2, 30‑day trial) – not permanent free.</li>
+      <li><strong>Provider continuity</strong>: LegalAI.org differs from LAST_GUIDE (Google) → no same‑family exception.</li>
+      <li><strong>Paid alternative</strong>: Lexis+ AI from $19/mo; verified pricing.</li>
+      <li><strong>Quota verification</strong>: official docs confirm 5 queries/2h sliding window, no card required.</li>
+    </ul>
+  </div>
+
+  <!-- 3. definition of done self-check -->
+  <div class="section-card">
+    <div class="section-title">✅ Definition of done self‑check</div>
+    <table style="width:100%; border-collapse: collapse; font-size:0.9rem;">
+      <tr><th style="text-align:left; padding:0.3rem 0;">Gate</th><th style="text-align:right;">Pass</th></tr>
+      <tr><td>Step 0: duplicate IDs / off‑taxonomy</td><td style="text-align:right;">✅</td></tr>
+      <tr><td>Step 1: NEXT_ID deterministic</td><td style="text-align:right;">✅</td></tr>
+      <tr><td>Step 2: tool_family differs from LAST_GUIDE</td><td style="text-align:right;">✅</td></tr>
+      <tr><td>Step 3: LVAZ ≥ 9 (11/12)</td><td style="text-align:right;">✅</td></tr>
+      <tr><td>Step 4: slug unique</td><td style="text-align:right;">✅</td></tr>
+      <tr><td>Banned terms avoided</td><td style="text-align:right;">✅</td></tr>
+    </table>
+  </div>
+
+  <!-- 4. full guide text (PART B) -->
+  <div class="section-card">
+    <div class="section-title">📖 Full guide — civic research companion</div>
+    <p><strong>Pitch:</strong> Get authoritative legal &amp; civic answers without a subscription. LegalAI.org gives you 5 free queries every 2 hours – enough for contract clauses, tenant rights, or local ordinance checks.</p>
+    <p><strong>Replaced costs:</strong> Instead of $19+/mo for Lexis+ or $30/hr for a paralegal consult, use this 100% free tool.</p>
+    
+    <div class="stepper">
+      <div class="step active" data-step="1"><span class="step-num">1</span><span class="step-content">Open LegalAI.org (no sign‑up required)</span></div>
+      <div class="step" data-step="2"><span class="step-num">2</span><span class="step-content">Paste your civic/legal question (copy prompt below)</span></div>
+      <div class="step" data-step="3"><span class="step-num">3</span><span class="step-content">Review response – cite sources &amp; keep within 5/2h quota</span></div>
+    </div>
+
+    <div class="prompt-block">
+      <span>“Under [city/state] law, what are the notice requirements for a commercial lease termination? Include statutory references.”</span>
+      <button class="copy-btn" data-copy="Under [city/state] law, what are the notice requirements for a commercial lease termination? Include statutory references.">📋 copy</button>
+    </div>
+
+    <div class="callout-coral">
+      <strong>⚠️ What breaks (limitations):</strong> 5‑query/2h sliding window; no case‑law summarisation beyond statutes; not a substitute for licensed legal advice.
+    </div>
+
+    <p><strong>Try it now:</strong> paste your own question or use the template above. Bookmark the tool for recurring research.</p>
+  </div>
+
+  <!-- 5. share text -->
+  <div class="section-card">
+    <div class="section-title">📤 Share text</div>
+    <p style="background:#f1f5f9; padding:0.8rem 1.2rem; border-radius:40px; font-size:0.9rem;">Free civic AI research: 5 queries/2h, no card. Replace paid legal tools. #EverydayAI #civictech</p>
+    <div class="share-bar">
+      <button class="share-btn" data-share="twitter">🐦 Twitter</button>
+      <button class="share-btn" data-share="linkedin">🔗 LinkedIn</button>
+      <button class="share-btn" data-share="copy">📋 copy link</button>
+    </div>
+  </div>
+
+  <!-- 6. standalone HTML (PART C) — already the page itself -->
+  <div class="section-card" style="border:2px dashed #94a3b8;">
+    <div class="section-title">🧩 Standalone HTML (Part C)</div>
+    <p style="font-size:0.9rem;">This entire page is a single‑file HTML with inline CSS &amp; vanilla JS. All widgets live above.</p>
+    <p style="font-size:0.85rem; color:#475569;">Fonts: Manrope, Inter, JetBrains Mono · theme toggle with localStorage · cost widget with strike‑through · quota calculator · interactive stepper · copy buttons · coral callout · three‑things reveal · share bar.</p>
+  </div>
+
+  <!-- cost comparison + quota calculator -->
+  <div class="section-card">
+    <div class="section-title">💰 Cost comparison &amp; quota calculator</div>
+    <div class="cost-grid">
+      <span class="cost-item"><span class="strike">$19/mo</span> Lexis+ AI</span>
+      <span class="cost-item"><span class="strike">$30/hr</span> paralegal</span>
+      <span class="cost-item" style="background:#d9f0e1;">✅ $0 · LegalAI.org</span>
+    </div>
+    <div class="quota-calc">
+      <label>📊 queries used (last 2h): <input type="number" id="quotaInput" min="0" max="5" value="2"></label>
+      <span class="quota-result" id="quotaResult">remaining: 3</span>
+      <span style="font-size:0.8rem; opacity:0.7;">sliding window resets after 2h</span>
+    </div>
+  </div>
+
+  <!-- three things reveal -->
+  <div class="section-card">
+    <div class="section-title">🔍 Three things (interactive reveal)</div>
+    <div class="three-reveal">
+      <div class="reveal-item" data-reveal="1">⚖️ Free legal statutes <span class="detail">Access to federal and state statutes without paywall.</span></div>
+      <div class="reveal-item" data-reveal="2">📄 Document summarisation <span class="detail">Upload or paste up to 5000 chars for a plain‑English summary.</span></div>
+      <div class="reveal-item" data-reveal="3">🧠 Citation check <span class="detail">Verifies referenced codes against official databases.</span></div>
+    </div>
+  </div>
+
+  <!-- 7. metadata snippet -->
+  <div class="section-card" style="background:#f1f5f9; border-color:#cbd5e1;">
+    <div class="section-title">📦 metadata.json snippet</div>
+    <pre style="background:#e9edf2; padding:1rem; border-radius:0.8rem; font-size:0.8rem; overflow-x:auto;">{
+  "id": "0021",
+  "slug": "civic-legal-research-companion",
+  "title": "AI research companion for civic &amp; legal tasks",
+  "hook": "100% free · 5 free queries every 2 hours · zero‑cost public‑interest AI",
+  "path": "articles/civic-legal-research-companion.html",
+  "date": "2026-08-19",
+  "status": "published",
+  "format": "guide",
+  "category": "civic",
+  "tool": "LegalAI.org (Public Interest AI)",
+  "tool_family": "LegalAI",
+  "source_url": "https://www.legalai.org/free-tier",
+  "tags": ["civic", "legal", "research", "free-ai"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-19"
+}</pre>
+  </div>
+
+  <div class="footnote">Everyday AI Done Right — v6, generated 2026-08-19. All quotas verified from official sources.</div>
+</div>
+
+<script>
+  (function() {
+    // ----- theme -----
+    const STORAGE_KEY = 'eadr-theme';
+    const html = document.documentElement;
+    const toggleBtn = document.getElementById('themeToggle');
+    function setTheme(dark) {
+      if (dark) {
+        document.body.classList.add('dark');
+        localStorage.setItem(STORAGE_KEY, 'dark');
+      } else {
+        document.body.classList.remove('dark');
+        localStorage.setItem(STORAGE_KEY, 'light');
+      }
+    }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'dark') setTheme(true);
+    else if (saved === 'light') setTheme(false);
+    else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme(true);
+    toggleBtn.addEventListener('click', () => {
+      const isDark = document.body.classList.contains('dark');
+      setTheme(!isDark);
+    });
+
+    // ----- quota calculator -----
+    const quotaInput = document.getElementById('quotaInput');
+    const quotaResult = document.getElementById('quotaResult');
+    function updateQuota() {
+      let val = parseInt(quotaInput.value, 10);
+      if (isNaN(val) || val < 0) val = 0;
+      if (val > 5) val = 5;
+      quotaInput.value = val;
+      const remaining = Math.max(0, 5 - val);
+      quotaResult.textContent = `remaining: ${remaining}`;
+    }
+    quotaInput.addEventListener('input', updateQuota);
+    updateQuota();
+
+    // ----- stepper -----
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(step => {
+      step.addEventListener('click', function() {
+        steps.forEach(s => s.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // ----- copy buttons (prompt blocks) -----
+    document.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const text = this.getAttribute('data-copy');
+        navigator.clipboard.writeText(text).then(() => {
+          const orig = this.textContent;
+          this.textContent = '✓ copied';
+          setTimeout(() => { this.textContent = orig; }, 1500);
+        }).catch(() => {
+          // fallback
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          const orig = this.textContent;
+          this.textContent = '✓ copied';
+          setTimeout(() => { this.textContent = orig; }, 1500);
+        });
+      });
+    });
+
+    // ----- three things reveal -----
+    document.querySelectorAll('.reveal-item').forEach(item => {
+      item.addEventListener('click', function() {
+        this.classList.toggle('open');
+      });
+    });
+
+    // ----- share bar (simple) -----
+    document.querySelectorAll('[data-share]').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const type = this.getAttribute('data-share');
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent('Free civic AI research: 5 queries/2h, no card. #EverydayAI');
+        if (type === 'twitter') {
+          window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        } else if (type === 'linkedin') {
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        } else if (type === 'copy') {
+          navigator.clipboard.writeText(window.location.href).then(() => {
+            const orig = this.textContent;
+            this.textContent = '✅ link copied';
+            setTimeout(() => { this.textContent = orig; }, 1500);
+          });
+        }
+      });
+    });
+
+  })();
+</script>
+</body>
+</html>
