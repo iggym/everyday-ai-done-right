@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0054",
+  "slug": "generate-prompt-aligned-graphics-microsoft-designer-free",
+  "title": "Generate Custom Reference Images and Graphics for Free",
+  "hook": "Generate high-quality, prompt-aligned images for presentations or art references using Microsoft Designer’s free tier—no credit card required, but limited to 15 fast 'boosts' per day before switching to a slower, unlimited queue.",
+  "path": "articles/generate-prompt-aligned-graphics-microsoft-designer-free.html",
+  "date": "2026-08-19",
+  "status": "published",
+  "format": "guide",
+  "category": "creative",
+  "tool": "Microsoft Designer (Image Creator)",
+  "tool_family": "Microsoft",
+  "source_url": "https://www.microsoft.com/en-us/designer/image-creator",
+  "tags": ["image-generation", "presentations", "art-reference", "microsoft-designer", "free-tier", "no-credit-card"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-19"
+},{
   "id": "0011",
   "slug": "zero-cost-ai-catalog-and-schema",
   "title": "Truly Zero-Cost AI Models, Chatbots & APIs",
