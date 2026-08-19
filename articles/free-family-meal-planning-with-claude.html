@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Family Meal Planning with Claude | Everyday AI Done Right</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --secondary-text: #4a4a4a;
+            --border-color: #e5e5e5;
+            --code-bg: #f5f5f5;
+            --accent-color: #0066cc;
+            --accent-hover: #0055aa;
+            --coral-color: #ff6b6b;
+            --coral-bg: #fff5f5;
+            --green-color: #10b981;
+            --green-bg: #f0fdf4;
+            --badge-bg: #f0f7ff;
+            --badge-text: #0066cc;
+            --stepper-inactive-bg: #e5e5e5;
+            --stepper-inactive-text: #999999;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --secondary-text: #b0b0b0;
+            --border-color: #333333;
+            --code-bg: #1e1e1e;
+            --accent-color: #4da6ff;
+            --accent-hover: #3d96ef;
+            --coral-color: #ff8a8a;
+            --coral-bg: #2a1a1a;
+            --green-color: #34d399;
+            --green-bg: #1a2e1a;
+            --badge-bg: #1a2a3a;
+            --badge-text: #4da6ff;
+            --stepper-inactive-bg: #333333;
+            --stepper-inactive-text: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .top-bar {
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-bar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--code-bg);
+        }
+
+        .hero {
+            padding: 60px 0 40px;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-text {
+            font-size: 18px;
+            color: var(--secondary-text);
+            margin-bottom: 30px;
+        }
+
+        .verification-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .badge-free {
+            background-color: var(--green-bg);
+            color: var(--green-color);
+        }
+
+        .badge-verified {
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+        }
+
+        .badge-no-card {
+            background-color: var(--green-bg);
+            color: var(--green-color);
+        }
+
+        .cost-comparison {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cost-comparison h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cost-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cost-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .cost-name {
+            font-weight: 500;
+        }
+
+        .cost-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .cost-price.strike-through {
+            text-decoration: line-through;
+            color: var(--coral-color);
+            opacity: 0;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .cost-price.strike-through.visible {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .cost-price.free {
+            color: var(--green-color);
+            font-weight: 700;
+        }
+
+        .savings-summary {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--green-color);
+        }
+
+        .quota-calculator {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .quota-calculator h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .quota-note {
+            font-size: 14px;
+            color: var(--secondary-text);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .quota-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .quota-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .quota-input-group label {
+            font-weight: 500;
+        }
+
+        .quota-input-group input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            width: 100%;
+        }
+
+        .quota-result {
+            padding: 16px;
+            background-color: var(--badge-bg);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .stepper {
+            margin-bottom: 40px;
+        }
+
+        .stepper h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            margin-bottom: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .step.active {
+            border-color: var(--accent-color);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            cursor: pointer;
+            gap: 16px;
+            user-select: none;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+            background-color: var(--stepper-inactive-bg);
+            color: var(--stepper-inactive-text);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .step.active .step-number {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 17px;
+            flex: 1;
+        }
+
+        .step-chevron {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            color: var(--secondary-text);
+        }
+
+        .step.active .step-chevron {
+            transform: rotate(180deg);
+        }
+
+        .step-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .step.active .step-content {
+            max-height: 3000px;
+        }
+
+        .step-content-inner {
+            padding: 0 20px 20px 68px;
+            color: var(--secondary-text);
+        }
+
+        .step-content-inner ol,
+        .step-content-inner ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .step-content-inner li {
+            margin-bottom: 8px;
+        }
+
+        .step-content-inner h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 20px 0 8px;
+        }
+
+        .step-content-inner h3:first-child {
+            margin-top: 0;
+        }
+
+        .step-content-inner a {
+            color: var(--accent-color);
+        }
+
+        .code-block {
+            position: relative;
+            margin: 16px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: var(--border-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        .copy-button:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .copy-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .code-content {
+            padding: 16px;
+            background-color: var(--code-bg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .what-breaks {
+            background-color: var(--coral-bg);
+            border-left: 4px solid var(--coral-color);
+            padding: 24px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 40px;
+        }
+
+        .what-breaks h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--coral-color);
+        }
+
+        .what-breaks ul {
+            margin-left: 20px;
+        }
+
+        .what-breaks li {
+            margin-bottom: 10px;
+            color: var(--secondary-text);
+        }
+
+        .what-breaks li strong {
+            color: var(--text-color);
+        }
+
+        .three-things {
+            margin-bottom: 40px;
+        }
+
+        .three-things h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .thing-item {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .thing-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .thing-header:hover {
+            background-color: var(--border-color);
+        }
+
+        .thing-toggle {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+            color: var(--secondary-text);
+        }
+
+        .thing-item.active .thing-toggle {
+            transform: rotate(45deg);
+        }
+
+        .thing-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .thing-item.active .thing-content {
+            max-height: 300px;
+        }
+
+        .thing-content-inner {
+            padding: 0 16px 16px;
+            color: var(--secondary-text);
+            line-height: 1.7;
+        }
+
+        .try-it-now {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .try-it-now h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .try-it-now ol {
+            text-align: left;
+            margin-left: 20px;
+            margin-bottom: 24px;
+        }
+
+        .try-it-now li {
+            margin-bottom: 8px;
+        }
+
+        .try-it-now a {
+            display: inline-block;
+            background-color: white;
+            color: var(--accent-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .try-it-now a:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        .share-bar {
+            margin-bottom: 60px;
+        }
+
+        .share-bar h3 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .share-button:hover {
+            background-color: var(--code-bg);
+        }
+
+        .share-button:active {
+            transform: scale(0.97);
+        }
+
+        .share-button.twitter {
+            background-color: #1da1f2;
+            color: white;
+            border-color: #1da1f2;
+        }
+
+        .share-button.twitter:hover {
+            background-color: #0d8ddb;
+        }
+
+        .share-button.linkedin {
+            background-color: #0077b5;
+            color: white;
+            border-color: #0077b5;
+        }
+
+        .share-button.linkedin:hover {
+            background-color: #00669c;
+        }
+
+        .share-button.facebook {
+            background-color: #1877f2;
+            color: white;
+            border-color: #1877f2;
+        }
+
+        .share-button.facebook:hover {
+            background-color: #1466d6;
+        }
+
+        .share-button.copy-link {
+            background-color: var(--green-color);
+            color: white;
+            border-color: var(--green-color);
+        }
+
+        .share-button.copy-link:hover {
+            background-color: #0ea371;
+        }
+
+        footer {
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .hero-text {
+                font-size: 16px;
+            }
+
+            .verification-badges {
+                flex-direction: column;
+            }
+
+            .share-buttons {
+                flex-direction: column;
+            }
+
+            .share-button {
+                justify-content: center;
+            }
+
+            .step-content-inner {
+                padding-left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <a href="https://iggym.github.io/everyday-ai-done-right/" class="logo">Everyday AI <span>Done Right</span></a>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Dark</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <span class="category-badge">Family</span>
+            <h1>Free Family Meal Planning with Claude</h1>
+            <p class="hero-text">Claude's free tier generates customized weekly meal plans, grocery lists sorted by store section, and recipe-adjustment suggestions for dietary needs—limited to roughly 30–50 messages per 8-hour window, and Anthropic may adjust this limit at any time.</p>
+            <div class="verification-badges">
+                <span class="badge badge-free">✓ 100% Free</span>
+                <span class="badge badge-verified">✓ Verified June 2025</span>
+                <span class="badge badge-no-card">✓ No Credit Card</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="cost-comparison" id="cost-comparison">
+            <h2>Cost Comparison</h2>
+            <div class="cost-items">
+                <div class="cost-item">
+                    <span class="cost-name">Mealime Pro</span>
+                    <span class="cost-price strike-through" id="cost1">$5.99/mo</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">eMeals</span>
+                    <span class="cost-price strike-through" id="cost2">$9.99/mo</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Instacart+ (meal planning)</span>
+                    <span class="cost-price strike-through" id="cost3">$9.99/mo</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Dietitian consultation</span>
+                    <span class="cost-price strike-through" id="cost4">$100–$200/session</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Claude (Anthropic)</span>
+                    <span class="cost-price free">$0.00</span>
+                </div>
+            </div>
+            <div class="savings-summary">Annual savings: $72–$240 vs. paid apps; potentially $500+ if replacing basic nutritionist consultations</div>
+        </div>
+
+        <div class="quota-calculator">
+            <h2>Free Tier Quota Calculator</h2>
+            <p class="quota-note">Anthropic doesn't publish exact free-tier limits. This calculator uses the commonly observed ~40 messages per 8-hour window. Actual limits may vary.</p>
+            <div class="quota-inputs">
+                <div class="quota-input-group">
+                    <label for="meal-plans-per-week">How many meal plans do you generate per week?</label>
+                    <input type="number" id="meal-plans-per-week" min="1" max="10" value="1">
+                </div>
+                <div class="quota-input-group">
+                    <label for="followups-per-plan">Follow-up messages per plan (adjustments, swaps, etc.)?</label>
+                    <input type="number" id="followups-per-plan" min="0" max="30" value="4">
+                </div>
+            </div>
+            <div class="quota-result" id="quota-result">Loading...</div>
+        </div>
+
+        <div class="stepper">
+            <h2>Step-by-Step Walkthrough</h2>
+
+            <div class="step active" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Create Your Free Claude Account</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <ol>
+                            <li>Go to <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></li>
+                            <li>Click "Sign up" and create an account with your email (no Google or Apple sign-in required, though those options exist)</li>
+                            <li>Verify your email address</li>
+                            <li>You land in the chat interface—no payment step appears anywhere in the flow</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Build Your Family Profile Prompt</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>Before asking for meal plans, send Claude a single message establishing your household's constraints. This becomes the foundation for all future requests in that conversation.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Family Profile Prompt</span>
+                                <button class="copy-button" data-copy="profile-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="profile-prompt">I'm setting up meal planning for my family. Here are our details:
+
+- Number of people: [X adults, Y children ages A and B]
+- Dietary restrictions: [e.g., one person is lactose-intolerant, one is vegetarian]
+- Budget: [e.g., $150/week on groceries]
+- Cooking time: [e.g., weeknight meals under 35 minutes, weekends can be longer]
+- Equipment: [e.g., slow cooker, air fryer, standard oven/stove, no grill]
+- Preferences: [e.g., we like Mexican and Italian, dislike fish, one kid won't eat mushrooms]
+- Leftover tolerance: [e.g., we're fine eating leftovers 1-2 nights per week]
+- Allergies: [e.g., tree nut allergy — must avoid all tree nuts]
+
+Save this profile and confirm you understand all constraints before I ask for meal plans.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Generate a Weekly Meal Plan</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Weekly Meal Plan Prompt</span>
+                                <button class="copy-button" data-copy="mealplan-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="mealplan-prompt">Using the family profile above, create a 7-day dinner meal plan for this week. For each day include:
+- Dish name
+- Brief description (1 sentence)
+- Approximate cook time
+- Key ingredients that might not be in a typical pantry
+
+Then generate a consolidated grocery list organized by store section:
+- Produce
+- Dairy / Refrigerated
+- Meat / Protein
+- Dry Goods / Pantry
+- Frozen
+- Other
+
+Flag any ingredient that might be hard to find with a suggested substitute.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Adapt for Leftovers and Batch Cooking</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Batch Cooking Prompt</span>
+                                <button class="copy-button" data-copy="batch-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="batch-prompt">Looking at the meal plan you just created, identify which meals would work well as:
+1. Batch-cooked on Sunday and eaten Mon/Tue
+2. Doubled recipes where the second half freezes well
+3. Meals where leftovers transform into a different dish the next day (e.g., roasted chicken → chicken tacos)
+
+Revise the plan to include 2 batch-cook sessions and 1 leftover-transform meal. Update the grocery list accordingly.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Handle Last-Minute Changes</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>When something changes mid-week—a schedule shift, missing ingredient, or sudden craving—use this prompt:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Pivot Prompt</span>
+                                <button class="copy-button" data-copy="pivot-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="pivot-prompt">My plan for [DAY] was [MEAL], but [PROBLEM — e.g., "I didn't thaw the chicken in time" / "my kid has a playdate and wants something other kids will eat" / "we're too tired to cook for 40 minutes"].
+
+Suggest 2 alternatives that:
+- Use ingredients I likely already have from this week's grocery run
+- Take under 20 minutes
+- Still fit our dietary restrictions</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="what-breaks">
+            <h2>What Breaks (Limitations)</h2>
+            <ul>
+                <li><strong>Rate Limiting:</strong> Approximately 30–50 messages per rolling 8-hour window on the free tier; Anthropic does not publish exact numbers and may adjust without notice. A single meal-planning session with profile setup, plan generation, and 2–3 follow-ups typically uses 5–8 messages, so you're unlikely to hit the limit in one sitting—but back-to-back days of heavy use might.</li>
+                <li><strong>No Ingredient Price Database:</strong> Claude cannot look up current prices at your local store. The grocery list is ingredient-based, not cost-optimized to specific retailers.</li>
+                <li><strong>Nutritional Accuracy:</strong> Claude provides reasonable nutritional estimates but is not a registered dietitian. Do not rely on it for medical nutrition therapy (e.g., managing diabetes, celiac disease, food allergies where precision is critical).</li>
+                <li><strong>No Persistent Memory Between Conversations:</strong> If you start a new chat, you'll need to re-state your family profile. Use the same conversation thread for ongoing weekly planning.</li>
+                <li><strong>Recipe Detail Varies:</strong> Claude sometimes provides step-by-step cooking instructions; other times it gives a high-level overview. Always ask explicitly if you need full recipe steps.</li>
+                <li><strong>No Direct Grocery Integration:</strong> You cannot send the list directly to Instacart, Kroger, or any retailer. Manual copy-paste into your store's app or website is required.</li>
+            </ul>
+        </div>
+
+        <div class="three-things">
+            <h2>Three Things to Know</h2>
+
+            <div class="thing-item" id="thing1">
+                <div class="thing-header">
+                    <span>1. Keep one conversation thread per month, not per week</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Instead of starting a new chat each week, stay in the same conversation and say "Now do next week's plan." Claude retains context from prior weeks, so it learns which meals your family liked, which ingredients you always have on hand, and which swaps worked. After 3–4 weeks, the plans noticeably improve in relevance.
+                    </div>
+                </div>
+            </div>
+
+            <div class="thing-item" id="thing2">
+                <div class="thing-header">
+                    <span>2. Ask for a "pantry audit" before your first plan</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Before generating the meal plan, type: "Here's what's currently in my pantry, fridge, and freezer:" and list everything. Claude will prioritize using what you already have, which reduces waste and cuts your grocery bill. This single step often saves $20–$40 per week for a family of four.
+                    </div>
+                </div>
+            </div>
+
+            <div class="thing-item" id="thing3">
+                <div class="thing-header">
+                    <span>3. You can request nutrition summaries for the whole week</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        After the plan is set, ask: "Give me an estimated daily calorie and macronutrient breakdown for each day assuming standard portion sizes." Claude will produce a table showing approximate protein, carbs, fat, and calories per day. This is useful for general awareness but remember—it's an estimate, not a precise nutritional analysis.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="try-it-now">
+            <h2>Try It Now</h2>
+            <ol>
+                <li>Open <a href="https://claude.ai" target="_blank" rel="noopener" style="color: white; text-decoration: underline;">claude.ai</a> and sign up for a free account</li>
+                <li>Paste the Family Profile Prompt (Step 2) and fill in your real household details</li>
+                <li>Once Claude confirms the profile, paste the Weekly Meal Plan prompt (Step 3)</li>
+                <li>Compare the result to what you'd normally spend time figuring out this week</li>
+            </ol>
+            <a href="https://claude.ai" target="_blank" rel="noopener">Start Planning Meals</a>
+        </div>
+
+        <div class="share-bar">
+            <h3>Share This Guide</h3>
+            <div class="share-buttons">
+                <button class="share-button twitter" id="share-twitter">Twitter</button>
+                <button class="share-button linkedin" id="share-linkedin">LinkedIn</button>
+                <button class="share-button facebook" id="share-facebook">Facebook</button>
+                <button class="share-button copy-link" id="share-copy-link">Copy Link</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Everyday AI Done Right — Practical, free AI workflows for everyone</p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            var themeToggle = document.getElementById('theme-toggle');
+            var themeIcon = document.getElementById('theme-icon');
+            var themeText = document.getElementById('theme-text');
+
+            var saved = localStorage.getItem('eadr-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+            if (saved === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+            }
+
+            themeToggle.addEventListener('click', function() {
+                var current = document.documentElement.getAttribute('data-theme');
+                var next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('eadr-theme', next);
+                themeIcon.textContent = next === 'dark' ? '☀️' : '🌙';
+                themeText.textContent = next === 'dark' ? 'Light' : 'Dark';
+            });
+
+            var costIds = ['cost1','cost2','cost3','cost4'];
+            costIds.forEach(function(id, i) {
+                setTimeout(function() {
+                    document.getElementById(id).classList.add('visible');
+                }, 400 + i * 250);
+            });
+
+            var plansInput = document.getElementById('meal-plans-per-week');
+            var followupsInput = document.getElementById('followups-per-plan');
+            var quotaResult = document.getElementById('quota-result');
+
+            function calcQuota() {
+                var plans = parseInt(plansInput.value) || 0;
+                var followups = parseInt(followupsInput.value) || 0;
+                var profileMsgs = 1;
+                var msgsPerPlan = 1 + followups;
+                var totalPerWeek = (plans * msgsPerPlan) + profileMsgs;
+                var perDay = (totalPerWeek / 7).toFixed(1);
+                var windowCap = 40;
+                var percentUsed = Math.min(100, Math.round((totalPerWeek / windowCap) * 100));
+
+                if (totalPerWeek <= windowCap * 0.5) {
+                    quotaResult.textContent = 'You\'ll use about ' + totalPerWeek + ' messages per week (' + perDay + '/day). This is well within the observed ~40 message window. Plenty of room for extra questions.';
+                    quotaResult.style.color = 'var(--green-color)';
+                } else if (totalPerWeek <= windowCap) {
+                    quotaResult.textContent = 'You\'ll use about ' + totalPerWeek + ' messages per week (' + perDay + '/day). This is close to the observed ~40 message window. Space your sessions across the week to avoid hitting rate limits.';
+                    quotaResult.style.color = 'var(--text-color)';
+                } else {
+                    quotaResult.textContent = 'You\'ll use about ' + totalPerWeek + ' messages per week (' + perDay + '/day). This exceeds the observed ~40 message window. Consider reducing follow-ups or splitting planning across separate conversation threads on different days.';
+                    quotaResult.style.color = 'var(--coral-color)';
+                }
+            }
+
+            plansInput.addEventListener('input', calcQuota);
+            followupsInput.addEventListener('input', calcQuota);
+            calcQuota();
+
+            var steps = document.querySelectorAll('.step');
+            steps.forEach(function(step) {
+                var header = step.querySelector('.step-header');
+                header.addEventListener('click', function() {
+                    var wasActive = step.classList.contains('active');
+                    steps.forEach(function(s) { s.classList.remove('active'); });
+                    if (!wasActive) {
+                        step.classList.add('active');
+                    }
+                });
+            });
+
+            var copyButtons = document.querySelectorAll('.copy-button');
+            copyButtons.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var targetId = btn.getAttribute('data-copy');
+                    var el = document.getElementById(targetId);
+                    if (el) {
+                        navigator.clipboard.writeText(el.textContent).then(function() {
+                            var orig = btn.innerHTML;
+                            btn.innerHTML = '✓ Copied!';
+                            setTimeout(function() { btn.innerHTML = orig; }, 2000);
+                        }).catch(function() {
+                            var ta = document.createElement('textarea');
+                            ta.value = el.textContent;
+                            ta.style.position = 'fixed';
+                            ta.style.opacity = '0';
+                            document.body.appendChild(ta);
+                            ta.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(ta);
+                            var orig = btn.innerHTML;
+                            btn.innerHTML = '✓ Copied!';
+                            setTimeout(function() { btn.innerHTML = orig; }, 2000);
+                        });
+                    }
+                });
+            });
+
+            var things = document.querySelectorAll('.thing-item');
+            things.forEach(function(item) {
+                item.querySelector('.thing-header').addEventListener('click', function() {
+                    item.classList.toggle('active');
+                });
+            });
+
+            var pageUrl = window.location.href;
+            var shareText = 'Plan family meals for free with Claude (no card needed). Custom weekly plans + grocery lists. Save $72-$240/yr vs paid apps.';
+
+            document.getElementById('share-twitter').addEventListener('click', function() {
+                window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(pageUrl), '_blank');
+            });
+
+            document.getElementById('share-linkedin').addEventListener('click', function() {
+                window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(pageUrl), '_blank');
+            });
+
+            document.getElementById('share-facebook').addEventListener('click', function() {
+                window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(pageUrl), '_blank');
+            });
+
+            document.getElementById('share-copy-link').addEventListener('click', function() {
+                navigator.clipboard.writeText(pageUrl).then(function() {
+                    var btn = document.getElementById('share-copy-link');
+                    var orig = btn.innerHTML;
+                    btn.innerHTML = '✓ Link Copied!';
+                    setTimeout(function() { btn.innerHTML = orig; }, 2000);
+                }).catch(function() {
+                    var ta = document.createElement('textarea');
+                    ta.value = pageUrl;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    var btn = document.getElementById('share-copy-link');
+                    var orig = btn.innerHTML;
+                    btn.innerHTML = '✓ Link Copied!';
+                    setTimeout(function() { btn.innerHTML = orig; }, 2000);
+                });
+            });
+        })();
+    </script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
