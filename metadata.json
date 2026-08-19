@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0001",
+  "slug": "free-ai-travel-planning-google-maps",
+  "title": "Free AI-Powered Travel Planning with Google Maps",
+  "hook": "Google Maps' built-in AI features handle itinerary building, real-time adjustments, and place discovery without accounts, subscriptions, or usage limits—though complex multi-day planning still requires manual refinement.",
+  "path": "articles/free-ai-travel-planning-google-maps.html",
+  "date": "2025-07-18",
+  "status": "published",
+  "format": "guide",
+  "category": "travel",
+  "tool": "Google Maps",
+  "tool_family": "Google",
+  "source_url": "https://support.google.com/maps/answer/10954534",
+  "tags": ["travel", "planning", "google-maps", "free", "itinerary"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2025-07-18"
+},{
   "id": "0054",
   "slug": "describe-photos-and-ask-follow-up-questions-free-be-my-ai",
   "title": "Describe Any Photo and Ask Follow-Up Questions for Free with Be My AI",
