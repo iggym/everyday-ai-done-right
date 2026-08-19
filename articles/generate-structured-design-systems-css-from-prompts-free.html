@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Structured Design Systems for Free | Everyday AI Done Right</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f8f9fa;
+      --text: #1a1a1a;
+      --text-muted: #6c757d;
+      --primary: #2563eb;
+      --coral: #FF7F50;
+      --coral-bg: rgba(255, 127, 80, 0.1);
+      --border: #e9ecef;
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --coral: #FF7F50;
+      --coral-bg: rgba(255, 127, 80, 0.15);
+      --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+    .logo { font-weight: 800; font-size: 1.1rem; color: var(--primary); text-decoration: none; }
+    .theme-toggle {
+      background: none; border: 1px solid var(--border); color: var(--text);
+      padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif;
+    }
+
+    /* Container */
+    .container { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    /* Hero */
+    .hero { margin-bottom: 2.5rem; }
+    .hero h1 { font-size: 2rem; margin-bottom: 1rem; line-height: 1.2; }
+    .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .badge {
+      font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.75rem;
+      border-radius: 99px; background: var(--surface); border: 1px solid var(--border);
+    }
+    .badge.t0 { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+    [data-theme="dark"] .badge.t0 { background: #14532d; color: #86efac; border-color: #166534; }
+
+    /* Cost Widget */
+    .cost-widget {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 1.5rem; margin: 2rem 0;
+    }
+    .cost-item {
+      display: flex; justify-content: space-between; padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cost-item:last-child { border-bottom: none; }
+    .cost-old { text-decoration: line-through; color: var(--text-muted); animation: strike 1s ease-out forwards; }
+    .cost-new { font-weight: 700; color: var(--success); }
+    @keyframes strike { from { text-decoration-color: transparent; } to { text-decoration-color: currentColor; } }
+
+    /* Stepper */
+    .stepper { margin: 2rem 0; }
+    .step { display: none; padding: 1.5rem; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); }
+    .step.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .step-controls { display: flex; justify-content: space-between; margin-top: 1rem; }
+    .btn {
+      padding: 0.6rem 1.2rem; border-radius: 6px; border: none; cursor: pointer;
+      font-weight: 600; font-family: 'Inter', sans-serif; transition: opacity 0.2s;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn:hover { opacity: 0.9; }
+
+    /* Code Block */
+    .code-block {
+      background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px;
+      position: relative; margin: 1rem 0; font-size: 0.9rem; overflow-x: auto;
+    }
+    .copy-btn {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      background: #333; color: #fff; border: none; padding: 0.3rem 0.6rem;
+      border-radius: 4px; cursor: pointer; font-size: 0.8rem;
+    }
+
+    /* What Breaks */
+    .what-breaks {
+      border-left: 4px solid var(--coral); background: var(--coral-bg);
+      padding: 1.5rem; border-radius: 0 8px 8px 0; margin: 2rem 0;
+    }
+    .what-breaks h3 { color: var(--coral); margin-bottom: 0.5rem; }
+    .what-breaks ul { padding-left: 1.2rem; }
+    .what-breaks li { margin-bottom: 0.5rem; }
+
+    /* Quota Calculator */
+    .quota-calc {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 2rem 0;
+    }
+    .calc-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .calc-inputs label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .calc-inputs input {
+      width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;
+      background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace;
+    }
+    .quota-result { font-size: 0.9rem; line-height: 1.8; }
+    .safe { color: var(--success); font-weight: 600; }
+    .exceeds { color: var(--danger); font-weight: 600; }
+
+    /* Three Things Reveal */
+    .reveal-container { margin: 2rem 0; }
+    .reveal-btn {
+      width: 100%; text-align: left; padding: 1rem; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+      font-weight: 600; display: flex; justify-content: space-between; align-items: center;
+    }
+    .reveal-content {
+      display: none; padding: 1rem 1rem 1rem 2.5rem; border: 1px solid var(--border);
+      border-top: none; border-radius: 0 0 6px 6px; background: var(--surface);
+    }
+    .reveal-content.open { display: block; }
+    .reveal-content li { margin-bottom: 0.5rem; }
+
+    /* Share Bar */
+    .share-bar {
+      display: flex; gap: 0.5rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);
+    }
+    .share-btn {
+      flex: 1; padding: 0.75rem; text-align: center; border-radius: 6px;
+      text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text); cursor: pointer;
+    }
+    .share-btn:hover { background: var(--border); }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="https://iggym.github.io/everyday-ai-done-right/" class="logo">Everyday AI Done Right</a>
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+
+  <div class="container">
+    <div class="hero">
+      <div class="badges">
+        <span class="badge t0">T0: Permanent Free, No Card</span>
+        <span class="badge">Verified: 2026-08-20</span>
+        <span class="badge">Category: Creative</span>
+      </div>
+      <h1>Generate Structured Design Systems (CSS) from Prompts for Free</h1>
+      <p>Generate structured design systems (color palettes, typography pairings, and CSS variables) from abstract creative prompts using Google AI Studio’s free tier—no credit card required, capped at 1,500 requests per day.</p>
+    </div>
+
+    <div class="cost-widget">
+      <h3>Cost Comparison</h3>
+      <div class="cost-item">
+        <span>Premium AI Design Assistants</span>
+        <span class="cost-old">$12.00 / mo</span>
+      </div>
+      <div class="cost-item">
+        <span>Stock CSS/Design Libraries</span>
+        <span class="cost-old">$8.00 / mo</span>
+      </div>
+      <div class="cost-item highlight">
+        <span>Google AI Studio (Gemini 2.0 Flash)</span>
+        <span class="cost-new">$0.00 / mo</span>
+      </div>
+    </div>
+
+    <div class="stepper">
+      <h3>Step-by-Step Walkthrough</h3>
+      <div id="step-1" class="step active">
+        <h4>Step 1: Access the Tool</h4>
+        <p>Navigate to <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a> and sign in with a standard Google account. No payment method is requested for the free tier.</p>
+        <div class="step-controls">
+          <span></span>
+          <button class="btn btn-primary" onclick="nextStep()">Next</button>
+        </div>
+      </div>
+      <div id="step-2" class="step">
+        <h4>Step 2: Select the Model</h4>
+        <p>Create a new chat and select <strong>Gemini 2.0 Flash</strong> from the model dropdown menu in the top right.</p>
+        <div class="step-controls">
+          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <button class="btn btn-primary" onclick="nextStep()">Next</button>
+        </div>
+      </div>
+      <div id="step-3" class="step">
+        <h4>Step 3: Use the Prompt Template</h4>
+        <p>Copy the template below, fill in your bracketed details, and paste it into the input field.</p>
+        <div class="code-block">
+          <button class="copy-btn" id="copy-btn" onclick="copyToClipboard('Act as a senior design systems architect. I am building a [project type, e.g., minimalist productivity web app]. \n\nGenerate a cohesive, accessible design system including:\n1. A 5-color palette (primary, secondary, accent, background, surface) with HEX and HSL values.\n2. Two complementary font pairings (heading and body) available via Google Fonts, with recommended weights.\n3. CSS custom properties (variables) for these colors and a base 4px spacing scale (4px, 8px, 16px, 24px, 32px).\n\nFormat the output as clean, copy-pasteable CSS code with brief, practical explanations for each choice.', 'copy-btn')">Copy</button>
+          <pre>Act as a senior design systems architect. I am building a [project type, e.g., minimalist productivity web app]. 
+
+Generate a cohesive, accessible design system including:
+1. A 5-color palette (primary, secondary, accent, background, surface) with HEX and HSL values.
+2. Two complementary font pairings (heading and body) available via Google Fonts, with recommended weights.
+3. CSS custom properties (variables) for these colors and a base 4px spacing scale (4px, 8px, 16px, 24px, 32px).
+
+Format the output as clean, copy-pasteable CSS code with brief, practical explanations for each choice.</pre>
+        </div>
+        <div class="step-controls">
+          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <button class="btn btn-primary" onclick="nextStep()">Next</button>
+        </div>
+      </div>
+      <div id="step-4" class="step">
+        <h4>Step 4: Review and Implement</h4>
+        <p>Review the generated output. Copy the CSS block directly into your project’s stylesheet. Clear the chat history between distinct projects to manage token limits.</p>
+        <div class="step-controls">
+          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <a href="https://aistudio.google.com/" target="_blank" class="btn btn-primary" style="text-decoration:none; display:inline-block; text-align:center;">Try It Now</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="quota-calc">
+      <h3>Interactive Quota Calculator</h3>
+      <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Verify your workflow fits within the 15 RPM / 1,500 RPD free tier limits.</p>
+      <div class="calc-inputs">
+        <div>
+          <label>Requests per minute</label>
+          <input type="number" id="calc-rpm" value="5" min="1" max="60" oninput="calculateQuota()">
+        </div>
+        <div>
+          <label>Minutes spent per day</label>
+          <input type="number" id="calc-mins" value="30" min="1" max="1440" oninput="calculateQuota()">
+        </div>
+      </div>
+      <div class="quota-result" id="quota-result">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <div class="what-breaks">
+      <h3>What Breaks (Limitations)</h3>
+      <ul>
+        <li>The free tier enforces a strict 15 requests-per-minute limit. Rapid, automated firing will trigger a temporary cooldown.</li>
+        <li>Complex requests may approach the 1,000,000 tokens-per-minute ceiling if the prompt history becomes excessively long.</li>
+        <li>Output is text-based. You must manually copy the CSS into your project; it does not export directly to Figma.</li>
+      </ul>
+    </div>
+
+    <div class="reveal-container">
+      <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('open')">
+        <span>Reveal Three Things</span>
+        <span>▼</span>
+      </button>
+      <div class="reveal-content">
+        <ol>
+          <li>No API key or credit card is required to use the web interface.</li>
+          <li>The context window supports up to 1M tokens, allowing you to paste massive reference documents or brand guidelines.</li>
+          <li>Outputs standard CSS, requiring zero translation or proprietary lock-in.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="share-bar">
+      <button class="share-btn" onclick="share('twitter')">Share on X</button>
+      <button class="share-btn" onclick="share('linkedin')">Share on LinkedIn</button>
+      <button class="share-btn" onclick="copyLink()">Copy Link</button>
+    </div>
+  </div>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+
+  <script>
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('eadr-theme', next);
+    }
+    const savedTheme = localStorage.getItem('eadr-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Stepper
+    let currentStep = 1;
+    function nextStep() {
+      if(currentStep < 4) {
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        currentStep++;
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+      }
+    }
+    function prevStep() {
+      if(currentStep > 1) {
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        currentStep--;
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+      }
+    }
+
+    // Copy to Clipboard
+    function copyToClipboard(text, btnId) {
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById(btnId);
+        const original = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = original, 2000);
+      });
+    }
+
+    // Quota Calculator
+    function calculateQuota() {
+      const rpm = parseInt(document.getElementById('calc-rpm').value) || 0;
+      const mins = parseInt(document.getElementById('calc-mins').value) || 0;
+      const dailyTotal = rpm * mins;
+      const rpmStatus = rpm <= 15 ? 'safe' : 'exceeds';
+      const rpdStatus = dailyTotal <= 1500 ? 'safe' : 'exceeds';
+      
+      document.getElementById('quota-result').innerHTML = 
+        `Daily Total: <strong>${dailyTotal}</strong> requests.<br>` +
+        `RPM Limit (15): <span class="${rpmStatus}">${rpmStatus === 'safe' ? '✓ OK' : '✗ EXCEEDS'}</span><br>` +
+        `RPD Limit (1500): <span class="${rpdStatus}">${rpdStatus === 'safe' ? '✓ OK' : '✗ EXCEEDS'}</span>`;
+    }
+    // Init calculator
+    calculateQuota();
+
+    // Share Functions
+    function share(platform) {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent("Generate complete design systems (colors, typography, CSS) from text prompts using Google AI Studio’s free tier. No credit card, 1,500 requests/day.");
+      if(platform === 'twitter') window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+      if(platform === 'linkedin') window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+    }
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Link copied to clipboard!');
+      });
+    }
+  </script>
+  <!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>

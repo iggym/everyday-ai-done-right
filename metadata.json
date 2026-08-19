@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0054",
+  "slug": "generate-structured-design-systems-css-from-prompts-free",
+  "title": "Generate Structured Design Systems (CSS) from Prompts for Free",
+  "hook": "Generate structured design systems (color palettes, typography pairings, and CSS variables) from abstract creative prompts using Google AI Studio’s free tier—no credit card required, capped at 1,500 requests per day.",
+  "path": "articles/generate-structured-design-systems-css-from-prompts-free.html",
+  "date": "2026-08-20",
+  "status": "published",
+  "format": "guide",
+  "category": "creative",
+  "tool": "Gemini 2.0 Flash (Google AI Studio, free tier)",
+  "tool_family": "Google",
+  "source_url": "https://ai.google.dev/pricing",
+  "tags": ["creative", "design-systems", "css", "google-ai-studio", "free-tier", "no-credit-card"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-20"
+},{
   "id": "0046",
   "slug": "business-deck-ai-google-labs",
   "title": "Business Deck AI (Google Workspace Labs)",
