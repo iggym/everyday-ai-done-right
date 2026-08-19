@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Triage Everyday Legal Issues & Resolve Disputes for Free</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --accent: #0284c7;
+      --coral: #e11d48;
+      --border: #e2e8f0;
+      --code-bg: #1e293b;
+      --code-text: #f8fafc;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --card-bg: #1e293b;
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --accent: #38bdf8;
+        --coral: #fb7185;
+        --border: #334155;
+      }
+    }
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --coral: #fb7185;
+      --border: #334155;
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --accent: #0284c7;
+      --coral: #e11d48;
+      --border: #e2e8f0;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+    }
+    .logo {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+    h1 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 2.2rem;
+      line-height: 1.2;
+    }
+    .badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    .badge {
+      background: var(--border);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .cost-box {
+      text-align: center;
+      padding: 1rem;
+    }
+    .strike {
+      text-decoration: line-through;
+      color: var(--coral);
+      font-size: 1.2rem;
+    }
+    .free-price {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .coral-callout {
+      border-left: 4px solid var(--coral);
+      background: var(--card-bg);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .stepper {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .step-item {
+      border-left: 2px solid var(--accent);
+      padding-left: 1rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="https://iggym.github.io/everyday-ai-done-right/" class="logo">Everyday AI, Done Right</a>
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+  </header>
+
+  <main>
+    <h1>Triage Everyday Legal Issues & Resolve Consumer Disputes for Free</h1>
+    
+    <div class="badges">
+      <span class="badge">Category: Civic / Consumer Protection</span>
+      <span class="badge">Tier: T0 (100% Free)</span>
+      <span class="badge">No Credit Card Required</span>
+    </div>
+
+    <p>Triage debt claims, landlord withholding, billing errors, and warranty breaches using official federal frameworks (CFPB/FTC) paired with open AI templates.</p>
+
+    <div class="card cost-box">
+      <h3>Cost Comparison</h3>
+      <p><span class="strike">$250/hour</span> consumer law consultation fee</p>
+      <p class="free-price">$0.00 / month</p>
+    </div>
+
+    <h2>Interactive Quota Calculator</h2>
+    <div class="card">
+      <label for="disputeInput">Number of dispute documents or bills to evaluate:</label>
+      <input type="number" id="disputeInput" value="3" min="1" max="25" onchange="calculateQuota()">
+      <p id="quotaResult" style="margin-top: 0.5rem; font-weight: 500;"></p>
+    </div>
+
+    <h2>Step-by-Step Walkthrough</h2>
+    <div class="stepper">
+      <div class="step-item">
+        <h3>Step 1: Classify the Dispute</h3>
+        <p>Identify whether your issue involves debt collection (FDCPA), tenant deposits, unfair billing, or warranty non-compliance.</p>
+      </div>
+      <div class="step-item">
+        <h3>Step 2: Run the Triage Prompt</h3>
+        <p>Copy and paste your dispute details into any free AI interface with this prompt:</p>
+        <pre><button class="copy-btn" onclick="copyPrompt()">Copy Prompt</button><code id="promptCode">You are an expert consumer advocacy and legal self-triage assistant.
+Analyze the following everyday consumer dispute:
+[PASTE DETAILS, LEASE TERMS, BILL, OR TEXT HISTORY HERE]
+
+Tasks:
+1. Identify the core everyday legal category (e.g., FDCPA violation, improper security deposit withholding, deceptive billing).
+2. Cite the primary federal or state statutory protections applying to this scenario.
+3. Draft a formal Dispute & Cease-and-Desist Notice requiring resolution within 10 business days.
+4. Provide a structured checklist of official federal/state regulatory agencies (CFPB, FTC, State AG) where a complaint can be filed if non-compliant.</code></pre>
+      </div>
+      <div class="step-item">
+        <h3>Step 3: Escalate to Federal Web Portals</h3>
+        <p>If the opposing party fails to resolve the issue within 10 days, submit your generated notice directly to ConsumerFinance.gov or FTC.gov.</p>
+      </div>
+    </div>
+
+    <div class="coral-callout">
+      <strong>What Breaks:</strong> Generative prompts do not constitute attorney-client privilege and cannot file official court motions or represent you in formal legal trials.
+    </div>
+
+  </main>
+
+  <footer>
+    <p>Everyday AI Done Right — Free Workflows for Everyone.</p>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('eadr-theme', next);
+    }
+    
+    (function initTheme() {
+      const saved = localStorage.getItem('eadr-theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    })();
+
+    function calculateQuota() {
+      const count = document.getElementById('disputeInput').value;
+      const result = document.getElementById('quotaResult');
+      result.innerText = `Evaluating ${count} documents uses ~${count * 400} tokens. Operates completely inside zero-cost web tiers!`;
+    }
+    calculateQuota();
+
+    function copyPrompt() {
+      const code = document.getElementById('promptCode').innerText;
+      navigator.clipboard.writeText(code);
+      alert('Prompt copied to clipboard!');
+    }
+  </script>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+</body>
+</html>

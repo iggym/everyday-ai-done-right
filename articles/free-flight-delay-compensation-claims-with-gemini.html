@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Flight Delay Compensation Claims with Google Gemini | Everyday AI Done Right</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --secondary-text: #4a4a4a;
+            --border-color: #e5e5e5;
+            --code-bg: #f5f5f5;
+            --accent-color: #0066cc;
+            --accent-hover: #0055aa;
+            --coral-color: #ff6b6b;
+            --coral-bg: #fff5f5;
+            --green-color: #10b981;
+            --green-bg: #f0fdf4;
+            --badge-bg: #f0f7ff;
+            --badge-text: #0066cc;
+            --stepper-inactive-bg: #e5e5e5;
+            --stepper-inactive-text: #999999;
+            --privacy-color: #d97706;
+            --privacy-bg: #fffbeb;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --secondary-text: #b0b0b0;
+            --border-color: #333333;
+            --code-bg: #1e1e1e;
+            --accent-color: #4da6ff;
+            --accent-hover: #3d96ef;
+            --coral-color: #ff8a8a;
+            --coral-bg: #2a1a1a;
+            --green-color: #34d399;
+            --green-bg: #1a2e1a;
+            --badge-bg: #1a2a3a;
+            --badge-text: #4da6ff;
+            --stepper-inactive-bg: #333333;
+            --stepper-inactive-text: #666666;
+            --privacy-color: #fbbf24;
+            --privacy-bg: #2a2010;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+        .top-bar {
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar-content { display: flex; justify-content: space-between; align-items: center; }
+
+        .logo {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+        .logo span { color: var(--accent-color); }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-toggle:hover { background-color: var(--code-bg); }
+
+        .hero { padding: 60px 0 40px; }
+
+        .category-badge {
+            display: inline-block;
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 20px;
+        }
+
+        .hero-text { font-size: 18px; color: var(--secondary-text); margin-bottom: 30px; }
+
+        .verification-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .badge-free { background-color: var(--green-bg); color: var(--green-color); }
+        .badge-verified { background-color: var(--badge-bg); color: var(--badge-text); }
+        .badge-no-card { background-color: var(--green-bg); color: var(--green-color); }
+        .badge-privacy { background-color: var(--privacy-bg); color: var(--privacy-color); }
+
+        .eu-table {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .eu-table h3 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .eu-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .eu-table th, .eu-table td {
+            text-align: left;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .eu-table th {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .eu-table td:last-child {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--green-color);
+        }
+
+        .eu-table tr:last-child td { border-bottom: none; }
+
+        .eu-table .note {
+            font-size: 13px;
+            color: var(--secondary-text);
+            margin-top: 12px;
+            font-style: italic;
+        }
+
+        .cost-comparison {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cost-comparison h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cost-items { display: flex; flex-direction: column; gap: 16px; }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .cost-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .cost-name { font-weight: 500; font-size: 15px; }
+
+        .cost-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .cost-price.strike-through {
+            text-decoration: line-through;
+            color: var(--coral-color);
+            opacity: 0;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .cost-price.strike-through.visible { opacity: 1; transform: translateY(-5px); }
+        .cost-price.free { color: var(--green-color); font-weight: 700; }
+
+        .savings-summary {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--green-color);
+        }
+
+        .quota-calculator {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .quota-calculator h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .quota-note { font-size: 14px; color: var(--secondary-text); margin-bottom: 20px; }
+        .quota-inputs { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+        .quota-input-group { display: flex; flex-direction: column; gap: 6px; }
+        .quota-input-group label { font-weight: 500; }
+
+        .quota-input-group input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            width: 100%;
+        }
+
+        .quota-result {
+            padding: 16px;
+            background-color: var(--badge-bg);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .stepper { margin-bottom: 40px; }
+
+        .stepper h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            margin-bottom: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            transition: border-color 0.3s ease;
+        }
+        .step.active { border-color: var(--accent-color); }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            cursor: pointer;
+            gap: 16px;
+            user-select: none;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+            background-color: var(--stepper-inactive-bg);
+            color: var(--stepper-inactive-text);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .step.active .step-number { background-color: var(--accent-color); color: white; }
+
+        .step-title { font-weight: 600; font-size: 17px; flex: 1; }
+        .step-subtitle { font-size: 13px; color: var(--secondary-text); font-weight: 400; }
+        .step-chevron { font-size: 18px; transition: transform 0.3s ease; color: var(--secondary-text); flex-shrink: 0; }
+        .step.active .step-chevron { transform: rotate(180deg); }
+
+        .step-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .step.active .step-content { max-height: 6000px; }
+
+        .step-content-inner { padding: 0 20px 20px 68px; color: var(--secondary-text); }
+        .step-content-inner ol, .step-content-inner ul { margin-left: 20px; margin-bottom: 16px; }
+        .step-content-inner li { margin-bottom: 8px; }
+        .step-content-inner p { margin-bottom: 12px; }
+        .step-content-inner a { color: var(--accent-color); }
+
+        .code-block {
+            position: relative;
+            margin: 16px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: var(--border-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .copy-button:hover { background-color: rgba(0,0,0,0.1); }
+        [data-theme="dark"] .copy-button:hover { background-color: rgba(255,255,255,0.1); }
+
+        .code-content {
+            padding: 16px;
+            background-color: var(--code-bg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .what-breaks {
+            background-color: var(--coral-bg);
+            border-left: 4px solid var(--coral-color);
+            padding: 24px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 40px;
+        }
+
+        .what-breaks h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--coral-color);
+        }
+
+        .what-breaks ul { margin-left: 20px; }
+        .what-breaks li { margin-bottom: 10px; color: var(--secondary-text); }
+        .what-breaks li strong { color: var(--text-color); }
+
+        .three-things { margin-bottom: 40px; }
+
+        .three-things h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .thing-item {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .thing-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            user-select: none;
+        }
+        .thing-header:hover { background-color: var(--border-color); }
+        .thing-toggle { font-size: 20px; transition: transform 0.3s ease; color: var(--secondary-text); }
+        .thing-item.active .thing-toggle { transform: rotate(45deg); }
+        .thing-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .thing-item.active .thing-content { max-height: 500px; }
+        .thing-content-inner { padding: 0 16px 16px; color: var(--secondary-text); line-height: 1.7; }
+
+        .try-it-now {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .try-it-now h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .try-it-now ol { text-align: left; margin-left: 20px; margin-bottom: 24px; }
+        .try-it-now li { margin-bottom: 8px; }
+
+        .try-it-now a {
+            display: inline-block;
+            background-color: white;
+            color: var(--accent-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .try-it-now a:hover { background-color: rgba(255,255,255,0.9); transform: translateY(-1px); }
+
+        .share-bar { margin-bottom: 60px; }
+
+        .share-bar h3 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .share-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .share-button:hover { background-color: var(--code-bg); }
+        .share-button:active { transform: scale(0.97); }
+        .share-button.twitter { background-color: #1da1f2; color: white; border-color: #1da1f2; }
+        .share-button.twitter:hover { background-color: #0d8ddb; }
+        .share-button.linkedin { background-color: #0077b5; color: white; border-color: #0077b5; }
+        .share-button.linkedin:hover { background-color: #00669c; }
+        .share-button.facebook { background-color: #1877f2; color: white; border-color: #1877f2; }
+        .share-button.facebook:hover { background-color: #1466d6; }
+        .share-button.copy-link { background-color: var(--green-color); color: white; border-color: var(--green-color); }
+        .share-button.copy-link:hover { background-color: #0ea371; }
+
+        footer {
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 26px; }
+            .hero-text { font-size: 16px; }
+            .verification-badges { flex-direction: column; }
+            .share-buttons { flex-direction: column; }
+            .share-button { justify-content: center; }
+            .step-content-inner { padding-left: 20px; }
+            .step-subtitle { display: none; }
+            .eu-table { padding: 16px; }
+            .eu-table th, .eu-table td { padding: 6px 8px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <a href="https://iggym.github.io/everyday-ai-done-right/" class="logo">Everyday AI <span>Done Right</span></a>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Dark</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <span class="category-badge">Travel</span>
+            <h1>Free Flight Delay Compensation Claims with Google Gemini</h1>
+            <p class="hero-text">Google Gemini's free tier helps you draft compensation request letters referencing DOT refund rules and EU261 regulation—but these regulations have specific jurisdictional requirements and exception clauses that Gemini may misstate, and this is not legal advice; if your claim involves significant money or a pattern of denial, consult an aviation attorney.</p>
+            <div class="verification-badges">
+                <span class="badge badge-free">✓ 100% Free</span>
+                <span class="badge badge-verified">✓ Verified June 2025</span>
+                <span class="badge badge-no-card">✓ No Credit Card</span>
+                <span class="badge badge-privacy">⚠ Not Legal Advice</span>
+            </div>
+
+            <div class="eu-table">
+                <h3>EU261 Compensation at a Glance</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Flight Distance</th>
+                            <th>Delay at Destination</th>
+                            <th>Compensation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Under 1,500 km</td>
+                            <td>3+ hours</td>
+                            <td>€250</td>
+                        </tr>
+                        <tr>
+                            <td>1,500 – 3,500 km</td>
+                            <td>3+ hours</td>
+                            <td>€400</td>
+                        </tr>
+                        <tr>
+                            <td>Over 3,500 km</td>
+                            <td>4+ hours</td>
+                            <td>€600</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="note">Per passenger. Applies to flights departing EU airports (any airline) or arriving at EU airports (EU carriers only). Reduced by 50% if arrival delay is under 4 hours on >3,500 km flights.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="cost-comparison" id="cost-comparison">
+            <h2>Cost Comparison</h2>
+            <div class="cost-items">
+                <div class="cost-item">
+                    <span class="cost-name">Airhelp (on a €600 claim)</span>
+                    <span class="cost-price strike-through" id="cost1">€150–€210 commission</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">ClaimCompass</span>
+                    <span class="cost-price strike-through" id="cost2">25% + €25 fee</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Aviation attorney consultation</span>
+                    <span class="cost-price strike-through" id="cost3">$200–$400/hr</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Small claims court filing</span>
+                    <span class="cost-price strike-through" id="cost4">$30–$100 + full day</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Google Gemini</span>
+                    <span class="cost-price free">$0.00</span>
+                </div>
+            </div>
+            <div class="savings-summary">Per-claim savings: €150–€210 vs. claims companies; $200–$400+ vs. attorney for a single letter</div>
+        </div>
+
+        <div class="quota-calculator">
+            <h2>Free Tier Quota Calculator</h2>
+            <p class="quota-note">Gemini's free tier allows 15 requests per minute. Claim letter workflows are well within limits.</p>
+            <div class="quota-inputs">
+                <div class="quota-input-group">
+                    <label for="delayed-flights">How many delayed/cancelled flights do you need to file claims for?</label>
+                    <input type="number" id="delayed-flights" min="1" max="20" value="1">
+                </div>
+                <div class="quota-input-group">
+                    <label for="letters-per-flight">Letters per flight (initial claim + follow-up if denied)?</label>
+                    <input type="number" id="letters-per-flight" min="1" max="10" value="2">
+                </div>
+            </div>
+            <div class="quota-result" id="quota-result">Loading...</div>
+        </div>
+
+        <div class="stepper">
+            <h2>Step-by-Step Walkthrough</h2>
+
+            <div class="step active" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">
+                        Gather Your Documentation
+                        <div class="step-subtitle">Before opening Gemini, collect everything you'll need</div>
+                    </div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <ul>
+                            <li>Booking confirmation email</li>
+                            <li>Airline's notification of delay/cancellation (screenshot or email)</li>
+                            <li>Boarding pass (if you flew)</li>
+                            <li>Actual arrival time at your <strong>final destination</strong> (check <a href="https://flightaware.com" target="_blank" rel="noopener">flightaware.com</a> if unsure)</li>
+                            <li>Airline's Contract of Carriage (search "[airline name] contract of carriage PDF")</li>
+                        </ul>
+                        <p>For EU261 claims, the arrival time that matters is when the aircraft door opens at your final destination — not when it lands, and not the delay at any intermediate stop.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">
+                        U.S. DOT Refund Request
+                        <div class="step-subtitle">Cancelled or significantly changed flights — 49 CFR Part 399.85</div>
+                    </div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>For cancelled or significantly changed flights on U.S. carriers or flights departing the U.S.:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>DOT Refund Request Prompt</span>
+                                <button class="copy-button" data-copy="dot-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="dot-prompt">I need to request a cash refund from an airline under the U.S. Department of Transportation's refund rule. Here are the details:
+
+Airline: [name]
+My name: [name as on booking]
+Confirmation/record locator: [number]
+Flight number: [number]
+Route: [departure city → arrival city]
+Original departure date/time: [date and time]
+What happened: [e.g., "Flight was cancelled 4 hours before departure" / "Flight was delayed by 5 hours" / "Airline changed my nonstop flight to a 1-stop flight adding 4 hours"]
+What the airline offered: [e.g., "rebooking on a flight 2 days later" / "a voucher for future travel" / "nothing — I had to book my own replacement flight"]
+Amount I paid: [original ticket price]
+Amount I'm requesting: [typically the full ticket price for cancellations; for partial changes, the difference in value]
+
+Draft a formal refund request letter that:
+1. References the DOT's refund rule (49 CFR Part 399.85 and the April 2024 final rule on airline refunds)
+2. States that the cancellation/significant change triggers my right to a cash refund
+3. If the airline offered a voucher instead, states that I am declining the voucher and requesting cash as required by DOT regulations
+4. Cites the 7-business-day processing requirement for credit card refunds
+5. Provides my preferred refund method and contact information
+6. Notes that failure to comply may be reported to the DOT Aviation Consumer Protection Division
+7. Includes a "this is not legal advice" disclaimer at the bottom
+8. Is formatted for printing and mailing, or for submitting via the airline's customer service web form
+
+Tone: Firm but professional. No threats beyond the DOT referral. No emotional language. Do not make claims about what I am "entitled to" — frame everything as "requesting a refund under DOT regulations."</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">
+                        EU261 Compensation Claim
+                        <div class="step-subtitle">Delayed or cancelled flights covered by EU Regulation 261/2004</div>
+                    </div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>For delayed or cancelled flights departing from any EU airport (any airline), or arriving at an EU airport on an EU carrier:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>EU261 Claim Prompt</span>
+                                <button class="copy-button" data-copy="eu261-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="eu261-prompt">I need to submit an EU261 compensation claim. Here are the details:
+
+Airline: [name]
+Flight number: [number]
+Route: [departure airport/city → arrival airport/city]
+Scheduled departure date/time: [date and time]
+Actual departure time: [time]
+Scheduled arrival time: [time]
+Actual arrival time: [time at final destination, not at any intermediate stop]
+Reason given for delay/cancellation: [if the airline provided one — e.g., "technical issue," "weather," "air traffic control," "crew scheduling," or "no reason given"]
+Number of passengers on this booking: [number — compensation is per passenger]
+
+Draft an EU261 compensation claim letter that:
+1. Invokes EU Regulation 261/2004, Article 7 (right to compensation) and Article 5 (right to care/reimbursement)
+2. States the distance band: [under 1500km / 1500-3500km / over 3500km — if unsure, I will fill this in]
+3. States the compensation amount per the regulation: [€250 / €400 / €600] × [number of passengers]
+4. If the airline cited "extraordinary circumstances," does NOT argue against that claim — instead, states that I am submitting the claim and requesting that the airline provide specific justification under the standards established by CJEU case law
+5. Provides my bank account details for a wire transfer (IBAN/BIC if in EU, or SWIFT details if outside EU)
+6. States a 14-day response deadline
+7. Notes that if the claim is denied, I reserve the right to file with the relevant national enforcement body (e.g., the UK CAA, French DGAC, Irish Commission for Aviation Regulation) or pursue through alternative dispute resolution
+8. Includes the "not legal advice" disclaimer
+9. Is formatted for printing and mailing, or for submitting via the airline's web form
+
+Tone: Factual and specific. Reference the actual times, not approximations. Do not argue the legal merits — simply state the facts that trigger the regulation and request the payment.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">
+                        Contract of Carriage Dispute
+                        <div class="step-subtitle">When the airline's own published terms support your claim</div>
+                    </div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>When the airline's own published terms support your claim but they're refusing to honor them:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Contract of Carriage Prompt</span>
+                                <button class="copy-button" data-copy="coc-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="coc-prompt">I need to reference an airline's own Contract of Carriage in a dispute. Here are the details:
+
+Airline: [name]
+Relevant Contract of Carriage section: [paste the specific clause or describe it — e.g., "Section 12.B regarding cancelled flights" or "Rule 240 regarding rebooking obligations"]
+What the contract says: [paste the exact language if you have it, or describe it]
+What happened: [describe the situation]
+How the airline's response conflicted with their own contract: [describe]
+
+Draft a letter that:
+1. Cites the specific section/clause of the airline's Contract of Carriage
+2. Quotes the relevant contract language directly
+3. Describes what happened and how it conflicts with the contract terms
+4. Notes that the Contract of Carriage is the binding agreement between the airline and the passenger
+5. Requests specific remediation (refund, rebooking, compensation — whatever the contract provides for)
+6. Includes the "not legal advice" disclaimer
+7. Is formatted for printing and mailing
+
+Tone: Reference the contract like a business document, not a legal weapon. The goal is to show the airline that you've read their own rules.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="what-breaks">
+            <h2>What Breaks (Limitations)</h2>
+            <ul>
+                <li><strong>Not Legal Advice:</strong> These letters help you request compensation under published regulations. Gemini cannot determine whether your specific situation qualifies, cannot interpret "extraordinary circumstances" for your flight, and cannot advise you on whether to accept a settlement offer. If an airline denies a significant claim, or if multiple passengers are involved, consult an aviation attorney.</li>
+                <li><strong>EU261 Jurisdiction Is Specific:</strong> EU261 applies to (a) flights departing from any EU airport, regardless of airline, or (b) flights arriving at an EU airport on an EU carrier. A U.S. carrier flying New York → London is NOT covered unless the return leg departs from the EU. A non-EU carrier flying Paris → New York IS covered. Gemini may get this wrong—verify eligibility yourself.</li>
+                <li><strong>"Extraordinary Circumstances" Is Litigated:</strong> Airlines frequently claim extraordinary circumstances to deny EU261 claims. CJEU case law has established this defense is narrow—it does not cover technical failures, crew shortages, or most operational issues. But determining whether a specific delay qualifies requires case-by-case analysis that AI cannot reliably perform.</li>
+                <li><strong>DOT Refund Rule Thresholds:</strong> What counts as a "significant change" has gray areas. The DOT states that 3+ hour delays, route changes, and cabin downgrades clearly qualify, but airlines may dispute borderline cases. Gemini cannot resolve these ambiguities.</li>
+                <li><strong>Contract of Carriage Varies by Airline:</strong> Each airline's contract has different provisions, section numbers, and definitions. Gemini does not have access to current versions of every airline's contract. You must look up and provide the relevant language yourself.</li>
+                <li><strong>Statute of Limitations:</strong> EU261 claims have varying time limits by country (2 years in most EU states, 6 in the UK). DOT refund requests don't have a federal statute of limitations, but airline contracts may impose deadlines. Gemini cannot calculate these for you.</li>
+                <li><strong>Airlines May Ignore Letters:</strong> A well-drafted letter improves your chances but doesn't guarantee results. If denied, your next steps are: file a DOT complaint (U.S. flights), file with the relevant national aviation authority (EU261), or pursue through small claims court or ADR.</li>
+            </ul>
+        </div>
+
+        <div class="three-things">
+            <h2>Three Things to Know</h2>
+
+            <div class="thing-item" id="thing1">
+                <div class="thing-header">
+                    <span>1. Airlines must give you cash for cancelled flights, not just vouchers</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        DOT's 2024 refund rule made this explicit: when an airline cancels or significantly changes a flight, you're entitled to a cash refund if you want one—not a travel credit, not a voucher, not a future-flight certificate. The refund must be processed within 7 business days for credit card purchases. Airlines still routinely offer vouchers first because most passengers accept them. Declining the voucher and requesting cash is your right, and the DOT has issued enforcement actions and fines against airlines that fail to comply.
+                    </div>
+                </div>
+            </div>
+
+            <div class="thing-item" id="thing2">
+                <div class="thing-header">
+                    <span>2. EU261 compensation is per passenger, not per booking</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        A family of four on a single booking for a 4+ hour delayed flight from New York to Frankfurt (over 3,500 km band) could receive €600 × 4 = €2,400. The compensation is tied to each individual passenger, not the reservation. Claims companies often quote the per-passenger amount in their marketing but take their percentage from the total—so on a €2,400 family claim, Airhelp's 35% commission would be €840. Drafting the letter yourself keeps that money.
+                    </div>
+                </div>
+            </div>
+
+            <div class="thing-item" id="thing3">
+                <div class="thing-header">
+                    <span>3. "Extraordinary circumstances" has a narrow legal definition — airlines overclaim it</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Under CJEU case law (Wallentin-Hermann, Sturgeon, van der Lans), "extraordinary circumstances" means events that are not inherent in the normal exercise of an airline's activity and beyond its actual control. True examples: acts of terrorism, volcanic ash, unprecedented weather events. NOT covered: mechanical failures, technical defects, crew scheduling errors, or most things airlines blame. Airlines routinely cite "extraordinary circumstances" for technical issues, which CJEU precedent explicitly rejects. The EU261 prompt above is designed to avoid arguing this point directly—instead, it asks the airline to provide specific justification under CJEU standards, which puts the burden on them.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="try-it-now">
+            <h2>Try It Now</h2>
+            <ol>
+                <li>Find a recent delayed or cancelled flight in your email</li>
+                <li>Go to <a href="https://gemini.google.com" target="_blank" rel="noopener" style="color:white;text-decoration:underline;">gemini.google.com</a> and sign in</li>
+                <li>Use the DOT prompt (Step 2) for U.S. flights, or the EU261 prompt (Step 3) for EU-covered flights</li>
+                <li>Before sending, verify eligibility: <a href="https://transportation.gov/refunds" target="_blank" rel="noopener" style="color:white;text-decoration:underline;">transportation.gov/refunds</a> for DOT; <a href="https://eu261.com" target="_blank" rel="noopener" style="color:white;text-decoration:underline;">eu261.com</a> for EU261</li>
+                <li>Send via the airline's formal complaints page and save a copy with your booking records</li>
+            </ol>
+            <a href="https://gemini.google.com" target="_blank" rel="noopener">Start Drafting Your Claim</a>
+        </div>
+
+        <div class="share-bar">
+            <h3>Share This Guide</h3>
+            <div class="share-buttons">
+                <button class="share-button twitter" id="share-twitter">Twitter</button>
+                <button class="share-button linkedin" id="share-linkedin">LinkedIn</button>
+                <button class="share-button facebook" id="share-facebook">Facebook</button>
+                <button class="share-button copy-link" id="share-copy-link">Copy Link</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Everyday AI Done Right — Practical, free AI workflows for everyone</p>
+        </div>
+    </footer>
+
+    <script>
+    (function() {
+        var themeToggle = document.getElementById('theme-toggle');
+        var themeIcon = document.getElementById('theme-icon');
+        var themeText = document.getElementById('theme-text');
+        var saved = localStorage.getItem('eadr-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        if (saved === 'dark') { themeIcon.textContent = '☀️'; themeText.textContent = 'Light'; }
+
+        themeToggle.addEventListener('click', function() {
+            var cur = document.documentElement.getAttribute('data-theme');
+            var nxt = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', nxt);
+            localStorage.setItem('eadr-theme', nxt);
+            themeIcon.textContent = nxt === 'dark' ? '☀️' : '🌙';
+            themeText.textContent = nxt === 'dark' ? 'Light' : 'Dark';
+        });
+
+        var costIds = ['cost1','cost2','cost3','cost4'];
+        costIds.forEach(function(id, i) {
+            setTimeout(function() { document.getElementById(id).classList.add('visible'); }, 400 + i * 250);
+        });
+
+        var flightsInput = document.getElementById('delayed-flights');
+        var perFlightInput = document.getElementById('letters-per-flight');
+        var quotaResult = document.getElementById('quota-result');
+
+        function calcQuota() {
+            var flights = parseInt(flightsInput.value) || 0;
+            var perFlight = parseInt(perFlightInput.value) || 0;
+            var total = flights * perFlight;
+            if (total === 0) {
+                quotaResult.textContent = 'Enter values to see your estimated usage.';
+                quotaResult.style.color = 'var(--secondary-text)';
+            } else if (total <= 6) {
+                quotaResult.textContent = 'You\'ll need about ' + total + ' messages. Well within the 15 requests per minute limit. No concerns at all.';
+                quotaResult.style.color = 'var(--green-color)';
+            } else if (total <= 20) {
+                quotaResult.textContent = 'You\'ll need about ' + total + ' messages. Still comfortable — spread across 1–2 sessions and you won\'t notice any limits.';
+                quotaResult.style.color = 'var(--green-color)';
+            } else {
+                quotaResult.textContent = 'You\'ll need about ' + total + ' messages. Plan for 2–3 sessions on separate days to stay well within rate limits.';
+                quotaResult.style.color = 'var(--privacy-color)';
+            }
+        }
+
+        flightsInput.addEventListener('input', calcQuota);
+        perFlightInput.addEventListener('input', calcQuota);
+        calcQuota();
+
+        var steps = document.querySelectorAll('.step');
+        steps.forEach(function(step) {
+            step.querySelector('.step-header').addEventListener('click', function() {
+                var wasActive = step.classList.contains('active');
+                steps.forEach(function(s) { s.classList.remove('active'); });
+                if (!wasActive) step.classList.add('active');
+            });
+        });
+
+        function doCopy(el) {
+            return navigator.clipboard.writeText(el.textContent).catch(function() {
+                var ta = document.createElement('textarea');
+                ta.value = el.textContent;
+                ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            });
+        }
+
+        document.querySelectorAll('.copy-button').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var el = document.getElementById(btn.getAttribute('data-copy'));
+                if (!el) return;
+                var orig = btn.innerHTML;
+                doCopy(el).then(function() {
+                    btn.innerHTML = '✓ Copied!';
+                    setTimeout(function() { btn.innerHTML = orig; }, 2000);
+                });
+            });
+        });
+
+        document.querySelectorAll('.thing-item').forEach(function(item) {
+            item.querySelector('.thing-header').addEventListener('click', function() {
+                item.classList.toggle('active');
+            });
+        });
+
+        var pageUrl = window.location.href;
+        var shareText = 'Claim flight delay compensation for free with Google Gemini. Draft DOT refund requests and EU261 claims that airlines won\'t tell you about. No card needed.';
+
+        document.getElementById('share-twitter').addEventListener('click', function() {
+            window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(pageUrl), '_blank');
+        });
+        document.getElementById('share-linkedin').addEventListener('click', function() {
+            window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(pageUrl), '_blank');
+        });
+        document.getElementById('share-facebook').addEventListener('click', function() {
+            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(pageUrl), '_blank');
+        });
+        document.getElementById('share-copy-link').addEventListener('click', function() {
+            var btn = document.getElementById('share-copy-link');
+            var orig = btn.innerHTML;
+            navigator.clipboard.writeText(pageUrl).then(function() {
+                btn.innerHTML = '✓ Link Copied!';
+                setTimeout(function() { btn.innerHTML = orig; }, 2000);
+            }).catch(function() {
+                var ta = document.createElement('textarea');
+                ta.value = pageUrl; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select();
+                document.execCommand('copy'); document.body.removeChild(ta);
+                btn.innerHTML = '✓ Link Copied!';
+                setTimeout(function() { btn.innerHTML = orig; }, 2000);
+            });
+        });
+    })();
+    </script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

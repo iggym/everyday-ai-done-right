@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draft a Formal Security Deposit Dispute Letter for Free | Everyday AI Done Right</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --accent: #FF7F50; /* Coral */
+            --accent-hover: #e66a3c;
+            --border: #e0e0e0;
+            --success: #28a745;
+            --code-bg: #f1f3f5;
+        }
+        [data-theme="dark"] {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: #FF7F50;
+            --accent-hover: #ff9a76;
+            --border: #333333;
+            --success: #2ecc71;
+            --code-bg: #2d2d2d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px;
+        }
+        .logo { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.2rem; }
+        .theme-toggle {
+            background: none; border: 1px solid var(--border); color: var(--text-primary);
+            padding: 8px 12px; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif;
+        }
+
+        .hero { margin-bottom: 40px; }
+        .hero h1 { font-family: 'Manrope', sans-serif; font-size: 2.2rem; margin-bottom: 15px; }
+        .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .badge {
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .badge.verified { color: var(--success); border-color: var(--success); }
+
+        .pitch { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 30px; border-left: 4px solid var(--accent); padding-left: 15px; }
+        
+        .cost-comparison {
+            background: var(--bg-secondary); padding: 20px; border-radius: 8px; margin-bottom: 30px;
+        }
+        .cost-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; }
+        .strike { text-decoration: line-through; color: var(--text-secondary); opacity: 0.7; }
+        .free { color: var(--success); font-weight: 600; }
+
+        .calculator {
+            background: var(--bg-secondary); padding: 20px; border-radius: 8px; margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+        .calculator h3 { font-family: 'Manrope', sans-serif; margin-bottom: 15px; }
+        .calc-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .calc-input {
+            flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 6px;
+            background: var(--bg-primary); color: var(--text-primary); font-family: 'Inter', sans-serif;
+        }
+        .calc-result { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-secondary); }
+        .calc-result span { color: var(--accent); font-weight: 700; }
+
+        .stepper { margin-bottom: 30px; }
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.4s ease; }
+        .step-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+        }
+        .step-nav { display: flex; gap: 10px; margin-top: 20px; }
+        .btn {
+            padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;
+            font-weight: 600; font-family: 'Inter', sans-serif; transition: background 0.2s;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--border); }
+
+        .prompt-box {
+            background: var(--code-bg); padding: 15px; border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            position: relative; margin: 15px 0; white-space: pre-wrap;
+        }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px;
+            background: var(--bg-primary); border: 1px solid var(--border);
+            padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
+        }
+        .copy-btn:hover { background: var(--border); }
+
+        .what-breaks {
+            background: rgba(255, 127, 80, 0.1); border-left: 4px solid var(--accent);
+            padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px;
+        }
+        .what-breaks h3 { color: var(--accent); font-family: 'Manrope', sans-serif; margin-bottom: 10px; }
+
+        .three-things { margin-bottom: 30px; }
+        .reveal-item {
+            border: 1px solid var(--border); border-radius: 6px; margin-bottom: 10px; overflow: hidden;
+        }
+        .reveal-header {
+            padding: 15px; background: var(--bg-secondary); cursor: pointer;
+            font-weight: 600; display: flex; justify-content: space-between;
+        }
+        .reveal-content {
+            padding: 15px; display: none; color: var(--text-secondary); font-size: 0.95rem;
+        }
+        .reveal-content.open { display: block; }
+
+        .share-bar {
+            display: flex; gap: 10px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);
+        }
+        .share-btn {
+            flex: 1; padding: 10px; text-align: center; border-radius: 6px;
+            text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border);
+        }
+        .share-btn:hover { background: var(--border); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.8rem; }
+            .calc-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <div class="logo">Everyday AI, Done Right</div>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+        </div>
+
+        <div class="hero">
+            <div class="badges">
+                <span class="badge verified">✓ Verified Free</span>
+                <span class="badge">No Credit Card</span>
+                <span class="badge">T0 Tier</span>
+                <span class="badge">Civic/Legal</span>
+            </div>
+            <h1>Draft a Formal Security Deposit Dispute Letter for Free</h1>
+            <p class="pitch">Paste your move-out details and a landlord's unjust deduction list into Claude’s free tier to generate a firm, legally-toned security deposit dispute letter citing general tenant rights principles—no credit card required, capped at roughly 15–40 messages per 5-hour window.</p>
+        </div>
+
+        <div class="cost-comparison">
+            <h3 style="font-family: 'Manrope', sans-serif; margin-bottom: 15px;">Replaced Costs</h3>
+            <div class="cost-item"><span>Attorney Consultation (Demand Letter)</span> <span class="strike">$150–$300+</span></div>
+            <div class="cost-item"><span>Paid Legal Template Services</span> <span class="strike">$20–$50/doc</span></div>
+            <div class="cost-item"><span>Small Claims Filing Fees (Avoided)</span> <span class="strike">$50–$150</span></div>
+            <div class="cost-item" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                <span>Claude Free Tier</span> <span class="free">$0.00</span>
+            </div>
+        </div>
+
+        <div class="calculator">
+            <h3>Interactive Quota Estimator</h3>
+            <div class="calc-row">
+                <input type="number" id="windowLimit" class="calc-input" placeholder="Messages per 5-hr window" value="30" min="15" max="40">
+                <input type="number" id="draftsNeeded" class="calc-input" placeholder="Drafts/iterations needed" value="3" min="1" max="10">
+            </div>
+            <div class="calc-result">
+                Windows needed: <span id="windowsNeeded">1</span><br>
+                <small style="color: var(--text-secondary);">*Limit resets on a rolling 5-hour window from first message.</small>
+            </div>
+        </div>
+
+        <div class="stepper">
+            <div class="step active" id="step1">
+                <div class="step-header"><h3>Step 1: Access the Free Interface</h3></div>
+                <p>Navigate to claude.ai and sign in with an email address or Google account. You will not be asked for payment information.</p>
+                <div class="step-nav"><button class="btn btn-primary" onclick="nextStep(2)">Next →</button></div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-header"><h3>Step 2: Gather Your Documentation</h3></div>
+                <p>Collect your move-out date, the original deposit amount, the landlord's itemized deduction list (if provided), and any relevant photos or communication logs.</p>
+                <div class="step-nav">
+                    <button class="btn btn-secondary" onclick="prevStep(1)">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(3)">Next →</button>
+                </div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-header"><h3>Step 3: Apply the Prompt Template</h3></div>
+                <p>Paste the following template into the chat, replacing the bracketed sections with your specific facts:</p>
+                <div class="prompt-box">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+Act as a tenant rights advocate. I need to draft a formal demand letter to my former landlord regarding an unjust security deposit withholding. 
+Here are the facts:
+- Move-out date: [Date]
+- Original deposit amount: $[Amount]
+- Amount withheld: $[Amount]
+- Landlord's stated reason: [e.g., "carpet cleaning", "wall damage"]
+- My counter-evidence: [e.g., "I have move-in/move-out photos showing no damage", "Normal wear and tear"]
+- State/Jurisdiction: [Your State]
+
+Please draft a formal, firm, but professional demand letter. 
+Requirements:
+1. State the facts clearly and chronologically.
+2. Cite general principles of tenant rights regarding "normal wear and tear" vs. "damage".
+3. Demand the return of the withheld amount within 14 days.
+4. Mention that failure to comply will result in filing a claim in small claims court.
+5. Format it as a ready-to-print letter with placeholders for my name, address, and the landlord's details.
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-secondary" onclick="prevStep(2)">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(4)">Next →</button>
+                </div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-header"><h3>Step 4: Review, Refine, and Send</h3></div>
+                <p>Read the generated letter. If it sounds too aggressive or misses a detail, reply with: "Soften the tone in paragraph 2". Once satisfied, print, sign, and send via Certified Mail with a return receipt requested for legal proof of delivery.</p>
+                <div class="step-nav">
+                    <button class="btn btn-secondary" onclick="prevStep(3)">← Back</button>
+                    <a href="https://claude.ai" target="_blank" class="btn btn-primary" style="text-decoration:none; display:inline-block; text-align:center;">Try It Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="what-breaks">
+            <h3>What Breaks (Limitations)</h3>
+            <p>Claude's free tier enforces a dynamic limit of roughly 15–40 messages per 5-hour window [[9]]. Heavy iteration will hit this cap. Additionally, AI cannot provide formal legal advice or guarantee compliance with hyper-specific local municipal codes; it provides a strong, generalized template that you must verify against your local tenant union or legal aid resources.</p>
+        </div>
+
+        <div class="three-things">
+            <h3 style="font-family: 'Manrope', sans-serif; margin-bottom: 15px;">Three Things to Know</h3>
+            <div class="reveal-item">
+                <div class="reveal-header" onclick="toggleReveal(this)">1. Rolling 5-Hour Window <span>+</span></div>
+                <div class="reveal-content">The message limit is not a flat daily quota. It operates on a rolling 5-hour window from your first message. If you hit the limit, you must wait for the oldest messages in that window to age out.</div>
+            </div>
+            <div class="reveal-item">
+                <div class="reveal-header" onclick="toggleReveal(this)">2. Certified Mail is Mandatory <span>+</span></div>
+                <div class="reveal-content">A demand letter only has legal weight if you can prove the landlord received it. Always use USPS Certified Mail with a return receipt. The postage cost (~$4) is a necessary part of this workflow.</div>
+            </div>
+            <div class="reveal-item">
+                <div class="reveal-header" onclick="toggleReveal(this)">3. Normal Wear and Tear <span>+</span></div>
+                <div class="reveal-content">Landlords frequently conflate "damage" with "normal wear and tear" (e.g., faded paint, minor carpet traffic). The prompt explicitly instructs the AI to highlight this legal distinction, which is your strongest defense.</div>
+            </div>
+        </div>
+
+        <div class="share-bar">
+            <a href="https://twitter.com/intent/tweet?text=Draft%20a%20formal%20security%20deposit%20dispute%20letter%20for%20%240%20using%20Claude%E2%80%99s%20free%20tier.%20No%20credit%20card%20required.%20Protect%20your%20deposit%20today:%20https://iggym.github.io/everyday-ai-done-right/articles/draft-formal-security-deposit-dispute-letter-free.html" target="_blank" class="share-btn">Share on X</a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://iggym.github.io/everyday-ai-done-right/articles/draft-formal-security-deposit-dispute-letter-free.html" target="_blank" class="share-btn">Share on LinkedIn</a>
+            <button class="share-btn" onclick="copyLink()">Copy Link</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('eadr-theme', next);
+        }
+        const savedTheme = localStorage.getItem('eadr-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        const windowLimitInput = document.getElementById('windowLimit');
+        const draftsNeededInput = document.getElementById('draftsNeeded');
+        const windowsNeededSpan = document.getElementById('windowsNeeded');
+
+        function updateCalculator() {
+            const limit = parseInt(windowLimitInput.value) || 30;
+            const drafts = parseInt(draftsNeededInput.value) || 3;
+            const windows = Math.ceil(drafts / limit);
+            windowsNeededSpan.textContent = windows === 1 ? "1 (Well within a single window)" : windows;
+        }
+        windowLimitInput.addEventListener('input', updateCalculator);
+        draftsNeededInput.addEventListener('input', updateCalculator);
+
+        let currentStep = 1;
+        function showStep(n) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + n).classList.add('active');
+            currentStep = n;
+        }
+        function nextStep(n) { showStep(n); }
+        function prevStep(n) { showStep(n); }
+
+        function copyPrompt(btn) {
+            const text = btn.parentElement.innerText.replace('Copy', '').trim();
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        function toggleReveal(header) {
+            const content = header.nextElementSibling;
+            const isOpen = content.classList.contains('open');
+            document.querySelectorAll('.reveal-content').forEach(el => el.classList.remove('open'));
+            document.querySelectorAll('.reveal-header span').forEach(el => el.textContent = '+');
+            if (!isOpen) {
+                content.classList.add('open');
+                header.querySelector('span').textContent = '−';
+            }
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Link copied to clipboard!');
+            });
+        }
+    </script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+</body>
+</html>
