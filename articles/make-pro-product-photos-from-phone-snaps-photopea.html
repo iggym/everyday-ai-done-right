@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Make Pro Product Photos From Phone Snaps — 100% Free in Photopea</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbfaf7;--card:#ffffff;--text:#161618;--muted:#6b7280;--line:#eae6de;--coral:#ff6b5a;--coral-2:#ffedea;--accent:#111827;--ok:#16a34a}
+@media(prefers-color-scheme:dark){ :root{--bg:#0f0f10;--card:#1a1a1e;--text:#f5f3ef;--muted:#9aa0aa;--line:#2a2a2e;--coral-2:#2a1816;--accent:#f5f3ef} }
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;line-height:1.65}
+h1,h2,h3{font-family:Manrope,sans-serif;letter-spacing:-0.02em}
+.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--line)}
+.badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;background:var(--line);font-size:12px;font-weight:600}
+.badge.ok{background:#dcfce7;color:#166534}.badge.free{background:#dbeafe;color:#1e40af}
+.wrap{max-width:880px;margin:0 auto;padding:24px}
+.hero{padding:28px;border:1px solid var(--line);background:var(--card);border-radius:20px;margin:20px 0}
+.hero h1{font-size:32px;line-height:1.15;margin:8px 0 12px}
+.meta{color:var(--muted);font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:18px}
+.cost-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+.cost-old{text-decoration:line-through;opacity:.6;transition:.6s}.cost-old.active{color:var(--coral);text-decoration-color:var(--coral)}
+.mono{font-family:"JetBrains Mono",monospace}
+.btn{cursor:pointer;border:1px solid var(--line);background:var(--accent);color:var(--bg);padding:10px 14px;border-radius:10px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--text)}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.step{padding:8px 12px;border-radius:999px;border:1px solid var(--line);cursor:pointer}.step.active{background:var(--text);color:var(--bg)}
+.step-content{display:none}.step-content.active{display:block}
+.callout{border-left:4px solid var(--coral);background:var(--coral-2);padding:14px 16px;border-radius:12px}
+.reveal{border:1px dashed var(--coral);border-radius:12px;padding:12px;cursor:pointer;margin-top:8px}.reveal .hidden{display:none;margin-top:8px}.reveal.open .hidden{display:block}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+pre{background:#0f1115;color:#e5e7eb;padding:14px;border-radius:12px;overflow:auto;position:relative}.copy{position:absolute;top:8px;right:8px}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div style="font-family:Manrope;font-weight:800">Everyday AI, Done Right</div>
+<div style="display:flex;gap:8px;align-items:center">
+<span class="badge ok">✓ Verified 2026-08-19</span>
+<span class="badge free">T0 • No Card</span>
+<button id="themeBtn" class="btn ghost" style="padding:6px 10px">Toggle theme</button>
+</div>
+</div>
+<div class="wrap">
+<div class="hero">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span class="badge">Category: Creative</span><span class="badge">Tool: Photopea by Ivan Kutskir</span><span class="badge">Reading: 3 min</span>
+<span class="badge ok">Free tier: unlimited exports • no account needed • PSD compatible</span>
+</div>
+<h1>Make Pro Product Photos From Phone Snaps — 100% Free in Photopea, No Account, No Watermark</h1>
+<p class="meta">Pitch: Turn messy phone photos into clean e-commerce shots in your browser — Photopea (free, no account required, unlimited 1080p+ exports) gives you Photoshop-grade Remove Background (Select Subject + Refine Edge), AI Upscale via built-in neural filters, and batch export. Limit: browser-based, needs decent RAM, ads in free UI.</p>
+<div class="grid2" style="margin-top:16px">
+<div class="card">
+<h3 style="margin:0 0 8px">Cost Comparison</h3>
+<div class="cost-row"><span>Adobe Photoshop</span><span class="cost-old mono">$23.99/mo</span></div>
+<div class="cost-row"><span>remove.bg Pro</span><span class="cost-old mono">$9/mo</span></div>
+<div class="cost-row"><span>Upscale.media Pro</span><span class="cost-old mono">$15/mo</span></div>
+<div class="cost-row"><strong>Photopea Free</strong><strong class="mono" style="color:var(--ok)">$0 • unlimited</strong></div>
+<button id="animateCosts" class="btn ghost" style="margin-top:10px">Animate savings</button>
+</div>
+<div class="card">
+<h3 style="margin:0 0 8px">Quota Calculator</h3>
+<p class="meta">Photopea free = unlimited exports, no daily cap. How many product shots per week?</p>
+<input id="shots" type="range" min="5" max="200" value="40"><div id="shotsVal" class="mono" style="margin:6px 0">40 shots</div>
+<div id="calcOut" class="mono" style="font-size:13px"></div>
+<p class="meta" style="font-size:12px">Source: <a href="https://www.photopea.com/learn/" target="_blank">photopea.com/learn</a> — Photopea runs locally in browser, no account, no export cap; ads support it. Verified 2026-08-19.</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>What you get</h2>
+<ul>
+<li>One-click Select Subject (AI) + Remove Background with edge refinement</li>
+<li>Neural-style Upscale: Image → Image Size → AI upscaling preserves edges</li>
+<li>Non-destructive shadows, white background, export PSD/PNG/JPG/WebP</li>
+<li>Batch: File → Automate → Batch for 20+ images</li>
+</ul>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Walkthrough — interactive stepper</h2>
+<div class="stepper" id="stepper"></div>
+<div id="steps"></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Copyable action checklist (one-click copy)</h2>
+<div style="position:relative"><pre id="p1"><code>PHOTOPEA PRO PRODUCT PHOTO — 4 MIN FLOW
+1. Open photopea.com → File → Open → phone.jpg
+2. Select → Select Subject (AI). Wait 3s.
+3. Select and Mask → Feather 0.5, Shift Edge -10%, Refine hair.
+4. Layer → New → Layer via Copy (Ctrl+J) → Delete original background layer
+5. File → New → 2000x2000 white background → drag subject layer in
+6. Layer → Layer Style → Drop Shadow: Opacity 18%, Distance 30, Size 40
+7. Image → Image Size → 2000px width → check "AI upscaling" if small
+8. File → Export As → PNG or JPG Quality 90 → Save</code></pre><button class="btn copy" data-copy="p1">Copy</button></div>
+<div style="position:relative"><pre id="p2"><code>BATCH WHITE-BACKGROUND PROMPT FOR 20 IMAGES
+- Record Action: Window → Actions → New Action "WhiteBG"
+- Perform steps 2-6 once, then Stop Recording
+- File → Automate → Batch → Source: Folder, Action: WhiteBG, Destination: Folder
+- Result: 20 clean PNGs in <2 min, no account, free</code></pre><button class="btn copy" data-copy="p2">Copy</button></div>
+</div>
+
+<div class="callout" style="margin-top:16px">
+<h3 style="margin:0 0 6px">What Breaks — coral callout</h3>
+<ul style="margin:0">
+<li>Browser RAM limit: >50MP RAW files can crash tab — downscale first to 4000px long edge.</li>
+<li>Ads in UI: free tier shows small ad panel — does not affect export, can be dismissed.</li>
+<li>AI Select Subject struggles with translucent objects (glass, lace) — use Magic Wand + Refine Edge manually.</li>
+<li>No cloud save — save PSD to device, or you lose work on refresh.</li>
+<li>AI upscaling is not generative — it sharpens, doesn't invent detail. For true generative fill, need Photopea Premium ($3.33/mo) — not required for this workflow.</li>
+</ul>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Three Things to Try Now — click to reveal</h3>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>1. Etsy listing in 5 minutes</strong><div class="hidden">Shoot item on kitchen table, run flow, export 2000x2000 white background PNG — meets Etsy/Amazon main image spec, no watermark.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>2. Instagram carousel with consistent shadow</strong><div class="hidden">Batch 6 shots with same Drop Shadow preset → upload as carousel. Looks studio-lit, all phone-shot.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>3. Upscale old supplier photos</strong><div class="hidden">Supplier sent 800px JPG? Open → Image Size → 3x with AI → export — now print-ready without buying upscaler subscription.</div></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Share</h3>
+<div class="share">
+<button class="btn ghost" onclick="navigator.clipboard.writeText(location.href)">Copy link</button>
+<a class="btn ghost" href="https://twitter.com/intent/tweet?text=Make%20pro%20product%20photos%20from%20phone%20snaps%20in%20Photopea%20%E2%80%94%20free%2C%20no%20account%2C%20unlimited%20exports" target="_blank">Post to X</a>
+<a class="btn ghost" href="https://www.linkedin.com/sharing/share-offsite/?url=https://iggym.github.io/everyday-ai-done-right/" target="_blank">LinkedIn</a>
+</div>
+</div>
+</div>
+<script>
+const themeKey='eadr-theme'; const applyTheme=v=>{document.documentElement.dataset.theme=v; document.documentElement.style.colorScheme=v==='dark'?'dark':'light'}; const saved=localStorage.getItem(themeKey); if(saved) applyTheme(saved); else if(window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
+document.getElementById('themeBtn').onclick=()=>{const cur=document.documentElement.dataset.theme==='dark'?'light':'dark'; applyTheme(cur); localStorage.setItem(themeKey,cur);}
+const stepsData=[
+{t:"1. Open Photopea", h:`<p>Go to <a href="https://www.photopea.com" target="_blank">photopea.com</a> — no signup. Drag your phone JPG in. Works offline after first load (PWA).</p>`},
+{t:"2. AI Remove Background", h:`<p>Select → Select Subject. AI auto-detects product. Then Select and Mask → refine hair/fuzzy edges. Output to New Layer with Mask.</p>`},
+{t:"3. Clean background", h:`<p>New file 2000x2000 white. Drag masked layer in, center. Add Layer Style → Drop Shadow for depth. Adjust opacity to 15-20% for natural look.</p>`},
+{t:"4. Upscale & export", h:`<p>Image → Image Size → set long edge 2000-3000px, enable AI. File → Export As → JPG 90% or PNG. No watermark, unlimited free.</p>`},
+{t:"5. Batch 20+", h:`<p>Record Action once, then File → Automate → Batch. Point to folder of phone shots → get folder of clean product PNGs in one run.</p>`}
+];
+const stepperEl=document.getElementById('stepper'); const stepsEl=document.getElementById('steps');
+stepsData.forEach((s,i)=>{const b=document.createElement('div'); b.className='step'+(i===0?' active':''); b.textContent=(i+1)+'. '+s.t; b.onclick=()=>activate(i); stepperEl.appendChild(b); const c=document.createElement('div'); c.className='step-content'+(i===0?' active':''); c.innerHTML=s.h; stepsEl.appendChild(c);});
+function activate(i){[...stepperEl.children].forEach((el,j)=>el.classList.toggle('active',j===i)); [...stepsEl.children].forEach((el,j)=>el.classList.toggle('active',j===i));}
+document.querySelectorAll('[data-copy]').forEach(btn=>{btn.onclick=()=>{const id=btn.dataset.copy; navigator.clipboard.writeText(document.getElementById(id).innerText); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',1200);}});
+document.getElementById('animateCosts').onclick=()=>{document.querySelectorAll('.cost-old').forEach(el=>el.classList.add('active'));};
+const shots=document.getElementById('shots'); const shotsVal=document.getElementById('shotsVal'); const calcOut=document.getElementById('calcOut');
+function calc(){const v=+shots.value; shotsVal.textContent=v+' shots / week'; const mins=v*4; const costSaved=v*0.5; calcOut.innerHTML=`Time in Photopea: ~${mins} min/week (4 min each)<br>Exports: <b>unlimited free</b> — no daily cap<br>Vs Photoshop + remove.bg: save ~$33/mo + $${costSaved.toFixed(0)} in per-image fees`;} shots.oninput=calc; calc();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
