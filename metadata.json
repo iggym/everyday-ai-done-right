@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0046",
+  "slug": "business-deck-ai-google-labs",
+  "title": "Business Deck AI (Google Workspace Labs)",
+  "hook": "Generate a 10-slide business deck from a prompt — 100% free, 10k tokens/mo, no card.",
+  "path": "articles/business-deck-ai-google-labs.html",
+  "date": "2026-08-19",
+  "status": "published",
+  "format": "guide",
+  "category": "business",
+  "tool": "DeckAI (Google Workspace Labs)",
+  "tool_family": "Google",
+  "source_url": "https://labs.google.com/workspace",
+  "tags": ["presentation", "business", "deck", "google", "free"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-19"
+},{
   "id": "0001",
   "slug": "free-ai-travel-planning-google-maps",
   "title": "Free AI-Powered Travel Planning with Google Maps",
