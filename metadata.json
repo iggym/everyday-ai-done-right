@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0055",
+  "slug": "personalized-kids-learning-sheets-free",
+  "title": "Make Personalized Kids' Learning Sheets for Free",
+  "hook": "Paste a sentence of your child's interests—or a photo of their drawing—into Google AI Studio's free Gemini Flash tier and get printable, grade-appropriate worksheets back; no credit card, but capped at about 1,500 requests per day.",
+  "path": "articles/personalized-kids-learning-sheets-free.html",
+  "date": "2026-08-19",
+  "status": "published",
+  "format": "guide",
+  "category": "family",
+  "tool": "Gemini 2.5 Flash (Google AI Studio, free tier)",
+  "tool_family": "Google",
+  "source_url": "https://ai.google.dev/gemini-api/docs/rate-limits",
+  "tags": ["family", "worksheets", "kids-learning", "gemini", "google-ai-studio", "free-tier", "printable", "homeschool"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2026-08-19"
+},{
   "id": "0056",
   "slug": "build-socratic-flashcards-deepseek-r1-free",
   "title": "Build Interactive Socratic Flashcards Free via DeepSeek R1",
