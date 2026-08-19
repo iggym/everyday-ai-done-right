@@ -5,11 +5,775 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Extract Action Items & Decision Logs from Meeting Transcripts for $0 — Everyday AI, Done Right</title>
   <meta name="description" content="Turn messy meeting transcripts into structured action matrices using Groq Cloud's Llama 3.3 70B for free—no subscription or credit card needed.">
+  
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #182238;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-green: #10b981;
+      --accent-green-bg: rgba(16, 185, 129, 0.1);
+      --accent-blue: #38bdf8;
+      --accent-coral: #f43f5e;
+      --accent-coral-bg: rgba(244, 63, 94, 0.1);
+      --border-color: #334155;
+      --code-bg: #090d16;
+      --font-heading: 'Manrope', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-card: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent-green: #059669;
+      --accent-green-bg: rgba(5, 150, 105, 0.1);
+      --accent-blue: #0284c7;
+      --accent-coral: #e11d48;
+      --accent-coral-bg: rgba(225, 29, 72, 0.1);
+      --border-color: #cbd5e1;
+      --code-bg: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Top Navigation */
+    header {
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--bg-secondary);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+    }
+
+    .site-title {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .site-title span {
+      color: var(--accent-green);
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-cat {
+      background-color: var(--accent-green-bg);
+      color: var(--accent-green);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 40px 0 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .verified-tag {
+      color: var(--accent-green);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .pitch-box {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      background-color: var(--bg-secondary);
+      border-left: 4px solid var(--accent-green);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 20px;
+    }
+
+    /* Section Cards */
+    .section-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 28px;
+      margin-top: 32px;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Cost Comparison Widget */
+    .cost-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .cost-item {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .cost-item.winner {
+      border-color: var(--accent-green);
+      background-color: var(--accent-green-bg);
+    }
+
+    .cost-item .tool-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .cost-item .price {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .cost-item.struck .price {
+      text-decoration: line-through;
+      color: var(--accent-coral);
+    }
+
+    .savings-banner {
+      background-color: var(--accent-green-bg);
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    /* Quota Calculator */
+    .calc-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .slider-group {
+      margin-bottom: 20px;
+    }
+
+    .slider-group label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: var(--border-color);
+      border-radius: 3px;
+      outline: none;
+      accent-color: var(--accent-green);
+    }
+
+    .calc-results {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 16px;
+    }
+
+    .calc-stat {
+      text-align: center;
+    }
+
+    .calc-stat .val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent-blue);
+      font-family: var(--font-mono);
+    }
+
+    .calc-stat .lbl {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    /* Stepper Navigation */
+    .stepper {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .step-item {
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-card);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-num {
+      background-color: var(--accent-green);
+      color: #000;
+      font-weight: 800;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .step-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .code-block-container {
+      position: relative;
+      margin-top: 12px;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      overflow-x: auto;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent-green);
+    }
+
+    /* What Breaks Callout */
+    .breaks-box {
+      border: 1px solid var(--accent-coral);
+      background-color: var(--accent-coral-bg);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .breaks-box h3 {
+      color: var(--accent-coral);
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .breaks-list {
+      list-style-type: disc;
+      padding-left: 20px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+
+    .breaks-list li {
+      margin-bottom: 8px;
+    }
+
+    /* Three Things Interactive */
+    .reveal-item {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .reveal-btn {
+      width: 100%;
+      text-align: left;
+      padding: 16px;
+      background-color: var(--bg-card);
+      border: none;
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reveal-content {
+      padding: 16px;
+      background-color: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      display: none;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .reveal-content.open {
+      display: block;
+    }
+
+    /* Share Bar */
+    .share-bar {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      justify-content: center;
+    }
+
+    .share-btn {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .share-btn:hover {
+      border-color: var(--accent-green);
+    }
+
+    /* Try It Now CTA */
+    .cta-box {
+      text-align: center;
+      background-color: var(--bg-card);
+      border: 2px dashed var(--accent-green);
+      border-radius: 12px;
+      padding: 32px;
+      margin-top: 32px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background-color: var(--accent-green);
+      color: #000;
+      font-weight: 800;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 16px;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 1.7rem; }
+      .calc-results { grid-template-columns: 1fr; }
+      .cost-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script><!-- End Cloudflare Web Analytics -->
+
+  <header>
+    <div class="container nav-inner">
+      <a href="https://iggym.github.io/everyday-ai-done-right/" class="site-title">
+        Everyday AI, <span>Done Right</span>
+      </a>
+      <div class="nav-controls">
+        <span class="badge-cat">Business</span>
+        <button class="theme-toggle" id="themeToggle">Light Theme</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <section class="hero">
+      <div class="meta-bar">
+        <span class="verified-tag">✓ Verified August 18, 2026</span>
+        <span>•</span>
+        <span>Guide #5002</span>
+        <span>•</span>
+        <span>Tool: Groq Cloud (Llama 3.3 70B)</span>
+      </div>
+
+      <h1>Extract Action Items & Decision Logs from Business Meeting Transcripts for $0</h1>
+
+      <div class="pitch-box">
+        Paste raw transcripts from any free meeting app into Groq Cloud’s Llama 3.3 70B playground to generate structured action matrices, assigned owners, and decision logs in under 4 seconds—capped at 14,400 free requests daily with no credit card required.
+      </div>
+    </section>
+
+    <!-- Section 1: Cost Comparison Widget -->
+    <section class="section-card">
+      <h2>💸 Paid Subscriptions Replaced</h2>
+      <div class="cost-grid">
+        <div class="cost-item struck">
+          <div class="tool-name">Fireflies.ai Pro</div>
+          <div class="price">$216 / yr</div>
+        </div>
+        <div class="cost-item struck">
+          <div class="tool-name">Otter.ai Business</div>
+          <div class="price">$240 / yr</div>
+        </div>
+        <div class="cost-item struck">
+          <div class="tool-name">Fathom Pro</div>
+          <div class="price">$384 / yr</div>
+        </div>
+        <div class="cost-item winner">
+          <div class="tool-name">Groq Llama 3.3 70B</div>
+          <div class="price">$0 Forever</div>
+        </div>
+      </div>
+      <div class="savings-banner">
+        Guaranteed Savings: $216.00 to $384.00 per year per user
+      </div>
+    </section>
+
+    <!-- Section 2: Interactive Quota Calculator -->
+    <section class="section-card">
+      <h2>📊 Free Tier Quota Calculator</h2>
+      <div class="calc-box">
+        <div class="slider-group">
+          <label>
+            <span>Meetings Transcribed Per Day:</span>
+            <span id="meetingsVal">5 meetings</span>
+          </label>
+          <input type="range" id="meetingsSlider" min="1" max="50" value="5">
+        </div>
+        <div class="slider-group">
+          <label>
+            <span>Avg. Transcript Length (Words):</span>
+            <span id="wordsVal">2,500 words (~30 mins)</span>
+          </label>
+          <input type="range" id="wordsSlider" min="500" max="8000" step="500" value="2500">
+        </div>
+
+        <div class="calc-results">
+          <div class="calc-stat">
+            <div class="val" id="dailyRequestsPct">0.03%</div>
+            <div class="lbl">Daily Request Limit Used</div>
+          </div>
+          <div class="calc-stat">
+            <div class="val" id="tokenUsageStatus">SAFE</div>
+            <div class="lbl">Rate Limit Status (6k TPM)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Interactive Stepper Walkthrough -->
+    <section class="section-card">
+      <h2>🛠️ Step-by-Step Implementation</h2>
+      <div class="stepper">
+        
+        <div class="step-item">
+          <div class="step-header">
+            <div class="step-num">1</div>
+            <div class="step-title">Open Groq Cloud Developer Playground</div>
+          </div>
+          <p>Go to <strong>console.groq.com/playground</strong> and sign in with Google or Email. No credit card required.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-header">
+            <div class="step-num">2</div>
+            <div class="step-title">Configure Model Settings</div>
+          </div>
+          <p>Select model <code>llama-3.3-70b-versatile</code> from the dropdown. Adjust temperature slider down to <code>0.2</code> for high structural accuracy.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-header">
+            <div class="step-num">3</div>
+            <div class="step-title">Paste System Extraction Prompt</div>
+          </div>
+          <p>In the System Instruction box, paste this structured parser prompt:</p>
+          <div class="code-block-container">
+            <button class="copy-btn" onclick="copyPrompt()">Copy System Prompt</button>
+            <pre id="systemPromptText">You are an executive operational assistant. Your job is to extract precise, objective structured information from raw meeting transcripts. 
+Do not summarize general chatter. Extract ONLY:
+1. DECISIONS MADE (Explicit agreements reached)
+2. ACTION ITEMS (Task description, Assigned Owner, Hard Deadline if mentioned, Dependencies)
+3. OPEN QUESTIONS (Unresolved items requiring follow-up)
+Format the output as clean Markdown tables. If information (like a deadline or owner) is not explicitly stated in the text, write "Unassigned" or "Not specified"—do not guess.</pre>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-header">
+            <div class="step-num">4</div>
+            <div class="step-title">Paste Raw Transcript & Submit</div>
+          </div>
+          <p>Paste the raw unformatted transcript from Zoom, Teams, or phone recorder into the user input box and hit <strong>Submit</strong>. Output is generated in 2–4 seconds.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 4: What Breaks (Limitations) -->
+    <section class="section-card">
+      <div class="breaks-box">
+        <h3>⚠️ What Breaks (Exact Limitations)</h3>
+        <ul class="breaks-list">
+          <li><strong>6,000 Tokens/Min Ceiling on 70B Model:</strong> Transcripts over 45 minutes (~4,500 words) exceed single-pass token rates. Solution: Process in two halves or select <code>llama-3.1-8b-instant</code> (100k TPM).</li>
+          <li><strong>Text-Only Input:</strong> Audio file uploading is not built into the playground. You must copy/paste text from captions or pre-transcribe audio.</li>
+          <li><strong>Unredacted Sensitive Data:</strong> Avoid pasting raw credit card numbers or unencrypted user passwords into public playground prompts.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section 5: Three Operational Principles -->
+    <section class="section-card">
+      <h2>💡 Three Rules for Flawless Transcripts</h2>
+      
+      <div class="reveal-item">
+        <button class="reveal-btn" onclick="toggleReveal(this)">
+          <span>1. Keep Temperature Low (0.1 - 0.2)</span>
+          <span>+</span>
+        </button>
+        <div class="reveal-content">
+          Higher temperature causes LLMs to invent deadlines or assume owners based on contextual hints. Keep temperature at 0.2 so missing facts are tagged explicitly as "Unassigned".
+        </div>
+      </div>
+
+      <div class="reveal-item">
+        <button class="reveal-btn" onclick="toggleReveal(this)">
+          <span>2. Chunk Long Transcripts by Agenda Topic</span>
+          <span>+</span>
+        </button>
+        <div class="reveal-content">
+          For hour-long board meetings, feed transcript chunks section by section. This avoids hitting token rate limits while giving higher fidelity for action item assignments.
+        </div>
+      </div>
+
+      <div class="reveal-item">
+        <button class="reveal-btn" onclick="toggleReveal(this)">
+          <span>3. Pair with Free Built-in OS Captions</span>
+          <span>+</span>
+        </button>
+        <div class="reveal-content">
+          Use Windows 11 Live Captions or macOS Live Captions to generate instant, local text transcripts of any WebEX, Google Meet, or phone audio for $0 before running this prompt.
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Box -->
+    <div class="cta-box">
+      <h2>Ready to Automate Your Meeting Notes?</h2>
+      <p>No credit card required. Instant execution with Llama 3.3 70B on Groq.</p>
+      <a href="https://console.groq.com/playground" target="_blank" rel="noopener" class="cta-btn">Open Groq Playground Free →</a>
+    </div>
+
+    <!-- Share Bar -->
+    <div class="share-bar">
+      <button class="share-btn" onclick="shareTwitter()">X / Twitter</button>
+      <button class="share-btn" onclick="shareLinkedIn()">LinkedIn</button>
+      <button class="share-btn" onclick="copyPageLink()">Copy Link</button>
+    </div>
+
+  </main>
+
+  <script>
+    // Theme Switcher Logic
+    const themeToggle = document.getElementById('themeToggle');
+    const currentTheme = localStorage.getItem('eadr-theme') || 'dark';
+
+    if (currentTheme === 'light') {
+      document.body.setAttribute('data-theme', 'light');
+      themeToggle.textContent = 'Dark Theme';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      if (document.body.getAttribute('data-theme') === 'light') {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('eadr-theme', 'dark');
+        themeToggle.textContent = 'Light Theme';
+      } else {
+        document.body.setAttribute('data-theme', 'light');
+        localStorage.setItem('eadr-theme', 'light');
+        themeToggle.textContent = 'Dark Theme';
+      }
+    });
+
+    // Quota Calculator Logic
+    const meetingsSlider = document.getElementById('meetingsSlider');
+    const wordsSlider = document.getElementById('wordsSlider');
+    const meetingsVal = document.getElementById('meetingsVal');
+    const wordsVal = document.getElementById('wordsVal');
+    const dailyRequestsPct = document.getElementById('dailyRequestsPct');
+    const tokenUsageStatus = document.getElementById('tokenUsageStatus');
+
+    function updateCalc() {
+      const meetings = parseInt(meetingsSlider.value);
+      const words = parseInt(wordsSlider.value);
+      
+      meetingsVal.textContent = `${meetings} meeting${meetings > 1 ? 's' : ''}`;
+      wordsVal.textContent = `${words.toLocaleString()} words (~${Math.round(words/80)} mins)`;
+
+      // Daily limit calculation (14,400 requests daily)
+      const pct = ((meetings / 14400) * 100).toFixed(2);
+      dailyRequestsPct.textContent = `${pct}%`;
+
+      // Token Minute Limit check (6,000 TPM limit for 70B)
+      const estimatedTokens = Math.round(words * 1.3);
+      if (estimatedTokens > 5500) {
+        tokenUsageStatus.textContent = 'SPLIT NEEDED';
+        tokenUsageStatus.style.color = 'var(--accent-coral)';
+      } else {
+        tokenUsageStatus.textContent = 'SAFE';
+        tokenUsageStatus.style.color = 'var(--accent-blue)';
+      }
+    }
+
+    meetingsSlider.addEventListener('input', updateCalc);
+    wordsSlider.addEventListener('input', updateCalc);
+    updateCalc();
+
+    // Copy Prompt Functionality
+    function copyPrompt() {
+      const text = document.getElementById('systemPromptText').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy System Prompt', 2000);
+      });
+    }
+
+    // Toggle Reveal Items
+    function toggleReveal(btn) {
+      const content = btn.nextElementSibling;
+      const isOpen = content.classList.contains('open');
+      content.classList.toggle('open');
+      btn.querySelector('span:last-child').textContent = isOpen ? '+' : '–';
+    }
+
+    // Share Functions
+    function shareTwitter() {
+      const text = encodeURIComponent("Stop paying $20/mo for meeting bots. Extract action items from transcripts for $0 with Groq + Llama 3.3 70B:");
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    }
+
+    function shareLinkedIn() {
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+    }
+
+    function copyPageLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert("Guide link copied to clipboard!");
+      });
+    }
+  </script>
 </body>
 </html>

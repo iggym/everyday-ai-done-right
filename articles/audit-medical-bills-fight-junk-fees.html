@@ -30,12 +30,454 @@
       --border: #333333;
       --shadow: 0 4px 24px rgba(0,0,0,0.2);
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 250, 249, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+    [data-theme="dark"] .topbar { background: rgba(20, 20, 20, 0.8); }
+    .topbar a { color: var(--ink); text-decoration: none; font-weight: 600; }
+    .topbar .meta { display: flex; gap: 16px; align-items: center; }
+    
+    .theme-toggle {
+      background: none; border: 1px solid var(--border); border-radius: 50%;
+      width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--ink);
+    }
+
+    /* Container */
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+
+    /* Hero */
+    .hero { margin-bottom: 48px; }
+    .badges { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 4px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge.t0 { border-color: var(--green); color: var(--green); }
+    h1 {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .pitch { font-size: 1.2rem; color: var(--ink); opacity: 0.9; margin-bottom: 32px; }
+
+    /* Cost Widget */
+    .cost-widget {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .cost-widget p { font-size: 0.9rem; margin-bottom: 12px; font-family: var(--font-mono); }
+    .cost-reveal { font-family: var(--font-display); font-size: 2rem; font-weight: 800; }
+    .cost-strike { text-decoration: line-through; color: var(--coral); opacity: 0.7; margin-right: 16px; }
+    .cost-zero { color: var(--green); animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Content Sections */
+    section { margin-bottom: 48px; }
+    h2 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+    p { margin-bottom: 16px; }
+
+    /* Stepper */
+    .stepper-nav { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    .step-btn {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 50%;
+      width: 40px; height: 40px; font-family: var(--font-mono); font-weight: 600; cursor: pointer;
+      transition: all 0.2s; color: var(--ink);
+    }
+    .step-btn.active { background: var(--green); color: white; border-color: var(--green); }
+    .step-panel {
+      display: none;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .step-panel.active {
+      display: block;
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .step-panel h3 { font-family: var(--font-display); margin-bottom: 12px; }
+    
+    /* Copy Button */
+    .copy-btn {
+      background: var(--ink); color: var(--paper); border: none; border-radius: 6px;
+      padding: 4px 12px; font-family: var(--font-mono); font-size: 0.8rem; cursor: pointer;
+      margin-left: 8px; transition: opacity 0.2s;
+    }
+    .copy-btn.copied { background: var(--green); }
+
+    /* Callouts */
+    .callout-breaks {
+      background: rgba(255, 107, 74, 0.05);
+      border-left: 4px solid var(--coral);
+      padding: 24px;
+      border-radius: 0 16px 16px 0;
+      margin: 32px 0;
+    }
+    [data-theme="dark"] .callout-breaks { background: rgba(255, 128, 100, 0.1); }
+    .callout-breaks h3 { color: var(--coral); margin-bottom: 12px; font-family: var(--font-display); }
+
+    /* Three Things */
+    .three-things-item {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      background: var(--bg-card);
+      transition: border-color 0.2s;
+    }
+    .three-things-item:hover { border-color: var(--green); }
+    .three-things-item h4 { font-family: var(--font-display); display: flex; justify-content: space-between; align-items: center; }
+    .three-things-item h4::after { content: '+'; font-size: 1.5rem; font-weight: 300; transition: transform 0.3s; }
+    .three-things-item.unlocked h4::after { transform: rotate(45deg); }
+    .hidden-text {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.5s ease, opacity 0.5s ease;
+      opacity: 0;
+      font-size: 0.95rem;
+    }
+    .three-things-item.unlocked .hidden-text {
+      max-height: 300px;
+      margin-top: 16px;
+      opacity: 1;
+    }
+
+    /* Quota Widget */
+    .quota-widget {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 24px; margin-top: 24px; text-align: center; box-shadow: var(--shadow);
+    }
+    .quota-buttons { display: flex; gap: 12px; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
+    .quota-btn {
+      background: transparent; border: 1px solid var(--ink); color: var(--ink);
+      padding: 8px 16px; border-radius: 99px; font-family: var(--font-mono); cursor: pointer;
+    }
+    .quota-result { font-weight: 600; min-height: 48px; margin-bottom: 12px; transition: color 0.3s; }
+    .quota-source { font-size: 0.75rem; font-family: var(--font-mono); opacity: 0.6; }
+
+    /* Share Bar */
+    .share-bar { display: flex; gap: 16px; margin: 24px 0; justify-content: center; flex-wrap: wrap; opacity: 0; transform: translateY(10px); animation: slideUp 0.6s ease forwards; animation-delay: 0.3s; }
+    .share-bar a, .share-bar button {
+      color: var(--ink); text-decoration: none; background: none; border: 1px solid var(--border);
+      width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; cursor: pointer; transition: all 0.2s;
+    }
+    .share-bar a:hover, .share-bar button:hover { border-color: var(--green); color: var(--green); }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animations */
+    .animate-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .animate-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 80px; padding: 40px 24px; border-top: 1px solid var(--border);
+      text-align: center; font-size: 0.85rem; font-family: var(--font-mono);
+    }
+    footer a { color: var(--green); text-decoration: none; }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .cost-zero, .step-panel, .hidden-text, .three-things-item h4::after, .animate-in, .share-bar {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        max-height: none !important;
+      }
+      .step-panel { display: none; }
+      .step-panel.active { display: block; opacity: 1; transform: none; }
+      .hidden-text { max-height: 0; }
+      .three-things-item.unlocked .hidden-text { max-height: 300px; }
+      .share-bar { opacity: 1; transform: none; }
+    }
   </style>
 </head>
 <body>
-<!-- Cloudflare Web Analytics -->
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
-<!-- End Cloudflare Web Analytics -->
 
+  <header class="topbar">
+    <a href="https://iggym.github.io/everyday-ai-done-right/">← everyday-ai-done-right</a>
+    <div class="meta">
+      <span>Civic & Legal</span>
+      <span>~5 min read</span>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">☀️</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero animate-in">
+      <div class="badges">
+        <span class="badge">DeepSeek Web (R1/V3)</span>
+        <span class="badge t0">✓ Verified 2026-07-10</span>
+        <span class="badge">Tier: T0 (No Card)</span>
+      </div>
+      <h1>Audit Your Medical Bills and Fight Junk Fees</h1>
+      <p class="pitch">DeepSeek's web chat is completely free, requires no credit card, and its massive document parser can cross-reference your hospital bill against your insurance Explanation of Benefits (EOB) to find hidden billing errors that cost you thousands.</p>
+      
+      <div class="share-bar" id="share-pitch">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <section class="cost-widget animate-in">
+      <p>Replaces a Medical Billing Advocate</p>
+      <div class="cost-reveal">
+        <span class="cost-strike">$300/hr</span>
+        <span class="cost-zero">$0</span>
+      </div>
+    </section>
+
+    <section class="animate-in">
+      <h2>The Walkthrough</h2>
+      <div class="stepper-nav">
+        <button class="step-btn active" data-step="1">1</button>
+        <button class="step-btn" data-step="2">2</button>
+        <button class="step-btn" data-step="3">3</button>
+        <button class="step-btn" data-step="4">4</button>
+        <button class="step-btn" data-step="5">5</button>
+      </div>
+
+      <div class="stepper-content">
+        <div class="step-panel active" data-step="1">
+          <h3>Demand the Real Bill</h3>
+          <p>Call the hospital billing department. Do not accept the "summary" bill. You have a legal right to an <strong>Itemized Statement with CPT/HCPCS codes</strong>. Request this as a PDF.</p>
+          <p style="background: var(--paper); padding: 16px; border-radius: 8px; border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.85rem; margin-top: 12px;">
+            <span id="prompt-text-1">"I am requesting a complete Itemized Statement including all CPT codes and revenue codes for my visit on [Date]. Please email it as a PDF."</span>
+            <button class="copy-btn copy-prompt" data-target="prompt-text-1" style="margin-top: 12px; display: block;">Copy</button>
+          </p>
+        </div>
+        <div class="step-panel" data-step="2">
+          <h3>The OCR Pre-Flight Check</h3>
+          <p>Open the PDF on your computer. Try to highlight the text. If you <em>cannot</em> highlight the numbers (it acts like a single image), the AI will hallucinate the math. You must first run it through your phone's built-in Live Text (iOS) or Microsoft Lens (Android) to convert it to a real, selectable PDF.</p>
+        </div>
+        <div class="step-panel" data-step="3">
+          <h3>Upload to DeepSeek</h3>
+          <p>Go to <strong>chat.deepseek.com</strong> (create a free account with an email/phone). Click the attachment icon and upload both the <strong>Itemized Statement</strong> and your <strong>Insurance EOB</strong>.</p>
+        </div>
+        <div class="step-panel" data-step="4">
+          <h3>Deploy the Auditor Prompt</h3>
+          <p>Paste this exact instruction to force the AI to look for upcoding, unbundling, and duplicate dates:</p>
+          <p style="background: var(--paper); padding: 16px; border-radius: 8px; border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.85rem; margin-top: 12px;">
+            <span id="prompt-text-2">"Act as a medical billing auditor. I have uploaded my EOB and the hospital's Itemized Statement. 1. Cross-reference the CPT codes. 2. Identify unbundling (billing components separately that should be bundled). 3. Identify duplicate dates or mismatched charges between the EOB and the bill. 4. Draft a polite, firm dispute letter to the billing department citing the exact discrepancies."</span>
+            <button class="copy-btn copy-prompt" data-target="prompt-text-2" style="margin-top: 12px; display: block;">Copy</button>
+          </p>
+        </div>
+        <div class="step-panel" data-step="5">
+          <h3>Deploy the Charity Care Shield</h3>
+          <p>If the bill is still too high, ask the AI to invoke federal law to pause collections:</p>
+          <p style="background: var(--paper); padding: 16px; border-radius: 8px; border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.85rem; margin-top: 12px;">
+            <span id="prompt-text-3">"Draft a formal request to the hospital's billing department asking for their Financial Assistance Policy (FAP) application and plain-language summary, as required by IRS Section 501(r) for nonprofit hospitals. State that I will pause payment until I receive this."</span>
+            <button class="copy-btn copy-prompt" data-target="prompt-text-3" style="margin-top: 12px; display: block;">Copy</button>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="callout-breaks animate-in">
+      <h3>⚠️ What Breaks</h3>
+      <p><strong>This is not legal or medical advice; it is a math and logic check.</strong> DeepSeek does not have a hard daily message limit, but during peak US evening hours (6 PM - 9 PM EST), you may hit a "Server Busy" soft limit. If this happens, wait 10 minutes and retry. The biggest failure mode is <strong>OCR errors</strong>: if you upload a scanned image PDF without converting it to selectable text first, the AI will confidently invent wrong prices. Always verify the PDF text is highlightable before uploading.</p>
+    </section>
+
+    <section class="animate-in">
+      <h2>Three Things to Know</h2>
+      
+      <div class="three-things-item">
+        <h4>The "Itemized Statement" Legal Right</h4>
+        <div class="hidden-text">Hospitals hide junk fees in summary bills. You have a legal right to demand a line-by-line bill with CPT codes. Just asking for this often causes the billing department to quietly drop "facility fees" before the AI even sees the document.</div>
+      </div>
+      
+      <div class="three-things-item">
+        <h4>The OCR Pre-Flight Check</h4>
+        <div class="hidden-text">AI models cannot "see" math inside a flat JPEG. If you cannot highlight the text with your mouse, the AI is just guessing the pixels. Use your phone's camera to scan it into a real PDF before uploading.</div>
+      </div>
+      
+      <div class="three-things-item">
+        <h4>The 501(r) Charity Care Lever</h4>
+        <div class="hidden-text">Under the ACA, nonprofit hospitals are legally required to forgive debt for low/middle-income patients (often up to 400% of the poverty line). They will not offer it to you unless you formally cite IRS Section 501(r) and ask for the FAP application.</div>
+      </div>
+
+      <div class="share-bar" id="share-three"></div>
+    </section>
+
+    <section class="animate-in">
+      <h2>Try It Now & Quota Check</h2>
+      <p>Find an old medical bill, locate the 800-number for the billing department, and practice saying: "I need the itemized statement with CPT codes."</p>
+      
+      <div class="quota-widget">
+        <p>How many bills do you need to audit today?</p>
+        <div class="quota-buttons">
+          <button class="quota-btn" data-usage="1">1 Bill</button>
+          <button class="quota-btn" data-usage="5">A Stack of 5</button>
+          <button class="quota-btn" data-usage="20">A Year of Debt</button>
+        </div>
+        <div class="quota-result"></div>
+        <p class="quota-source">Quota source: DeepSeek Web (verified 2026-07-10)</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Free-tier terms verified 2026-07-10 against <a href="https://chat.deepseek.com/" target="_blank">DeepSeek Web Chat</a>.</p>
+    <p>Ladder Tier: T0 (Permanent, no card, no install).</p>
+    <p style="margin-top: 16px;"><a href="https://iggym.github.io/everyday-ai-done-right/">← Home</a> | <a href="https://iggym.github.io/everyday-ai-done-right/">Browse More Guides</a></p>
+  </footer>
+
+  <script>
+    // Theme Toggle
+    const toggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('eadr-theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      toggle.innerText = savedTheme === 'dark' ? '☀️' : '🌙';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      toggle.innerText = '☀️';
+    } else {
+      toggle.innerText = '🌙';
+    }
+    
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('eadr-theme', next);
+      toggle.innerText = next === 'dark' ? '☀️' : '🌙';
+    });
+
+    // Intersection Observer for Animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+
+    // Stepper
+    document.querySelectorAll('.step-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const step = btn.getAttribute('data-step');
+        document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelector(`.step-panel[data-step="${step}"]`).classList.add('active');
+      });
+    });
+
+    // Copy Buttons
+    document.querySelectorAll('.copy-prompt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const text = document.getElementById(targetId).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          const original = btn.innerText;
+          btn.innerText = 'Copied';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.innerText = original;
+            btn.classList.remove('copied');
+          }, 1500);
+        });
+      });
+    });
+
+    // Three Things Reveal
+    document.querySelectorAll('.three-things-item').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('unlocked');
+      });
+    });
+
+    // Quota Checker
+    document.querySelectorAll('.quota-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const bills = btn.getAttribute('data-usage');
+        const result = document.querySelector('.quota-result');
+        result.innerText = `DeepSeek has no hard daily message limit. You can audit ${bills} bill(s) today. However, if you hit a "Server Busy" error during peak evening hours, simply wait 10 minutes and retry.`;
+        result.style.color = 'var(--green)';
+      });
+    });
+
+    // Share Links
+    const url = encodeURIComponent(window.location.href);
+    const pitchText = encodeURIComponent("DeepSeek's web chat is completely free and can cross-reference your hospital bill against your insurance EOB to find hidden billing errors that cost you thousands. (Tier: T0)");
+    const threeText = encodeURIComponent("Nonprofit hospitals are legally required to forgive debt for low/middle-income patients under IRS Section 501(r), but they won't offer it unless you ask for the FAP.");
+
+    const shareHTML = (text) => `
+      <a href="https://twitter.com/intent/tweet?text=${text}&url=${url}" target="_blank" title="X">𝕏</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url=${url}" target="_blank" title="LinkedIn">in</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${url}" target="_blank" title="Facebook">f</a>
+      <a href="https://wa.me/?text=${text}%20${url}" target="_blank" title="WhatsApp">w</a>
+      <a href="https://www.reddit.com/submit?title=${text}&url=${url}" target="_blank" title="Reddit">r</a>
+      <a href="mailto:?subject=${text}&body=${url}" title="Email">@</a>
+      <button class="share-copy" title="Copy Link">🔗</button>
+    `;
+
+    document.getElementById('share-pitch').innerHTML = shareHTML(pitchText);
+    document.getElementById('share-three').innerHTML = shareHTML(threeText);
+
+    document.querySelectorAll('.share-copy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          const original = btn.innerText;
+          btn.innerText = '✓';
+          setTimeout(() => btn.innerText = original, 1500);
+        });
+      });
+    });
+  </script>
 </body>
 </html>

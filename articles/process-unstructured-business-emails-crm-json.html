@@ -1,14 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Process Unstructured Business Emails into CRM JSON | Everyday AI Done Right</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Process Unstructured Business Emails into Clean CRM JSON for Free — Everyday AI, Done Right</title>
+  <meta name="description" content="Convert incoming client inquiry emails into structured JSON data ready for your database or CRM using Cloudflare Workers AI free tier—no credit card required.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --heading: #f0f6fc;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.15);
+      --coral: #fb7185;
+      --green: #4ade80;
+      --code-bg: #0b0e14;
+      --font-heading: 'Manrope', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text: #334155;
+      --heading: #0f172a;
+      --accent: #0284c7;
+      --accent-glow: rgba(2, 132, 199, 0.1);
+      --coral: #e11d48;
+      --green: #16a34a;
+      --code-bg: #f1f5f9;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    .top-bar {
+      border-bottom: 1px solid var(--border);
+      background: var(--card-bg);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      color: var(--heading);
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+    .brand span { color: var(--accent); }
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .badge-tier { background: rgba(74, 222, 128, 0.15); color: var(--green); border: 1px solid var(--green); }
+    .badge-cat { background: var(--accent-glow); color: var(--accent); border: 1px solid var(--accent); }
+
+    h1 {
+      font-family: var(--font-heading);
+      color: var(--heading);
+      font-size: 2.2rem;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .pitch-lead {
+      font-size: 1.15rem;
+      color: var(--heading);
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    /* Savings Widget */
+    .savings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .cost-box {
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .cost-box.old { text-decoration: line-through; opacity: 0.7; }
+    .cost-box.new { border-color: var(--green); background: rgba(74, 222, 128, 0.05); }
+    .cost-val { font-size: 1.5rem; font-weight: 700; color: var(--heading); }
+
+    /* Interactive Calculator */
+    .calc-slider {
+      width: 100%;
+      margin: 16px 0;
+    }
+    .calc-result {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* Stepper Walkthrough */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .step-item {
+      display: flex;
+      gap: 16px;
+    }
+    .step-num {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .step-content { flex-grow: 1; }
+    .step-content h3 { color: var(--heading); margin-bottom: 8px; }
+
+    .code-wrapper {
+      position: relative;
+      margin: 12px 0;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      overflow-x: auto;
+      color: var(--text);
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* What Breaks Box */
+    .breaks-card {
+      border-left: 4px solid var(--coral);
+      background: rgba(251, 113, 133, 0.05);
+    }
+    .breaks-card h2 { color: var(--coral); font-size: 1.2rem; margin-bottom: 12px; }
+
+    /* Reveal Section */
+    .reveal-item {
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      cursor: pointer;
+    }
+    .reveal-item:last-child { border-bottom: none; }
+    .reveal-header { display: flex; justify-content: space-between; font-weight: 600; color: var(--heading); }
+    .reveal-body { display: none; padding-top: 8px; font-size: 0.9rem; }
+
+    /* Share Bar */
+    .share-bar {
+      display: flex;
+      gap: 12px;
+      margin-top: 40px;
+    }
+    .share-btn {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--heading);
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .savings-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 1.75rem; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script><!-- End Cloudflare Web Analytics -->
+
+  <div class="top-bar">
+    <a href="https://iggym.github.io/everyday-ai-done-right/" class="brand">Everyday AI, <span>Done Right</span></a>
+    <button class="theme-toggle" id="themeToggle">Toggle Theme</button>
+  </div>
+
+  <div class="container">
+    <div class="badge-row">
+      <span class="badge badge-tier">T0: Permanent Free (No Card)</span>
+      <span class="badge badge-cat">Business</span>
+    </div>
+
+    <h1>Process Unstructured Business Emails into Clean CRM JSON for Free</h1>
+
+    <p class="pitch-lead">Convert incoming client inquiry emails into structured JSON data ready for your database or CRM using Cloudflare Workers AI's free serverless playground—up to 10,000 free neurons (~150 daily executions) with no credit card required.</p>
+
+    <!-- Savings Widget -->
+    <div class="card">
+      <h2 style="color: var(--heading); font-size: 1.1rem;">Replaced Costs</h2>
+      <div class="savings-grid">
+        <div class="cost-box old">
+          <div style="font-size: 0.8rem;">Zapier/SaaS Workflows</div>
+          <div class="cost-val">$20–$50/mo</div>
+        </div>
+        <div class="cost-box new">
+          <div style="font-size: 0.8rem;">Cloudflare Workers AI</div>
+          <div class="cost-val">$0/mo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Quota Calculator -->
+    <div class="card">
+      <h2 style="color: var(--heading); font-size: 1.1rem; margin-bottom: 8px;">Interactive Quota Calculator</h2>
+      <label style="font-size: 0.85rem;" for="emailLength">Average Email Length (words): <span id="wordCountLabel">300</span></label>
+      <input type="range" id="emailLength" class="calc-slider" min="100" max="2000" step="50" value="300">
+      <div class="calc-result" id="calcOutput">Estimated Daily Capacity: ~150 processed emails / day</div>
+    </div>
+
+    <!-- Walkthrough -->
+    <h2 style="color: var(--heading); margin-bottom: 20px;">Step-by-Step Walkthrough</h2>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Open the Workers AI Playground</h3>
+          <p>Navigate to <code>ai.cloudflare.com</code> and log in with your Cloudflare account. No credit card is required to register or use the playground.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Select Open-Weights Llama Model</h3>
+          <p>Select <code>@cf/meta/llama-3-8b-instruct</code> from the model picker. This fast open-weights model executes structuring tasks in under a second.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Apply System Extraction Prompt</h3>
+          <p>Paste the system prompt below into the playground configuration box:</p>
+          <div class="code-wrapper">
+            <button class="copy-btn" onclick="copyPrompt()">Copy Prompt</button>
+            <pre id="promptCode">SYSTEM PROMPT:
+You are an automated Business Operations Parsing Engine.
+Your task is to take unformatted, messy client inquiry emails and extract specific operational data fields.
+Always output strict, valid JSON without conversational wrapper text, markdown formatting blocks, or preamble.
+
+Required JSON Structure:
+{
+  "client_name": "Full Name or 'Unknown'",
+  "company": "Company Name or 'Not Provided'",
+  "contact_email": "Email Address or 'Not Found'",
+  "service_requested": "Core Service/Product Requested",
+  "urgency_level": "High | Medium | Low",
+  "budget_mentioned": "Numeric value or 'Unspecified'",
+  "action_items": ["Array of concise required follow-up actions"]
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>Execute & Export JSON</h3>
+          <p>Paste your raw customer email into the user prompt field and click <strong>Run</strong>. Copy the JSON result straight into your database or spreadsheet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- What Breaks -->
+    <div class="card breaks-card" style="margin-top: 32px;">
+      <h2>What Breaks (Limitations)</h2>
+      <ul style="padding-left: 20px; font-size: 0.9rem;">
+        <li><strong>10k Daily Neuron Cap:</strong> Resets daily at 00:00 UTC. Unused quota does not roll over.</li>
+        <li><strong>No Native GUI Webhook:</strong> Web UI is manual copy-paste; automated backend pipelines require free API token setup via Cloudflare REST API.</li>
+        <li><strong>Context Floor:</strong> Massive email threads (>8,000 tokens) will be truncated.</li>
+      </ul>
+    </div>
+
+    <!-- Three Things Reveal Section -->
+    <div class="card">
+      <h2 style="color: var(--heading); font-size: 1.1rem; margin-bottom: 12px;">Three Keys to Maximizing Free Edge AI</h2>
+      <div class="reveal-item" onclick="toggleReveal(this)">
+        <div class="reveal-header"><span>1. Use 8B Parameter Models for Data Tasks</span> <span>+</span></div>
+        <div class="reveal-body">Smaller instruct models like Llama 3 8B consume far fewer neurons per request, tripling your effective daily output volume compared to larger models.</div>
+      </div>
+      <div class="reveal-item" onclick="toggleReveal(this)">
+        <div class="reveal-header"><span>2. Enforce Strict JSON Schema</span> <span>+</span></div>
+        <div class="reveal-body">Providing explicit field names and fallback values ('Unspecified') prevents model hallucination and ensures machine-parsable outputs.</div>
+      </div>
+      <div class="reveal-item" onclick="toggleReveal(this)">
+        <div class="reveal-header"><span>3. Zero Credit Card Safety Net</span> <span>+</span></div>
+        <div class="reveal-body">Because Cloudflare's free tier does not request billing info, you can never accidentally trigger surprise API overage charges.</div>
+      </div>
+    </div>
+
+    <!-- Share Bar -->
+    <div class="share-bar">
+      <a href="https://twitter.com/intent/tweet?text=Extract%20CRM%20JSON%20from%20emails%20for%20free%20with%20Cloudflare%20Workers%20AI!%20https://iggym.github.io/everyday-ai-done-right/" target="_blank" class="share-btn">Share on X</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://iggym.github.io/everyday-ai-done-right/" target="_blank" class="share-btn">Share on LinkedIn</a>
+    </div>
+
+  </div>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('eadr-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('eadr-theme', newTheme);
+    });
+
+    // Quota Calculator
+    const slider = document.getElementById('emailLength');
+    const label = document.getElementById('wordCountLabel');
+    const output = document.getElementById('calcOutput');
+
+    slider.addEventListener('input', (e) => {
+      const words = parseInt(e.target.value);
+      label.textContent = words;
+      // Rough estimation formula based on neuron consumption
+      const estimatedRuns = Math.floor(10000 / (50 + (words * 0.15)));
+      output.textContent = `Estimated Daily Capacity: ~${estimatedRuns} processed emails / day`;
+    });
+
+    // Copy Prompt Function
+    function copyPrompt() {
+      const text = document.getElementById('promptCode').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Prompt copied to clipboard!');
+      });
+    }
+
+    // Reveal Accordion
+    function toggleReveal(el) {
+      const body = el.querySelector('.reveal-body');
+      const icon = el.querySelector('.reveal-header span:last-child');
+      if (body.style.display === 'block') {
+        body.style.display = 'none';
+        icon.textContent = '+';
+      } else {
+        body.style.display = 'block';
+        icon.textContent = '-';
+      }
+    }
+  </script>
 </body>
 </html>

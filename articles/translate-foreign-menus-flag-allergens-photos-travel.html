@@ -3,12 +3,1002 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Translate Foreign Menus and Flag Allergens for Free | Everyday AI Done Right</title>
+<title>Translate Foreign Menus and Flag Allergens From Photos While Traveling — Everyday AI, Done Right</title>
+<meta name="description" content="Upload a photo of any foreign-language menu to Google AI Studio's free tier and get a dish-by-dish translation with allergen flags — no credit card, up to 1,500 requests per day.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── CSS Variables & Theme ── */
+:root {
+  --bg: #FAFAF8;
+  --bg-alt: #F2F1ED;
+  --fg: #1A1A18;
+  --fg-muted: #6B6B63;
+  --accent: #0D7C5F;
+  --accent-light: #E6F5EF;
+  --accent-hover: #0A6A50;
+  --coral: #D94F3B;
+  --coral-light: #FDF0ED;
+  --coral-border: #EFA89D;
+  --card: #FFFFFF;
+  --card-border: #E5E4DF;
+  --safe: #0D7C5F;
+  --safe-bg: #E6F5EF;
+  --unsafe: #D94F3B;
+  --unsafe-bg: #FDF0ED;
+  --strike: #B8B8B0;
+  --shadow: 0 2px 12px rgba(26,26,24,0.06);
+  --shadow-lg: 0 8px 32px rgba(26,26,24,0.1);
+  --radius: 10px;
+  --radius-lg: 16px;
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+[data-theme="dark"] {
+  --bg: #141413;
+  --bg-alt: #1E1E1C;
+  --fg: #E8E8E4;
+  --fg-muted: #9A9A90;
+  --accent: #2EC99A;
+  --accent-light: #1A2E28;
+  --accent-hover: #26B086;
+  --coral: #EF6B55;
+  --coral-light: #2A1A17;
+  --coral-border: #5A3028;
+  --card: #1E1E1C;
+  --card-border: #333330;
+  --safe: #2EC99A;
+  --safe-bg: #1A2E28;
+  --unsafe: #EF6B55;
+  --unsafe-bg: #2A1A17;
+  --strike: #555550;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.65;
+  font-size: 16px;
+  transition: background var(--transition), color var(--transition);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Top Bar ── */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--card-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.topbar-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.topbar-brand span { color: var(--accent); }
+
+.topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+.theme-toggle {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--fg-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  transition: all var(--transition);
+}
+
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Main Container ── */
+.container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+
+/* ── Hero ── */
+.hero {
+  padding: 56px 0 40px;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -56px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse at center, var(--accent-light) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+
+.hero-hook {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--fg-muted);
+  max-width: 640px;
+  margin-bottom: 24px;
+}
+
+/* ── Verification Badges ── */
+.badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+.badge-icon { font-size: 13px; }
+.badge-verified { border-color: var(--accent); color: var(--accent); }
+.badge-verified .badge-icon { color: var(--accent); }
+
+/* ── Section Headings ── */
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 48px 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
+  display: inline-block;
+}
+
+.section-heading-coral { border-bottom-color: var(--coral); }
+
+/* ── Cost Comparison Widget ── */
+.cost-widget {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin: 32px 0;
+  box-shadow: var(--shadow);
+}
+
+.cost-widget-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.cost-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.cost-row:last-child { border-bottom: none; }
+
+.cost-label {
+  font-size: 14px;
+  color: var(--fg-muted);
+  max-width: 55%;
+}
+
+.cost-value {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.cost-old {
+  color: var(--strike);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  animation: strikethrough 0.8s ease-out both;
+}
+
+.cost-new {
+  color: var(--accent);
+  font-weight: 700;
+  margin-left: 10px;
+}
+
+@keyframes strikethrough {
+  from { text-decoration-color: transparent; }
+  to { text-decoration-color: var(--strike); }
+}
+
+/* ── Quota Calculator ── */
+.quota-calc {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin: 32px 0;
+  box-shadow: var(--shadow);
+}
+
+.quota-calc-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.quota-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.quota-input-row label {
+  font-size: 14px;
+  color: var(--fg-muted);
+  min-width: 200px;
+}
+
+.quota-input-row input {
+  width: 80px;
+  padding: 6px 10px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--fg);
+  text-align: center;
+  transition: border-color var(--transition);
+}
+
+.quota-input-row input:focus { outline: none; border-color: var(--accent); }
+
+.quota-bar-wrap {
+  height: 12px;
+  background: var(--bg-alt);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.quota-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 6px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  min-width: 2px;
+}
+
+.quota-bar.over { background: var(--coral); }
+
+.quota-result {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ── Stepper Navigation ── */
+.stepper { margin: 32px 0; }
+
+.stepper-nav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.stepper-dot {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+}
+
+.stepper-dot:hover { border-color: var(--accent); color: var(--accent); }
+.stepper-dot.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.stepper-dot.completed { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+
+.stepper-panel {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  display: none;
+  animation: fadeIn 0.35s ease-out;
+}
+
+.stepper-panel.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stepper-panel h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.stepper-panel p, .stepper-panel li {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--fg-muted);
+}
+
+.stepper-panel ul { padding-left: 20px; margin: 8px 0; }
+.stepper-panel li { margin-bottom: 6px; }
+
+.stepper-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition);
+}
+
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary { background: var(--bg-alt); color: var(--fg-muted); border: 1px solid var(--card-border); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Prompt Copy Block ── */
+.prompt-block {
+  background: var(--bg-alt);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 16px 0;
+  position: relative;
+}
+
+.prompt-block pre {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--fg);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex; align-items: center; gap: 4px;
+}
+
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── What Breaks Callout ── */
+.what-breaks {
+  background: var(--coral-light);
+  border: 1px solid var(--coral-border);
+  border-left: 4px solid var(--coral);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin: 32px 0;
+}
+
+.what-breaks-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--coral);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.what-breaks ul { padding-left: 18px; }
+
+.what-breaks li {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--fg-muted);
+  margin-bottom: 10px;
+}
+
+.what-breaks li strong { color: var(--fg); }
+
+/* ── Three Things Reveal ── */
+.three-things { margin: 32px 0; }
+
+.three-things-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.reveal-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: var(--shadow);
+}
+
+.reveal-card:hover { border-color: var(--accent); }
+
+.reveal-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reveal-card-q {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.reveal-card-toggle {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--accent);
+  transition: transform var(--transition);
+}
+
+.reveal-card.open .reveal-card-toggle { transform: rotate(45deg); }
+
+.reveal-card-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--fg-muted);
+  padding-top: 0;
+}
+
+.reveal-card.open .reveal-card-body {
+  max-height: 200px;
+  padding-top: 14px;
+}
+
+/* ── Share Bar ── */
+.share-bar {
+  margin: 48px 0 32px;
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.share-bar-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.share-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.share-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--bg-alt);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex; align-items: center; gap: 6px;
+  text-decoration: none;
+}
+
+.share-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Try It Now CTA ── */
+.cta-block {
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin: 32px 0;
+  text-align: center;
+}
+
+.cta-block p {
+  font-size: 15px;
+  color: var(--fg-muted);
+  margin-bottom: 16px;
+}
+
+.cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background var(--transition);
+  box-shadow: 0 4px 14px rgba(13,124,95,0.25);
+}
+
+.cta-link:hover { background: var(--accent-hover); }
+
+/* ── Footer ── */
+.footer {
+  padding: 32px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--fg-muted);
+  border-top: 1px solid var(--card-border);
+  margin-top: 48px;
+}
+
+.footer a { color: var(--accent); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .topbar { padding: 0 16px; }
+  .container { padding: 0 16px; }
+  .hero { padding: 40px 0 28px; }
+  .quota-input-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .quota-input-row label { min-width: auto; }
+  .cost-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .cost-value { text-align: left; }
+  .stepper-nav { gap: 3px; }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
 </head>
 <body>
-  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script><!-- End Cloudflare Web Analytics -->
+
+<!-- Top Bar -->
+<header class="topbar">
+  <a href="https://iggym.github.io/everyday-ai-done-right/" class="topbar-brand">Everyday AI, <span>Done Right</span></a>
+  <div class="topbar-actions">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light theme">🌗</button>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-category">✈ Travel</div>
+    <h1>Translate Foreign Menus and Flag Allergens From Photos While Traveling</h1>
+    <p class="hero-hook">Upload a photo of any foreign-language menu to Google AI Studio's free tier and get a dish-by-dish translation with allergen flags for your specific dietary restrictions — no credit card, up to 1,500 requests per day.</p>
+    <div class="badges">
+      <span class="badge badge-verified"><span class="badge-icon">✓</span> Verified 2025-07-18</span>
+      <span class="badge badge-verified"><span class="badge-icon">✓</span> T0: Free, No Card</span>
+      <span class="badge"><span class="badge-icon">⚡</span> 1,500 req/day</span>
+      <span class="badge"><span class="badge-icon">🖼️</span> Multimodal (image)</span>
+      <span class="badge"><span class="badge-icon">🌍</span> 50+ languages</span>
+    </div>
+  </section>
+
+  <!-- Cost Comparison Widget -->
+  <section class="cost-widget">
+    <div class="cost-widget-title">💰 Replaced Costs</div>
+    <div class="cost-row">
+      <span class="cost-label">Allergen translation cards (per language)</span>
+      <span class="cost-value"><span class="cost-old">$10–25</span><span class="cost-new">$0</span></span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Dedicated menu translation app subscription</span>
+      <span class="cost-value"><span class="cost-old">$9/mo</span><span class="cost-new">$0</span></span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label">Professional menu translation</span>
+      <span class="cost-value"><span class="cost-old">$20–50</span><span class="cost-new">$0</span></span>
+    </div>
+  </section>
+
+  <!-- Quota Calculator -->
+  <section class="quota-calc">
+    <div class="quota-calc-title">📊 Quota Calculator</div>
+    <div class="quota-input-row">
+      <label for="menuCount">Menus you want to translate today</label>
+      <input type="number" id="menuCount" value="3" min="0" max="1500" step="1">
+    </div>
+    <div class="quota-input-row">
+      <label for="otherUsage">Other AI Studio requests today</label>
+      <input type="number" id="otherUsage" value="0" min="0" max="1500" step="1">
+    </div>
+    <div class="quota-bar-wrap"><div class="quota-bar" id="quotaBar"></div></div>
+    <div class="quota-result">
+      <span id="quotaUsed">3 of 1,500 requests used</span>
+      <span id="quotaRemaining">1,497 remaining</span>
+    </div>
+  </section>
+
+  <!-- Stepper Walkthrough -->
+  <h2 class="section-heading">Step-by-Step Walkthrough</h2>
+
+  <nav class="stepper">
+    <div class="stepper-nav" id="stepperNav"></div>
+
+    <div class="stepper-panel active" data-step="0">
+      <h3>Step 1 — Open Google AI Studio</h3>
+      <p>Go to <a href="https://aistudio.google.com" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;">aistudio.google.com</a>. Sign in with any Google account. No credit card is requested at any point during sign-up or usage of the free tier.</p>
+      <div class="stepper-btns"><button class="btn btn-primary" onclick="goStep(1)">Next →</button></div>
+    </div>
+
+    <div class="stepper-panel" data-step="1">
+      <h3>Step 2 — Select the Model</h3>
+      <p>In the model dropdown on the right sidebar, select <strong>Gemini 2.0 Flash</strong>. This model handles image inputs and is fully available on the free tier with the documented 1,500 RPD quota.</p>
+      <div class="stepper-btns"><button class="btn btn-secondary" onclick="goStep(0)">← Back</button><button class="btn btn-primary" onclick="goStep(2)">Next →</button></div>
+    </div>
+
+    <div class="stepper-panel" data-step="2">
+      <h3>Step 3 — Upload Your Menu Photo</h3>
+      <p>Click the <strong>image upload</strong> button (🖼️) in the prompt area. Upload a clear, well-lit photo of the menu you want translated. Straight-on shots with good lighting produce the most reliable OCR results. Handwritten or decorative-text menus may need a cleaner photo.</p>
+      <div class="stepper-btns"><button class="btn btn-secondary" onclick="goStep(1)">← Back</button><button class="btn btn-primary" onclick="goStep(3)">Next →</button></div>
+    </div>
+
+    <div class="stepper-panel" data-step="3">
+      <h3>Step 4 — Paste the Prompt</h3>
+      <p>Copy the prompt template below and paste it into the prompt field, customizing the bracketed items for your dietary restrictions and the menu's language:</p>
+      <div class="prompt-block">
+        <button class="copy-btn" onclick="copyPrompt(this, 'prompt1')">📋 Copy</button>
+        <pre id="prompt1">I am traveling and have these dietary restrictions: [e.g., peanut allergy, celiac/gluten-free, shellfish allergy, vegetarian].
+
+This is a photo of a menu written in [e.g., Japanese, Thai, French]. For each dish listed:
+
+1. Give the original name in the source language
+2. Provide an English translation of the dish name
+3. Describe what the dish likely contains (ingredients, preparation method)
+4. Flag whether this dish is SAFE or UNSAFE for my dietary restrictions, and explain why
+5. If borderline, explain what to ask the server to confirm
+
+Format your response as a table with columns: Original Name | English Translation | Key Ingredients | Safety Status | Notes
+
+Be conservative: if a dish commonly contains a restricted ingredient in this cuisine even if not explicitly listed, flag it as UNSAFE.</pre>
+      </div>
+      <div class="stepper-btns"><button class="btn btn-secondary" onclick="goStep(2)">← Back</button><button class="btn btn-primary" onclick="goStep(4)">Next →</button></div>
+    </div>
+
+    <div class="stepper-panel" data-step="4">
+      <h3>Step 5 — Read the Structured Table</h3>
+      <p>Gemini returns a table with every dish on the menu. Each row shows the original name, English translation, likely ingredients, a <strong style="color:var(--safe);">SAFE</strong> or <strong style="color:var(--unsafe);">UNSAFE</strong> flag, and notes explaining the reasoning. Scan for the red flags first, then explore your safe options.</p>
+      <div class="stepper-btns"><button class="btn btn-secondary" onclick="goStep(3)">← Back</button><button class="btn btn-primary" onclick="goStep(5)">Next →</button></div>
+    </div>
+
+    <div class="stepper-panel" data-step="5">
+      <h3>Step 6 — Follow Up for Modifications</h3>
+      <p>If dishes are flagged UNSAFE, ask whether simple modifications could make them safe:</p>
+      <div class="prompt-block">
+        <button class="copy-btn" onclick="copyPrompt(this, 'prompt2')">📋 Copy</button>
+        <pre id="prompt2">For the dishes marked UNSAFE, are there any modifications I could request (e.g., "without the sauce", "grilled instead of fried") that might make them safe? List each with the exact phrase to say in [local language] to make that request.</pre>
+      </div>
+      <div class="stepper-btns"><button class="btn btn-secondary" onclick="goStep(4)">← Back</button><button class="btn btn-primary" onclick="goStep(6)">Next →</button></div>
+    </div>
+
+    <div class="stepper-panel" data-step="6">
+      <h3>Step 7 — Save and Reference at the Restaurant</h3>
+      <p>Screenshot the table or copy it to your notes app. Bring it up when ordering so you can point to safe dishes and ask modification questions in the local language if needed.</p>
+      <div class="stepper-btns"><button class="btn btn-secondary" onclick="goStep(5)">← Back</button></div>
+    </div>
+  </nav>
+
+  <!-- What Breaks -->
+  <h2 class="section-heading section-heading-coral">What Breaks</h2>
+  <div class="what-breaks">
+    <div class="what-breaks-title">⚠ Known Limitations</div>
+    <ul>
+      <li><strong>Developer tool, not a consumer app</strong> — you're using a web console with a prompt field, not pointing your phone camera at a menu in real time.</li>
+      <li><strong>Ingredient inference, not kitchen inspection</strong> — the model predicts ingredients from dish names and common recipes. A dish listed as "vegetable stir-fry" may share a wok with peanut oil.</li>
+      <li><strong>OCR degrades on stylized text</strong> — cursive calligraphy, decorative fonts, and low-light or blurry photos reduce accuracy significantly.</li>
+      <li><strong>Regional ingredient ambiguity</strong> — the same word can refer to different ingredients across regions (e.g., "peanut" vs. "groundnut"; "seitan" confusion on some Asian menus).</li>
+      <li><strong>Requires internet</strong> — this will not work offline or in areas with poor connectivity.</li>
+      <li><strong>1,500 daily request cap is shared</strong> across all your Google AI Studio usage that day, not just menu translations.</li>
+      <li><strong>Cross-contamination norms vary by country</strong> — the model may not account for local kitchen practices like shared fryers or shared prep surfaces.</li>
+      <li><strong>Reference information, not medical advice</strong> — for life-threatening allergies, always confirm directly with restaurant staff. Do not rely solely on AI output.</li>
+    </ul>
+  </div>
+
+  <!-- Three Things Reveal -->
+  <h2 class="section-heading">Three Things Worth Knowing</h2>
+  <div class="three-things">
+    <div class="reveal-card" onclick="toggleReveal(this)">
+      <div class="reveal-card-header">
+        <span class="reveal-card-q">Why not just use Google Translate's camera mode?</span>
+        <span class="reveal-card-toggle">+</span>
+      </div>
+      <div class="reveal-card-body">Google Translate gives you literal word-by-word translation but has no concept of your dietary restrictions. It will translate "Pad Thai" as "Pad Thai" without telling you it typically contains peanuts, fish sauce, and gluten. Gemini reasons about ingredients and cross-references them against your specific restrictions.</div>
+    </div>
+    <div class="reveal-card" onclick="toggleReveal(this)">
+      <div class="reveal-card-header">
+        <span class="reveal-card-q">Can I do this on my phone at the restaurant?</span>
+        <span class="reveal-card-toggle">+</span>
+      </div>
+      <div class="reveal-card-body">Google AI Studio works in mobile browsers, but the interface is optimized for desktop. The most practical workflow is to photograph the menu at the restaurant, then run the translation when you're back at your hotel on a laptop. If you need real-time translation at the table, use the result from a previous run you saved to your notes.</div>
+    </div>
+    <div class="reveal-card" onclick="toggleReveal(this)">
+      <div class="reveal-card-header">
+        <span class="reveal-card-q">How accurate is the allergen detection, really?</span>
+        <span class="reveal-card-toggle">+</span>
+      </div>
+      <div class="reveal-card-body">For common dishes in well-documented cuisines, accuracy is high — Gemini correctly identifies that massaman curry contains peanuts, that tempura batter contains wheat, and that tom yum is often shellfish-based. It struggles with fusion dishes, highly regional preparations, and items where the allergen is an implicit cooking medium (e.g., peanut oil used without being listed). Treat SAFE results as "probably safe, but ask" and UNSAFE results as "definitely ask."</div>
+    </div>
+  </div>
+
+  <!-- Try It Now CTA -->
+  <div class="cta-block">
+    <p>Open Google AI Studio, upload a menu photo, and find your safe options before you order.</p>
+    <a href="https://aistudio.google.com" target="_blank" rel="noopener" class="cta-link">Open Google AI Studio →</a>
+  </div>
+
+  <!-- Share Bar -->
+  <div class="share-bar">
+    <div class="share-bar-title">Share this guide</div>
+    <div class="share-buttons" id="shareButtons"></div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>Part of <a href="https://iggym.github.io/everyday-ai-done-right/">Everyday AI, Done Right</a> — verified free workflows, no credit card, no subscription.</p>
+</footer>
+
+<script>
+/* ── Theme Toggle ── */
+(function() {
+  var KEY = 'eadr-theme';
+  var toggle = document.getElementById('themeToggle');
+  var root = document.documentElement;
+
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    toggle.textContent = t === 'dark' ? '☀️' : '🌗';
+  }
+
+  var saved = localStorage.getItem(KEY);
+  if (saved) { applyTheme(saved); }
+  else if (window.matchMedia('(prefers-color-scheme: dark)').matches) { applyTheme('dark'); }
+
+  toggle.addEventListener('click', function() {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem(KEY, next);
+  });
+})();
+
+/* ── Stepper Navigation ── */
+var totalSteps = 7;
+var currentStep = 0;
+var navEl = document.getElementById('stepperNav');
+
+for (var i = 0; i < totalSteps; i++) {
+  var dot = document.createElement('button');
+  dot.className = 'stepper-dot' + (i === 0 ? ' active' : '');
+  dot.textContent = i + 1;
+  dot.setAttribute('aria-label', 'Go to step ' + (i + 1));
+  dot.dataset.step = i;
+  dot.addEventListener('click', function() { goStep(parseInt(this.dataset.step)); });
+  navEl.appendChild(dot);
+}
+
+function goStep(n) {
+  if (n < 0 || n >= totalSteps) return;
+  currentStep = n;
+  var panels = document.querySelectorAll('.stepper-panel');
+  var dots = document.querySelectorAll('.stepper-dot');
+  panels.forEach(function(p, i) {
+    p.classList.toggle('active', i === n);
+  });
+  dots.forEach(function(d, i) {
+    d.classList.remove('active', 'completed');
+    if (i === n) d.classList.add('active');
+    else if (i < n) d.classList.add('completed');
+  });
+}
+
+/* ── Copy Prompt ── */
+function copyPrompt(btn, id) {
+  var text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = '📋 Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+/* ── Quota Calculator ── */
+var menuInput = document.getElementById('menuCount');
+var otherInput = document.getElementById('otherUsage');
+var quotaBar = document.getElementById('quotaBar');
+var quotaUsed = document.getElementById('quotaUsed');
+var quotaRemaining = document.getElementById('quotaRemaining');
+var DAILY_LIMIT = 1500;
+
+function updateQuota() {
+  var menus = Math.max(0, parseInt(menuInput.value) || 0);
+  var other = Math.max(0, parseInt(otherInput.value) || 0);
+  var used = menus + other;
+  var pct = Math.min(100, (used / DAILY_LIMIT) * 100);
+  quotaBar.style.width = pct + '%';
+  quotaBar.classList.toggle('over', used > DAILY_LIMIT);
+  quotaUsed.textContent = used + ' of ' + DAILY_LIMIT + ' requests used';
+  quotaRemaining.textContent = Math.max(0, DAILY_LIMIT - used) + ' remaining';
+  if (used > DAILY_LIMIT) {
+    quotaRemaining.textContent = 'Over limit by ' + (used - DAILY_LIMIT);
+  }
+}
+
+menuInput.addEventListener('input', updateQuota);
+otherInput.addEventListener('input', updateQuota);
+updateQuota();
+
+/* ── Three Things Reveal ── */
+function toggleReveal(card) {
+  card.classList.toggle('open');
+}
+
+/* ── Share Bar ── */
+(function() {
+  var url = 'https://iggym.github.io/everyday-ai-done-right/articles/translate-foreign-menus-flag-allergens-photos-travel.html';
+  var text = 'Upload a foreign menu photo to Google AI Studio\'s free tier and get dish-by-dish translations with allergen flags—no card, 1,500 requests/day.';
+  var container = document.getElementById('shareButtons');
+
+  var services = [
+    { name: 'X / Twitter', icon: '𝕏', link: 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text + ' ' + url) },
+    { name: 'Reddit', icon: '🔗', link: 'https://reddit.com/submit?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(text) },
+    { name: 'LinkedIn', icon: 'in', link: 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url) },
+    { name: 'Email', icon: '✉', link: 'mailto:?subject=' + encodeURIComponent('Translate Foreign Menus and Flag Allergens for Free') + '&body=' + encodeURIComponent(text + '\n\n' + url) },
+    { name: 'Copy Link', icon: '📋', link: null }
+  ];
+
+  services.forEach(function(s) {
+    var btn = document.createElement('a');
+    btn.className = 'share-btn';
+    btn.innerHTML = '<span>' + s.icon + '</span> ' + s.name;
+    if (s.link) {
+      btn.href = s.link;
+      btn.target = '_blank';
+      btn.rel = 'noopener';
+    } else {
+      btn.href = '#';
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        navigator.clipboard.writeText(url).then(function() {
+          btn.innerHTML = '<span>✓</span> Link copied';
+          setTimeout(function() {
+            btn.innerHTML = '<span>' + s.icon + '</span> ' + s.name;
+          }, 2000);
+        });
+      });
+    }
+    container.appendChild(btn);
+  });
+})();
+
+/* ── Scroll reveal for sections ── */
+(function() {
+  var sections = document.querySelectorAll('.cost-widget, .quota-calc, .what-breaks, .cta-block, .three-things, .share-bar');
+  sections.forEach(function(el) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  });
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  sections.forEach(function(el) { observer.observe(el); });
+})();
+</script>
 </body>
 </html>

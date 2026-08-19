@@ -7,8 +7,108 @@
 <meta name="description" content="Clean background noise and room echo from short voice recordings with Adobe Podcast Enhance Speech, free with no card, capped at 30 minutes per file and 60 minutes per day.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FAFAF9;--raised:#fff;--ink:#1C1C1E;--soft:#54545A;--muted:#8A8A8F;--line:rgba(28,28,30,.1);--green:#0F8A5F;--green-soft:rgba(15,138,95,.1);--coral:#FF6B4A;--coral-soft:rgba(255,107,74,.1);--shadow:0 1px 2px rgba(28,28,30,.04),0 8px 24px rgba(28,28,30,.06);--display:'Manrope',sans-serif;--body:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;--radius:16px}
+@media(prefers-color-scheme:dark){:root{--paper:#141414;--raised:#1C1C1E;--ink:#F4F4F3;--soft:#C7C7CB;--muted:#8A8A8F;--line:rgba(244,244,243,.1);--green:#22C58B;--green-soft:rgba(34,197,139,.14);--coral:#FF8064;--coral-soft:rgba(255,128,100,.14);--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35)}}
+html[data-theme=light]{--paper:#FAFAF9;--raised:#fff;--ink:#1C1C1E;--soft:#54545A;--muted:#8A8A8F;--line:rgba(28,28,30,.1);--green:#0F8A5F;--green-soft:rgba(15,138,95,.1);--coral:#FF6B4A;--coral-soft:rgba(255,107,74,.1);--shadow:0 1px 2px rgba(28,28,30,.04),0 8px 24px rgba(28,28,30,.06)}
+html[data-theme=dark]{--paper:#141414;--raised:#1C1C1E;--ink:#F4F4F3;--soft:#C7C7CB;--muted:#8A8A8F;--line:rgba(244,244,243,.1);--green:#22C58B;--green-soft:rgba(34,197,139,.14);--coral:#FF8064;--coral-soft:rgba(255,128,100,.14);--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 var(--body);transition:background .25s,color .25s}a{color:var(--green)}button,input,select{font:inherit}button{cursor:pointer}.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 22px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px)}.mark{font:800 14px var(--display);color:var(--ink);text-decoration:none}.mark:before{content:'';display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--green);margin-right:8px}.topmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.mono,.badge{font:600 11px var(--mono)}.badge{padding:5px 10px;border-radius:20px;background:var(--green-soft);color:var(--green)}.theme{border:1px solid var(--line);background:var(--raised);color:var(--soft);border-radius:20px;padding:7px 12px}.hero,.wrap{max-width:920px;margin:auto;padding-left:22px;padding-right:22px}.hero{padding-top:72px;padding-bottom:34px}.hero h1{font:800 clamp(2.35rem,7vw,4.6rem)/1.02 var(--display);letter-spacing:-.04em;max-width:780px;margin:18px 0}.pitch{font-size:1.14rem;color:var(--soft);max-width:750px}.badges{display:flex;gap:8px;flex-wrap:wrap}.share{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:22px 0}.share button,.share a,.pillbtn{border:1px solid var(--line);background:var(--raised);color:var(--soft);text-decoration:none;border-radius:22px;padding:8px 11px;font-size:12px;transition:transform .2s,border-color .2s,color .2s}.share button:hover,.share a:hover,.pillbtn:hover{transform:translateY(-2px);border-color:var(--green);color:var(--ink)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:24px 0}.card{background:var(--raised);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}h2,h3{font-family:var(--display);line-height:1.25}h2{font-size:1.55rem;margin:48px 0 16px}h3{font-size:1.08rem}.label{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.cost-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:15px 0}.cost-old{font:500 1.15rem var(--mono);color:var(--muted);text-decoration:line-through;text-decoration-color:var(--coral);text-decoration-thickness:2px;opacity:0;animation:strike .6s .3s forwards}.cost-new{font:800 1.7rem var(--display);color:var(--green);opacity:0;animation:pop .5s .9s cubic-bezier(.34,1.56,.64,1) forwards}.saving{padding-top:14px;border-top:1px dashed var(--line);color:var(--soft)}@keyframes strike{to{opacity:1;transform:translateX(0)}from{opacity:0;transform:translateX(-6px)}}@keyframes pop{to{opacity:1;transform:scale(1)}from{opacity:0;transform:scale(.85)}}label{display:block;color:var(--soft);font-size:14px;margin:12px 0 6px}input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink)}.presets{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.result{margin-top:14px;padding:13px;border-radius:11px;background:var(--green-soft);color:var(--ink);transition:opacity .2s,transform .2s}.result.over{background:var(--coral-soft)}.source{font-size:11px;color:var(--muted);overflow-wrap:anywhere}.steps{padding:0;overflow:hidden}.stepnav{display:flex;gap:7px;overflow:auto;padding:18px;border-bottom:1px solid var(--line)}.stepdot{min-width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--soft);font:600 12px var(--mono)}.stepdot.active{background:var(--green);color:#fff;border-color:var(--green);transform:scale(1.06)}.stepbody{padding:26px;min-height:290px}.panel{display:none;animation:panel .3s ease}.panel.active{display:block}@keyframes panel{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}.stepfoot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:16px 22px}.template{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:48px 16px 16px;white-space:pre-wrap;font:13px/1.55 var(--mono)}.copy{position:absolute;right:10px;top:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink);border-radius:8px;padding:6px 10px}.breaks{border:1px solid var(--coral);border-left:6px solid var(--coral);background:var(--coral-soft);border-radius:var(--radius);padding:24px;margin-top:36px}.breaks h2{margin:0 0 12px}.things{display:grid;gap:10px}.thing{width:100%;text-align:left;border:1px solid var(--line);border-radius:13px;background:var(--raised);color:var(--ink);padding:17px}.thing .answer{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .35s,opacity .35s}.thing.open .answer{grid-template-rows:1fr;opacity:1}.answer>span{overflow:hidden;color:var(--soft);padding-top:0}.thing.open .answer>span{padding-top:10px}.trace{font:600 10px var(--mono);color:var(--green)}footer{margin-top:70px;padding:36px 22px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:13px}footer p{max-width:760px;margin:8px auto}.toast{position:fixed;right:18px;bottom:18px;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:9px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:none}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.topmeta .category{display:none}.hero{padding-top:45px}.card{padding:19px}.stepbody{padding:20px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-delay:0s!important;transition-duration:.001ms!important;scroll-behavior:auto!important}.cost-old,.cost-new{opacity:1}.panel{animation:none}.share button:hover,.share a:hover{transform:none}}
+</style>
 </head>
 <body>
-  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script><!-- End Cloudflare Web Analytics -->
+<nav class="topbar" aria-label="Guide navigation">
+<a class="mark" href="https://iggym.github.io/everyday-ai-done-right/">everyday-ai-done-right</a>
+<div class="topmeta"><span class="badge category">Creative projects</span><span class="mono">7 min read</span><button class="theme" id="themeToggle" aria-label="Toggle dark/light mode"><span id="themeIcon">◐</span> <span id="themeLabel">Auto</span></button></div>
+</nav>
+<header class="hero">
+<div class="badges"><span class="badge">Adobe Podcast Enhance Speech</span><span class="badge">✓ verified August 17, 2026</span></div>
+<h1>Clean Noisy Voice Recordings for Free</h1>
+<p class="pitch">Remove steady background noise and room echo from spoken-word audio in a browser. Adobe Podcast’s free-forever plan needs a free account but no purchase or card; it accepts audio only, one file at a time, up to 30 minutes and 500 MB per file, with 60 minutes total each day.</p>
+<div class="share" data-share="Clean a noisy voice recording for $0 with Adobe Podcast: no card, but audio only, 30 minutes per file and 60 minutes per day."></div>
+</header>
+<main class="wrap">
+<section class="grid" aria-label="Cost and quota tools">
+<div class="card cost-widget">
+<div class="label">What this replaces</div>
+<label for="alt">Paid alternative</label>
+<select id="alt"><option value="9.99">Adobe Podcast Premium — $9.99/mo</option><option value="16">Descript Hobbyist — $16/mo, annual billing</option></select>
+<div class="cost-row"><span id="oldLabel">Adobe Podcast Premium</span><span class="cost-old" id="oldCost">$9.99/mo</span></div>
+<div class="cost-row"><span>this workflow</span><span class="cost-new">$0</span></div>
+<label for="months">Months avoided</label><input id="months" type="number" min="1" max="120" value="12">
+<div class="saving" id="saving">12-month cash difference: $119.88</div>
+<p class="source">Prices: <a href="https://podcast.adobe.com/en/plans">Adobe</a>; <a href="https://www.descript.com/pricing">Descript</a>. Taxes and regional pricing can differ.</p>
+</div>
+<div class="card quota">
+<div class="label">Will I hit the free limit?</div>
+<label for="minutes">Minutes of audio you will process today</label>
+<input id="minutes" type="number" min="0" max="600" value="20">
+<div class="presets"><button class="pillbtn" data-min="5">5 min</button><button class="pillbtn" data-min="15">15</button><button class="pillbtn" data-min="30">30</button><button class="pillbtn" data-min="60">60</button></div>
+<div class="result" id="quotaResult" aria-live="polite"></div>
+<p class="source">Also keep every individual file at 30 minutes or less and 500 MB or less. The allowance resets daily; Adobe does not publish the reset hour or timezone. Quota source: <a href="https://podcast.adobe.com/en/plans">official plans</a> (verified August 17, 2026).</p>
+</div>
+</section>
+<section>
+<h2>What this replaces</h2>
+<p>For this narrow cleanup job, the free plan can replace Adobe Podcast Premium at $9.99 per month or Descript Hobbyist at $16 per person per month when billed annually. Those paid plans do more; the comparison is only for rescuing short spoken-word clips. If you already pay for one, this guide is not a reason to duplicate it.</p>
+</section>
+<section>
+<h2>The walkthrough</h2>
+<div class="card steps">
+<div class="stepnav" id="stepNav" aria-label="Walkthrough steps"></div>
+<div class="stepbody">
+<article class="panel active" data-step="0"><span class="label">Step 1 of 6</span><h3>Keep the original and inspect the recording</h3><p>Duplicate the source file before changing it. This workflow is for speech: a voice memo, narration, interview track, or spoken lesson. If music is mixed under the voice, keep reading the failure section before uploading.</p></article>
+<article class="panel" data-step="1"><span class="label">Step 2 of 6</span><h3>Fit the two limits before you upload</h3><p>Each free upload must be audio, at most 30 minutes, and no larger than 500 MB. Cut a long recording into chunks under 30 minutes. Today’s chunks together must stay at or below 60 minutes. Uploads are processed one at a time.</p></article>
+<article class="panel" data-step="2"><span class="label">Step 3 of 6</span><h3>Create the free account, not the trial</h3><p>Open <a href="https://podcast.adobe.com/en/enhancespeech">Enhance Speech</a> and sign in with a free Adobe ID. Adobe’s plans page also promotes a 30-day Premium trial; you do not need it for the limits used here. Stay on the Free plan.</p></article>
+<article class="panel" data-step="3"><span class="label">Step 4 of 6</span><h3>Upload one audio file</h3><p>Drop in the first MP3, WAV, or other format the upload screen accepts. Let Enhance Speech process it, then preview the result. Do not queue a second file: bulk processing is a paid feature.</p></article>
+<article class="panel" data-step="4"><span class="label">Step 5 of 6</span><h3>Run an A/B quality check</h3><p>Listen to the same 20–30 seconds in the original and enhanced versions. Check names, breaths, consonants, room tone, and any music. Free users cannot adjust enhancement strength, so reject the result if the voice turns metallic or non-speech audio changes too much.</p><div class="template"><button class="copy" data-copy>Copy</button><span>CLIP: [filename and time range]
+KEEP IF: speech is clearer; words and names are unchanged
+REJECT IF: metallic voice, clipped consonants, damaged music, missing ambience
+DECISION: [keep original / use enhanced / repair locally]
+NOTES: [what changed]</span></div></article>
+<article class="panel" data-step="5"><span class="label">Step 6 of 6</span><h3>Download, label, and reassemble</h3><p>Download accepted output immediately. Name it with an <code>-enhanced</code> suffix so it cannot overwrite the source. If you split a long recording, join the accepted chunks in your usual editor and listen across every seam.</p></article>
+</div>
+<div class="stepfoot"><button class="pillbtn" id="prev">← Previous</button><span class="mono" id="progress">Step 1 of 6</span><button class="pillbtn" id="next">Next →</button></div>
+</div>
+</section>
+<aside class="breaks">
+<h2>What breaks</h2>
+<ul><li><strong>Quota:</strong> above 60 processed minutes in a day, stop and wait for the daily reset. Adobe does not publish its reset hour or timezone. Premium is $9.99 per month and raises Enhance Speech to four hours per day.</li><li><strong>Per-file wall:</strong> a 31-minute file still fails the 30-minute rule even when your daily use is otherwise empty. Split it first.</li><li><strong>Free-plan omissions:</strong> no video input, bulk queue, or strength control. Extract audio from video before this workflow.</li><li><strong>Sound:</strong> speech enhancement can treat music, ambience, overlapping voices, or changing noise badly. Keep the original and compare before publishing.</li><li><strong>Privacy:</strong> this is cloud processing. Do not upload confidential conversations, unreleased client material, or recordings without the needed permission. Use a local editor when upload risk is unacceptable.</li><li><strong>Tier risk:</strong> the Free plan is separate from Adobe’s promoted 30-day Premium trial. Do not start the trial unless you intend to manage its expiry.</li></ul>
+</aside>
+<section>
+<h2>Three things to keep</h2>
+<div class="things">
+<button class="thing"><strong>1. The daily limit does not cancel the file limit.</strong><span class="answer"><span>Sixty free minutes can be two 30-minute files, not one 60-minute file. Split first and upload serially. <span class="trace">Trace: A3 official Adobe plan fetch</span></span></span></button>
+<button class="thing"><strong>2. “No strength control” changes the workflow.</strong><span class="answer"><span>The free plan gives one processed result, so an A/B checkpoint is safer than trusting it. Keep the source; reject metallic voices or damaged music. <span class="trace">Trace: A3 + A6 independent current review</span></span></span></button>
+<button class="thing"><strong>3. Local repair is the privacy and music fallback.</strong><span class="answer"><span>Audacity is open-source and its Noise Reduction lets you sample constant hum and preview the removed residue. It takes setup but keeps local control. <span class="trace">Trace: A8 diversity/vector sweep</span></span></span></button>
+</div>
+<div class="share" data-share="A useful audio-cleanup rule: 60 free minutes per day still means no file over 30 minutes—and you should always A/B the enhanced voice against the original."></div>
+</section>
+<section>
+<h2>Try it now</h2>
+<p>Choose a disposable 30–60 second voice memo with obvious fan noise or room echo. Duplicate it, process the copy, and use the A/B checklist above. That small test shows whether the tool suits your voice before you spend any daily allowance on a longer recording.</p>
+</section>
+</main>
+<footer>
+<p>Free-tier terms verified August 17, 2026 against <a href="https://podcast.adobe.com/en/plans">Adobe Podcast’s official plans page</a>; cross-checked with Adobe’s current feature guide and dated independent reporting.</p>
+<p><strong>Tier T0:</strong> free forever, no card; free Adobe account required. Limits: audio only, 30 minutes and 500 MB per file, one upload at a time, 60 processed minutes per day.</p>
+<p><a href="https://iggym.github.io/everyday-ai-done-right/">Home</a> · <a href="https://iggym.github.io/everyday-ai-done-right/">Browse more guides</a></p>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite">Copied</div>
+<script>
+(function(){
+const root=document.documentElement,toggle=document.getElementById('themeToggle'),icon=document.getElementById('themeIcon'),label=document.getElementById('themeLabel'),stored=localStorage.getItem('eadr-theme');
+function applyTheme(mode){if(mode==='auto'){root.removeAttribute('data-theme');icon.textContent='◐';label.textContent='Auto'}else{root.setAttribute('data-theme',mode);icon.textContent=mode==='dark'?'●':'○';label.textContent=mode==='dark'?'Dark':'Light'}}
+let current=stored||'auto';applyTheme(current);toggle.addEventListener('click',()=>{current=current==='auto'?'light':current==='light'?'dark':'auto';localStorage.setItem('eadr-theme',current);applyTheme(current)});
+const alt=document.getElementById('alt'),months=document.getElementById('months'),oldCost=document.getElementById('oldCost'),oldLabel=document.getElementById('oldLabel'),saving=document.getElementById('saving');
+function cost(){const price=+alt.value,n=Math.max(1,+months.value||1),name=alt.options[alt.selectedIndex].text.split(' — ')[0];oldLabel.textContent=name;oldCost.textContent='$'+price.toFixed(2)+'/mo';saving.textContent=n+'-month cash difference: $'+(price*n).toFixed(2)}alt.addEventListener('change',cost);months.addEventListener('input',cost);
+const min=document.getElementById('minutes'),qr=document.getElementById('quotaResult');function quota(){const n=Math.max(0,+min.value||0),over=n-60;qr.classList.toggle('over',over>0);qr.textContent=over<=0?(n+' minutes stays within today’s 60-minute allowance. You have '+(60-n)+' minutes left. Keep each file at 30 minutes or less.'):(n+' minutes is '+over+' over the free daily allowance. Process 60 today and wait for the daily reset; its exact hour is not published. The sourced upgrade is $9.99/month.')}min.addEventListener('input',quota);document.querySelectorAll('[data-min]').forEach(b=>b.onclick=()=>{min.value=b.dataset.min;quota()});quota();
+let step=0;const panels=[...document.querySelectorAll('.panel')],nav=document.getElementById('stepNav'),progress=document.getElementById('progress');panels.forEach((_,i)=>{const b=document.createElement('button');b.className='stepdot'+(i?'':' active');b.textContent=i+1;b.setAttribute('aria-label','Go to step '+(i+1));b.onclick=()=>show(i);nav.appendChild(b)});function show(i){step=Math.max(0,Math.min(panels.length-1,i));panels.forEach((p,j)=>p.classList.toggle('active',j===step));[...nav.children].forEach((b,j)=>b.classList.toggle('active',j===step));progress.textContent='Step '+(step+1)+' of '+panels.length;document.getElementById('prev').disabled=step===0;document.getElementById('next').disabled=step===panels.length-1}document.getElementById('prev').onclick=()=>show(step-1);document.getElementById('next').onclick=()=>show(step+1);show(0);
+const toast=document.getElementById('toast');let timer;function copied(msg='Copied'){toast.textContent=msg;toast.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>toast.classList.remove('show'),1500)}async function copy(text,button){try{await navigator.clipboard.writeText(text);const old=button&&button.textContent;if(button)button.textContent='Copied';copied();setTimeout(()=>{if(button)button.textContent=old},1500)}catch(e){copied('Copy failed')}}document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copy(b.nextElementSibling.textContent,b));
+document.querySelectorAll('.thing').forEach(b=>b.onclick=()=>{b.classList.toggle('open');b.setAttribute('aria-expanded',b.classList.contains('open'))});
+const url=location.href;document.querySelectorAll('.share').forEach(row=>{const text=row.dataset.share,u=encodeURIComponent(url),t=encodeURIComponent(text),items=[['X','https://twitter.com/intent/tweet?text='+t+'&url='+u],['LinkedIn','https://www.linkedin.com/sharing/share-offsite/?url='+u+'&title='+t+'&summary='+t],['Facebook','https://www.facebook.com/sharer/sharer.php?u='+u],['WhatsApp','https://wa.me/?text='+encodeURIComponent(text+' '+url)],['Reddit','https://www.reddit.com/submit?url='+u+'&title='+t],['Email','mailto:?subject='+encodeURIComponent('Clean noisy voice recordings for free')+'&body='+encodeURIComponent(text+'\n\n'+url)]];items.forEach(([n,h])=>{const a=document.createElement('a');a.textContent=n;a.href=h;a.target='_blank';a.rel='noopener';row.appendChild(a)});const b=document.createElement('button');b.textContent='Copy Link';b.onclick=()=>copy(url,b);row.appendChild(b)});
+})();
+</script>
 </body>
 </html>
