@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free AI-Assisted Accessibility Accommodation Requests | Everyday AI Done Right</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --secondary-text: #4a4a4a;
+            --border-color: #e5e5e5;
+            --code-bg: #f5f5f5;
+            --accent-color: #0066cc;
+            --accent-hover: #0055aa;
+            --coral-color: #ff6b6b;
+            --coral-bg: #fff5f5;
+            --green-color: #10b981;
+            --green-bg: #f0fdf4;
+            --badge-bg: #f0f7ff;
+            --badge-text: #0066cc;
+            --stepper-inactive-bg: #e5e5e5;
+            --stepper-inactive-text: #999999;
+            --privacy-color: #d97706;
+            --privacy-bg: #fffbeb;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --secondary-text: #b0b0b0;
+            --border-color: #333333;
+            --code-bg: #1e1e1e;
+            --accent-color: #4da6ff;
+            --accent-hover: #3d96ef;
+            --coral-color: #ff8a8a;
+            --coral-bg: #2a1a1a;
+            --green-color: #34d399;
+            --green-bg: #1a2e1a;
+            --badge-bg: #1a2a3a;
+            --badge-text: #4da6ff;
+            --stepper-inactive-bg: #333333;
+            --stepper-inactive-text: #666666;
+            --privacy-color: #fbbf24;
+            --privacy-bg: #2a2010;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+        .top-bar {
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-bar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .logo span { color: var(--accent-color); }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .theme-toggle:hover { background-color: var(--code-bg); }
+
+        .hero { padding: 60px 0 40px; }
+
+        .category-badge {
+            display: inline-block;
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 34px;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 20px;
+        }
+
+        .hero-text {
+            font-size: 18px;
+            color: var(--secondary-text);
+            margin-bottom: 30px;
+        }
+
+        .verification-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .badge-free { background-color: var(--green-bg); color: var(--green-color); }
+        .badge-verified { background-color: var(--badge-bg); color: var(--badge-text); }
+        .badge-no-card { background-color: var(--green-bg); color: var(--green-color); }
+        .badge-privacy { background-color: var(--privacy-bg); color: var(--privacy-color); }
+
+        .privacy-callout {
+            background-color: var(--privacy-bg);
+            border-left: 4px solid var(--privacy-color);
+            padding: 20px 24px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+        }
+
+        .privacy-callout p {
+            color: var(--secondary-text);
+            font-size: 15px;
+        }
+
+        .privacy-callout strong {
+            color: var(--privacy-color);
+        }
+
+        .cost-comparison {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cost-comparison h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cost-items { display: flex; flex-direction: column; gap: 16px; }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cost-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .cost-name { font-weight: 500; }
+
+        .cost-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .cost-price.strike-through {
+            text-decoration: line-through;
+            color: var(--coral-color);
+            opacity: 0;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .cost-price.strike-through.visible {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .cost-price.free { color: var(--green-color); font-weight: 700; }
+
+        .savings-summary {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--green-color);
+        }
+
+        .quota-calculator {
+            background-color: var(--code-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .quota-calculator h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .quota-note {
+            font-size: 14px;
+            color: var(--secondary-text);
+            margin-bottom: 20px;
+        }
+
+        .quota-inputs { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+
+        .quota-input-group { display: flex; flex-direction: column; gap: 6px; }
+        .quota-input-group label { font-weight: 500; }
+
+        .quota-input-group input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            width: 100%;
+        }
+
+        .quota-result {
+            padding: 16px;
+            background-color: var(--badge-bg);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .stepper { margin-bottom: 40px; }
+
+        .stepper h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            margin-bottom: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .step.active { border-color: var(--accent-color); }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            cursor: pointer;
+            gap: 16px;
+            user-select: none;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+            background-color: var(--stepper-inactive-bg);
+            color: var(--stepper-inactive-text);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .step.active .step-number { background-color: var(--accent-color); color: white; }
+        .step-title { font-weight: 600; font-size: 17px; flex: 1; }
+
+        .step-chevron {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            color: var(--secondary-text);
+        }
+
+        .step.active .step-chevron { transform: rotate(180deg); }
+
+        .step-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .step.active .step-content { max-height: 5000px; }
+
+        .step-content-inner {
+            padding: 0 20px 20px 68px;
+            color: var(--secondary-text);
+        }
+
+        .step-content-inner ol,
+        .step-content-inner ul { margin-left: 20px; margin-bottom: 16px; }
+        .step-content-inner li { margin-bottom: 8px; }
+        .step-content-inner p { margin-bottom: 12px; }
+        .step-content-inner a { color: var(--accent-color); }
+
+        .code-block {
+            position: relative;
+            margin: 16px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: var(--border-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .copy-button:hover { background-color: rgba(0, 0, 0, 0.1); }
+        [data-theme="dark"] .copy-button:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+        .code-content {
+            padding: 16px;
+            background-color: var(--code-bg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .what-breaks {
+            background-color: var(--coral-bg);
+            border-left: 4px solid var(--coral-color);
+            padding: 24px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 40px;
+        }
+
+        .what-breaks h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--coral-color);
+        }
+
+        .what-breaks ul { margin-left: 20px; }
+        .what-breaks li { margin-bottom: 10px; color: var(--secondary-text); }
+        .what-breaks li strong { color: var(--text-color); }
+
+        .three-things { margin-bottom: 40px; }
+
+        .three-things h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .thing-item {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .thing-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .thing-header:hover { background-color: var(--border-color); }
+
+        .thing-toggle {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+            color: var(--secondary-text);
+        }
+
+        .thing-item.active .thing-toggle { transform: rotate(45deg); }
+        .thing-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .thing-item.active .thing-content { max-height: 400px; }
+
+        .thing-content-inner {
+            padding: 0 16px 16px;
+            color: var(--secondary-text);
+            line-height: 1.7;
+        }
+
+        .try-it-now {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .try-it-now h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .try-it-now ol { text-align: left; margin-left: 20px; margin-bottom: 24px; }
+        .try-it-now li { margin-bottom: 8px; }
+
+        .try-it-now a {
+            display: inline-block;
+            background-color: white;
+            color: var(--accent-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .try-it-now a:hover { background-color: rgba(255, 255, 255, 0.9); transform: translateY(-1px); }
+
+        .share-bar { margin-bottom: 60px; }
+
+        .share-bar h3 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .share-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .share-button:hover { background-color: var(--code-bg); }
+        .share-button:active { transform: scale(0.97); }
+        .share-button.twitter { background-color: #1da1f2; color: white; border-color: #1da1f2; }
+        .share-button.twitter:hover { background-color: #0d8ddb; }
+        .share-button.linkedin { background-color: #0077b5; color: white; border-color: #0077b5; }
+        .share-button.linkedin:hover { background-color: #00669c; }
+        .share-button.facebook { background-color: #1877f2; color: white; border-color: #1877f2; }
+        .share-button.facebook:hover { background-color: #1466d6; }
+        .share-button.copy-link { background-color: var(--green-color); color: white; border-color: var(--green-color); }
+        .share-button.copy-link:hover { background-color: #0ea371; }
+
+        footer {
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 26px; }
+            .hero-text { font-size: 16px; }
+            .verification-badges { flex-direction: column; }
+            .share-buttons { flex-direction: column; }
+            .share-button { justify-content: center; }
+            .step-content-inner { padding-left: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <a href="https://iggym.github.io/everyday-ai-done-right/" class="logo">Everyday AI <span>Done Right</span></a>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Dark</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <span class="category-badge">Accessibility</span>
+            <h1>Free AI-Assisted Accessibility Accommodation Requests</h1>
+            <p class="hero-text">Google Gemini's free tier helps you draft formal accommodation request letters, understand general ADA/Section 504 processes, and evaluate responses from employers or schools—but it cannot provide legal advice, and sharing disability-related details with a commercial AI service raises privacy considerations you should understand before proceeding.</p>
+            <div class="verification-badges">
+                <span class="badge badge-free">✓ 100% Free</span>
+                <span class="badge badge-verified">✓ Verified June 2025</span>
+                <span class="badge badge-no-card">✓ No Credit Card</span>
+                <span class="badge badge-privacy">⚠ Privacy Considerations</span>
+            </div>
+            <div class="privacy-callout">
+                <p><strong>Before you start:</strong> Gemini processes your input on Google's servers. If you're uncomfortable sharing specifics about your disability with Google, use placeholder descriptions in the prompts (e.g., "a chronic health condition") and fill in details only in your final, locally-saved document. The prompts below work either way.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="cost-comparison" id="cost-comparison">
+            <h2>Cost Comparison</h2>
+            <div class="cost-items">
+                <div class="cost-item">
+                    <span class="cost-name">Disability rights attorney</span>
+                    <span class="cost-price strike-through" id="cost1">$200–$500/hr</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">ADA consulting firm</span>
+                    <span class="cost-price strike-through" id="cost2">$150–$400/hr</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Accommodation letter service</span>
+                    <span class="cost-price strike-through" id="cost3">$100–$300/letter</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Disability advocacy nonprofit</span>
+                    <span class="cost-price strike-through" id="cost4">Free (2–8 wk wait)</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-name">Google Gemini</span>
+                    <span class="cost-price free">$0.00</span>
+                </div>
+            </div>
+            <div class="savings-summary">Per-letter savings: $100–$500 vs. paid services; weeks of wait time avoided vs. nonprofit queues</div>
+        </div>
+
+        <div class="quota-calculator">
+            <h2>Free Tier Quota Calculator</h2>
+            <p class="quota-note">Gemini's free tier allows 15 requests per minute with no published daily cap. Accommodation letter workflows are well within limits.</p>
+            <div class="quota-inputs">
+                <div class="quota-input-group">
+                    <label for="letters-per-month">How many accommodation letters do you need to draft per month?</label>
+                    <input type="number" id="letters-per-month" min="1" max="20" value="1">
+                </div>
+                <div class="quota-input-group">
+                    <label for="revisions-per-letter">Average revision rounds per letter?</label>
+                    <input type="number" id="revisions-per-letter" min="0" max="20" value="2">
+                </div>
+            </div>
+            <div class="quota-result" id="quota-result">Loading...</div>
+        </div>
+
+        <div class="stepper">
+            <h2>Step-by-Step Walkthrough</h2>
+
+            <div class="step active" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Open a Free Google Gemini Session</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <ol>
+                            <li>Go to <a href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a></li>
+                            <li>Sign in with any Google account (create one if needed—no payment info required)</li>
+                            <li>Open a new conversation and proceed to Step 2</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Establish Your Situation Context</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>Paste this prompt and fill in the brackets with as much or as little detail as you're comfortable sharing:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Situation Context Prompt</span>
+                                <button class="copy-button" data-copy="context-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="context-prompt">I need help drafting accessibility accommodation requests. Here is my situation:
+
+Setting: [workplace / university / K-12 school / housing / other]
+My role: [e.g., "software engineer at a company with 50 employees" / "undergraduate student at a public university"]
+My disability/condition: [describe in your own words, or use a general description like "a chronic health condition that affects my energy levels" if you prefer not to specify]
+Specific barriers I'm experiencing: [list 2-5 concrete barriers, e.g., "The open-plan office makes it difficult to concentrate due to sensory overload" / "The online learning platform doesn't work with my screen reader"]
+Accommodations I believe would help: [list what you have in mind, or say "I'm not sure what to request and need suggestions"]
+
+Relevant legal framework: [ADA / Section 504 / FHA / state law / I'm not sure which applies]
+
+Do NOT give me legal advice. Instead, confirm you understand my situation and list the general categories of accommodation that are commonly requested in this setting. Do not make claims about what I am or am not legally entitled to.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Draft Your Formal Accommodation Request Letter</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>Once Gemini confirms it understands your context, use this prompt:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Letter Drafting Prompt</span>
+                                <button class="copy-button" data-copy="letter-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="letter-prompt">Using the situation I described, draft a formal accommodation request letter addressed to [my manager / HR department / disability services office / landlord]. The letter should:
+
+1. Open by stating that I am requesting reasonable accommodations under [the ADA / Section 504 / applicable law]
+2. Describe my disability or condition in general terms (I will review and adjust the specificity)
+3. Explain how my condition creates barriers in [specific setting/situations]
+4. List the specific accommodations I am requesting, with a brief explanation of how each one addresses a barrier
+5. State that I am open to discussing alternative accommodations if these are not feasible
+6. Include a professional closing and indicate I am available to meet to discuss
+
+Tone: Professional, factual, collaborative — not adversarial. The goal is to initiate the "interactive process" constructively.
+
+Do NOT include legal citations, case law references, or any language that could be interpreted as legal advice. This is a personal letter, not a legal document.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Evaluate a Response or Denial</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>If you receive a response that feels inadequate, dismissive, or contains concerning language, paste it with this prompt:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Evaluation Prompt</span>
+                                <button class="copy-button" data-copy="evaluate-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="evaluate-prompt">I received the following response to my accommodation request. Please analyze it and identify:
+
+1. Whether the response acknowledges the request and engages with the "interactive process" in good faith, or whether it deflects, delays, or dismisses without engagement
+2. Any language that could indicate the responder misunderstands their obligations under [ADA/Section 504/applicable law] — note: do NOT tell me what my legal rights are, just flag language patterns that seem inconsistent with general good-faith interactive process principles
+3. Specific sentences or phrases that seem problematic and why
+4. Suggested language I could use in a follow-up response to redirect the conversation productively
+
+Here is the response I received:
+[PASTE THE RESPONSE HERE]
+
+Again: do not give legal advice. Frame everything as "common patterns in the interactive process" and "suggested follow-up language," not as statements about my legal rights.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Create a Barrier Documentation Log</div>
+                    <span class="step-chevron">▼</span>
+                </div>
+                <div class="step-content">
+                    <div class="step-content-inner">
+                        <p>If you're encountering ongoing accessibility issues, create a structured record for potential future use:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Barrier Log Template Prompt</span>
+                                <button class="copy-button" data-copy="log-prompt">📋 Copy</button>
+                            </div>
+                            <div class="code-content" id="log-prompt">Help me create a barrier documentation log. I will describe accessibility barriers I have encountered. For each one, format the entry as:
+
+- Date: [I will fill this in]
+- Location/Context: [I will fill this in]
+- Barrier Description: [I will fill this in]
+- Impact: How this barrier affected my ability to [work / learn / access the service / etc.]
+- Accommodation Requested: [I will fill this in]
+- Response Received: [I will fill this in]
+- Status: [Open / Resolved / Escalated]
+
+Create a template with 10 blank entries in a table format I can copy into a spreadsheet or document. Include a note at the top reminding me to be factual and specific, avoid emotional language, and include dates and names where possible.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="what-breaks">
+            <h2>What Breaks (Limitations)</h2>
+            <ul>
+                <li><strong>Not Legal Advice:</strong> Gemini cannot and should not be used as a substitute for a qualified attorney. It can help you draft correspondence and identify response patterns, but it cannot tell you whether your rights have been violated, whether you have a valid claim, or what legal steps to take. If your situation escalates beyond the interactive process, consult a disability rights attorney or your local protection and advocacy agency.</li>
+                <li><strong>Privacy Risk:</strong> You are sharing disability-related and potentially medical information with Google's servers. Google's privacy policy governs how this data is used. If this concerns you, use placeholder descriptions in the AI prompts and fill in specifics only in your final, locally-stored documents. Google states it does not use Gemini conversations to train models, but policies can change.</li>
+                <li><strong>Jurisdiction Variability:</strong> Accommodation processes differ significantly by country, state, and institution. Gemini may default to U.S.-centric assumptions. Always verify that the process described matches your specific jurisdiction and institution.</li>
+                <li><strong>Institutional Specificity:</strong> Every employer, school, and housing provider has its own accommodation procedures. Gemini's letters are starting points—you must adapt them to your institution's specific forms, contacts, and processes.</li>
+                <li><strong>Accuracy of Process Descriptions:</strong> While the prompts instruct Gemini to avoid legal claims, it may still describe processes inaccurately or oversimplify them. Cross-reference any process descriptions against official sources (ada.gov, eeoc.gov, your institution's disability services office).</li>
+                <li><strong>Emotional Tone Management:</strong> AI-generated letters can sometimes sound too formal, too generic, or oddly phrased. Read the output carefully and rewrite sections in your own voice—your letter should sound like you, not like a machine.</li>
+            </ul>
+        </div>
+
+        <div class="three-things">
+            <h2>Three Things to Know</h2>
+
+            <div class="thing-item" id="thing1">
+                <div class="thing-header">
+                    <span>1. You don't need to disclose your exact diagnosis</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Under the ADA, you are generally required to disclose that you have a disability and how it affects you, but you do not need to provide a specific diagnosis or detailed medical records at the initial request stage. The prompts above are designed to work with general descriptions. If an employer or school demands more detail than you're comfortable sharing, that may itself be a pattern worth noting—discuss with a disability rights attorney if unsure.
+                    </div>
+                </div>
+            </div>
+
+            <div class="thing-item" id="thing2">
+                <div class="thing-header">
+                    <span>2. The "interactive process" is a legal requirement, not a favor</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        Under the ADA and Section 504, covered entities must engage in an interactive process to identify effective accommodations. They can't simply say "no" without discussion. If a response you receive doesn't acknowledge this obligation or refuses to engage, that's a meaningful pattern. The Response Evaluation prompt (Step 4) is specifically designed to help you spot this.
+                    </div>
+                </div>
+            </div>
+
+            <div class="thing-item" id="thing3">
+                <div class="thing-header">
+                    <span>3. Keep everything in writing—starting now</span>
+                    <span class="thing-toggle">+</span>
+                </div>
+                <div class="thing-content">
+                    <div class="thing-content-inner">
+                        If you ever need to escalate—internally, to an EEO office, or to an attorney—written records are essential. Use the Barrier Documentation Log (Step 5) from day one, not after problems accumulate. Send accommodation requests via email rather than verbal conversation so you have a timestamped record. If a meeting happens, follow up with an email summarizing what was discussed and agreed upon.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="try-it-now">
+            <h2>Try It Now</h2>
+            <ol>
+                <li>Go to <a href="https://gemini.google.com" target="_blank" rel="noopener" style="color:white;text-decoration:underline;">gemini.google.com</a> and sign in</li>
+                <li>Decide how much detail you're comfortable sharing (see privacy callout above)</li>
+                <li>Paste the Situation Context prompt (Step 2) and fill in your real circumstances</li>
+                <li>Then paste the Letter Drafting prompt (Step 3) and review the output against your institution's specific process</li>
+                <li>Compare the time and cost to what you'd spend booking an attorney consultation for a first draft</li>
+            </ol>
+            <a href="https://gemini.google.com" target="_blank" rel="noopener">Start Drafting Your Request</a>
+        </div>
+
+        <div class="share-bar">
+            <h3>Share This Guide</h3>
+            <div class="share-buttons">
+                <button class="share-button twitter" id="share-twitter">Twitter</button>
+                <button class="share-button linkedin" id="share-linkedin">LinkedIn</button>
+                <button class="share-button facebook" id="share-facebook">Facebook</button>
+                <button class="share-button copy-link" id="share-copy-link">Copy Link</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Everyday AI Done Right — Practical, free AI workflows for everyone</p>
+        </div>
+    </footer>
+
+    <script>
+    (function() {
+        var themeToggle = document.getElementById('theme-toggle');
+        var themeIcon = document.getElementById('theme-icon');
+        var themeText = document.getElementById('theme-text');
+        var saved = localStorage.getItem('eadr-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+        if (saved === 'dark') { themeIcon.textContent = '☀️'; themeText.textContent = 'Light'; }
+
+        themeToggle.addEventListener('click', function() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('eadr-theme', next);
+            themeIcon.textContent = next === 'dark' ? '☀️' : '🌙';
+            themeText.textContent = next === 'dark' ? 'Light' : 'Dark';
+        });
+
+        var costIds = ['cost1','cost2','cost3','cost4'];
+        costIds.forEach(function(id, i) {
+            setTimeout(function() { document.getElementById(id).classList.add('visible'); }, 400 + i * 250);
+        });
+
+        var lettersInput = document.getElementById('letters-per-month');
+        var revisionsInput = document.getElementById('revisions-per-letter');
+        var quotaResult = document.getElementById('quota-result');
+
+        function calcQuota() {
+            var letters = parseInt(lettersInput.value) || 0;
+            var revisions = parseInt(revisionsInput.value) || 0;
+            var msgsPerLetter = 2 + revisions;
+            var totalPerMonth = letters * msgsPerLetter;
+            var perDay = (totalPerMonth / 30).toFixed(1);
+            var rpmLimit = 15;
+
+            if (totalPerMonth === 0) {
+                quotaResult.textContent = 'Enter values to see your estimated usage.';
+                quotaResult.style.color = 'var(--secondary-text)';
+            } else if (totalPerMonth <= rpmLimit) {
+                quotaResult.textContent = 'You\'ll use about ' + totalPerMonth + ' messages per month (' + perDay + '/day). This is a small fraction of the 15 requests per minute limit. No rate-limit concerns whatsoever.';
+                quotaResult.style.color = 'var(--green-color)';
+            } else if (totalPerMonth <= 100) {
+                quotaResult.textContent = 'You\'ll use about ' + totalPerMonth + ' messages per month (' + perDay + '/day). Still well within the free tier. You could draft all letters in a single session without hitting the 15 RPM limit.';
+                quotaResult.style.color = 'var(--green-color)';
+            } else {
+                quotaResult.textContent = 'You\'ll use about ' + totalPerMonth + ' messages per month (' + perDay + '/day). This is higher-volume usage. Spread sessions across multiple days to stay comfortable within the 15 RPM limit.';
+                quotaResult.style.color = 'var(--privacy-color)';
+            }
+        }
+
+        lettersInput.addEventListener('input', calcQuota);
+        revisionsInput.addEventListener('input', calcQuota);
+        calcQuota();
+
+        var steps = document.querySelectorAll('.step');
+        steps.forEach(function(step) {
+            step.querySelector('.step-header').addEventListener('click', function() {
+                var wasActive = step.classList.contains('active');
+                steps.forEach(function(s) { s.classList.remove('active'); });
+                if (!wasActive) step.classList.add('active');
+            });
+        });
+
+        function copyText(el) {
+            return navigator.clipboard.writeText(el.textContent).catch(function() {
+                var ta = document.createElement('textarea');
+                ta.value = el.textContent;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            });
+        }
+
+        document.querySelectorAll('.copy-button').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var el = document.getElementById(btn.getAttribute('data-copy'));
+                if (!el) return;
+                var orig = btn.innerHTML;
+                copyText(el).then(function() {
+                    btn.innerHTML = '✓ Copied!';
+                    setTimeout(function() { btn.innerHTML = orig; }, 2000);
+                });
+            });
+        });
+
+        document.querySelectorAll('.thing-item').forEach(function(item) {
+            item.querySelector('.thing-header').addEventListener('click', function() {
+                item.classList.toggle('active');
+            });
+        });
+
+        var pageUrl = window.location.href;
+        var shareText = 'Draft ADA accommodation letters for free with Google Gemini. No card needed. Know your accessibility rights without $200-500/hr attorney fees.';
+
+        document.getElementById('share-twitter').addEventListener('click', function() {
+            window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(pageUrl), '_blank');
+        });
+        document.getElementById('share-linkedin').addEventListener('click', function() {
+            window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(pageUrl), '_blank');
+        });
+        document.getElementById('share-facebook').addEventListener('click', function() {
+            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(pageUrl), '_blank');
+        });
+        document.getElementById('share-copy-link').addEventListener('click', function() {
+            var btn = document.getElementById('share-copy-link');
+            var orig = btn.innerHTML;
+            navigator.clipboard.writeText(pageUrl).then(function() {
+                btn.innerHTML = '✓ Link Copied!';
+                setTimeout(function() { btn.innerHTML = orig; }, 2000);
+            }).catch(function() {
+                var ta = document.createElement('textarea');
+                ta.value = pageUrl;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                btn.innerHTML = '✓ Link Copied!';
+                setTimeout(function() { btn.innerHTML = orig; }, 2000);
+            });
+        });
+    })();
+    </script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

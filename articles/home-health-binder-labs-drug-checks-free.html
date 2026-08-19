@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Build a Free Home Health Binder — Lab Results & Drug Checks in Plain English</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbfaf7;--card:#fff;--text:#1a1a1e;--muted:#6b7280;--line:#eae6de;--coral:#ff6b5a;--coral-2:#ffedea;--accent:#111827;--ok:#16a34a}
+@media(prefers-color-scheme:dark){:root{--bg:#0f0f10;--card:#1a1a1e;--text:#f5f3ef;--muted:#9aa0aa;--line:#2a2a2e;--coral-2:#2a1816;--accent:#f5f3ef}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;line-height:1.6}
+h1,h2,h3{font-family:Manrope,sans-serif;letter-spacing:-0.02em}
+.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--line)}
+.badge{display:inline-flex;padding:4px 10px;border-radius:999px;background:var(--line);font-size:12px;font-weight:600}
+.badge.ok{background:#dcfce7;color:#166534}.badge.free{background:#dbeafe;color:#1e40af}
+.wrap{max-width:880px;margin:0 auto;padding:24px}
+.hero{padding:28px;border:1px solid var(--line);background:var(--card);border-radius:20px;margin:20px 0}
+.hero h1{font-size:32px;line-height:1.15;margin:8px 0 12px}
+.meta{color:var(--muted);font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:18px}
+.cost-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+.cost-old{text-decoration:line-through;opacity:.6;transition:.6s}.cost-old.active{color:var(--coral)}
+.mono{font-family:"JetBrains Mono",monospace}
+.btn{cursor:pointer;border:1px solid var(--line);background:var(--accent);color:var(--bg);padding:10px 14px;border-radius:10px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--text)}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.step{padding:8px 12px;border-radius:999px;border:1px solid var(--line);cursor:pointer}.step.active{background:var(--text);color:var(--bg)}
+.step-content{display:none}.step-content.active{display:block}
+.callout{border-left:4px solid var(--coral);background:var(--coral-2);padding:14px 16px;border-radius:12px}
+.reveal{border:1px dashed var(--coral);border-radius:12px;padding:12px;cursor:pointer;margin-top:8px}.reveal .hidden{display:none;margin-top:8px}.reveal.open .hidden{display:block}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+pre{background:#0f1115;color:#e5e7eb;padding:14px;border-radius:12px;overflow:auto;position:relative}.copy{position:absolute;top:8px;right:8px}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid var(--line);padding:8px;text-align:left;font-size:14px}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div style="font-family:Manrope;font-weight:800">Everyday AI, Done Right</div>
+<div style="display:flex;gap:8px;align-items:center">
+<span class="badge ok">✓ Verified 2026-08-19</span>
+<span class="badge free">T4 • Public Benefit • No Card</span>
+<button id="themeBtn" class="btn ghost" style="padding:6px 10px">Toggle theme</button>
+</div>
+</div>
+<div class="wrap">
+<div class="hero">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span class="badge">Category: Health — Home Health</span>
+<span class="badge">Tools: MedlinePlus (NIH) + Drugs.com + Google Lens/Drive OCR</span>
+<span class="badge">Reading: 3 min</span>
+<span class="badge ok">Free forever: unlimited checks, no account needed for 3-drug check</span>
+</div>
+<h1>Build a Free Home Health Binder That Reads Your Lab Results and Checks Drug Interactions — No Card, Plain English</h1>
+<p class="meta">Pitch: Photograph pill bottles and lab PDFs with Google Lens/Drive (free, unlimited OCR, no card), look up each lab in MedlinePlus (NIH free public service with 100+ tests explained in plain English), and run all meds through Drugs.com interaction checker (free, no registration for up to 3 drugs, free account for unlimited). Limit: not medical advice — binder is for organizing questions for your clinician, and Drugs.com requires free account if you check 4+ meds at once.</p>
+<div class="grid2" style="margin-top:16px">
+<div class="card">
+<h3 style="margin:0 0 8px">Cost Comparison</h3>
+<div class="cost-row"><span>Private lab explainer app</span><span class="cost-old mono">$19.99/mo</span></div>
+<div class="cost-row"><span>Rx interaction app Pro</span><span class="cost-old mono">$9.99/mo</span></div>
+<div class="cost-row"><span>Health record organizer</span><span class="cost-old mono">$12/mo</span></div>
+<div class="cost-row"><strong>This binder (NIH + Drugs.com)</strong><strong class="mono" style="color:var(--ok)">$0 • unlimited</strong></div>
+<button id="animateCosts" class="btn ghost" style="margin-top:10px">Animate savings</button>
+</div>
+<div class="card">
+<h3 style="margin:0 0 8px">Quota Calculator — Home Health</h3>
+<p class="meta">How many meds + lab tests are you tracking?</p>
+<input id="meds" type="range" min="1" max="20" value="5"><div id="medsVal" class="mono">5 meds + 6 labs</div>
+<div id="calcOut" class="mono" style="font-size:13px;margin-top:8px"></div>
+<p class="meta" style="font-size:12px">Sources: Drugs.com checker is free to use and with few exceptions does not require registration for basic checks【8749461057462939650†L5-L7】, MedlinePlus is a free service mapping 170k codes to plain English【6581865443986613499†L5-L8】, lab test library covers 100+ tests【6581865443986613499†L15-L19】</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>What you get</h2>
+<table>
+<tr><th>Piece</th><th>Free Tool</th><th>Quota</th></tr>
+<tr><td>OCR pill bottles + lab PDFs</td><td>Google Lens + Drive</td><td>Unlimited, no account needed</td></tr>
+<tr><td>Plain-English lab meaning</td><td>MedlinePlus Lab Tests (NIH)</td><td>Free public, 100+ tests, EN/ES</td></tr>
+<tr><td>Drug interaction check</td><td>Drugs.com Interaction Checker</td><td>Free, 3 drugs no sign-in, 4+ needs free account【8749461057462939650†L51-L54】</td></tr>
+<tr><td>Tracker</td><td>Google Sheets</td><td>Free, 10k rows</td></tr>
+</table>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Walkthrough — interactive stepper</h2>
+<div class="stepper" id="stepper"></div>
+<div id="steps"></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Copyable prompts & sheet formulas</h2>
+<div style="position:relative"><pre id="p1"><code>HOME HEALTH BINDER — INTAKE PROMPT (use in Sheets/Notebook)
+
+Paste OCR text from lab PDF below, then for each test:
+1. Go to https://medlineplus.gov/lab-tests/ → search test name
+2. Copy: What is it, Why ordered, Normal result meaning
+3. In Sheet: Columns = Test | Your Result | Reference Range | MedlinePlus Plain English | Question for Doctor
+4. Use formula: =IF(VALUE > High, "↑ Ask doctor", IF(VALUE < Low, "↓ Ask doctor", "✓"))
+
+Constraints: Do NOT interpret. Only organize official info + your result for clinician visit.</code></pre><button class="btn copy" data-copy="p1">Copy</button></div>
+<div style="position:relative"><pre id="p2"><code>DRUG CHECK — STEP-BY-STEP
+1. Photo each pill bottle with Google Lens → Copy text: Name, Dose, Rx #
+2. Go to drugs.com/drug-interactions
+3. Add Drug 1, Drug 2, Drug 3 → Check (no account needed)
+4. For 4+ drugs: Create free account (email only, no card) → saves list
+5. Export PDF → add to Binder tab "Interactions"
+6. Rule: Always check + food + alcohol + supplements — Drugs.com includes those
+
+Add to Sheet: Medication | Dose | Purpose (from MedlinePlus) | Interaction Flag | Doctor Question</code></pre><button class="btn copy" data-copy="p2">Copy</button></div>
+</div>
+
+<div class="callout" style="margin-top:16px">
+<h3 style="margin:0 0 6px">What Breaks — coral callout</h3>
+<ul style="margin:0">
+<li>Not medical advice. This binder organizes information; decisions stay with you + clinician. MedlinePlus explicitly says "written for general public" not diagnosis【6581865443986613499†L5-L9】.</li>
+<li>Drugs.com free tier: viewing report with 4+ meds requires free sign-in【8749461057462939650†L51-L54】. Create account with email only — no card, still T4 public benefit.</li>
+<li>OCR errors: Lens can misread "mg" as "mg" or "10" as "1O" — always verify against bottle.</li>
+<li>Lab ranges vary by lab — MedlinePlus gives general info, your lab's reference range on report is authoritative.</li>
+<li>Privacy: Keep Binder in private Google Drive or local Sheet; do not upload identifiable labs to public AI chatbots.</li>
+</ul>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Three Things to Try Now — click to reveal</h3>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>1. Photo your medicine cabinet in 2 minutes</strong><div class="hidden">Open Lens, point at each bottle, tap Copy Text → paste into Sheet. Now you have searchable list instead of digging through cabinet during telehealth call.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>2. Translate last lab PDF to plain English</strong><div class="hidden">Upload PDF to Drive → Open with Google Docs (OCR) → copy test names → search each on medlineplus.gov/lab-tests/ — build one row per test with plain English. Takes ~10 min for 6 tests, saves confusion later.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>3. Check holiday + med interaction before dinner</strong><div class="hidden">Adding alcohol or grapefruit? Add "alcohol" and supplement names to Drugs.com checker — it checks food/disease interactions too, free【8749461057462939650†L10-L13】.</div></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Share</h3>
+<div class="share">
+<button class="btn ghost" onclick="navigator.clipboard.writeText(location.href)">Copy link</button>
+<a class="btn ghost" href="https://twitter.com/intent/tweet?text=Free%20home%20health%20binder%20%E2%80%94%20lab%20results%20in%20plain%20English%20(MedlinePlus)%20%2B%20drug%20interaction%20checks%20(Drugs.com)%20%E2%80%94%20no%20card%2C%20unlimited" target="_blank">Post to X</a>
+</div>
+</div>
+</div>
+<script>
+const themeKey='eadr-theme'; const applyTheme=v=>{document.documentElement.dataset.theme=v; document.documentElement.style.colorScheme=v==='dark'?'dark':'light'}; const saved=localStorage.getItem(themeKey); if(saved) applyTheme(saved); else if(window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
+document.getElementById('themeBtn').onclick=()=>{const cur=document.documentElement.dataset.theme==='dark'?'light':'dark'; applyTheme(cur); localStorage.setItem(themeKey,cur);}
+const stepsData=[
+{t:"1. Scan everything",h:`<p>Phone: Google Lens → photo pill bottle → Copy Text. For lab PDF: Drive app → Upload → Open with Google Docs → auto OCR. No account needed for Lens OCR.</p>`},
+{t:"2. Lab lookup",h:`<p>Go to medlineplus.gov/lab-tests/ → search each test (e.g., Blood Glucose Test【6581865443986613499†L39-L43】). Copy "What is it" + "Why ordered" + "Normal". Paste into Sheet column.</p>`},
+{t:"3. Drug interaction",h:`<p>drugs.com/drug-interaction-checker — add up to 3 drugs without account. For full cabinet (4+), create free account (email only). Checker includes food, alcohol, disease【8749461057462939650†L10-L13】.</p>`},
+{t:"4. Build Sheet",h:`<p>Sheet tabs: Meds, Labs, Questions. Use conditional formatting: highlight out-of-range. Add column "Question for doctor" — e.g., "My BUN was high per lab, MedlinePlus says kidney check — should we recheck?"</p>`},
+{t:"5. Prep visit",h:`<p>Before appointment: File → Print → PDF of Binder (1 page per tab). Bring printed or share screen. You now ask grounded questions with citations, not memory.</p>`}
+];
+const stepperEl=document.getElementById('stepper'); const stepsEl=document.getElementById('steps');
+stepsData.forEach((s,i)=>{const b=document.createElement('div'); b.className='step'+(i===0?' active':''); b.textContent=(i+1)+'. '+s.t; b.onclick=()=>activate(i); stepperEl.appendChild(b); const c=document.createElement('div'); c.className='step-content'+(i===0?' active':''); c.innerHTML=s.h; stepsEl.appendChild(c);});
+function activate(i){[...stepperEl.children].forEach((el,j)=>el.classList.toggle('active',j===i)); [...stepsEl.children].forEach((el,j)=>el.classList.toggle('active',j===i));}
+document.querySelectorAll('[data-copy]').forEach(btn=>{btn.onclick=()=>{const id=btn.dataset.copy; navigator.clipboard.writeText(document.getElementById(id).innerText); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',1200);}});
+document.getElementById('animateCosts').onclick=()=>{document.querySelectorAll('.cost-old').forEach(el=>el.classList.add('active'));};
+const meds=document.getElementById('meds'); const medsVal=document.getElementById('medsVal'); const calcOut=document.getElementById('calcOut');
+function calc(){const v=+meds.value; const labs=Math.round(v*1.2); medsVal.textContent=v+' meds + '+labs+' labs'; const needAcct=v>=4?'Yes — free account needed for 4+ check':'No — 3-drug check no account'; calcOut.innerHTML=`Interaction check: <b>${needAcct}</b><br>MedlinePlus lookups: unlimited free<br>Time to build binder: ~${v*3+labs*2} min first time, ~5 min to update<br>Privacy: local Sheet, no upload to AI`;} meds.oninput=calc; calc();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

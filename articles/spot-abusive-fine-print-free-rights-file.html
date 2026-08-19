@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spot Abusive Fine Print — Free Rights File Using Public Law</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbfaf7;--card:#fff;--text:#1a1a1e;--muted:#6b7280;--line:#eae6de;--coral:#ff6b5a;--coral-2:#ffedea;--accent:#111827;--ok:#16a34a}
+@media(prefers-color-scheme:dark){:root{--bg:#0f0f10;--card:#1a1a1e;--text:#f5f3ef;--muted:#9aa0aa;--line:#2a2a2e;--coral-2:#2a1816;--accent:#f5f3ef}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;line-height:1.6}
+h1,h2,h3{font-family:Manrope,sans-serif;letter-spacing:-0.02em}
+.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--line)}
+.badge{display:inline-flex;padding:4px 10px;border-radius:999px;background:var(--line);font-size:12px;font-weight:600}
+.badge.ok{background:#dcfce7;color:#166534}.badge.free{background:#dbeafe;color:#1e40af}
+.wrap{max-width:880px;margin:0 auto;padding:24px}
+.hero{padding:28px;border:1px solid var(--line);background:var(--card);border-radius:20px;margin:20px 0}
+.hero h1{font-size:31px;line-height:1.15;margin:8px 0 12px}
+.meta{color:var(--muted);font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:18px}
+.cost-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+.cost-old{text-decoration:line-through;opacity:.6;transition:.6s}.cost-old.active{color:var(--coral)}
+.mono{font-family:"JetBrains Mono",monospace}
+.btn{cursor:pointer;border:1px solid var(--line);background:var(--accent);color:var(--bg);padding:10px 14px;border-radius:10px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--text)}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.step{padding:8px 12px;border-radius:999px;border:1px solid var(--line);cursor:pointer}.step.active{background:var(--text);color:var(--bg)}
+.step-content{display:none}.step-content.active{display:block}
+.callout{border-left:4px solid var(--coral);background:var(--coral-2);padding:14px 16px;border-radius:12px}
+.reveal{border:1px dashed var(--coral);border-radius:12px;padding:12px;cursor:pointer;margin-top:8px}.reveal .hidden{display:none;margin-top:8px}.reveal.open .hidden{display:block}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+pre{background:#0f1115;color:#e5e7eb;padding:14px;border-radius:12px;overflow:auto;position:relative}.copy{position:absolute;top:8px;right:8px}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div style="font-family:Manrope;font-weight:800">Everyday AI, Done Right</div>
+<div style="display:flex;gap:8px;align-items:center">
+<span class="badge ok">✓ Verified 2026-08-19</span>
+<span class="badge free">T4 Public Law • No Card</span>
+<button id="themeBtn" class="btn ghost" style="padding:6px 10px">Toggle theme</button>
+</div>
+</div>
+<div class="wrap">
+<div class="hero">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span class="badge">Category: Civic / Legal</span>
+<span class="badge">Tools: Cornell LII + CFPB Complaint DB + LawHelp.org + Google Drive OCR</span>
+<span class="badge">Reading: 3 min</span>
+<span class="badge ok">Free forever: no-cost access to US law, unlimited</span>
+</div>
+<h1>Spot Abusive Fine Print — Build a Free Rights File That Flags Illegal Clauses in Leases, Job Offers & Collection Letters</h1>
+<p class="meta">Pitch: Photograph any contract, lease, job offer, medical bill, or debt collection letter with Google Drive OCR (free, unlimited, no card), translate it to plain English, then cross-check each clause against free public law — Cornell LII (non-profit public service of Cornell Law School providing no-cost access to current law), CFPB public complaint database (free public US government resource), and LawHelp.org legal aid directory. Limit: not legal advice — file is for organizing citations and questions for legal aid; abusive clause detection is pattern-matching, not a lawyer.</p>
+<div class="grid2" style="margin-top:16px">
+<div class="card">
+<h3 style="margin:0 0 8px">Cost Comparison</h3>
+<div class="cost-row"><span>Legal document reviewer app</span><span class="cost-old mono">$29/mo</span></div>
+<div class="cost-row"><span>Contract analysis AI Pro</span><span class="cost-old mono">$40/mo</span></div>
+<div class="cost-row"><span>Attorney quick review (1 hr)</span><span class="cost-old mono">$200+</span></div>
+<div class="cost-row"><strong>This Rights File (public law)</strong><strong class="mono" style="color:var(--ok)">$0 • unlimited</strong></div>
+<button id="animateCosts" class="btn ghost" style="margin-top:10px">Animate savings</button>
+</div>
+<div class="card">
+<h3 style="margin:0 0 8px">Quota Calculator — Civic</h3>
+<p class="meta">How many pages of fine print this month?</p>
+<input id="pages" type="range" min="1" max="100" value="12"><div id="val" class="mono">12 pages</div>
+<div id="calcOut" class="mono" style="font-size:13px;margin-top:8px"></div>
+<p class="meta" style="font-size:12px">Sources: LII is a non-profit public service providing no-cost access to current legal sources【5502050657144382640†L5-L8】, founded 1992 provides free access【5502050657144382640†L20-L23】, CFPB database is a free public US government resource no API key needed【702401036369856452†L5-L7】</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>What you get</h2>
+<ul>
+<li>Plain-English translation of any fine print with clause-by-clause table</li>
+<li>Abusive pattern flags: waiver of rights, illegal fees, forced arbitration hidden, non-compete overreach, collection threats</li>
+<li>Citations to real law: LII U.S. Code, state statutes, CFPB complaint narratives showing same company pattern</li>
+<li>Action sheet: what to ask, where to file complaint, legal aid finder via LawHelp.org</li>
+</ul>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Walkthrough — interactive stepper</h2>
+<div class="stepper" id="stepper"></div>
+<div id="steps"></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Copyable prompts — one-click copy</h2>
+<div style="position:relative"><pre id="p1"><code>RIGHTS FILE — PLAIN ENGLISH TRANSLATOR (paste OCR text below)
+
+You are a legal information organizer, NOT a lawyer.
+Task: For each numbered clause in the pasted document:
+1. Rewrite in 1 sentence plain English
+2. Flag if it potentially: waives statutory rights, adds hidden fee, allows unilateral change, requires forced arbitration, limits liability unfairly, or is vague.
+3. Suggest 1 specific question to ask the other party or legal aid
+4. Do NOT give legal advice. Cite source type only (e.g., "Check: state landlord-tenant statute via LII State Law Links, CFPB debt collection rules")
+
+Format as table: Clause # | Original (short) | Plain English | Flag (None / Review) | Question | Where to Verify (LII/CFPB/LawHelp)
+
+Paste document OCR text here:
+[PASTE]</code></pre><button class="btn copy" data-copy="p1">Copy</button></div>
+<div style="position:relative"><pre id="p2"><code>ABUSIVE CLAUSE CHECKLIST — RUN THIS AFTER TABLE
+
+Search these in your document:
+- "waive", "indemnify", "hold harmless" → potential rights waiver
+- "at sole discretion", "may change at any time" → unilateral change
+- "arbitration", "class action waiver" → forced arbitration (check CFPB credit card agreements database for required language)
+- "non-compete", "non-solicit" → check LII state law (many states ban/limit)
+- "collection fees", "attorney fees", "30% extra" → check state cap via LII
+- Threatening language in collection letter → compare to CFPB complaint narratives for same collector
+
+For each hit, add row to Rights File with citation link to LII or CFPB.
+
+Where to verify:
+LII State Law: https://www.law.cornell.edu/states
+CFPB Complaint DB: https://www.consumerfinance.gov/complaintdatabase/
+LawHelp: https://www.lawhelp.org/</code></pre><button class="btn copy" data-copy="p2">Copy</button></div>
+</div>
+
+<div class="callout" style="margin-top:16px">
+<h3 style="margin:0 0 6px">What Breaks — coral callout</h3>
+<ul style="margin:0">
+<li>Not legal advice. LII provides no-cost access to law for research, not counsel【5502050657144382640†L5-L8】. Use file to prepare for legal aid clinic.</li>
+<li>AI translator can misread numbers: always verify fees/dates against original scan.</li>
+<li>State law varies — LII links to state sites, but you must select your state. Federal rule ≠ state rule.</li>
+<li>CFPB database updates daily with ~15 day lag for company response【702401036369856452†L5-L8】 — recent complaints may not appear yet.</li>
+<li>Privacy: Do not upload SSN, full account numbers to any AI. Redact before OCR.</li>
+</ul>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Three Things to Try Now — click to reveal</h3>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>1. Lease renewal in 5 minutes</strong><div class="hidden">Photo last 3 pages of renewal, run prompt 1, flag "may change rent at sole discretion" → ask landlord to add "with 30-day written notice per [your state] statute via LII".</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>2. Debt collection letter check</strong><div class="hidden">OCR letter, search CFPB complaint database for same collector name — see if others report same threat. CFPB database is free public resource【702401036369856452†L5-L7】. Save complaint narrative as evidence for dispute.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>3. Job offer non-compete</strong><div class="hidden">Paste non-compete clause, check LII Wex encyclopedia for your state limits (many states now ban for low-wage). Add question: "Is this enforceable under [state] law per LII?" Take to legal aid.</div></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Share</h3>
+<div class="share">
+<button class="btn ghost" onclick="navigator.clipboard.writeText(location.href)">Copy link</button>
+<a class="btn ghost" href="https://twitter.com/intent/tweet?text=Spot%20abusive%20fine%20print%20%E2%80%94%20free%20Rights%20File%20using%20Cornell%20LII%20(free%20law)%20%2B%20CFPB%20complaint%20DB%20%E2%80%94%20no%20card" target="_blank">Post to X</a>
+</div>
+</div>
+</div>
+<script>
+const themeKey='eadr-theme'; const applyTheme=v=>{document.documentElement.dataset.theme=v; document.documentElement.style.colorScheme=v==='dark'?'dark':'light'}; const saved=localStorage.getItem(themeKey); if(saved) applyTheme(saved); else if(window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
+document.getElementById('themeBtn').onclick=()=>{const cur=document.documentElement.dataset.theme==='dark'?'light':'dark'; applyTheme(cur); localStorage.setItem(themeKey,cur);}
+const stepsData=[
+{t:"1. Scan fine print",h:`<p>Google Drive app → Scan → photo contract/lease/collection letter → Open with Google Docs → auto OCR. Redact SSN/account # with black marker before scanning.</p>`},
+{t:"2. Translate",h:`<p>Paste OCR into Prompt 1 (in any free AI chat — Claude.ai free, ChatGPT free, or local). Get clause-by-clause table with flags. No account needed for Claude free tier (limited) or use local free AI.</p>`},
+{t:"3. Verify law",h:`<p>For each flagged clause: LII → States → your state → search topic (e.g., landlord tenant, non-compete). LII provides no-cost access to current state and federal law【5502050657144382640†L5-L8】 and free access since 1992【5502050657144382640†L20-L23】.</p>`},
+{t:"4. Check pattern",h:`<p>CFPB Complaint DB → search company/collector name. Database is free public US gov resource, no API key【702401036369856452†L5-L7】, updates daily. If 100s complain about same fee, cite in dispute letter.</p>`},
+{t:"5. Action sheet",h:`<p>LawHelp.org → find your state legal aid. Export Rights File as PDF with table + LII links + CFPB screenshots. Bring to clinic — you now have organized citations, not just "this feels wrong".</p>`}
+];
+const stepperEl=document.getElementById('stepper'); const stepsEl=document.getElementById('steps');
+stepsData.forEach((s,i)=>{const b=document.createElement('div'); b.className='step'+(i===0?' active':''); b.textContent=(i+1)+'. '+s.t; b.onclick=()=>activate(i); stepperEl.appendChild(b); const c=document.createElement('div'); c.className='step-content'+(i===0?' active':''); c.innerHTML=s.h; stepsEl.appendChild(c);});
+function activate(i){[...stepperEl.children].forEach((el,j)=>el.classList.toggle('active',j===i)); [...stepsEl.children].forEach((el,j)=>el.classList.toggle('active',j===i));}
+document.querySelectorAll('[data-copy]').forEach(btn=>{btn.onclick=()=>{const id=btn.dataset.copy; navigator.clipboard.writeText(document.getElementById(id).innerText); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',1200);}});
+document.getElementById('animateCosts').onclick=()=>{document.querySelectorAll('.cost-old').forEach(el=>el.classList.add('active'));};
+const pages=document.getElementById('pages'); const val=document.getElementById('val'); const calcOut=document.getElementById('calcOut');
+function calc(){const v=+pages.value; val.textContent=v+' pages'; const time=v*2; const saved=Math.round(v*8); calcOut.innerHTML=`Time to translate: ~${time} min (AI table)<br>Law verification: LII unlimited free<br>Potential abusive flags found avg: ${Math.round(v*0.3)} — check against CFPB pattern<br>Saved vs attorney quick review: $${saved}+`;} pages.oninput=calc; calc();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
