@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Turn Any Textbook, PDF, or Lecture Into a Self-Testing Study System With NotebookLM</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbfaf7;--card:#ffffff;--text:#1a1a1e;--muted:#6b7280;--line:#eae6de;--coral:#ff6b5a;--coral-2:#ffedea;--accent:#111827;--ok:#16a34a}
+@media(prefers-color-scheme:dark){ :root{--bg:#0f0f10;--card:#1a1a1e;--text:#f5f3ef;--muted:#9aa0aa;--line:#2a2a2e;--coral-2:#2a1816;--accent:#f5f3ef} }
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.6}
+h1,h2,h3{font-family:Manrope,sans-serif;letter-spacing:-0.02em}
+.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--line)}
+.badge{display:inline-flex;gap:6px;align-items:center;padding:4px 10px;border-radius:999px;background:var(--line);font-size:12px;font-weight:600}
+.badge.ok{background:#dcfce7;color:#166534}
+.badge.free{background:#dbeafe;color:#1e40af}
+.wrap{max-width:880px;margin:0 auto;padding:24px}
+.hero{padding:28px;border:1px solid var(--line);background:var(--card);border-radius:20px;margin:20px 0}
+.hero h1{font-size:34px;line-height:1.15;margin:8px 0 12px}
+.meta{color:var(--muted);font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:18px}
+.cost-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+.cost-old{text-decoration:line-through;opacity:.6;transition:all.6s}
+.cost-old.active{text-decoration-color:var(--coral);color:var(--coral)}
+.mono{font-family:"JetBrains Mono",monospace}
+.btn{cursor:pointer;border:1px solid var(--line);background:var(--accent);color:var(--bg);padding:10px 14px;border-radius:10px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--text)}
+.stepper{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+.step{padding:8px 12px;border-radius:999px;border:1px solid var(--line);cursor:pointer}
+.step.active{background:var(--text);color:var(--bg)}
+.step-content{display:none}.step-content.active{display:block}
+.callout{border-left:4px solid var(--coral);background:var(--coral-2);padding:14px 16px;border-radius:12px}
+.quota{display:flex;gap:12px;align-items:center}
+input[type=range]{width:100%}
+.reveal{border:1px dashed var(--coral);border-radius:12px;padding:12px;cursor:pointer}
+.reveal.hidden{display:none;margin-top:8px}.reveal.open.hidden{display:block}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+pre{background:#0f1115;color:#e5e7eb;padding:14px;border-radius:12px;overflow:auto;position:relative}
+.copy{position:absolute;top:8px;right:8px}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div style="font-family:Manrope;font-weight:800">Everyday AI, Done Right</div>
+<div style="display:flex;gap:8px;align-items:center">
+<span class="badge ok">✓ Verified 2026-05-13</span>
+<span class="badge free">T0 • No Card</span>
+<button id="themeBtn" class="btn ghost" style="padding:6px 10px">Toggle theme</button>
+</div>
+</div>
+<div class="wrap">
+<div class="hero">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span class="badge">Category: Learning</span><span class="badge">Tool: NotebookLM by Google</span><span class="badge">Reading time: 3 min</span>
+<span class="badge ok">50 sources / notebook • 100 notebooks • 500k words/source</span>
+</div>
+<h1>Turn Any Textbook, PDF, or Lecture Into a Self-Testing Study System — Free, No Card, In One Notebook</h1>
+<p class="meta">Pitch: Upload your actual course materials to NotebookLM (free tier: 100 notebooks, 50 sources each, 50 chats/day, 3 audio overviews/day, each source up to 500k words) and generate grounded quizzes, flashcards, audio podcasts, and a chat tutor that cites your sources — no hallucinating outside your material.</p>
+<div class="grid2" style="margin-top:16px">
+<div class="card">
+<h3 style="margin:0 0 8px">Cost Comparison</h3>
+<div class="cost-row"><span>ChatGPT Plus + custom GPT</span><span class="cost-old mono" data-strike>$20/mo</span></div>
+<div class="cost-row"><span>Quizlet Plus</span><span class="cost-old mono" data-strike>$7.99/mo</span></div>
+<div class="cost-row"><span>AI podcast (e.g., custom tool)</span><span class="cost-old mono" data-strike>$15/mo</span></div>
+<div class="cost-row"><strong>NotebookLM Free</strong><strong class="mono" style="color:var(--ok)">$0/mo — no card</strong></div>
+<button id="animateCosts" class="btn ghost" style="margin-top:10px">Animate savings</button>
+</div>
+<div class="card">
+<h3 style="margin:0 0 8px">Quota Calculator</h3>
+<p class="meta" style="margin:0">Free tier is 50 sources/notebook, 50 chats/day. How many pages do you have?</p>
+<div class="quota">
+<input id="pages" type="range" min="10" max="1000" value="200"><span id="pagesVal" class="mono">200 pages</span>
+</div>
+<div id="calcOut" class="mono" style="font-size:13px;margin-top:8px"></div>
+<p class="meta" style="font-size:12px">Source: <a href="https://support.google.com/notebooklm/answer/16213268" target="_blank">support.google.com/notebooklm/answer/16213268</a> and <a href="https://notebooklm.google.com/plans" target="_blank">notebooklm.google/plans</a> — verified 2026-05-13. Limits: Free = 100 notebooks, 50 sources/nb, 50 chat Q/day, 3 audio/day, 10 reports/day.【3081768829316429565†L20-L24】【3081768829316429565†L72-L76】</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>What you get</h2>
+<ul>
+<li>Chat tutor grounded only in your PDFs/slides/YouTube transcripts — with citations</li>
+<li>One-click Study Guide, Briefing Doc, FAQ, Timeline</li>
+<li>Audio Overview (podcast) + Video Overview from your sources — 3/day free</li>
+<li>Auto-generated quizzes & flashcards that don't invent facts outside sources</li>
+</ul>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Walkthrough — interactive stepper</h2>
+<div class="stepper" id="stepper"></div>
+<div id="steps"></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Prompt templates (one-click copy)</h2>
+<div style="position:relative"><pre id="p1"><code>Create a 3-level study system from my sources:
+
+LEVEL 1 - Map: List the 12 core concepts with 1-sentence definition each, citing source file and page.
+LEVEL 2 - Test: For each concept, write 2 recall Qs (answer hidden) + 1 application Q.
+LEVEL 3 - Gaps: Flag 3 topics where sources conflict or are thin, and tell me what to add.
+
+Constraints: Use ONLY my sources. If info missing, say "Not in sources".</code></pre><button class="btn copy" data-copy="p1">Copy</button></div>
+<div style="position:relative"><pre id="p2"><code>Generate exam-ready artifacts:
+
+1. Study Guide: 800 words max, grouped by theme, with inline citations [Source Name].
+2. 20 Flashcards: Front = question, Back = answer + 5-word mnemonic.
+3. 10 MCQ: 4 options, mark correct, explain why others wrong, cite source.
+4. Audio script: 5-min podcast outline for "Explain like I'm teaching a friend".
+
+Format flashcards as CSV: Question,Answer,Mnemonic,Source</code></pre><button class="btn copy" data-copy="p2">Copy</button></div>
+</div>
+
+<div class="callout" style="margin-top:16px">
+<h3 style="margin:0 0 6px">What Breaks — coral callout</h3>
+<ul style="margin:0">
+<li>Free cap: 50 sources/notebook — if you have 70 PDFs, split into 2 notebooks (e.g., Ch1-5, Ch6-10). You still get 100 notebooks total free.</li>
+<li>Audio limit: 3 Audio Overviews per day — queue them. Write script first, then generate overnight.</li>
+<li>500k words per source — huge scanned PDFs (>500 pages) may need OCR split. Use Google Drive Docs OCR (free) before upload.</li>
+<li>Hallucination guard only works if you prompt "Use ONLY my sources" — otherwise it may blend Gemini world knowledge.</li>
+<li>No API key for free chat? It's web-only. Export via copy/paste or Download as Google Doc.</li>
+</ul>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Three Things to Try Now — click to reveal</h3>
+<div class="reveal" onclick="this.classList.toggle('open')"><strong>1. Podcast your lecture notes while commuting</strong><div class="hidden">Upload lecture slides + your handwritten notes photo. Hit Audio Overview → get 8-min dialogue podcast grounded in your material. Listen offline in NotebookLM app. Limit 3/day, so batch 3 subjects each morning.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')" style="margin-top:8px"><strong>2. Turn YouTube lectures into self-testing Q&A</strong><div class="hidden">Paste YouTube URLs as sources (NotebookLM auto-transcribes). Then prompt template #1 — instant quiz from 10 videos without manual notes.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')" style="margin-top:8px"><strong>3. Spaced repetition export</strong><div class="hidden">Copy flashcard CSV → import to Anki (free, open source). You get grounded cards with source citations — no made-up facts.</div></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+<h3>Share</h3>
+<div class="share">
+<button class="btn ghost" onclick="navigator.clipboard.writeText(location.href)">Copy link</button>
+<a class="btn ghost" href="https://twitter.com/intent/tweet?text=Turn%20any%20PDF%20into%20a%20self-testing%20study%20system%20with%20NotebookLM%20%E2%80%94%20free%2C%20no%20card%2C%2050%20sources%2Fnb" target="_blank">Post to X</a>
+<a class="btn ghost" href="https://www.linkedin.com/sharing/share-offsite/?url=https://iggym.github.io/everyday-ai-done-right/" target="_blank">LinkedIn</a>
+</div>
+</div>
+
+<p class="meta" style="margin-top:24px">Built for Everyday AI Done Right. Verified against official Google support docs, not secondary blogs. No paid keys, no card, no trial.</p>
+</div>
+<script>
+const themeKey='eadr-theme';
+const applyTheme=v=>{document.documentElement.dataset.theme=v; if(v==='dark') document.documentElement.style.colorScheme='dark'; else document.documentElement.style.colorScheme='light'}
+const saved=localStorage.getItem(themeKey);
+if(saved) applyTheme(saved); else if(window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
+document.getElementById('themeBtn').onclick=()=>{
+ const cur=document.documentElement.dataset.theme==='dark'?'light':'dark';
+ applyTheme(cur); localStorage.setItem(themeKey,cur);
+}
+const stepsData=[
+ {t:"1. Create notebook",h:`<p>Go to <a href="https://notebooklm.google.com" target="_blank">notebooklm.google.com</a> — sign in with any Google account. No card. Click <b>New Notebook</b>.</p><p class="meta">Free tier: 100 notebooks max, 50 sources each【3081768829316429565†L8-L11】</p>`},
+ {t:"2. Add real sources",h:`<p>Upload PDFs, Google Docs, Slides, YouTube links, pasted text. Each source ≤500k words. For scanned textbooks, first open in Drive → Open with Google Docs to OCR.</p><ul><li>Drag 10-20 files at once</li><li>Keep source names descriptive: "Ch3_Photosynthesis.pdf"</li></ul>`},
+ {t:"3. Generate study artifacts",h:`<p>In Studio panel (right): click <b>Study Guide, Briefing Doc, FAQ, Timeline</b> — all grounded. Then <b>Audio Overview</b> → Customize: "Make it a tutor dialogue focusing on exam gaps."</p>`},
+ {t:"4. Chat with citations",h:`<p>Use prompt #1. Force grounding: start every prompt with "Use ONLY my sources, cite source name for each claim." Click citation numbers to jump to original page.</p>`},
+ {t:"5. Quiz loop",h:`<p>Prompt #2 → export flashcards CSV → import to Anki. Re-upload quiz results as new source called "My Mistakes" and ask: "Create 10 new Qs targeting only my mistakes."</p>`}
+];
+const stepperEl=document.getElementById('stepper'); const stepsEl=document.getElementById('steps');
+stepsData.forEach((s,i)=>{
+ const b=document.createElement('div'); b.className='step'+(i===0?' active':''); b.textContent=(i+1)+'. '+s.t; b.onclick=()=>activate(i); stepperEl.appendChild(b);
+ const c=document.createElement('div'); c.className='step-content'+(i===0?' active':''); c.innerHTML=s.h; stepsEl.appendChild(c);
+});
+function activate(i){ [...stepperEl.children].forEach((el,j)=>el.classList.toggle('active',j===i)); [...stepsEl.children].forEach((el,j)=>el.classList.toggle('active',j===i));}
+document.querySelectorAll('[data-copy]').forEach(btn=>{
+ btn.onclick=()=>{ const id=btn.dataset.copy; navigator.clipboard.writeText(document.getElementById(id).innerText); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',1200); }
+});
+document.getElementById('animateCosts').onclick=()=>{
+ document.querySelectorAll('.cost-old').forEach(el=>el.classList.add('active'));
+}
+const pages=document.getElementById('pages'); const pagesVal=document.getElementById('pagesVal'); const calcOut=document.getElementById('calcOut');
+function calc(){ const p=+pages.value; pagesVal.textContent=p+' pages'; const avgWords=250; const words=p*avgWords; const sourcesNeeded=Math.ceil(words/500000)||1; const notebooks=Math.ceil(sourcesNeeded/50); calcOut.innerHTML=`Estimated words: ${words.toLocaleString()} (~${avgWords} w/pg)<br>Sources needed at 500k limit: <b>${sourcesNeeded}</b> (free allows 50/nb) → <b>${notebooks}</b> notebook(s) — still within 100 free notebooks. Chats/day: 50, Audio/day: 3.`;}
+pages.oninput=calc; calc();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

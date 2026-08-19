@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Without Data: Free Offline AI Translation Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FCFCF9;--fg:#111827;--muted:#6B7280;--border:#E5E7EB;--card:#FFFFFF;--accent:#FF6B54;--accent-2:#0EA5E9;--coral:#FF8A75;--coral-bg:#FFF1EE;--green:#10B981;--shadow:0 4px 24px rgba(0,0,0,.06);--radius:16px}
+@media(prefers-color-scheme:dark){ :root{--bg:#0F1115;--fg:#E5E7EB;--muted:#9CA3AF;--border:#22262F;--card:#171A21;--coral-bg:#221412;--shadow:0 8px 32px rgba(0,0,0,.4)}}
+[data-theme="light"]{--bg:#FCFCF9;--fg:#111827;--muted:#6B7280;--border:#E5E7EB;--card:#FFFFFF;--coral-bg:#FFF1EE;--shadow:0 4px 24px rgba(0,0,0,.06)}
+[data-theme="dark"]{--bg:#0F1115;--fg:#E5E7EB;--muted:#9CA3AF;--border:#22262F;--card:#171A21;--coral-bg:#221412;--shadow:0 8px 32px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,-apple-system,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Manrope,sans-serif;letter-spacing:-.02em}
+.mono{font-family:"JetBrains Mono",monospace}
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 85%, transparent);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px 20px}
+.brand{font-weight:800;font-size:14px;letter-spacing:.02em}
+.brand span{color:var(--accent)}
+.actions{display:flex;gap:8px;align-items:center}
+.btn{border:1px solid var(--border);background:var(--card);color:var(--fg);padding:8px 12px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.container{max-width:900px;margin:0 auto;padding:24px 20px 80px}
+.hero{padding:32px;border:1px solid var(--border);background:var(--card);border-radius:24px;box-shadow:var(--shadow);margin-top:18px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.04em;border:1px solid var(--border);background:var(--bg)}
+.badge.verified{border-color:#10B98130;background:#10B98114;color:#059669}
+.badge.t0{background:#0EA5E914;border-color:#0EA5E930;color:#0284C7}
+.badge.unlimited{background:#F59E0B14;border-color:#F59E0B30;color:#D97706}
+.hero h1{font-size:clamp(28px,5vw,42px);line-height:1.05;margin:10px 0 10px}
+.hook{font-size:17px;color:var(--muted);max-width:65ch}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+@media(max-width:740px){.grid{grid-template-columns:1fr}}
+.card{border:1px solid var(--border);background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.cost-compare .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--border);font-size:14px}
+.cost-compare .row:last-child{border-bottom:0}
+.strike{position:relative;display:inline-block;color:var(--muted)}
+.strike::after{content:'';position:absolute;left:-2px;right:-2px;top:50%;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;animation:strike 1.2s ease forwards .6s}
+@keyframes strike{to{transform:scaleX(1)}}
+.free{font-weight:800;color:var(--green)}
+.calc{display:flex;flex-direction:column;gap:12px}
+.calc input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-family:Inter}
+.stat{font-size:28px;font-weight:800;font-family:Manrope}
+.stepper{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.steps-nav{display:flex;gap:8px;flex-wrap:wrap}
+.step-dot{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--border);background:var(--bg);font-weight:700;font-size:13px;cursor:pointer;transition:.2s}
+.step-dot.active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.step-panel{display:none;border:1px solid var(--border);border-radius:12px;padding:16px;background:var(--bg)}
+.step-panel.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.prompt{position:relative;background:#0F1115;color:#E8E8E6;border-radius:12px;padding:14px 44px 14px 14px;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.55;overflow:auto;white-space:pre-wrap;word-wrap:break-word;border:1px solid #23262F}
+.copy{position:absolute;top:8px;right:8px;background:#1E232E;color:white;border:0;padding:6px 10px;border-radius:8px;font-size:11px;cursor:pointer}
+.copy.copied{background:var(--green)}
+.callout-coral{border-left:4px solid var(--coral);background:var(--coral-bg);padding:16px;border-radius:12px;margin:18px 0}
+.callout-coral h3{margin:0 0 6px;color:#D93A1F}
+@media(prefers-color-scheme:dark){.callout-coral h3{color:#FF8A75}}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:700px){.three{grid-template-columns:1fr}}
+.reveal{border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;background:var(--card);transition:.2s;min-height:120px}
+.reveal:hover{transform:translateY(-2px)}
+.reveal .front{font-weight:700}
+.reveal .back{display:none;margin-top:8px;color:var(--muted);font-size:13px}
+.reveal.open .back{display:block}
+.reveal.open .front{color:var(--accent)}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.small{font-size:12px;color:var(--muted)}
+.kbd{font-family:"JetBrains Mono";background:var(--bg);border:1px solid var(--border);border-bottom-width:2px;padding:2px 6px;border-radius:6px;font-size:11px}
+ul{padding-left:18px}
+li{margin:6px 0}
+a{color:var(--accent-2);text-decoration:none}
+a:hover{text-decoration:underline}
+hr{border:0;border-top:1px solid var(--border);margin:24px 0}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="brand"><span>Everyday AI</span>, Done Right — travel • verified free</div>
+<div class="actions">
+<button class="btn" id="themeToggle">◐ Auto</button>
+<a class="btn" href="https://iggym.github.io/everyday-ai-done-right/">All guides</a>
+</div>
+</div>
+
+<div class="container">
+<div class="hero">
+<div class="small mono">ID 0057 • 2026-08-19 • 4 min • category: travel</div>
+<h1>Travel Without Data: Free Offline AI Translation & Camera Survival Kit</h1>
+<div class="hook">Translate signs, menus, and live conversations completely offline using Apple Translate and Google Translate's free on-device AI — no card, no roaming, unlimited use, but limited to ~19 Apple / ~59 Google languages and requires pre-downloaded ~40–200 MB packs.</div>
+<div class="badges">
+<div class="badge verified">✓ verified 2026-08-19</div>
+<div class="badge t0">T0 • Permanent Free • No Card</div>
+<div class="badge unlimited">Offline • Unlimited • On-Device NMT</div>
+<div class="badge">Apple Neural Engine + Google on-device OCR</div>
+<div class="badge">Sources: Apple Support • Google Support</div>
+</div>
+<div class="grid">
+<div class="card cost-compare">
+<h3 style="margin:0 0 8px">Cost comparison</h3>
+<div class="row"><span>International roaming data (7 days @ $12/day)</span><span class="strike">$84.00</span></div>
+<div class="row"><span>DeepL Individual (unlimited web)</span><span class="strike">$8.74/mo</span></div>
+<div class="row"><span>iTranslate Pro annual</span><span class="strike">$49.99/yr</span></div>
+<div class="row"><span>Pocketalk device</span><span class="strike">$299.00</span></div>
+<div class="row"><span><strong>This kit: Offline Apple + Google Translate</strong></span><span class="free">$0 forever</span></div>
+<div class="small" style="margin-top:8px">Strike-through animation shows replaced costs. No account required for offline packs.</div>
+</div>
+
+<div class="card calc">
+<h3 style="margin:0 0 8px">Quota & Savings calculator</h3>
+<label class="small">Trip days<input id="tripDays" type="number" value="7" min="1" max="60"></label>
+<label class="small">Translations per day<input id="perDay" type="number" value="25" min="1" max="200"></label>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px">
+<div><div class="small">Roaming you'd avoid</div><div class="stat" id="roamSave">$84</div></div>
+<div><div class="small">Requests if using Gemini phrasebook</div><div class="stat mono" id="gemReq">25 / 1000</div></div>
+</div>
+<div class="small">OS offline: <strong>unlimited</strong> after pack download (40-200MB/language). Optional <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank">Gemini 2.5 Flash-Lite</a> free tier: <strong>15 RPM, 1000 RPD, 250K TPM</strong>, no card, resets midnight PT. Sources: <a href="https://support.apple.com/guide/iphone/translate-text-voice-and-conversations-iphf74cb450f/ios" target="_blank">Apple</a> • <a href="https://support.google.com/translate/answer/6142473" target="_blank">Google Translate offline</a>. Calculator tied to logged quotas.</div>
+</div>
+</div>
+</div>
+
+<div style="height:16px"></div>
+
+<div class="card">
+<h2>Why this beats paid translation</h2>
+<p>You get three AI capabilities with no signal: <strong>text NMT</strong> (neural machine translation on Apple's Neural Engine / Google's on-device model), <strong>camera OCR + overlay</strong>, and <strong>live conversation</strong> mode that alternates languages. All processing stays on-device, so no roaming charges, no paste to ad-network.</p>
+<div class="three">
+<div class="reveal" onclick="this.classList.toggle('open')"><div class="front">① Works in airplane mode ✈️</div><div class="back">After downloading Japanese + English, point camera at a ramen menu in Tokyo metro — translation appears even with no SIM. Apple: 19 languages offline, Google: 59 languages offline including camera.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><div class="front">② Private by design 🔒</div><div class="back">Apple says translations are done on-device with machine learning, not sent to servers when On-Device Mode is on. Google offline packs also run local. No chat history sold.</div></div>
+<div class="reveal" onclick="this.classList.toggle('open')"><div class="front">③ Instant camera overlay 📷</div><div class="back">Live Text (iOS 15+) and Google Lens camera mode overlay translated text in real time. Hold steady 1-2s for best OCR. Tap translated block to play audio.</div></div>
+</div>
+</div>
+
+<div style="height:16px"></div>
+
+<div class="card">
+<h2>Step-by-step — 6 minutes setup</h2>
+<div class="steps-nav" id="stepsNav"></div>
+<div id="stepsPanels"></div>
+<div style="margin-top:12px;display:flex;gap:8px"><button class="btn" id="prevStep">← Prev</button><button class="btn primary" id="nextStep">Next →</button><span class="small" id="stepIndicator" style="align-self:center"></span></div>
+</div>
+
+<div style="height:16px"></div>
+
+<div class="card">
+<h2>Copyable prompt templates (optional pre-trip phrasebook via free Gemini)</h2>
+<p class="small">Use these in <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a> free tier (no card). Gemini 2.5 Flash-Lite gives you 15 RPM / 1000 RPD. Paste result into Notes for offline access.</p>
+
+<h3>1) 30 essential phrases + pronunciation</h3>
+<div class="prompt" id="p1">You are a travel phrase specialist. Create a table for: COUNTRY=[Japan], CONTEXT=[metro, restaurant, pharmacy].
+Columns: English | [Japanese kanji + kana] | Romaji | IPA-ish pronunciation for English speaker | When to use (1 line).
+Include exactly 30 rows: greetings 5, ordering 8, directions 7, emergency 5, polite exit 5.
+Add a short note on bowing vs speaking volume.
+Output Markdown, no extra chatter.</div>
+<button class="copy" data-target="p1">Copy</button>
+
+<h3 style="margin-top:18px">2) Allergen-specific menu card</h3>
+<div class="prompt" id="p2">Make an allergen card I can show in restaurants. Language: Spanish. Allergens: peanut, shellfish, sesame. Severe reaction.
+Format:
+- Big bold Spanish first (formal), then English small
+- List 3 safe alternatives common in Spain
+- Add: "Please clean surfaces/utensils"
+Keep to 90 words max Spanish, no emojis. I will print this.</div>
+<button class="copy" data-target="p2">Copy</button>
+
+<h3 style="margin-top:18px">3) Offline survival checklist</h3>
+<div class="prompt" id="p3">Turn this into an offline travel kit checklist for offline iPhone + Android:
+- Languages needed: English -> Italian + French
+- Need: how to download offline packs, enable On-Device Mode, test in airplane mode, camera tips for low light menus.
+Give me numbered steps with iOS path: Settings > Translate > Downloaded Languages, and Android path: Translate app > profile pic > Downloaded languages.
+Return as checklist with [ ] boxes.</div>
+<button class="copy" data-target="p3">Copy</button>
+</div>
+
+<div style="height:16px"></div>
+
+<div class="callout-coral">
+<h3>What Breaks — Limitations</h3>
+<ul>
+<li><strong>Language coverage:</strong> Apple offline ~19 languages (iOS 17 list includes EN, FR, DE, JA, KO, ES, IT, PT-BR, RU, AR, etc. — check your pair). Google offline ~59 languages for camera. If you need Khmer, Lao, Amharic offline, Google doesn't have camera, Apple doesn't have language at all.</li>
+<li><strong>Quality drop offline:</strong> On-device NMT is smaller model than cloud. Idioms, slang, long sentences degrade 10-20%. Keep input short: 1 sentence = better.</li>
+<li><strong>Camera needs conditions:</strong> Low light, cursive handwriting, stylized fonts fail OCR. Hold 6-10 inches away, steady 2 sec.</li>
+<li><strong>No real-time sign reading while moving:</strong> Conversation mode needs pause between speakers. Live overlay not persistent video translation.</li>
+<li><strong>Storage:</strong> Each pack ~40-200 MB. Downloading 8 languages can use 1+ GB. Pre-download on Wi-Fi.</li>
+<li><strong>Optional Gemini phrasebook:</strong> Free tier is 250 RPD for Flash (10 RPM) / 1000 RPD for Flash-Lite (15 RPM), 250K TPM, per <a href="https://ai.google.dev/gemini-api/docs/rate-limits" target="_blank">official rate limits</a>. Resets midnight PT. No card, but prompts may be used to improve Google products — don't paste passport numbers.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Try It Now — 45 second test</h2>
+<ol>
+<li>Put phone in <span class="kbd">Airplane Mode</span> + Wi-Fi off</li>
+<li>Open Apple Translate: pick English → Spanish (downloaded), type <span class="kbd">Where is the pharmacy?</span> → Play audio</li>
+<li>Open Google Translate: Camera → point at any non-English package — watch overlay</li>
+<li>If overlay fails, tap <span class="kbd">Pause</span> and tap individual words to hear them — reveals OCR quality</li>
+</ol>
+<div class="small">If this worked offline, you just saved $12/day roaming and a $8.74/mo subscription. Next: download your next trip's languages before departure.</div>
+</div>
+
+<div style="height:16px"></div>
+
+<div class="card">
+<h2>Share this kit</h2>
+<div class="share">
+<a class="btn" href="#" onclick="share('twitter');return false">X / Twitter</a>
+<a class="btn" href="#" onclick="share('facebook');return false">Facebook</a>
+<a class="btn" href="#" onclick="share('linkedin');return false">LinkedIn</a>
+<a class="btn" href="#" onclick="share('reddit');return false">Reddit</a>
+<button class="btn" onclick="copyLink()">Copy link</button>
+</div>
+<div class="small" id="shareStatus" style="margin-top:8px"></div>
+<div class="small" style="margin-top:12px">Official sources: <a href="https://support.apple.com/guide/iphone/translate-text-voice-and-conversations-iphf74cb450f/ios">Apple Translate on-device docs</a> • <a href="https://support.google.com/translate/answer/6142473">Google Translate offline</a> • Quota: <a href="https://ai.google.dev/gemini-api/docs/pricing">Gemini pricing</a> • <a href="https://ai.google.dev/gemini-api/docs/rate-limits">Rate limits</a></div>
+</div>
+
+</div>
+
+<script>
+const themeBtn=document.getElementById('themeToggle');
+function getStored(){return localStorage.getItem('eadr-theme')}
+function applyTheme(t){
+if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);themeBtn.textContent=t==='light'?'☀ Light':'☾ Dark'}
+else{document.documentElement.removeAttribute('data-theme');themeBtn.textContent='◐ Auto'}}
+applyTheme(getStored());
+themeBtn.addEventListener('click',()=>{
+const cur=getStored();const next=cur==='light'?'dark':cur==='dark'?null:'light';
+if(next) localStorage.setItem('eadr-theme',next); else localStorage.removeItem('eadr-theme');applyTheme(next);
+});
+const steps=[
+{title:"1. iPhone: download packs",body:`<p><strong>iOS 14+ with A12 chip or later</strong> for full offline:</p>
+<ol><li>Settings app → <code>Translate</code> → <code>Downloaded Languages</code></li><li>Download English + destination (e.g., Japanese). Each ~40-200MB.</li><li>Toggle <code>On-Device Mode</code> ON.</li><li>Open Translate app → Camera icon → allow camera.</li></ol>
+<p class="small">Source: Apple Support Translate guide. After download, translations use Neural Engine on-device. Works in airplane mode.</p>`},
+{title:"2. Android: offline packs",body:`<p><strong>Google Translate app</strong> (free, no card):</p>
+<ol><li>Open Translate → top-right profile pic → <code>Downloaded languages</code></li><li>Download pairs. Under each, enable <code>Camera</code> offline if listed.</li><li>Settings → <code>Tap to Translate</code> + offline toggle.</li></ol>
+<p class="small">Google supports ~59 languages offline with camera (vs Apple 19). Docs: <a href="https://support.google.com/translate/answer/6142473" target="_blank">Download languages</a>.</p>`},
+{title:"3. Learn 3 modes",body:`<ul><li><strong>Text:</strong> type, get instant, tap 🔊, save to Favorites (star).</li><li><strong>Conversation:</strong> Rotate phone sideways? Actually tap Conversation tab, select auto-detect, tap mic, speak. Phone vibrates, auto language switch.</li><li><strong>Camera:</strong> Point at sign, wait 1s, translation overlays. Tap to pause, copy single word.</li></ul>
+<p class="small">Tip: Add Favorite sentences like "I am allergic to..." and they remain accessible offline in full-screen mode to show someone.</p>`},
+{title:"4. Optional: free AI phrasebook",body:`<p>Before flight, generate personalized sheet via <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a> (free tier, no card). Use Gemini 2.5 Flash-Lite: <span class="kbd">15 RPM, 1000 RPD</span>.</p>
+<p>Paste prompt #1 or #2 from below cards. Copy output to Apple Notes (makes it searchable offline) or print.</p>
+<p class="small">Privacy: free tier prompts may be used to improve Google per pricing page. Don't paste passport #.</p>`},
+{title:"5. Airplane mode test",body:`<ol><li>Airplane Mode ON, Wi-Fi OFF</li><li>Translate "Where is gate B12?" → your target language → play voice.</li><li>Camera: cereal box / any printed foreign word. Does overlay stay?</li><li>If fails: good light? Add pack? Re-download.</li></ol>
+<p class="small">If test passes, you've verified offline NMT + OCR works. No daily quota.</p>`},
+{title:"6. Daily travel flow",body:`<ul><li>Morning: download offline Google Maps area for city (maps.google.com offline).</li><li>On street: Camera mode for signs, Conversation for taxi driver, Text Favorite for ordering.</li><li>Night: if you have Wi-Fi, optionally run one Gemini request to translate next day's itinerary (costs 1 request of your 1000/day).</li></ul>`}
+];
+const nav=document.getElementById('stepsNav'), panels=document.getElementById('stepsPanels'), indicator=document.getElementById('stepIndicator');
+let cur=0;
+function renderNav(){
+nav.innerHTML='';panels.innerHTML='';
+steps.forEach((s,i)=>{
+const dot=document.createElement('div');dot.className='step-dot'+(i===cur?' active':'');dot.textContent=i+1;dot.title=s.title;dot.onclick=()=>go(i);nav.appendChild(dot);
+const p=document.createElement('div');p.className='step-panel'+(i===cur?' active':'');p.innerHTML=`<h3 style="margin:0 0 6px">${s.title}</h3>${s.body}`;panels.appendChild(p);
+});
+indicator.textContent=`Step ${cur+1} of ${steps.length}`;
+}
+function go(n){cur=Math.max(0,Math.min(n,steps.length-1));renderNav()}
+document.getElementById('prevStep').onclick=()=>go(cur-1);
+document.getElementById('nextStep').onclick=()=>go(cur+1);
+renderNav();
+
+document.querySelectorAll('.copy').forEach(b=>{b.addEventListener('click',()=>{
+const id=b.getAttribute('data-target');const el=document.getElementById(id);const txt=el.textContent;
+navigator.clipboard.writeText(txt).then(()=>{b.textContent='Copied!';b.classList.add('copied');setTimeout(()=>{b.textContent='Copy';b.classList.remove('copied')},1300)});
+})});
+
+function share(net){
+const url=encodeURIComponent(location.href);const title=encodeURIComponent("Travel Without Data: Free Offline AI Translation Kit — $0, no card, unlimited offline");
+let u='';
+if(net==='twitter') u=`https://twitter.com/intent/tweet?url=${url}&text=${title}`;
+if(net==='facebook') u=`https://www.facebook.com/sharer/sharer.php?u=${url}`;
+if(net==='linkedin') u=`https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+if(net==='reddit') u=`https://www.reddit.com/submit?url=${url}&title=${title}`;
+window.open(u,'_blank','width=640,height=480');}
+function copyLink(){navigator.clipboard.writeText(location.href).then(()=>{document.getElementById('shareStatus').textContent='Link copied!';setTimeout(()=>document.getElementById('shareStatus').textContent='',1500)})}
+
+function recalc(){
+const days=parseInt(document.getElementById('tripDays').value)||7;
+const per=parseInt(document.getElementById('perDay').value)||25;
+document.getElementById('roamSave').textContent='$'+(days*12);
+const total=days*per;
+document.getElementById('gemReq').textContent= total +' / 1000 (Lite)';
+}
+document.getElementById('tripDays').addEventListener('input',recalc);
+document.getElementById('perDay').addEventListener('input',recalc);
+recalc();
+</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
