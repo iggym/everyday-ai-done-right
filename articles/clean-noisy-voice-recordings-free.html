@@ -110,5 +110,6 @@ document.querySelectorAll('.thing').forEach(b=>b.onclick=()=>{b.classList.toggle
 const url=location.href;document.querySelectorAll('.share').forEach(row=>{const text=row.dataset.share,u=encodeURIComponent(url),t=encodeURIComponent(text),items=[['X','https://twitter.com/intent/tweet?text='+t+'&url='+u],['LinkedIn','https://www.linkedin.com/sharing/share-offsite/?url='+u+'&title='+t+'&summary='+t],['Facebook','https://www.facebook.com/sharer/sharer.php?u='+u],['WhatsApp','https://wa.me/?text='+encodeURIComponent(text+' '+url)],['Reddit','https://www.reddit.com/submit?url='+u+'&title='+t],['Email','mailto:?subject='+encodeURIComponent('Clean noisy voice recordings for free')+'&body='+encodeURIComponent(text+'\n\n'+url)]];items.forEach(([n,h])=>{const a=document.createElement('a');a.textContent=n;a.href=h;a.target='_blank';a.rel='noopener';row.appendChild(a)});const b=document.createElement('button');b.textContent='Copy Link';b.onclick=()=>copy(url,b);row.appendChild(b)});
 })();
 </script>
+  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
