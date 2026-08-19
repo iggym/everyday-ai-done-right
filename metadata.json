@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "1001",
+  "slug": "turn-any-textbook-into-a-practice-quiz",
+  "title": "Turn Any Textbook Into a Practice Quiz",
+  "hook": "Upload a textbook PDF and get a custom multiple-choice quiz in seconds using Google AI Studio's free tier—free forever, no card required, handles up to 1,500 requests a day.",
+  "path": "articles/turn-any-textbook-into-a-practice-quiz.html",
+  "date": "2024-05-19",
+  "status": "published",
+  "format": "guide",
+  "category": "learning",
+  "tool": "Gemini 1.5 Flash (Google AI Studio, free tier)",
+  "tool_family": "Google (Gemini/AI Studio)",
+  "source_url": "https://ai.google.dev/pricing",
+  "tags": ["learning", "pdf-ingestion", "quiz-generation", "ai-studio", "study-tools"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2024-05-19"
+},{
   "id": "0021",
   "slug": "civic-legal-research-companion",
   "title": "AI research companion for civic & legal tasks",
