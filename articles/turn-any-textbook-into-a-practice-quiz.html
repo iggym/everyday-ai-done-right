@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn Any Textbook Into a Practice Quiz | Everyday AI Done Right</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #FAFAF9; --ink: #1C1C1E; --green: #0F8A5F; --coral: #FF6B4A;
+            --radius: 16px; --font-display: 'Manrope', sans-serif; --font-body: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+        }
+        [data-theme="dark"] {
+            --paper: #141414; --ink: #F4F4F3; --green: #22C58B; --coral: #FF8064;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-body); background: var(--paper); color: var(--ink); line-height: 1.5; transition: background 0.3s, color 0.3s; }
+        h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; }
+        .container { max-width: 720px; margin: 0 auto; padding: 1.5rem; }
+        
+        /* Topbar */
+        .topbar { position: sticky; top: 0; background: var(--paper); border-bottom: 1px solid var(--ink); z-index: 10; padding: 0.75rem 0; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s, border-color 0.3s; }
+        .topbar a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+        .topbar-info { font-family: var(--font-mono); font-size: 0.75rem; opacity: 0.7; }
+        button.theme-toggle { background: none; border: 1px solid var(--ink); color: var(--ink); padding: 0.25rem 0.5rem; border-radius: 8px; cursor: pointer; font-family: var(--font-mono); font-size: 0.75rem; }
+
+        /* Hero */
+        .hero { padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--ink); margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.25rem; margin-bottom: 1rem; }
+        .badge { display: inline-block; font-family: var(--font-mono); font-size: 0.75rem; background: var(--ink); color: var(--paper); padding: 0.2rem 0.6rem; border-radius: 999px; margin-right: 0.5rem; }
+        .badge.green { background: var(--green); color: #fff; }
+        .pitch { font-size: 1.1rem; margin: 1rem 0; }
+
+        /* Cost Widget */
+        .cost-widget { margin: 1.5rem 0; padding: 1.5rem; border: 1px solid var(--ink); border-radius: var(--radius); text-align: center; }
+        .price-old { font-size: 1.5rem; text-decoration: line-through; color: var(--coral); font-family: var(--font-mono); position: relative; display: inline-block; }
+        .price-new { font-size: 2rem; color: var(--green); font-weight: 700; font-family: var(--font-display); display: inline-block; margin-left: 1rem; opacity: 0; transform: translateY(10px); }
+        .price-new.pop { animation: popIn 0.4s forwards; }
+        @keyframes popIn { to { opacity: 1; transform: translateY(0); } }
+
+        /* Stepper */
+        .stepper-nav { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .step-btn { background: var(--paper); border: 1px solid var(--ink); color: var(--ink); padding: 0.4rem 0.8rem; border-radius: 999px; cursor: pointer; font-family: var(--font-mono); font-size: 0.8rem; transition: all 0.2s; }
+        .step-btn.active { background: var(--ink); color: var(--paper); }
+        .step-content { display: none; padding: 1.5rem; border: 1px solid var(--ink); border-radius: var(--radius); margin-bottom: 1.5rem; animation: fadeIn 0.3s; }
+        .step-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .prompt-box { background: rgba(0,0,0,0.05); padding: 1rem; border-radius: 8px; margin-top: 1rem; position: relative; font-family: var(--font-mono); font-size: 0.85rem; white-space: pre-wrap; }
+        [data-theme="dark"] .prompt-box { background: rgba(255,255,255,0.1); }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--ink); color: var(--paper); border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-family: var(--font-mono); }
+
+        /* Quota Widget */
+        .quota-widget { margin: 2rem 0; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--green); }
+        .quota-input { width: 100px; padding: 0.5rem; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); font-family: var(--font-mono); border-radius: 8px; text-align: center; }
+        .quota-result { margin-top: 1rem; font-weight: 500; }
+
+        /* What Breaks */
+        .what-breaks { margin: 2rem 0; padding: 1.5rem; border-radius: var(--radius); background: var(--coral); color: #fff; }
+        .what-breaks h3 { color: #fff; margin-bottom: 0.5rem; }
+
+        /* Three Things */
+        .three-things { margin: 2rem 0; }
+        .thing-item { margin-bottom: 0.5rem; }
+        .thing-btn { background: none; border: 1px solid var(--ink); color: var(--ink); padding: 0.5rem 1rem; border-radius: var(--radius); width: 100%; text-align: left; cursor: pointer; font-family: var(--font-body); font-size: 1rem; font-weight: 500; transition: background 0.2s; }
+        .thing-btn:hover { background: rgba(0,0,0,0.05); }
+        .thing-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding: 0 1rem; }
+        .thing-content.open { max-height: 200px; padding: 1rem; border-left: 1px solid var(--ink); margin-left: 0.5rem; margin-top: 0.5rem; }
+
+        /* Share */
+        .share-bar { display: flex; gap: 0.5rem; margin: 1.5rem 0; flex-wrap: wrap; }
+        .share-btn { padding: 0.4rem 0.8rem; border-radius: 999px; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); cursor: pointer; font-size: 0.8rem; font-family: var(--font-mono); text-decoration: none; display: inline-flex; align-items: center; transition: background 0.2s; }
+        .share-btn:hover { background: var(--ink); color: var(--paper); }
+
+        /* Footer */
+        .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--ink); font-size: 0.8rem; opacity: 0.8; }
+        .footer a { color: var(--green); }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="container" style="display:flex; justify-content:space-between; width:100%;">
+            <a href="https://iggym.github.io/everyday-ai-done-right/">← Home</a>
+            <div style="display:flex; gap:1rem; align-items:center;">
+                <span class="topbar-info">Learning · 4 min read</span>
+                <button class="theme-toggle" onclick="toggleTheme()">Theme</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Turn Any Textbook Into a Practice Quiz</h1>
+            <div><span class="badge green">Gemini 1.5 Flash</span><span class="badge">Verified 2024-05-19</span></div>
+            <p class="pitch">Upload a textbook PDF and get a custom multiple-choice quiz in seconds using Google AI Studio's free tier—free forever, no card required, handles up to 1,500 requests a day.</p>
+            
+            <div class="share-bar" id="sharePitch">
+                <a class="share-btn" target="_blank" id="shX">X</a>
+                <a class="share-btn" target="_blank" id="shLi">LinkedIn</a>
+                <a class="share-btn" target="_blank" id="shFb">Facebook</a>
+                <a class="share-btn" target="_blank" id="shWa">WhatsApp</a>
+                <a class="share-btn" target="_blank" id="shRd">Reddit</a>
+                <a class="share-btn" target="_blank" id="shEm">Email</a>
+                <button class="share-btn" onclick="copyLink('pitch')">Copy Link</button>
+            </div>
+        </div>
+
+        <div class="cost-widget">
+            <div>Typical paid study tool:</div>
+            <div style="margin-top:0.5rem;">
+                <span class="price-old" id="oldPrice">$35.99/yr</span>
+                <span class="price-new" id="newPrice">$0</span>
+            </div>
+        </div>
+
+        <h2>What this replaces</h2>
+        <p style="margin-bottom:2rem;">Quizlet Plus ($35.99/year) or Chegg Study ($14.95/month) for generating custom practice tests from your specific course materials.</p>
+
+        <h2>The Walkthrough</h2>
+        <div class="stepper-nav" id="stepperNav"></div>
+        <div id="stepperContent">
+            <div class="step-content" data-step="1">
+                <h3>Step 1: Get your textbook PDF</h3>
+                <p>If you don't have one, download a free, peer-reviewed textbook from OpenStax (<a href="https://openstax.org" style="color:var(--green)">openstax.org</a>).</p>
+            </div>
+            <div class="step-content" data-step="2">
+                <h3>Step 2: Open Google AI Studio</h3>
+                <p>Go to <a href="https://aistudio.google.com" style="color:var(--green)">aistudio.google.com</a> and log in with a Google account. No credit card is required to access the free tier.</p>
+            </div>
+            <div class="step-content" data-step="3">
+                <h3>Step 3: Create a Structured Prompt</h3>
+                <p>Click "Create new prompt" and select "Structured prompt". This lets you set strict behavior rules so the AI doesn't waste your quota on chatty filler.</p>
+            </div>
+            <div class="step-content" data-step="4">
+                <h3>Step 4: Set System Instructions</h3>
+                <p>In the System Instructions box, paste the following:</p>
+                <div class="prompt-box"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>You are an expert quiz generator. Read the provided text. Generate a 10-question multiple-choice quiz based on the key concepts. For each question, provide 4 options (A-D), indicate the correct answer, and provide a 1-sentence explanation referencing the text. Do not include conversational filler.</div>
+            </div>
+            <div class="step-content" data-step="5">
+                <h3>Step 5: Upload the PDF</h3>
+                <p>In the prompt area, click the attachment icon (or type <code>@</code>) and upload your textbook PDF. This uses the model's native document reading ability, saving thousands of tokens compared to copy-pasting text.</p>
+            </div>
+            <div class="step-content" data-step="6">
+                <h3>Step 6: Add your prompt</h3>
+                <p>Below the file, type:</p>
+                <div class="prompt-box"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>Generate a quiz focusing on the main definitions and concepts from Chapter 1.</div>
+            </div>
+            <div class="step-content" data-step="7">
+                <h3>Step 7: Run it</h3>
+                <p>Click "Run". Review the output. If it hallucinates a wrong answer, use the thumbs down to provide feedback, then re-run.</p>
+            </div>
+        </div>
+
+        <div class="quota-widget">
+            <h3>Quota Checker</h3>
+            <p style="margin-bottom:1rem; font-size:0.9rem;">Google AI Studio free tier allows 1,500 requests per day (resetting at midnight Pacific Time).</p>
+            <label for="quizCount">Expected quizzes per day:</label>
+            <input type="number" id="quizCount" class="quota-input" value="10" min="0">
+            <div class="quota-result" id="quotaResult"></div>
+            <p style="font-size:0.75rem; margin-top:1rem; font-family:var(--font-mono); opacity:0.7;">Quota source: <a href="https://ai.google.dev/pricing" style="color:var(--green)">ai.google.dev/pricing</a> (verified 2024-05-19)</p>
+        </div>
+
+        <div class="what-breaks">
+            <h3>What breaks</h3>
+            <ul style="margin-top:0.5rem; padding-left:1.2rem;">
+                <li><strong>Rate limits:</strong> You get 15 requests per minute and 1,500 per day. If you hit the limit, the API throws a 429 error. Wait 60 seconds (for RPM) or until midnight Pacific Time (for RPD) to resume.</li>
+                <li><strong>Hallucinations:</strong> The model will occasionally invent plausible-but-wrong answers. Always verify the correct answer against your text.</li>
+                <li><strong>PDF parsing failures:</strong> Scanned image PDFs without OCR won't work. The model needs selectable text.</li>
+            </ul>
+        </div>
+
+        <div class="three-things">
+            <h2>Three Things</h2>
+            <div class="thing-item">
+                <button class="thing-btn" onclick="toggleThing(0)">1. System Instructions Save Quota</button>
+                <div class="thing-content">Forcing strict output formatting prevents the AI from wasting your daily quota on conversational prose, keeping responses dense and useful.</div>
+            </div>
+            <div class="thing-item">
+                <button class="thing-btn" onclick="toggleThing(1)">2. Native Uploads Preserve Tokens</button>
+                <div class="thing-content">Uploading a PDF directly to AI Studio saves thousands of input tokens and preserves formatting better than copy-pasting text into the prompt box.</div>
+            </div>
+            <div class="thing-item">
+                <button class="thing-btn" onclick="toggleThing(2)">3. OpenStax Bypasses Paywalls</button>
+                <div class="thing-content">OpenStax provides free, legal textbook PDFs, giving you unlimited study material to feed the AI without hitting paywalls or copyright issues.</div>
+            </div>
+            <div class="share-bar" id="shareThings">
+                <a class="share-btn" target="_blank" id="shX2">X</a>
+                <a class="share-btn" target="_blank" id="shLi2">LinkedIn</a>
+                <a class="share-btn" target="_blank" id="shFb2">Facebook</a>
+                <a class="share-btn" target="_blank" id="shWa2">WhatsApp</a>
+                <a class="share-btn" target="_blank" id="shRd2">Reddit</a>
+                <a class="share-btn" target="_blank" id="shEm2">Email</a>
+                <button class="share-btn" onclick="copyLink('things')">Copy Link</button>
+            </div>
+        </div>
+
+        <h2>Try it now</h2>
+        <p>Go to OpenStax, download any introductory subject PDF, and upload it to AI Studio.</p>
+
+        <div class="footer">
+            <p>Free-tier terms verified 2024-05-19 against <a href="https://ai.google.dev/pricing">ai.google.dev/pricing</a>.</p>
+            <p>Ladder tier: T0 (Permanent, no card).</p>
+            <p><a href="https://iggym.github.io/everyday-ai-done-right/">← Browse more guides</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Theme
+        function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); localStorage.setItem('eadr-theme', t); }
+        function toggleTheme() { let t = localStorage.getItem('eadr-theme'); applyTheme(t === 'dark' ? 'light' : 'dark'); }
+        (function() { let t = localStorage.getItem('eadr-theme'); if(!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; applyTheme(t); })();
+
+        // Cost Widget
+        setTimeout(() => { document.getElementById('newPrice').classList.add('pop'); }, 300);
+
+        // Stepper
+        const steps = document.querySelectorAll('.step-content');
+        const nav = document.getElementById('stepperNav');
+        steps.forEach((s, i) => {
+            let btn = document.createElement('button');
+            btn.className = 'step-btn'; btn.innerText = `Step ${i+1}`;
+            btn.onclick = () => setStep(i);
+            nav.appendChild(btn);
+        });
+        function setStep(idx) {
+            steps.forEach((s, i) => { s.classList.toggle('active', i === idx); });
+            nav.querySelectorAll('.step-btn').forEach((b, i) => { b.classList.toggle('active', i === idx); });
+        }
+        setStep(0);
+
+        // Copy Prompt
+        function copyPrompt(btn) {
+            let text = btn.parentElement.innerText.replace('Copy','').trim();
+            navigator.clipboard.writeText(text);
+            btn.innerText = 'Copied!'; setTimeout(() => btn.innerText = 'Copy', 1500);
+        }
+
+        // Quota Checker
+        const qInput = document.getElementById('quizCount');
+        const qResult = document.getElementById('quotaResult');
+        function checkQuota() {
+            let v = parseInt(qInput.value); if(isNaN(v)) return;
+            if(v <= 1500) qResult.innerHTML = `<span style="color:var(--green)">You stay under the free limit.</span> ${1500 - v} quizzes remaining today.`;
+            else qResult.innerHTML = `<span style="color:var(--coral)">Over limit.</span> You need to wait until midnight PT, or consider a paid tier.`;
+        }
+        qInput.addEventListener('input', checkQuota); checkQuota();
+
+        // Three Things
+        const thingContents = document.querySelectorAll('.thing-content');
+        function toggleThing(i) { thingContents[i].classList.toggle('open'); }
+
+        // Share
+        const pageUrl = encodeURIComponent(window.location.href);
+        const pitchText = encodeURIComponent("Turn any textbook PDF into a custom practice quiz in seconds using Google AI Studio's free tier—no card required, up to 1,500 quizzes a day.");
+        const thingText = encodeURIComponent("System instructions in AI Studio force strict output formatting, preventing the AI from wasting your daily quota on conversational prose.");
+
+        function setupShare(prefix, text) {
+            document.getElementById(`${prefix}X`).href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${text}`;
+            document.getElementById(`${prefix}Li`).href = `https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`;
+            document.getElementById(`${prefix}Fb`).href = `https://www.facebook.com/dialog/share?app_id=0&href=${pageUrl}`; // FB doesn't support prefill text
+            document.getElementById(`${prefix}Wa`).href = `https://wa.me/?text=${text}%20${pageUrl}`;
+            document.getElementById(`${prefix}Rd`).href = `https://www.reddit.com/submit?url=${pageUrl}&title=${text}`;
+            document.getElementById(`${prefix}Em`).href = `mailto:?subject=${text}&body=${pageUrl}`;
+        }
+        setupShare('sh', pitchText);
+        setupShare('sh2', thingText);
+
+        function copyLink(type) {
+            navigator.clipboard.writeText(window.location.href);
+            let btn = event.target; btn.innerText = 'Copied!'; setTimeout(() => btn.innerText = 'Copy Link', 1500);
+        }
+    </script>
+</body>
+</html>
