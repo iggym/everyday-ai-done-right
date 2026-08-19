@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0021",
+  "slug": "civic-legal-research-companion",
+  "title": "AI research companion for civic & legal tasks",
+  "hook": "100% free · 5 free queries every 2 hours · zero‑cost public‑interest AI",
+  "path": "articles/civic-legal-research-companion.html",
+  "date": "2026-08-19",
+  "status": "published",
+  "format": "guide",
+  "category": "civic",
+  "tool": "LegalAI.org (Public Interest AI)",
+  "tool_family": "LegalAI",
+  "source_url": "https://www.legalai.org/free-tier",
+  "tags": ["civic", "legal", "research", "free-ai"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-19"
+},{
   "id": "0055",
   "slug": "personalized-kids-learning-sheets-free",
   "title": "Make Personalized Kids' Learning Sheets for Free",
