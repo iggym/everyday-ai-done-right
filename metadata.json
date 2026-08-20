@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0090",
+  "slug": "free-inbox-triage-reply-drafter-cloudflare-workers-ai",
+  "title": "Free Inbox Triage + Reply Drafter with Cloudflare Workers AI",
+  "hook": "Paste one Worker script into Cloudflare and get a private, always-on endpoint that sorts customer email into urgent/sales/support/billing/spam and drafts first replies — 100% free with no credit card, capped at 10,000 neurons per day (≈900–1,200 short drafts on the 8B model, ~110 on the 70B).",
+  "path": "articles/free-inbox-triage-reply-drafter-cloudflare-workers-ai.html",
+  "date": "2026-08-20",
+  "status": "published",
+  "format": "guide",
+  "category": "business",
+  "tool": "Cloudflare Workers AI (free tier)",
+  "tool_family": "Cloudflare",
+  "source_url": "https://developers.cloudflare.com/workers-ai/platform/pricing/",
+  "tags": ["business", "email-triage", "customer-support", "cloudflare-workers-ai", "free-tier", "no-credit-card", "serverless"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-20"
+},{
   "id": "0001",
   "slug": "grounded-ai-research-notebooklm",
   "title": "Grounded AI Research Synthesis via Free Google NotebookLM",
