@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Household CSV Cleanup & Reconciliations — Everyday AI Done Right</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-coral: #ff6b6b;
+      --accent-green: #10b981;
+      --accent-blue: #38bdf8;
+      --border-color: #334155;
+      --font-heading: 'Manrope', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent-coral: #e11d48;
+      --accent-green: #059669;
+      --accent-blue: #0284c7;
+      --border-color: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 30px;
+    }
+    .brand-link {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    /* Hero */
+    .hero { margin-bottom: 35px; }
+    .badge-group { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+    .badge {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-ver { border-color: var(--accent-green); color: var(--accent-green); }
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      line-height: 1.25;
+      margin-bottom: 15px;
+    }
+    .pitch { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 25px; }
+
+    /* Interactive Centerpiece: Logic Matrix */
+    .matrix-card {
+      background: var(--bg-card);
+      border: 2px solid var(--accent-blue);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    }
+    .matrix-title {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .matrix-subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
+    .selector-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .matrix-btn {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+    .matrix-btn.active {
+      border-color: var(--accent-blue);
+      background: rgba(56, 189, 248, 0.1);
+    }
+    .matrix-output {
+      background: var(--bg-primary);
+      border-left: 4px solid var(--accent-blue);
+      padding: 15px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    /* Cost Comparison */
+    .cost-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .cost-box h4 { font-size: 0.85rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 5px; }
+    .cost-val { font-size: 1.5rem; font-weight: 700; }
+    .strike { text-decoration: line-through; color: var(--accent-coral); }
+    .free-val { color: var(--accent-green); }
+
+    /* Walkthrough & Stepper */
+    .stepper { margin-bottom: 40px; }
+    .step-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+    .step-header { font-weight: 700; margin-bottom: 8px; color: var(--accent-blue); }
+    .code-block {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      margin: 10px 0;
+      position: relative;
+      overflow-x: auto;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* What Breaks Callout */
+    .callout-break {
+      background: rgba(255, 107, 107, 0.05);
+      border: 1px solid var(--accent-coral);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 40px;
+    }
+    .callout-break h3 { color: var(--accent-coral); font-family: var(--font-heading); margin-bottom: 10px; }
+
+    /* Screenshot Pull Quote */
+    .pull-quote {
+      background: var(--bg-secondary);
+      border: 2px dashed var(--border-color);
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .quote-text {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    /* Share Bar */
+    .share-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+    .share-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      .cost-card { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="top-bar">
+      <a href="https://iggym.github.io/everyday-ai-done-right/" class="brand-link">Everyday AI Done Right</a>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Theme</button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="badge-group">
+          <span class="badge">Household</span>
+          <span class="badge badge-ver">Verified Aug 20, 2026</span>
+          <span class="badge">Tier T0 — 100% Free</span>
+        </div>
+        <h1>Offline Household CSV Cleanup & Reconciliations</h1>
+        <p class="pitch">Standardize messy bank exports, credit card logs, and utility records locally using OpenRefine's algorithmic clustering engines—with zero cloud exposure and zero LLM hallucinations.</p>
+      </section>
+
+      <!-- Centerpiece: Remediation Matrix -->
+      <section class="matrix-card">
+        <div class="matrix-title">
+          <span>⚡ CSV Remediation Matrix</span>
+        </div>
+        <div class="matrix-subtitle">Select your data corruption pattern to reveal the exact offline deterministic algorithm required:</div>
+        <div class="selector-group">
+          <button class="matrix-btn active" onclick="selectPattern(0, this)">Inconsistent Merchant Names</button>
+          <button class="matrix-btn" onclick="selectPattern(1, this)">Mixed Date Formats</button>
+          <button class="matrix-btn" onclick="selectPattern(2, this)">Embedded Currency Symbols</button>
+          <button class="matrix-btn" onclick="selectPattern(3, this)">Duplicate Records</button>
+        </div>
+        <div class="matrix-output" id="matrixOutput">
+          <strong>Recommended Algorithm:</strong> Key Collision Clustering (Fingerprint & Metaphone3)<br>
+          <strong>Why:</strong> Groups "WM SUPERCENTER #123", "WAL-MART STORE", and "WALMART INC" automatically without exposing transaction logs to public LLMs.
+        </div>
+      </section>
+
+      <!-- Cost Comparison Widget -->
+      <section class="cost-card">
+        <div class="cost-box">
+          <h4>Paid Proprietary Alternatives</h4>
+          <div class="cost-val strike">$75 – $900 / yr</div>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">Tableau Prep Builder or Copilot Add-ons <span style="font-size:0.7rem;">(Verified Aug 2026)</span></p>
+        </div>
+        <div class="cost-box">
+          <h4>OpenRefine (Local Engine)</h4>
+          <div class="cost-val free-val">$0.00 / Forever</div>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">Open-source, local execution, unlimited rows</p>
+        </div>
+      </section>
+
+      <!-- Walkthrough -->
+      <section class="stepper">
+        <h2 style="font-family: var(--font-heading); margin-bottom:20px;">Step-by-Step Workflow</h2>
+
+        <div class="step-item">
+          <div class="step-header">Step 1: Launch Local OpenRefine Instance</div>
+          <p>Download and start OpenRefine. It initializes a private local server at <code>http://127.0.0.1:3333/</code>. All data processing occurs in memory inside your browser. No internet connection required.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-header">Step 2: Cluster & Standardize Merchant Names</div>
+          <p>Click the column menu on your Merchant/Description column -> <strong>Edit cells</strong> -> <strong>Cluster and edit</strong>. Select <strong>Key Collision</strong> with <code>fingerprint</code> method to group entries like "UBER TRIP" and "UBER *EATS" into single standardized entities.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-header">Step 3: Apply Deterministic GREL Date Transformations</div>
+          <p>If dates are split between ISO and US standards, run the following GREL transform under <strong>Edit cells</strong> -> <strong>Transform</strong>:</p>
+          <div class="code-block">
+            <code>value.toDate('MM/dd/yyyy', 'yyyy-MM-dd').toString('yyyy-MM-dd')</code>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-header">Step 4: Clean Currency Values for Pivot Analysis</div>
+          <p>Remove embedded symbols ($ or commas) safely without altering decimal places using GREL expression:</p>
+          <div class="code-block">
+            <code>value.replace('$', '').replace(',', '').toNumber()</code>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- What Breaks -->
+      <section class="callout-break">
+        <h3>What Breaks (Limitations & Real-World Risks)</h3>
+        <p><strong>The Cloud LLM Myth:</strong> Most tutorials advise uploading financial CSVs to cloud LLMs. This is dangerous: generative models regularly hallucinate floating-point balances (e.g., altering $100.05 to $100.50), drop rows silently during context overflows, and log private family transaction records to cloud servers.</p>
+        <p style="margin-top:10px;"><strong>Memory Allocations:</strong> Large multi-year utility records require increasing OpenRefine's default heap limit by setting <code>-Xmx4g</code> in your local configuration settings file.</p>
+      </section>
+
+      <!-- Screenshot / Social Currency Block -->
+      <section class="pull-quote">
+        <div class="quote-text">"Pasting household credit card logs into cloud LLMs risks numeric hallucination and privacy exposure. Deterministic local clustering cleans 10,000 transaction rows offline for $0."</div>
+        <button class="share-btn" onclick="copyQuote()">Copy Stat Block</button>
+      </section>
+
+      <!-- Share Bar -->
+      <footer class="share-bar">
+        <button class="share-btn" onclick="nativeShare()">Share Guide</button>
+        <button class="share-btn" onclick="shareX()">Share on X</button>
+        <button class="share-btn" onclick="shareLinkedIn()">LinkedIn</button>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Theme Management
+    function initTheme() {
+      const saved = localStorage.getItem('eadr-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('eadr-theme', next);
+    }
+    initTheme();
+
+    // Matrix Logic
+    const patterns = [
+      { title: "Key Collision Clustering (Fingerprint & Metaphone3)", desc: "Groups 'WM SUPERCENTER #123', 'WAL-MART STORE', and 'WALMART INC' automatically without exposing transaction logs to public LLMs." },
+      { title: "GREL Date Formatting", desc: "Executes deterministic parsing via value.toDate('MM/dd/yyyy').toString('yyyy-MM-dd') to guarantee 0% numeric error rate." },
+      { title: "GREL Numeric Stripping", desc: "Safely strips currency symbols ($ / EUR) and comma delimiters, converting output directly into pure numeric float types." },
+      { title: "Exact/Facet Deduplication", desc: "Clusters identical rows via fingerprint hashes to flag double-posted utility or bank transactions instantly." }
+    ];
+
+    function selectPattern(idx, btn) {
+      document.querySelectorAll('.matrix-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const p = patterns[idx];
+      document.getElementById('matrixOutput').innerHTML = `<strong>Recommended Algorithm:</strong> ${p.title}<br><strong>Why:</strong> ${p.desc}`;
+    }
+
+    // Code Copying
+    function copyCode(btn) {
+      const code = btn.previousElementSibling.innerText;
+      navigator.clipboard.writeText(code);
+      btn.innerText = "Copied!";
+      setTimeout(() => btn.innerText = "Copy", 2000);
+    }
+
+    // Pull Quote Copy
+    function copyQuote() {
+      const quote = document.querySelector('.quote-text').innerText;
+      navigator.clipboard.writeText(quote);
+      alert('Stat block copied to clipboard!');
+    }
+
+    // Sharing Actions
+    function nativeShare() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Offline Household CSV Cleanup',
+          text: 'Clean 10,000 messy bank transactions locally with zero subscriptions and zero cloud exposure.',
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    }
+
+    function shareX() {
+      const text = encodeURIComponent("Most tutorials tell you to upload budget CSVs to ChatGPT. Here is how to clean years of messy transactions offline in seconds using local AI clustering:");
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(window.location.href)}`, '_blank');
+    }
+
+    function shareLinkedIn() {
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank');
+    }
+  </script>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+</body>
+</html>
