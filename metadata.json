@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0048",
+  "slug": "saas-waste-detector-takeout-cloudflare-free",
+  "title": "$0 SaaS Waste Detector — Takeout + Cloudflare Workers AI Free (No Card, No Hallucinated Dates)",
+  "hook": "Audit every SaaS subscription hiding in Gmail using Takeout MBOX export (free) + Cloudflare Workers AI 10k neurons/day free no card — local-first so renewal dates aren't hallucinated, as of 2026-08-20.",
+  "path": "articles/saas-waste-detector-takeout-cloudflare-free.html",
+  "date": "2026-08-20",
+  "status": "published",
+  "format": "guide",
+  "category": "business",
+  "tool": "Cloudflare Workers AI + Google Takeout + ScanMySubs",
+  "tool_family": "Cloudflare",
+  "source_url": "https://developers.cloudflare.com/workers-ai/platform/pricing/",
+  "tags": ["saas-audit", "gmail", "takeout", "business", "free-tier"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-20"
+},{
   "id": "0039",
   "slug": "ai-assistant-decision-tree-free-models",
   "title": "AI Assistant Decision Tree: Which Free Model Actually Fits Your Task?",
