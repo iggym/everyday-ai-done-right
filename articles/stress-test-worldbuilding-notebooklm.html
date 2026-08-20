@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress-Test Worldbuilding with NotebookLM | Everyday AI Done Right</title>
+    <meta name="description" content="Stop using AI to summarize your notes. Use Google NotebookLM to adversarially stress-test your worldbuilding against external facts.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #495057;
+            --accent: #ff6b6b; /* Coral */
+            --accent-hover: #fa5252;
+            --border: #dee2e6;
+            --success: #40c057;
+            --font-display: 'Manrope', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        [data-theme="dark"] {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2d2d2d;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --accent: #ff8787;
+            --accent-hover: #ff6b6b;
+            --border: #495057;
+            --success: #51cf66;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Top Bar */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 0; border-bottom: 1px solid var(--border);
+        }
+        .logo { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; }
+        .theme-toggle {
+            background: none; border: 1px solid var(--border); color: var(--text-primary);
+            padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: var(--font-body);
+        }
+
+        /* Hero */
+        .hero { padding: 40px 0 20px; }
+        .badge-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .badge {
+            font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 100px;
+            background: var(--bg-tertiary); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .badge.t0 { background: #d3f9d8; color: #2b8a3e; }
+        [data-theme="dark"] .badge.t0 { background: #1b4332; color: #8ce99a; }
+        h1 { font-family: var(--font-display); font-size: 2.2rem; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.03em; }
+        .pitch { font-size: 1.1rem; color: var(--text-secondary); max-width: 650px; }
+
+        /* Interactive Centerpiece: Live Sandbox */
+        .sandbox {
+            background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px;
+            padding: 24px; margin: 32px 0;
+        }
+        .sandbox h3 { font-family: var(--font-display); margin-bottom: 16px; font-size: 1.2rem; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); }
+        select, input {
+            width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border);
+            background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-body); font-size: 0.95rem;
+        }
+        .btn-primary {
+            background: var(--accent); color: white; border: none; padding: 12px 20px;
+            border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .output-box {
+            margin-top: 20px; background: var(--bg-primary); border: 1px solid var(--border);
+            border-radius: 8px; padding: 16px; font-family: var(--font-mono); font-size: 0.9rem;
+            color: var(--text-primary); white-space: pre-wrap; display: none; position: relative;
+        }
+        .copy-btn {
+            position: absolute; top: 8px; right: 8px; background: var(--bg-tertiary);
+            border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px;
+            cursor: pointer; font-size: 0.75rem; color: var(--text-secondary);
+        }
+        .copy-btn:hover { background: var(--border); }
+
+        /* Cost Comparison */
+        .cost-comparison {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 32px 0;
+        }
+        .cost-card {
+            padding: 20px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-secondary);
+        }
+        .cost-card.old { text-decoration: line-through; color: var(--text-secondary); opacity: 0.7; }
+        .cost-card.new { border-color: var(--success); background: rgba(64, 192, 87, 0.05); }
+        [data-theme="dark"] .cost-card.new { background: rgba(64, 192, 87, 0.1); }
+        .cost-amount { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; margin: 8px 0; }
+
+        /* Quota Calculator */
+        .quota-calc {
+            background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px;
+            padding: 20px; margin: 32px 0;
+        }
+        .quota-calc .verified-chip {
+            display: inline-block; font-size: 0.65rem; background: var(--bg-tertiary);
+            padding: 2px 6px; border-radius: 4px; color: var(--text-secondary); margin-left: 8px; vertical-align: middle;
+        }
+        .quota-result { margin-top: 12px; font-weight: 600; color: var(--success); }
+
+        /* What Breaks (Coral Accent) */
+        .what-breaks {
+            border-left: 4px solid var(--accent); background: var(--bg-secondary);
+            padding: 24px; margin: 32px 0; border-radius: 0 8px 8px 0;
+        }
+        .what-breaks h3 { color: var(--accent); font-family: var(--font-display); margin-bottom: 12px; }
+        .what-breaks ul { padding-left: 20px; color: var(--text-secondary); }
+        .what-breaks li { margin-bottom: 10px; }
+
+        /* Walkthrough Stepper */
+        .stepper { margin: 32px 0; }
+        .step { display: flex; gap: 16px; margin-bottom: 24px; }
+        .step-num {
+            flex-shrink: 0; width: 32px; height: 32px; background: var(--accent); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-family: var(--font-display);
+        }
+        .step-content h4 { font-family: var(--font-display); margin-bottom: 6px; }
+        .step-content p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        /* Share Bar */
+        .share-bar {
+            margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+        }
+        .share-quote {
+            background: var(--bg-primary); border: 2px solid var(--text-primary);
+            padding: 24px; border-radius: 8px; text-align: center; margin-bottom: 20px;
+        }
+        .share-quote p { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; line-height: 1.3; }
+        .share-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .share-btn {
+            padding: 10px 16px; border-radius: 6px; border: 1px solid var(--border);
+            background: var(--bg-secondary); color: var(--text-primary); cursor: pointer;
+            font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;
+        }
+        .share-btn:hover { background: var(--bg-tertiary); }
+
+        @media (max-width: 600px) {
+            .cost-comparison { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="top-bar">
+            <div class="logo">Everyday AI Done Right</div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌓 Theme</button>
+        </header>
+
+        <section class="hero">
+            <div class="badge-row">
+                <span class="badge t0">T0: Permanent Free</span>
+                <span class="badge">Creative</span>
+                <span class="badge">No Card Required</span>
+            </div>
+            <h1>Stress-Test Your Worldbuilding with NotebookLM</h1>
+            <p class="pitch">Stop using AI to summarize your own creative notes. If you only feed an AI your own draft, it will hallucinate agreement to please you. Use this adversarial workflow to catch logical plot holes before your readers do.</p>
+        </section>
+
+        <!-- Interactive Centerpiece: Live Workflow Sandbox -->
+        <section class="sandbox" id="sandbox">
+            <h3>⚙️ Adversarial Prompt Builder</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">Select your creative element and an external anchor to generate a custom stress-test prompt.</p>
+            <div class="form-group">
+                <label for="creativeElement">Your Creative Element</label>
+                <select id="creativeElement">
+                    <option value="magic system">Magic System</option>
+                    <option value="character backstory">Character Backstory</option>
+                    <option value="world history">World History / Setting</option>
+                    <option value="technology rules">Technology / Sci-Fi Rules</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="externalAnchor">External Anchor (Upload a PDF of this type)</label>
+                <select id="externalAnchor">
+                    <option value="real historical documents">Real Historical Documents</option>
+                    <option value="hard science or physics papers">Hard Science / Physics Papers</option>
+                    <option value="mythology or folklore texts">Mythology / Folklore Texts</option>
+                    <option value="economic or trade ledgers">Economic / Trade Ledgers</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="generatePrompt()">Generate Stress-Test Prompt</button>
+            <div class="output-box" id="promptOutput">
+                <button class="copy-btn" onclick="copyPrompt()">Copy</button>
+                <code id="promptText"></code>
+            </div>
+        </section>
+
+        <section class="cost-comparison">
+            <div class="cost-card old">
+                <div>Traditional Developmental Edit</div>
+                <div class="cost-amount">$1,500+</div>
+                <div style="font-size: 0.85rem;">For a 75k-word manuscript consistency pass.</div>
+            </div>
+            <div class="cost-card new">
+                <div>NotebookLM Adversarial Pass</div>
+                <div class="cost-amount">$0.00</div>
+                <div style="font-size: 0.85rem;">Permanent free tier. 3 minutes to set up.</div>
+            </div>
+        </section>
+
+        <section class="quota-calc">
+            <h3 style="font-family: var(--font-display); margin-bottom: 12px;">Quota Safety Calculator</h3>
+            <div class="form-group">
+                <label for="sourceCount">Number of sources you plan to upload:</label>
+                <input type="number" id="sourceCount" min="1" max="100" value="5" oninput="calculateQuota()">
+            </div>
+            <div class="quota-result" id="quotaResult">
+                You are using 10% of the 50-source per notebook limit <span class="verified-chip">as of 2026-08-21</span>. Safe to proceed.
+            </div>
+        </section>
+
+        <section class="stepper">
+            <h3 style="font-family: var(--font-display); margin-bottom: 24px;">Step-by-Step Walkthrough</h3>
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h4>Gather Disparate Sources</h4>
+                    <p>Do not just upload your manuscript. Find 2–3 external, fact-dense PDFs relevant to your project (e.g., a public domain physics textbook if your magic system is based on thermodynamics).</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h4>Create the Notebook</h4>
+                    <p>Go to <a href="https://notebooklm.google.com/" target="_blank" style="color: var(--accent);">notebooklm.google.com</a>, create a new notebook, and upload your draft excerpt alongside the external source files.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h4>Deploy the Adversarial Prompt</h4>
+                    <p>Use the sandbox above to generate a custom prompt that forces the AI to roleplay two experts debating the friction between your fiction and the external facts.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h4>Follow the Citations</h4>
+                    <p>Click the numbered citations. If the AI cites your draft to defend a physical impossibility contradicted by the external PDF, you have found a concrete plot hole to fix.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="what-breaks">
+            <h3>⚠️ What Breaks (Limitations)</h3>
+            <p style="margin-bottom: 12px; font-weight: 600;">Most guides tell you to use NotebookLM as a passive summarizer for your existing drafts. That is backwards and wastes its unique "grounded" architecture.</p>
+            <ul>
+                <li><strong>The Sycophancy Trap:</strong> If you only upload your own notes, the model's alignment training pushes it to validate your ideas, creating an echo chamber. The external PDF is mandatory to bypass this.</li>
+                <li><strong>Image-Based PDFs:</strong> NotebookLM cannot process scanned documents without prior OCR. If your external source is a scan, run it through a free OCR tool first, or the AI will read it as blank.</li>
+                <li><strong>Audio Overview Quota Burn:</strong> The audio overview feature will attempt to generate "podcast" banter about your lore. This is useless for stress-testing and will consume your daily generation quota. Disable it.</li>
+            </ul>
+        </section>
+
+        <section class="share-bar">
+            <div class="share-quote" id="shareQuote">
+                <p>"A single logical plot hole can tank your book's reviews. Fix it before publication with this free, 3-minute adversarial stress-test workflow."</p>
+            </div>
+            <div class="share-actions">
+                <button class="share-btn" onclick="nativeShare()">📱 Share</button>
+                <button class="share-btn" onclick="shareX()">𝕏 Post</button>
+                <button class="share-btn" onclick="shareLinkedIn()">💼 LinkedIn</button>
+                <button class="share-btn" onclick="copyQuote()">📋 Copy Quote</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('eadr-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        html.setAttribute('data-theme', savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('eadr-theme', newTheme);
+        });
+
+        // Sandbox Prompt Generator
+        function generatePrompt() {
+            const element = document.getElementById('creativeElement').value;
+            const anchor = document.getElementById('externalAnchor').value;
+            const prompt = `Act as two opposing expert reviewers. Reviewer A is defending my ${element}. Reviewer B is attacking it using strict, factual constraints derived ONLY from the uploaded ${anchor} sources.\n\nDebate the logical consistency of my ${element}. If my draft violates the real-world rules established in the ${anchor}, Reviewer B must explicitly point out the contradiction and cite the specific source document. Do not hallucinate agreement to please me.`;
+            
+            document.getElementById('promptText').textContent = prompt;
+            document.getElementById('promptOutput').style.display = 'block';
+        }
+
+        function copyPrompt() {
+            const text = document.getElementById('promptText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Quota Calculator
+        function calculateQuota() {
+            const count = parseInt(document.getElementById('sourceCount').value) || 0;
+            const percentage = Math.min((count / 50) * 100, 100);
+            const resultDiv = document.getElementById('quotaResult');
+            
+            if (count > 50) {
+                resultDiv.innerHTML = `<span style="color: var(--accent);">Warning: You are exceeding the 50-source per notebook limit <span class="verified-chip">as of 2026-08-21</span>. Split into multiple notebooks.</span>`;
+            } else if (count > 40) {
+                resultDiv.innerHTML = `You are using ${percentage}% of the 50-source per notebook limit <span class="verified-chip">as of 2026-08-21</span>. Approaching capacity.`;
+            } else {
+                resultDiv.innerHTML = `You are using ${percentage}% of the 50-source per notebook limit <span class="verified-chip">as of 2026-08-21</span>. Safe to proceed.`;
+            }
+        }
+
+        // Share Functions
+        const shareData = {
+            title: 'Stress-Test Worldbuilding with NotebookLM',
+            text: 'Most writers use AI to summarize their own notes. That is exactly how you miss the plot holes your readers will find. Here is the contrarian workflow to fix it.',
+            url: window.location.href
+        };
+
+        function nativeShare() {
+            if (navigator.share) {
+                navigator.share(shareData).catch(console.error);
+            } else {
+                copyQuote();
+            }
+        }
+
+        function shareX() {
+            const text = encodeURIComponent(shareData.text + ' ' + shareData.url);
+            window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+        }
+
+        function shareLinkedIn() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        }
+
+        function copyQuote() {
+            const quote = "A single logical plot hole can tank your book's reviews. Fix it before publication with this free, 3-minute adversarial stress-test workflow.";
+            navigator.clipboard.writeText(quote).then(() => {
+                alert('Quote copied to clipboard!');
+            });
+        }
+    </script>
+    
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+</body>
+</html>

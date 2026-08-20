@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Eleven-Second Window — Free Doctor-Visit Prep in Gemini · Everyday AI Done Right</title>
+<meta name="description" content="Turn a symptom ramble into the one-page brief clinicians actually read — free in the Gemini app. An editor, never a diagnostician. Plus a timeline that compounds across visits.">
+<script>
+(function(){try{var t=localStorage.getItem('eadr-theme');if(t){document.documentElement.setAttribute('data-theme',t);}else if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F2EB; --panel:#FBF9F4; --ink:#1F1B15; --ink-soft:#5B5547;
+  --line:#DBD4C3; --coral:#C04520; --coral-deep:#A03714; --coral-soft:#F7E5DB;
+  --code-bg:#211D16; --code-fg:#EAE0CB;
+  --ok:#3F7A4E; --ok-soft:#E4EEE3;
+}
+[data-theme="dark"]{
+  --paper:#151310; --panel:#1E1B15; --ink:#EAE2D0; --ink-soft:#A59B85;
+  --line:#393225; --coral:#FF6B47; --coral-deep:#E4552F; --coral-soft:#2D1A11;
+  --code-bg:#0F0D08; --code-fg:#E2D7BF;
+  --ok:#7FBF8E; --ok-soft:#1D2A1F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:16.5px;line-height:1.68;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+.container{max-width:1140px;margin:0 auto;padding:0 24px}
+a{color:var(--coral);text-decoration:none}
+a:hover{text-decoration:underline}
+svg{flex-shrink:0}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.wordmark{font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.top-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.08em;white-space:nowrap}
+.top-actions{display:flex;gap:10px;align-items:center}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;border-radius:4px;transition:background .18s,border-color .18s,color .18s}
+.btn:hover{background:var(--coral);border-color:var(--coral);color:#FFF7ED}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink-soft)}
+.btn.ghost:hover{background:transparent;color:var(--coral);border-color:var(--coral)}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;cursor:pointer;transition:border-color .18s,color .18s}
+.icon-btn:hover{border-color:var(--coral);color:var(--coral)}
+.icon-btn:disabled{cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+
+/* hero */
+.hero{padding:72px 0 56px}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin-bottom:20px}
+h1{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(2.5rem,5.6vw,4.4rem);line-height:1.04;letter-spacing:-.035em;max-width:14ch}
+h1 .coral{color:var(--coral)}
+.hook{max-width:70ch;margin-top:26px;font-size:17.5px;color:var(--ink-soft)}
+.hook strong{color:var(--ink)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.badge{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:8px 12px;border:1px solid var(--line);border-radius:3px;background:var(--panel);color:var(--ink)}
+.badge svg{color:var(--coral)}
+.asof{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--coral);border:1px dashed var(--coral);border-radius:3px;padding:0 6px;margin-left:6px;white-space:nowrap;vertical-align:middle;line-height:1.7}
+.legend{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+.legend svg{color:var(--coral)}
+
+/* centerpiece band */
+.band-build{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--panel);padding:56px 0 64px}
+.sec-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral)}
+.sec-title{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.02em;margin-top:10px}
+.sec-sub{color:var(--ink-soft);max-width:66ch;margin-top:12px}
+.build-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:34px;margin-top:36px}
+.form-panel{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:0 0 8px 8px;padding:24px}
+.field{margin-bottom:14px}
+.field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+.field input[type=text],.field select,.field textarea{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:14.5px;color:var(--ink)}
+.field textarea{resize:vertical;min-height:58px;line-height:1.5}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--coral);outline:none;box-shadow:0 0 0 3px var(--coral-soft)}
+.sev-row{display:flex;align-items:center;gap:12px}
+.sev-row input[type=range]{flex:1;accent-color:var(--coral)}
+.sev-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:var(--coral);width:44px;text-align:right}
+.form-note{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:14px;line-height:1.7}
+.out-panel{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.05em;padding:11px 14px;background:none;border:none;border-right:1px solid var(--line);cursor:pointer;color:var(--ink-soft)}
+.tab.active{background:var(--ink);color:var(--paper)}
+.tabpane{display:none}
+.tabpane.active{display:block}
+.promptwrap{position:relative}
+pre.prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;background:var(--code-bg);color:var(--code-fg);padding:20px 20px 18px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;min-height:120px}
+.copy-btn{position:absolute;top:10px;right:10px;display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border:1px solid rgba(234,224,203,.35);background:rgba(234,224,203,.08);color:var(--code-fg);border-radius:3px;cursor:pointer;transition:background .18s,border-color .18s}
+.copy-btn:hover{background:var(--coral);border-color:var(--coral);color:#FFF7ED}
+
+/* pull quote (social-currency stat) */
+.pullquote{background:var(--ink);color:var(--paper);padding:80px 24px;text-align:center;position:relative}
+.pq-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
+.pq-num{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(3.4rem,9vw,6.4rem);line-height:1;letter-spacing:-.04em;color:var(--coral);display:block;margin:26px 0 10px}
+.pq-text{font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(1.1rem,2.3vw,1.45rem);line-height:1.35;max-width:38ch;margin:0 auto 10px}
+.pq-sub{font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(1rem,2vw,1.2rem);opacity:.75;margin-bottom:28px}
+.pq-btn{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border:1px solid rgba(234,226,208,.5);background:transparent;color:var(--paper);border-radius:4px;cursor:pointer;transition:background .18s}
+.pq-btn:hover{background:rgba(234,226,208,.12)}
+.mark{position:absolute;width:15px;height:15px;opacity:.55}
+.mark::before,.mark::after{content:"";position:absolute;background:var(--paper)}
+.mark::before{left:0;top:6.5px;width:15px;height:2px}
+.mark::after{left:6.5px;top:0;width:2px;height:15px}
+.m-tl{top:20px;left:20px}.m-tr{top:20px;right:20px}.m-bl{bottom:20px;left:20px}.m-br{bottom:20px;right:20px}
+
+/* sections */
+section.block{padding:72px 0}
+.split{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:44px;margin-top:36px;align-items:start}
+.prose p{color:var(--ink-soft);margin-bottom:18px;max-width:62ch}
+.prose p strong{color:var(--ink)}
+
+/* cost card */
+.cost-card{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:24px}
+.cost-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.cost-row input[type=checkbox]{accent-color:var(--coral);width:16px;height:16px;flex-shrink:0;cursor:pointer}
+.cost-name{flex:1;min-width:0}
+.cost-name b{font-family:'Manrope',sans-serif;font-weight:700;font-size:15px;display:block}
+.cost-name span{font-size:12.5px;color:var(--ink-soft)}
+.price{font-family:'JetBrains Mono',monospace;font-size:13px;white-space:nowrap;position:relative;display:inline-block}
+.price.struck::after{content:"";position:absolute;left:-2px;top:54%;height:2px;width:0;background:var(--coral);transition:width .55s cubic-bezier(.6,0,.2,1)}
+.price.struck.go::after{width:calc(100% + 4px)}
+.cost-total{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 4px}
+.cost-total .label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.cost-total .amount{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600}
+.keep-line{font-size:14px;color:var(--coral);font-weight:500;margin-top:14px;display:none}
+.keep-line.show{display:block;animation:fade .4s ease}
+
+/* stepper */
+.stepper{border:1px solid var(--line);border-radius:8px;background:var(--panel);margin-top:36px;overflow:hidden}
+.step-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);gap:12px;flex-wrap:wrap}
+.step-count{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.1em;color:var(--ink-soft)}
+.dots{display:flex;gap:8px}
+.dots span{width:9px;height:9px;border-radius:50%;border:1px solid var(--ink-soft);cursor:pointer;transition:background .2s,border-color .2s}
+.dots span.on{background:var(--coral);border-color:var(--coral)}
+.step-nav{display:flex;gap:8px}
+.step{display:none;padding:28px 28px 32px}
+.step.active{display:block;animation:fade .35s ease}
+.step h3{font-family:'Manrope',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.01em;margin-bottom:14px}
+.step p{color:var(--ink-soft);max-width:64ch;margin-bottom:14px}
+.step p strong{color:var(--ink)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* confession block (scar tissue) */
+.confession{border:1px solid var(--ink);border-left:5px solid var(--ink);background:var(--paper);padding:22px 24px;margin:22px 0 8px;border-radius:0 6px 6px 0}
+.confession .tag{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:800;letter-spacing:.18em;color:var(--paper);background:var(--ink);display:inline-block;padding:4px 9px;margin-bottom:12px}
+.confession p{color:var(--ink);font-size:15.5px;max-width:62ch}
+.confession p b{font-family:'JetBrains Mono',monospace;color:var(--coral)}
+
+/* airtime / quota math */
+.quota-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;margin-top:36px;align-items:start}
+.q-inputs{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}
+.q-inputs input[type=number]{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--ink)}
+.q-inputs input:focus{border-color:var(--coral);outline:none;box-shadow:0 0 0 3px var(--coral-soft)}
+.check-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--paper);margin-top:14px;cursor:pointer}
+.check-row input{accent-color:var(--coral);width:16px;height:16px;margin-top:3px;cursor:pointer}
+.check-row span{font-size:13.5px;color:var(--ink-soft)}
+.check-row b{color:var(--ink)}
+.q-note{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);line-height:1.7;margin-top:14px}
+.q-results .stat{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px dashed var(--line);gap:14px}
+.q-results .stat .label{font-size:13.5px;color:var(--ink-soft)}
+.q-results .stat .val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:600;white-space:nowrap}
+.qbar{height:10px;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:18px 0 6px;background:var(--panel)}
+.qbar-fill{height:100%;background:var(--coral);width:0;transition:width .4s ease}
+.verdict{margin-top:16px;color:var(--ink-soft);font-size:15px;max-width:58ch}
+.verdict strong{color:var(--coral)}
+
+/* what breaks */
+.breaks{background:var(--coral-soft);border-left:4px solid var(--coral);border-radius:0 8px 8px 0;padding:34px 36px;margin-top:36px}
+.breaks h2{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.5rem,2.6vw,2.1rem);letter-spacing:-.02em;display:flex;align-items:center;gap:12px}
+.breaks h2 svg{color:var(--coral)}
+.breaks .lead{margin:20px 0 8px;font-size:17px;line-height:1.6;max-width:64ch;color:var(--ink)}
+.breaks .lead strong{color:var(--coral-deep)}
+[data-theme="dark"] .breaks .lead strong{color:var(--coral)}
+.breaks ul{list-style:none;margin-top:16px}
+.breaks li{padding:13px 0 13px 26px;border-top:1px dashed rgba(192,69,32,.28);position:relative;color:var(--ink-soft);max-width:66ch}
+.breaks li:first-of-type{border-top:none}
+.breaks li::before{content:"";position:absolute;left:2px;top:21px;width:9px;height:2px;background:var(--coral)}
+.breaks li strong{color:var(--ink)}
+
+/* three things */
+.rv-list{margin-top:36px;border-top:1px dashed var(--line)}
+.rv-item{border-bottom:1px dashed var(--line)}
+.rv-head{display:flex;gap:18px;align-items:baseline;width:100%;background:none;border:none;padding:24px 0;cursor:pointer;text-align:left;color:var(--ink)}
+.rv-num{font-family:'JetBrains Mono',monospace;color:var(--coral);font-size:13px;font-weight:600}
+.rv-title{font-family:'Manrope',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.01em;flex:1}
+.rv-x{font-family:'JetBrains Mono',monospace;color:var(--ink-soft);font-size:16px}
+.rv-body{max-height:0;overflow:hidden;transition:max-height .45s ease;color:var(--ink-soft);padding:0 0 0 45px}
+.rv-body p{max-width:60ch;padding-bottom:6px}
+.rv-item.open .rv-body{max-height:420px;padding-bottom:26px}
+
+/* try it */
+.try-steps{counter-reset:try;margin-top:30px;max-width:66ch}
+.try-steps li{list-style:none;counter-increment:try;display:flex;gap:16px;padding:13px 0;border-bottom:1px dashed var(--line);color:var(--ink-soft);align-items:baseline}
+.try-steps li::before{content:counter(try,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--coral);font-weight:600}
+.try-actions{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}
+
+/* share */
+.share-card{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:32px;margin-top:36px}
+.share-quote{font-family:'Manrope',sans-serif;font-weight:700;font-size:19px;line-height:1.4;border-left:3px solid var(--coral);padding-left:18px;max-width:56ch;margin-bottom:24px}
+.share-btns{display:flex;flex-wrap:wrap;gap:10px}
+
+/* footer */
+footer{padding:44px 0 64px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);line-height:2}
+footer a{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--line)}
+footer a:hover{color:var(--coral)}
+
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:12px;padding:11px 18px;border-radius:4px;transition:opacity .3s,transform .3s;z-index:99;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:960px){
+  .build-grid,.split,.quota-grid{grid-template-columns:1fr}
+  .top-meta{display:none}
+  .hero{padding:52px 0 44px}
+  section.block{padding:56px 0}
+  .breaks{padding:26px 22px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="wordmark">Everyday AI Done Right</span>
+      <span class="top-meta">#0004 · HEALTH</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle light or dark theme">
+        <svg id="iconSun" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M13 3l-1.4 1.4M4.4 11.6L3 13"/></svg>
+        <svg id="iconMoon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" style="display:none"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5 6 6 0 1 0 13.5 9.5z"/></svg>
+      </button>
+      <button class="btn" id="shareTop">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12.5" cy="3" r="2"/><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="13" r="2"/><path d="M5.3 7L10.7 4M5.3 9l5.4 3"/></svg>
+        Share
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <p class="kicker">Health · Guide №0004 · 4 min read</p>
+    <h1>You get <span class="coral">eleven seconds.</span></h1>
+    <p class="hook">That's the median time a patient talks before the doctor interrupts (2018 study of recorded visits). Hand over a one-page brief instead — <strong>free, in the Gemini app, with the Google account you already have</strong> — and your whole history arrives in sixty. The catches, stated up front: the app's <strong>daily usage has no published cap</strong>, conversations <strong>can train the model until you flip one Activity toggle</strong>, and this is an editor for your account of your body — <strong>never a diagnostician</strong>, with a hard stop at emergencies, where you call 911 instead of building a document.</p>
+    <div class="badges">
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 5"/></svg>T0 — the account you already have</span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 5"/></svg>Verified 2025-07-03</span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.5V8l2.5 1.5"/></svg>App: no published cap · API: 15/min, 1,500/day<span class="asof">as of 2025-07-03</span></span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2L3 4.5v3.2C3 10.6 5 13 8 14c3-1 5-3.4 5-6.3V4.5L8 2z"/></svg>Editor, not diagnosis — not medical advice</span>
+    </div>
+    <p class="legend"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.5V8l2.5 1.5"/></svg>Numbers wearing an "as of" chip drift. The brief format, the firewall, and the timeline don't.</p>
+  </div>
+</section>
+
+<!-- ============ CENTERPIECE: THE BRIEF BUILDER ============ -->
+<section class="band-build" id="builder">
+  <div class="container">
+    <p class="sec-kicker">The centerpiece — Brief Builder</p>
+    <h2 class="sec-title">Dump it all. Get the one-pager back.</h2>
+    <p class="sec-sub">Fill this in the way you'd tell a friend — messy, out of order, including the stuff you think doesn't matter. The "possibly irrelevant" box is the most important one on the page. Everything formats locally in your browser; nothing is sent anywhere.</p>
+    <div class="build-grid">
+      <div class="form-panel">
+        <div class="field"><label for="bGoal">This visit is for</label>
+          <select id="bGoal">
+            <option>A new problem</option>
+            <option>A follow-up</option>
+            <option>A routine checkup</option>
+            <option>Second-opinion prep</option>
+            <option>Test-result discussion</option>
+          </select>
+        </div>
+        <div class="field"><label for="bWho">Visit with</label><input type="text" id="bWho" placeholder="Dr. Abbasi, primary care"></div>
+        <div class="field"><label for="bSym">Main symptom</label><input type="text" id="bSym" placeholder="headaches, worst within an hour of waking"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="field"><label for="bStarted">Started</label><input type="text" id="bStarted" placeholder="about 14 months ago, gradually"></div>
+          <div class="field"><label for="bPattern">Pattern</label><input type="text" id="bPattern" placeholder="most mornings, easing by noon"></div>
+        </div>
+        <div class="field"><label for="bSev">Severity at worst</label>
+          <div class="sev-row"><input type="range" id="bSev" min="1" max="10" value="6" aria-label="Severity"><span class="sev-val" id="bSevVal">6/10</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="field"><label for="bWorse">Makes it worse</label><input type="text" id="bWorse" placeholder="skipping coffee, lying back down"></div>
+          <div class="field"><label for="bBetter">Makes it better</label><input type="text" id="bBetter" placeholder="being up and moving, ibuprofen"></div>
+        </div>
+        <div class="field"><label for="bNoise">Possibly irrelevant — one per line, leave nothing out</label><textarea id="bNoise" placeholder="wife says I stop breathing at night (she mentioned it once)&#10;tired by 3 pm most days&#10;we moved last year — drier air?&#10;new cat"></textarea></div>
+        <div class="field"><label for="bMeds">Medications &amp; supplements — OTC included</label><textarea id="bMeds" placeholder="ibuprofen 400 mg most days&#10;espresso ×2&#10;multivitamin, melatonin some nights"></textarea></div>
+        <div class="field" style="margin-bottom:8px"><label for="bWant">What I want from today — one per line, keep to three</label><textarea id="bWant" placeholder="Is this worth a sleep study?&#10;Can I stop the daily ibuprofen safely?&#10;What's the next step if this is 'just stress' again?"></textarea></div>
+        <button class="btn ghost" id="loadExample" style="width:100%;justify-content:center">Load example — the 14-month headache</button>
+        <p class="form-note">Why the "irrelevant" box matters: the nine words that ended fourteen months of headaches lived in exactly that box — and nearly got deleted.</p>
+      </div>
+      <div class="out-panel">
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="paneBrief" role="tab">1 · THE BRIEF</button>
+          <button class="tab" data-tab="paneOpener" role="tab">2 · THE OPENER</button>
+          <button class="tab" data-tab="paneQ" role="tab">3 · QUESTIONS</button>
+        </div>
+        <div class="tabpane active" id="paneBrief"><div class="promptwrap"><button class="copy-btn" data-copy="outBrief" data-msg="Brief copied — print it, hand it over"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="outBrief"></pre></div></div>
+        <div class="tabpane" id="paneOpener"><div class="promptwrap"><button class="copy-btn" data-copy="outOpener" data-msg="30-second opener copied — say it while handing over the page"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="outOpener"></pre></div></div>
+        <div class="tabpane" id="paneQ"><div class="promptwrap"><button class="copy-btn" data-copy="outQ" data-msg="Question list copied"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="outQ"></pre></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PULL QUOTE (SOCIAL CURRENCY) ============ -->
+<section class="pullquote">
+  <span class="mark m-tl"></span><span class="mark m-tr"></span><span class="mark m-bl"></span><span class="mark m-br"></span>
+  <p class="pq-kicker">The stat worth repeating</p>
+  <span class="pq-num">11s</span>
+  <p class="pq-text">the median time a patient gets before the doctor interrupts — 2018 study of recorded primary-care visits.</p>
+  <p class="pq-sub">A one-page brief hands over the whole history in sixty.</p>
+  <button class="pq-btn" id="copyPullTop"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy this stat</button>
+</section>
+
+<!-- ============ 01 · WHY THE PAPER WINS + COST ============ -->
+<section class="block">
+  <div class="container">
+    <p class="sec-kicker">01 — Why the paper wins</p>
+    <h2 class="sec-title">An editor, not an oracle</h2>
+    <div class="split">
+      <div class="prose">
+        <p>The generic version of this workflow — ask AI what your symptoms mean — points the most powerful tool in your house at the one question it's least qualified to answer. This protocol inverts it: <strong>the model never touches meaning at all.</strong> It takes your twenty-minute ramble and formats it into the structure clinicians are trained to elicit — onset, location, duration, character, aggravating, relieving, timing, severity — so the doctor skips intake and spends the visit on judgment instead of extraction.</p>
+        <p>The "possibly irrelevant" box is the engine. Patients pre-censor — we decide what's related before anyone qualified makes that call — and the censored detail is exactly the one that matters. <strong>Your noise is data.</strong> Dump everything; let the format hold the pile; let a human with a license sort it.</p>
+        <p>And the timeline is what makes this compound: a three-minute brain-dump after every visit, appended to one document. By visit four, the timeline is a one-page history <strong>no clinic will ever build for you</strong> — your records live in five portals that don't talk to each other; this is the only page in the room that sees all of you.</p>
+        <p>The evidence for the whole approach is the eleven seconds. Elicitation research has found for forty years that patients' opening statements get cut off almost immediately — and that when patients finish them, they raise their real concerns earlier and visits run smoother. The brief is that finding, turned into paper.</p>
+      </div>
+      <div class="cost-card">
+        <p class="sec-kicker" style="margin-bottom:6px">What it replaces</p>
+        <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:6px">Tick what you'd otherwise pay for visit preparation — then run the swap.</p>
+        <div class="cost-row"><input type="checkbox" checked data-mo="5" id="cTracker" aria-label="Symptom tracker premium"><div class="cost-name"><b>Symptom-tracker premium</b><span>the useful features, per app</span></div><span class="price">$60/yr<span class="asof">as of 2025-07-03</span></span></div>
+        <div class="cost-row"><input type="checkbox" checked data-mo="12.5" id="cAdvocate" aria-label="Patient advocate"><div class="cost-name"><b>Patient advocate</b><span>~$75/hr · 2 hrs/yr</span></div><span class="price">$150/yr<span class="asof">as of 2025-07-03</span></span></div>
+        <div class="cost-row"><input type="checkbox" data-mo="15" id="cNav" aria-label="Health navigation service"><div class="cost-name"><b>Health-navigation service</b><span>subscription tier</span></div><span class="price">$180/yr<span class="asof">as of 2025-07-03</span></span></div>
+        <div class="cost-total"><span class="label">Annual total</span><span class="amount" id="costTotal">$210</span></div>
+        <button class="btn" id="runSwap" style="margin-top:12px;width:100%;justify-content:center">Run the swap → $0</button>
+        <p class="keep-line" id="keepLine"></p>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);margin-top:12px;line-height:1.7">Pricing is typical-range, secondary-source — treat as an estimate, not a quote.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 · WALKTHROUGH STEPPER ============ -->
+<section class="block" id="walkthrough" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">02 — The walkthrough</p>
+    <h2 class="sec-title">Five steps, one page per visit</h2>
+    <div class="stepper">
+      <div class="step-head">
+        <span class="step-count" id="stepCount">STEP 1 / 5</span>
+        <div class="dots" id="stepDots"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+        <div class="step-nav">
+          <button class="icon-btn" id="stepPrev" aria-label="Previous step"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg></button>
+          <button class="icon-btn" id="stepNext" aria-label="Next step"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3l5 5-5 5"/></svg></button>
+        </div>
+      </div>
+      <div class="step active">
+        <h3>Flip the switch, and keep the document anonymous</h3>
+        <p>Before pasting anything: Gemini → Settings → <strong>Apps Activity</strong> — confirm conversations aren't being used to improve the model. Then adopt one rule that survives every settings menu: <strong>no names, no birthdates, no insurance numbers in the timeline document — ever.</strong> The timeline is a medical honeypot; it describes a body and its history, and that's all it ever needs to identify.</p>
+        <p>The toggle takes forty seconds. The anonymity rule takes the document out of the "sensitive data" class entirely.</p>
+      </div>
+      <div class="step">
+        <h3>Install the firewall</h3>
+        <p>Pin this in Gemini's Saved Info — or paste it at the top of each new chat if your version lacks it (availability varies<span class="asof">as of 2025-07-03</span>):</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="pFirewall" data-msg="Firewall copied — pin it in Saved Info"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="pFirewall">You are a medical-document editor. I will paste an unsorted brain-dump about my own health before a doctor's appointment. Your ONLY job is structure.
+• Sort my words into the brief format I provide. Use MY words — add no symptoms, drop no details, soften nothing.
+• The "possibly irrelevant" section is sacred: everything I flag as maybe-irrelevant goes in it, unedited.
+• You do not diagnose, suggest diagnoses, estimate severity, offer reassurance, or tell me what to worry about. If I ask "what could this be," reply only: "That's the doctor's job — want it added to the brief?"
+• Flag nothing as concerning or reassuring. You are a formatting layer, not a triage layer.
+Confirm these rules, then wait for my brain-dump.</pre></div>
+        <p>The last two bullets are load-bearing: the moment you ask "could this be serious," you've turned your editor into a coin-flip triage nurse and spent the visit's one irreproducible resource — a qualified human's judgment on your actual history.</p>
+      </div>
+      <div class="step">
+        <h3>Brain-dump, then build the brief</h3>
+        <p>Don't write a draft — dump. Include everything, especially what you've decided doesn't matter. Then paste it with the build prompt, or use the <strong>Brief Builder</strong> at the top of this page, which formats locally and hands you the copy-ready version:</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="pBrief" data-msg="Build prompt copied — paste your brain-dump after it"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="pBrief">Brain-dump follows. Turn it into this brief, using my words only:
+CHIEF COMPLAINT BRIEF — [goal] visit with [provider]
+WHAT I'M HERE FOR / MAIN ISSUE: symptom, onset, pattern, severity n/10
+WORSE: / BETTER:
+POSSIBLY IRRELEVANT, LISTED ANYWAY:
+MEDICATIONS &amp; SUPPLEMENTS (OTC included):
+WHAT I'D LIKE FROM TODAY:
+Brain-dump: [paste everything, in any order, including the irrelevant stuff]</pre></div>
+        <div class="confession">
+          <span class="tag">SCAR TISSUE</span>
+          <p>My opening line in every one of three visits for headaches was <b>"I keep getting headaches and I'm tired all the time"</b> — accurate, useless, and interruptible at second four. Both times I left with "probably tension." The third visit, my wife had scribbled a note I almost threw away: <i>tell him I say you stop breathing at night.</i> I mentioned it as an afterthought, while putting my coat on. The doctor stopped writing. Sleep study three weeks later: moderate sleep apnea. CPAP, and the headaches were gone within a month. The nine words cost nothing to say — they never got said because nobody asked the right question, and I had pre-censored them as "not a headache thing." <b>Fourteen months, about $340 in copays and painkillers,</b> and one afternoon commute I genuinely don't remember driving. The brief's "possibly irrelevant" list exists so your nine words survive your own filtering.</p>
+        </div>
+      </div>
+      <div class="step">
+        <h3>Start the timeline, and feed it after every visit</h3>
+        <p>Before you leave the parking lot — not that evening — dump what happened into the timeline chat. The ten-minute window is real: widely cited research on medical recall finds patients forget <strong>40–80% of what they're told almost immediately</strong> (a 2003 review in the <em>Journal of the Royal Society of Medicine</em>).</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="pTimeline" data-msg="Timeline prompt copied — paste the brain-dump and existing timeline"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="pTimeline">Here is my post-visit brain-dump and the existing timeline: [paste both].
+Add today's visit as: date — provider — what was done/decided — new meds or changes — open questions — next step. My words only.
+Then list any details that contradict the existing timeline, as questions for me — never as corrections.</pre></div>
+        <p>By visit four, the timeline is a one-page history any new specialist can absorb in a minute — the most valuable document in the room, and the only one no clinic will build for you.</p>
+      </div>
+      <div class="step">
+        <h3>The visit itself</h3>
+        <p>Hand over the paper while saying the opener — the 30-second version of the page, ending with what you want from today (the Brief Builder generates both). Then stop talking and let the doctor read.</p>
+        <p>On recording: about a dozen US states require <strong>all-party consent</strong> — ask first, never record covertly, because the statute that protects your phone call also protects the exam room. If recording is declined or feels wrong, the parking-lot brain-dump is the fallback, and it works.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 · AIRTIME MATH ============ -->
+<section class="block" id="airtime" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">03 — Airtime &amp; quota math</p>
+    <h2 class="sec-title">What sixty seconds buys</h2>
+    <div class="quota-grid">
+      <div class="q-inputs">
+        <div class="field"><label for="aVisit">Visit length (minutes)</label><input type="number" id="aVisit" min="3" max="90" value="15"></div>
+        <div class="field" style="margin-bottom:0"><label for="aRam">How long your verbal ramble would run (minutes)</label><input type="number" id="aRam" min="1" max="20" value="4"></div>
+        <label class="check-row" for="aUse"><input type="checkbox" id="aUse" checked><span><b>Handing over the brief</b> built above — read-time computed live from your page</span></label>
+        <p class="q-note">Quota cost of the workflow: <strong>one request per brief</strong>. The scripted API path allows 15 requests/min and 1,500/day<span class="asof">as of 2025-07-03</span>; the Gemini app you'll actually use has no published cap<span class="asof">as of 2025-07-03</span>. Interruption constant: ~11 s median (2018 study of recorded visits). Arithmetic, not clinical trial — the constants are labeled so you can re-run them when the numbers age.</p>
+      </div>
+      <div class="q-results">
+        <div class="stat"><span class="label">Read-aloud time of your brief (~150 wpm)</span><span class="val" id="airRead">—</span></div>
+        <div class="stat"><span class="label">Share of the visit it costs</span><span class="val" id="airShare">—</span></div>
+        <div class="stat"><span class="label">Interruption chances in a spoken ramble</span><span class="val" id="airDera">—</span></div>
+        <div class="qbar"><div class="qbar-fill" id="airFill"></div></div>
+        <p class="verdict" id="airVerdict"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · WHAT BREAKS ============ -->
+<section class="block" id="breaks" style="padding-top:0">
+  <div class="container">
+    <div class="breaks">
+      <h2><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3L2.5 20h19L12 3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".4" fill="currentColor"/></svg>What breaks</h2>
+      <p class="lead"><strong>The moment you ask "what could this be," your editor becomes a coin-flip triage nurse.</strong> Speculation is the default gravity of every chatbot; the firewall block is the only thing holding the tool to formatting. Speculation feels like help and reads like information — it is neither, and it costs you the one thing the visit exists to provide: a qualified human's judgment on your actual history.</p>
+      <ul>
+        <li><strong>The invented sentence.</strong> The brief must contain only your words re-arranged. Read it once against your brain-dump before printing — a hallucinated "and occasional chest tightness" you never said can redirect the entire visit.</li>
+        <li><strong>App quota is unpublished.</strong> The Gemini app's free usage has no published per-day cap and varies with demand; the API path is 15 req/min and 1,500/day<span class="asof">as of 2025-07-03</span>. One brief is one request — and if a session cuts out, the Brief Builder on this page formats locally; start a new chat and paste.</li>
+        <li><strong>The reassurance leak.</strong> If the output contains "likely benign" or "probably just," the firewall slipped — delete the sentence or regenerate. Reassurance you generated yourself is the most expensive free thing in this workflow.</li>
+        <li><strong>Recording law.</strong> All-party-consent states (California, Florida, Pennsylvania, Illinois, Washington, and others — about a dozen) make covert recording a wiretap offense. Ask, accept a no, fall back to the parking-lot dump within ten minutes — after that, 40–80% of what you were told is already gone.</li>
+        <li><strong>The supplement blind spot.</strong> OTCs and supplements are the most-omitted and most interaction-prone items on any med list. The pharmacy counter is a free clinician who checks exactly this — bring the med list, no appointment needed.</li>
+        <li><strong>The emergency hard stop.</strong> Chest pain, face droop, arm weakness, slurred speech, worst-ever headache, trouble breathing → 911 or the ER, now. The protocol's only emergency artifact is the med list and timeline — handed over, not argued from.</li>
+        <li><strong>Not medical advice.</strong> This is a formatting layer for your account of your body. It raises the quality of the information a clinician receives; it does not replace the clinician, and nothing in it should delay one.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 · THREE THINGS ============ -->
+<section class="block" id="three" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">05 — Three things worth keeping</p>
+    <h2 class="sec-title">If you forget everything else</h2>
+    <div class="rv-list">
+      <div class="rv-item open">
+        <button class="rv-head" aria-expanded="true"><span class="rv-num">01</span><span class="rv-title">Bring the paper, not the ramble</span><span class="rv-x">−</span></button>
+        <div class="rv-body"><p>The median patient gets eleven seconds before interruption. The brief pre-answers every intake question a clinician is trained to elicit, so the visit spends its minutes on judgment instead of extraction — and every concern is on the table before the first interruption lands.</p></div>
+      </div>
+      <div class="rv-item">
+        <button class="rv-head" aria-expanded="false"><span class="rv-num">02</span><span class="rv-title">Your noise is data</span><span class="rv-x">+</span></button>
+        <div class="rv-body"><p>Pre-censoring is how the nine words get dropped: you decide what's relevant before anyone qualified makes that call. Dump everything, sort nothing, and let the "possibly irrelevant" list hold the pile — the detail you almost deleted is the one that ends fourteen-month mysteries.</p></div>
+      </div>
+      <div class="rv-item">
+        <button class="rv-head" aria-expanded="false"><span class="rv-num">03</span><span class="rv-title">The timeline compounds</span><span class="rv-x">+</span></button>
+        <div class="rv-body"><p>A three-minute brain-dump after every visit, appended to one anonymous document. By visit four, the fourth visit starts where the third ended — in one page any new doctor reads in a minute. No clinic builds this for you; your records live in five portals that don't talk to each other.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 · TRY IT NOW ============ -->
+<section class="block" id="try" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">06 — Try it now</p>
+    <h2 class="sec-title">Before the next appointment — or tonight</h2>
+    <ol class="try-steps">
+      <li>Open gemini.google.com — the account you already have; no card.</li>
+      <li>Check Apps Activity (training) in settings — forty seconds.</li>
+      <li>Load the headache example on this page; copy the firewall and build prompts into a Gemini chat.</li>
+      <li>Swap in your own symptom — and keep the "possibly irrelevant" pile fat.</li>
+      <li>No appointment booked? Build the timeline tonight from your last visit's memory, while it still exists.</li>
+    </ol>
+    <div class="try-actions">
+      <button class="btn" id="tryLoad">Load the headache example</button>
+      <a class="btn ghost" href="https://gemini.google.com" target="_blank" rel="noopener">Open Gemini<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 11L11 5M6.5 5H11v4.5"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHARE ============ -->
+<section class="block" id="share" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">Pass it on</p>
+    <h2 class="sec-title">Two lines that travel well</h2>
+    <div class="share-card">
+      <p class="share-quote" id="shareQuote">The median patient gets about 11 seconds before the doctor interrupts (2018 study of recorded visits). A one-page brief — built free — hands over the whole history in sixty.</p>
+      <div class="share-btns">
+        <button class="btn" id="btnShare"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12.5" cy="3" r="2"/><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="13" r="2"/><path d="M5.3 7L10.7 4M5.3 9l5.4 3"/></svg>Share</button>
+        <button class="btn ghost" id="btnX"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l10 10M13 3L3 13"/></svg>Post on X</button>
+        <button class="btn ghost" id="btnLI"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5.2 11V7M5.2 5.2v.1M8.3 11V7c0-1.5 3.2-1.6 3.2.2V11"/></svg>LinkedIn</button>
+        <button class="btn ghost" id="btnPull"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy pull-quote</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <p>Verified 2025-07-03 · Guide №0004 · Health · Everyday AI Done Right</p>
+    <p>Sources: <a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini</a> · <a href="https://ai.google.dev/gemini-api/docs/rate-limits" target="_blank" rel="noopener">Gemini API rate limits</a> · <a href="https://scholar.google.com/scholar?q=eliciting+the+patient%27s+agenda+secondary+analysis" target="_blank" rel="noopener">"Eliciting the Patient's Agenda" (J Gen Intern Med, 2018)</a> · <a href="https://scholar.google.com/scholar?q=Kessels+patients%27+memory+medical+information" target="_blank" rel="noopener">Kessels, "Patients' Memory for Medical Information" (J R Soc Med, 2003)</a></p>
+    <p>Perishable numbers wear "as of" chips. This guide is not medical advice — the tool is an editor, never a diagnostician. Emergencies: 911 or the ER, not a brief.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+function fmtMoney(v){ return '$' + Math.round(v).toLocaleString('en-US'); }
+function wc(t){ t = (t || '').trim(); return t ? t.split(/\s+/).length : 0; }
+
+/* ---------- theme ---------- */
+var root = document.documentElement;
+if(!root.getAttribute('data-theme')){ root.setAttribute('data-theme','light'); }
+var themeBtn = $('#themeToggle'), iconSun = $('#iconSun'), iconMoon = $('#iconMoon');
+function paintThemeBtn(){
+  var dark = root.getAttribute('data-theme') === 'dark';
+  iconSun.style.display = dark ? 'none' : 'block';
+  iconMoon.style.display = dark ? 'block' : 'none';
+}
+themeBtn.addEventListener('click', function(){
+  var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  try{ localStorage.setItem('eadr-theme', next); }catch(e){}
+  paintThemeBtn();
+});
+paintThemeBtn();
+
+/* ---------- toast ---------- */
+var toastEl = $('#toast'), toastTimer = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2300);
+}
+
+/* ---------- clipboard ---------- */
+function copyText(text, label){
+  var done = function(){ toast(label || 'Copied'); };
+  var fallback = function(){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); done(); }
+    catch(e){ toast('Copy failed — select the text manually'); }
+    document.body.removeChild(ta);
+  };
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(done).catch(fallback);
+  } else { fallback(); }
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-copy]');
+  if(!b){ return; }
+  var src = document.getElementById(b.getAttribute('data-copy'));
+  if(src){ copyText(src.textContent.trim(), b.getAttribute('data-msg')); }
+});
+
+/* ---------- BRIEF BUILDER (centerpiece live sandbox) ---------- */
+var B = { goal:$('#bGoal'), who:$('#bWho'), sym:$('#bSym'), started:$('#bStarted'), pattern:$('#bPattern'),
+          sev:$('#bSev'), worse:$('#bWorse'), better:$('#bBetter'), noise:$('#bNoise'), meds:$('#bMeds'), want:$('#bWant') };
+var outBrief = $('#outBrief'), outOpener = $('#outOpener'), outQ = $('#outQ');
+var sevVal = $('#bSevVal');
+
+function fv(el, fb){ var v = el.value.trim(); return v ? v : fb; }
+function lines(el){
+  return el.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+}
+
+function buildOutputs(){
+  var goal = B.goal.value;
+  var who = fv(B.who, '[provider]');
+  var sym = fv(B.sym, '[main symptom]');
+  var started = fv(B.started, '[when it started]');
+  var pattern = fv(B.pattern, '[when it is worst / how often]');
+  var sev = B.sev.value;
+  var worse = fv(B.worse, '[what makes it worse]');
+  var better = fv(B.better, '[what makes it better]');
+  var noise = lines(B.noise);
+  var meds = fv(B.meds, '[include OTC and supplements]').replace(/\n/g, '; ');
+  var wants = lines(B.want);
+  var wantLine = wants.length ? wants[0] : '[what you want from this visit]';
+  sevVal.textContent = sev + '/10';
+
+  outBrief.textContent =
+'CHIEF COMPLAINT BRIEF — ' + goal.toUpperCase() + ' · ' + who + '\n' +
+'Prepared by the patient. Nothing on this page is a diagnosis.\n\n' +
+'WHAT I\'M HERE FOR: ' + wantLine + '\n' +
+'MAIN ISSUE: ' + sym + ' — began ' + started + '; ' + pattern + '; severity ' + sev + '/10 at worst.\n' +
+'WORSE: ' + worse + '\n' +
+'BETTER: ' + better + '\n' +
+'POSSIBLY IRRELEVANT, LISTED ANYWAY:\n' +
+(noise.length ? noise.map(function(n){ return '  • ' + n; }).join('\n') : '  • [the stuff you almost deleted — leave it in]') + '\n' +
+'MEDICATIONS & SUPPLEMENTS (OTC included): ' + meds + '\n' +
+'WHAT I\'D LIKE FROM TODAY:\n' +
+(wants.length ? wants.slice(0, 3).map(function(w, i){ return '  ' + (i + 1) + '. ' + w; }).join('\n') : '  1. [your questions, one per line — keep to three]');
+
+  outOpener.textContent =
+'"Before we start — it\'s all on one page so I won\'t take your time with the backstory.\n' +
+'The short version: ' + sym + ' since ' + started + ', ' + pattern + ', ' + sev + ' out of 10 at worst.\n' +
+'Bottom of the page is a list of things that might be irrelevant — I\'d rather you see too much than too little.\n' +
+'Today I\'m hoping for: ' + wantLine + '."';
+
+  var qs = wants.length ? wants : ['[your questions, one per line]'];
+  outQ.textContent =
+'QUESTIONS FOR ' + who.toUpperCase() + ' — bring printed, keep to three\n\n' +
+qs.map(function(q, i){ return (i + 1) + '. ' + q + (i === 0 ? '   ← if time runs short, this one first' : ''); }).join('\n') + '\n\n' +
+'Visit wrapping up with a question unasked? Say: "There\'s one more thing on my list — it\'s quick."';
+}
+Object.keys(B).forEach(function(k){
+  B[k].addEventListener('input', function(){ buildOutputs(); calcAir(); });
+  B[k].addEventListener('change', function(){ buildOutputs(); calcAir(); });
+});
+
+var EXAMPLE = {
+  goal:'A new problem', who:'Dr. Abbasi, primary care',
+  sym:'headaches, worst within an hour of waking',
+  started:'about 14 months ago, gradually',
+  pattern:'most mornings — weekends too — easing by noon',
+  worse:'skipping coffee, lying back down after the alarm',
+  better:'being up and moving for an hour; ibuprofen (most days)',
+  noise:'wife says I stop breathing at night (she mentioned it once)\ntired by 3 pm most days\nwe moved last year — baseboard heating, drier air?\nnew cat',
+  meds:'ibuprofen 400 mg most days\nespresso ×2\nmultivitamin\nmelatonin some nights',
+  want:'Is this worth a sleep study?\nCan I stop the daily ibuprofen safely?\nWhat\'s the next step if this is "just stress" again?'
+};
+function loadExample(){
+  B.goal.value = EXAMPLE.goal; B.who.value = EXAMPLE.who; B.sym.value = EXAMPLE.sym;
+  B.started.value = EXAMPLE.started; B.pattern.value = EXAMPLE.pattern; B.sev.value = '6';
+  B.worse.value = EXAMPLE.worse; B.better.value = EXAMPLE.better;
+  B.noise.value = EXAMPLE.noise; B.meds.value = EXAMPLE.meds; B.want.value = EXAMPLE.want;
+  buildOutputs(); calcAir();
+}
+ $('#loadExample').addEventListener('click', function(){ loadExample(); toast('Example loaded — the noise pile is the point'); });
+ $('#tryLoad').addEventListener('click', function(){
+  loadExample();
+  document.getElementById('builder').scrollIntoView({ behavior: 'smooth' });
+  toast('Example loaded — hit the copy buttons');
+});
+buildOutputs();
+
+/* ---------- builder tabs ---------- */
+ $$('.tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    $$('.tab').forEach(function(x){ x.classList.remove('active'); });
+    $$('.tabpane').forEach(function(x){ x.classList.remove('active'); });
+    t.classList.add('active');
+    document.getElementById(t.getAttribute('data-tab')).classList.add('active');
+  });
+});
+
+/* ---------- AIRTIME / QUOTA CALCULATOR ---------- */
+var INTERRUPT_S = 11; /* median, 2018 study of recorded visits — see footer source */
+var aVisit = $('#aVisit'), aRam = $('#aRam'), aUse = $('#aUse'),
+    airRead = $('#airRead'), airShare = $('#airShare'), airDera = $('#airDera'),
+    airFill = $('#airFill'), airVerdict = $('#airVerdict');
+function calcAir(){
+  var visit = Math.max(3, Math.floor(+aVisit.value || 15));
+  var ram = Math.max(1, Math.floor(+aRam.value || 4));
+  var use = aUse.checked;
+  var words = wc(outBrief.textContent);
+  var secs = Math.round(words / 2.5); /* ~150 wpm spoken */
+  if(use){
+    airRead.textContent = '~' + secs + ' s';
+    var share = Math.round(secs / (visit * 60) * 1000) / 10;
+    airShare.textContent = share + '%';
+    airFill.style.width = Math.min(100, share) + '%';
+    if(share <= 15){
+      airVerdict.innerHTML = '<strong>Cheap.</strong> Sixty-ish seconds of reading buys the whole history on the table before the first interruption lands — the remaining ' + Math.max(1, visit - Math.ceil(secs / 60)) + '+ minutes go to judgment instead of extraction.';
+    } else if(share <= 30){
+      airVerdict.innerHTML = '<strong>Still fine, but trim.</strong> Tighten the prose fields (symptom, onset, pattern) — the "possibly irrelevant" pile stays fat no matter what. One page, front and back at most.';
+    } else {
+      airVerdict.innerHTML = '<strong>The brief is becoming the visit.</strong> Cut prose, not content: shorten the symptom fields, merge the med lines — but never delete from the irrelevant pile. That box is where the nine words live.';
+    }
+  } else {
+    airRead.textContent = '—';
+    airShare.textContent = '—';
+    airFill.style.width = '0%';
+    airVerdict.innerHTML = '<strong>No brief.</strong> A ' + ram + '-minute spoken history gives the average interruption ' + Math.floor(ram * 60 / INTERRUPT_S) + ' chances to redirect it — and whatever never gets said never gets examined.';
+  }
+  airDera.textContent = Math.floor(ram * 60 / INTERRUPT_S);
+}
+aVisit.addEventListener('input', calcAir);
+aRam.addEventListener('input', calcAir);
+aUse.addEventListener('change', calcAir);
+calcAir();
+
+/* ---------- COST COMPARISON ---------- */
+var costChecks = $$('.cost-row input[type=checkbox]');
+var costTotal = $('#costTotal'), keepLine = $('#keepLine');
+function annualTotal(){
+  return costChecks.filter(function(c){ return c.checked; })
+    .reduce(function(s, c){ return s + parseFloat(c.getAttribute('data-mo')); }, 0) * 12;
+}
+function renderTotal(){ costTotal.textContent = fmtMoney(annualTotal()); }
+costChecks.forEach(function(c){
+  c.addEventListener('change', function(){
+    $$('.price').forEach(function(p){ p.classList.remove('struck','go'); });
+    keepLine.classList.remove('show');
+    renderTotal();
+  });
+});
+renderTotal();
+ $('#runSwap').addEventListener('click', function(){
+  var chosen = costChecks.filter(function(c){ return c.checked; });
+  if(!chosen.length){ toast('Tick at least one line first'); return; }
+  var total = annualTotal();
+  chosen.forEach(function(c){
+    c.closest('.cost-row').querySelector('.price').classList.add('struck');
+  });
+  setTimeout(function(){
+    $$('.price.struck').forEach(function(p){ p.classList.add('go'); });
+    var t0 = performance.now(), dur = 900;
+    (function tick(now){
+      var p = Math.min(1, (now - t0) / dur);
+      costTotal.textContent = fmtMoney(total * (1 - p));
+      if(p < 1){ requestAnimationFrame(tick); }
+      else {
+        costTotal.textContent = '$0';
+        keepLine.textContent = 'You keep ' + fmtMoney(total) + ' a year — and more usefully, the next visit starts from page one instead of from minute zero.';
+        keepLine.classList.add('show');
+      }
+    })(t0);
+  }, 60);
+});
+
+/* ---------- STEPPER ---------- */
+var steps = $$('.step'), dots = $$('#stepDots span');
+var stepIdx = 0, stepCount = $('#stepCount');
+function showStep(i){
+  stepIdx = Math.max(0, Math.min(steps.length - 1, i));
+  steps.forEach(function(s, j){ s.classList.toggle('active', j === stepIdx); });
+  dots.forEach(function(d, j){ d.classList.toggle('on', j === stepIdx); });
+  stepCount.textContent = 'STEP ' + (stepIdx + 1) + ' / ' + steps.length;
+  $('#stepPrev').disabled = stepIdx === 0;
+  $('#stepPrev').style.opacity = stepIdx === 0 ? '.4' : '1';
+  $('#stepNext').disabled = stepIdx === steps.length - 1;
+  $('#stepNext').style.opacity = stepIdx === steps.length - 1 ? '.4' : '1';
+}
+ $('#stepPrev').addEventListener('click', function(){ showStep(stepIdx - 1); });
+ $('#stepNext').addEventListener('click', function(){ showStep(stepIdx + 1); });
+dots.forEach(function(d, j){ d.addEventListener('click', function(){ showStep(j); }); });
+showStep(0);
+
+/* ---------- THREE THINGS REVEAL ---------- */
+ $$('.rv-head').forEach(function(h){
+  h.addEventListener('click', function(){
+    var item = h.parentElement, open = item.classList.toggle('open');
+    h.setAttribute('aria-expanded', open ? 'true' : 'false');
+    h.querySelector('.rv-x').textContent = open ? '−' : '+';
+  });
+});
+
+/* ---------- SHARE ---------- */
+var PAGE_URL = 'https://iggym.github.io/everyday-ai-done-right/articles/the-eleven-second-window-free-doctor-visit-prep-with-gemini.html';
+var TITLE = 'The Eleven-Second Window \u2014 Free Doctor-Visit Prep in Gemini';
+var GAP_TEXT = 'It took three visits and fourteen months to catch what nine words would have caught on visit one \u2014 my wife said them once, and I almost didn\u2019t repeat them. The free workflow that makes sure they get said:';
+var SOCIAL_TEXT = 'The median patient gets about 11 seconds before the doctor interrupts (2018 study of recorded visits). A one-page brief \u2014 built free \u2014 hands over the whole history in sixty.';
+var PULL_TEXT = 'The median patient gets about 11 seconds before the doctor interrupts (2018 study of recorded visits). Bring the paper, not the ramble.';
+
+function nativeShare(){
+  if(navigator.share){
+    navigator.share({ title: TITLE, text: SOCIAL_TEXT, url: PAGE_URL }).catch(function(){});
+  } else {
+    copyText(PAGE_URL, 'Link copied \u2014 the share sheet isn\u2019t available here');
+  }
+}
+ $('#btnShare').addEventListener('click', nativeShare);
+ $('#shareTop').addEventListener('click', nativeShare);
+ $('#btnX').addEventListener('click', function(){
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(SOCIAL_TEXT) + '&url=' + encodeURIComponent(PAGE_URL), '_blank', 'noopener');
+});
+ $('#btnLI').addEventListener('click', function(){
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(PAGE_URL), '_blank', 'noopener');
+});
+var copyPull = function(){ copyText(PULL_TEXT + ' ' + PAGE_URL, 'Pull-quote copied \u2014 paste it anywhere'); };
+ $('#btnPull').addEventListener('click', copyPull);
+ $('#copyPullTop').addEventListener('click', copyPull);
+})();
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
