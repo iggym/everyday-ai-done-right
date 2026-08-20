@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Precision Micronutrient & Meal Analysis — Everyday AI Done Right</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-coral: #ff6b6b;
+      --accent-green: #10b981;
+      --accent-blue: #38bdf8;
+      --border-color: #334155;
+      --font-heading: 'Manrope', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent-coral: #e11d48;
+      --accent-green: #059669;
+      --accent-blue: #0284c7;
+      --border-color: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 30px;
+    }
+    .brand-link {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    /* Hero */
+    .hero { margin-bottom: 35px; }
+    .badge-group { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+    .badge {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-ver { border-color: var(--accent-green); color: var(--accent-green); }
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      line-height: 1.25;
+      margin-bottom: 15px;
+    }
+    .pitch { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 25px; }
+
+    /* Diagnostic Calculator Centerpiece */
+    .calc-card {
+      background: var(--bg-card);
+      border: 2px solid var(--accent-green);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    }
+    .calc-title {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .calc-subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
+    .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+    .calc-input-group { display: flex; flex-direction: column; gap: 5px; }
+    .calc-input-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+    .calc-input-group input, .calc-input-group select {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .calc-result {
+      background: var(--bg-primary);
+      border-left: 4px solid var(--accent-green);
+      padding: 15px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+    .calc-result strong { color: var(--accent-coral); }
+
+    /* Cost Comparison */
+    .cost-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .cost-box h4 { font-size: 0.85rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 5px; }
+    .cost-val { font-size: 1.5rem; font-weight: 700; }
+    .strike { text-decoration: line-through; color: var(--accent-coral); }
+    .free-val { color: var(--accent-green); }
+
+    /* Walkthrough & Stepper */
+    .stepper { margin-bottom: 40px; }
+    .step-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+    .step-header { font-weight: 700; margin-bottom: 8px; color: var(--accent-blue); }
+
+    /* What Breaks Callout */
+    .callout-break {
+      background: rgba(255, 107, 107, 0.05);
+      border: 1px solid var(--accent-coral);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 40px;
+    }
+    .callout-break h3 { color: var(--accent-coral); font-family: var(--font-heading); margin-bottom: 10px; }
+
+    /* Screenshot Pull Quote */
+    .pull-quote {
+      background: var(--bg-secondary);
+      border: 2px dashed var(--border-color);
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .quote-text {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    /* Share Bar */
+    .share-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+    .share-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      .cost-card, .calc-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="top-bar">
+      <a href="https://iggym.github.io/everyday-ai-done-right/" class="brand-link">Everyday AI Done Right</a>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Theme</button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="badge-group">
+          <span class="badge">Health & Food</span>
+          <span class="badge badge-ver">Verified Aug 20, 2026</span>
+          <span class="badge">Tier T0 — 100% Free</span>
+        </div>
+        <h1>Precision Micronutrient & Meal Analysis</h1>
+        <p class="pitch">Track 84 essential vitamins, minerals, and amino acids per meal using Cronometer’s free NCCDB clinical integration—100% free, zero photo AI tracking errors, zero subscriptions.</p>
+      </section>
+
+      <!-- Centerpiece: Diagnostic Calculator -->
+      <section class="calc-card">
+        <div class="calc-title">
+          <span>📊 Tracking Accuracy & Calorie Risk Calculator</span>
+        </div>
+        <div class="calc-subtitle">See how photo-based AI meal estimates introduce systemic errors compared to database-backed raw gram tracking:</div>
+        <div class="calc-grid">
+          <div class="calc-input-group">
+            <label>Estimated Daily Meals Tracked:</label>
+            <input type="number" id="mealCount" value="3" min="1" max="6" oninput="calculateError()">
+          </div>
+          <div class="calc-input-group">
+            <label>Primary Cooking Method:</label>
+            <select id="cookMethod" onchange="calculateError()">
+              <option value="120">Pan-Seared / Sauteed (Oils Absorbed)</option>
+              <option value="60">Baked / Roasted (Moderate Oils)</option>
+              <option value="200">Restaurant / Takeout (Hidden Fats)</option>
+              <option value="0">Boiled / Raw (No Added Oils)</option>
+            </select>
+          </div>
+        </div>
+        <div class="calc-result" id="calcResult">
+          <strong>Estimated Daily AI Photo Error:</strong> +360 hidden kcal/day<br>
+          <strong>Missing Micronutrient Data:</strong> 100% loss of Magnesium, Zinc, and Vitamin K tracking accuracy.<br>
+          <em>Switching to Cronometer's free NCCDB gram tracking eliminates 100% of this error.</em>
+        </div>
+      </section>
+
+      <!-- Cost Comparison Widget -->
+      <section class="cost-card">
+        <div class="cost-box">
+          <h4>MyFitnessPal Premium</h4>
+          <div class="cost-val strike">$79.99 / yr</div>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">Barcodes & Macro Lock <span style="font-size:0.7rem;">(Verified Aug 2026)</span></p>
+        </div>
+        <div class="cost-box">
+          <h4>Cronometer (Free Core Tier)</h4>
+          <div class="cost-val free-val">$0.00 / Forever</div>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">Full 84-micronutrient NCCDB database included</p>
+        </div>
+      </section>
+
+      <!-- Walkthrough -->
+      <section class="stepper">
+        <h2 style="font-family: var(--font-heading); margin-bottom:20px;">Step-by-Step Workflow</h2>
+
+        <div class="step-item">
+          <div class="step-header">Step 1: Set NCCDB as Primary Database</div>
+          <p>Create a free account on Cronometer. Under <strong>Settings</strong> -> <strong>Targets</strong>, enable the NCCDB database. This ensures every entry pulls from laboratory-analyzed food samples covering 84 vitamins, minerals, and fatty acids.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-header">Step 2: Create Custom Recipe with Raw Weights</div>
+          <p>Weigh all raw ingredients on a digital scale before cooking. Click <strong>Foods</strong> -> <strong>Create Custom Recipe</strong> and input exact raw gram quantities to capture unheated nutrient profiles.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-header">Step 3: Measure Total Cooked Yield Weight</div>
+          <p>Weigh the entire cooked dish after preparation. Enter the weight into the <strong>Recipe Yield</strong> field (e.g., 1200g). When eating, weigh your individual portion (e.g., 200g) for automatic moisture-adjusted nutrient distribution.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-header">Step 4: Audit Vitamin & Mineral Daily Recommended Intake</div>
+          <p>Open your Daily Diary to view your real-time breakdown of Iron, Potassium, Calcium, Magnesium, and Choline without paying for premium add-ons.</p>
+        </div>
+      </section>
+
+      <!-- What Breaks -->
+      <section class="callout-break">
+        <h3>What Breaks (Limitations & Real-World Risks)</h3>
+        <p><strong>The Vision AI Myth:</strong> Visual camera AI cannot measure density, volume, or oil absorption. Relying on AI photos for meal logging undercounts fat intake by up to 300–500 calories per day and fails entirely at reporting vitamin absorption.</p>
+        <p style="margin-top:10px;"><strong>Crowdsourced Entries:</strong> Avoid logging items created by individual users without verified badges, as they frequently omit micronutrient entries entirely.</p>
+      </section>
+
+      <!-- Screenshot / Social Currency Block -->
+      <section class="pull-quote">
+        <div class="quote-text">"Visual AI camera apps miss up to 500 hidden calories in absorbed oils and cannot measure density. Cronometer's free NCCDB database tracks 84 full micronutrients with laboratory precision for $0."</div>
+        <button class="share-btn" onclick="copyQuote()">Copy Stat Block</button>
+      </section>
+
+      <!-- Share Bar -->
+      <footer class="share-bar">
+        <button class="share-btn" onclick="nativeShare()">Share Guide</button>
+        <button class="share-btn" onclick="shareX()">Share on X</button>
+        <button class="share-btn" onclick="shareLinkedIn()">LinkedIn</button>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Theme Management
+    function initTheme() {
+      const saved = localStorage.getItem('eadr-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('eadr-theme', next);
+    }
+    initTheme();
+
+    // Calculator Logic
+    function calculateError() {
+      const meals = parseInt(document.getElementById('mealCount').value) || 1;
+      const oilError = parseInt(document.getElementById('cookMethod').value);
+      const totalError = meals * (80 + oilError);
+      
+      document.getElementById('calcResult').innerHTML = 
+        `<strong>Estimated Daily AI Photo Error:</strong> +${totalError} hidden kcal/day<br>` +
+        `<strong>Missing Micronutrient Data:</strong> 100% loss of Magnesium, Zinc, and Vitamin K tracking accuracy.<br>` +
+        `<em>Switching to Cronometer's free NCCDB gram tracking eliminates 100% of this error.</em>`;
+    }
+
+    // Pull Quote Copy
+    function copyQuote() {
+      const quote = document.querySelector('.quote-text').innerText;
+      navigator.clipboard.writeText(quote);
+      alert('Stat block copied to clipboard!');
+    }
+
+    // Sharing Actions
+    function nativeShare() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Precision Micronutrient Meal Analysis',
+          text: 'Track 84 full vitamins and minerals for $0 using free USDA clinical database integration.',
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    }
+
+    function shareX() {
+      const text = encodeURIComponent("Photo-based AI meal apps miss up to 500 hidden calories and completely fail at micronutrients. Here is how to track 84 vitamins for $0:");
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(window.location.href)}`, '_blank');
+    }
+
+    function shareLinkedIn() {
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank');
+    }
+  </script>
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+</body>
+</html>

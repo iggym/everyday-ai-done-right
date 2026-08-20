@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Everyday AI Done Right — Health Tracking Without the Hype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #1a1a1a;
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --primary: #2b8a3e;
+            --primary-dark: #1b6b2a;
+            --coral: #ff6b6b;
+            --coral-light: #fff5f5;
+            --font-display: 'Manrope', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --coral-light: #2a1a1a;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 0 0 2rem 0;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        [data-theme="dark"] .top-bar {
+            background-color: rgba(18, 18, 18, 0.9);
+        }
+
+        .logo { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: var(--primary); }
+        .logo span { color: var(--text-color); }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        .hero {
+            padding: 2.5rem 0 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 2.2rem;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #6c757d;
+            max-width: 700px;
+            margin-bottom: 1.25rem;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .badge {
+            background-color: #d3f9d8;
+            color: var(--primary-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border: 1px solid var(--border-color);
+        }
+
+        .badge-coral {
+            background-color: var(--coral-light);
+            color: #c92a2a;
+        }
+
+        .decision-tree {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        .decision-tree h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tree-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.25rem;
+        }
+        @media (max-width: 600px) {
+            .tree-grid { grid-template-columns: 1fr; }
+        }
+
+        .tree-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .tree-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .tree-group select {
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+        }
+
+        .tree-result {
+            grid-column: 1 / -1;
+            background: #d3f9d8;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        [data-theme="dark"] .tree-result {
+            background: #1a2a1f;
+        }
+
+        .tree-result h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .cost-compare {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem 1.75rem;
+            margin: 1.5rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cost-compare .strike {
+            text-decoration: line-through;
+            color: #868e96;
+            font-size: 1.1rem;
+        }
+
+        .cost-compare .free {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: var(--font-display);
+        }
+
+        .walkthrough {
+            margin: 2rem 0;
+        }
+
+        .step {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            margin-top: 0.75rem;
+            padding-left: 2.5rem;
+            display: none;
+        }
+
+        .step.open .step-content { display: block; }
+
+        .step-content ul { padding-left: 1.25rem; margin-bottom: 0.5rem; }
+        .step-content ol { padding-left: 1.25rem; margin-bottom: 0.5rem; }
+
+        .code-block {
+            background: var(--bg-color);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            margin: 0.5rem 0;
+        }
+
+        .breaks-callout {
+            background: #fff4e5;
+            border-left: 6px solid #e67700;
+            padding: 1.25rem 1.75rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        [data-theme="dark"] .breaks-callout {
+            background: #2a1f12;
+            border-left-color: #f59f00;
+        }
+
+        .breaks-callout h3 {
+            color: #e67700;
+            font-family: var(--font-display);
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .pull-quote-block {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 1.75rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.4rem;
+            line-height: 1.3;
+        }
+
+        .share-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 2rem 0;
+            padding: 1.25rem 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .share-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .share-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .footnote {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .perishable {
+            font-size: 0.8rem;
+            color: #6c757d;
+            background: var(--border-color);
+            padding: 0.1rem 0.6rem;
+            border-radius: 100px;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin: 2.5rem 0 1rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo">Everyday<span>AI</span> Done Right</div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌓</button>
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+            <h1>AI Health Tracking Without the Hype</h1>
+            <p>Most AI health apps want to be your doctor. That's a dangerous mistake. Here's the open-source tracker that stays in its lane — and keeps your data private.</p>
+            <div class="badges">
+                <span class="badge">✓ Verified Free (T3)</span>
+                <span class="badge">🛠️ Open Source</span>
+                <span class="badge">📱 Android</span>
+                <span class="badge-coral">⚠️ Not Medical Advice</span>
+                <span class="badge">📅 Verified: 2026-08-20</span>
+            </div>
+        </section>
+
+        <!-- Decision Tree: Interactive Centerpiece -->
+        <section class="decision-tree" id="decisionTree">
+            <h2>🧭 What Should You Track?</h2>
+            <p>Not everyone needs the same data. Here's the right tracking plan for <em>your</em> goals.</p>
+            <div class="tree-grid">
+                <div class="tree-group">
+                    <label for="healthGoal">Your Primary Goal</label>
+                    <select id="healthGoal">
+                        <option value="weight_loss">Lose weight</option>
+                        <option value="muscle_gain">Build muscle</option>
+                        <option value="general_wellness" selected>General wellness</option>
+                        <option value="medical_monitoring">Monitor a medical condition</option>
+                    </select>
+                </div>
+                <div class="tree-group">
+                    <label for="deviceSetup">Your Device Setup</label>
+                    <select id="deviceSetup">
+                        <option value="android_only" selected>Android phone only</option>
+                        <option value="wearable">Android + Wearable (Garmin/Fitbit)</option>
+                        <option value="no_phone">Desktop/laptop only</option>
+                    </select>
+                </div>
+                <div class="tree-result" id="treeResult">
+                    <h3>Recommended: <span id="recPlan">Daily Food + Mood Logging</span></h3>
+                    <p id="recReason">For general wellness on a phone, start with meal logging and a daily check-in. Use FitBuddy's photo logging and built-in simulator — no API key required to start.</p>
+                    <p><span class="perishable">as of 2026-08-20</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cost Comparison -->
+        <div class="cost-compare">
+            <div>
+                <span class="strike">$20/month (MyFitnessPal)</span>
+                <span style="margin: 0 0.75rem; color: #868e96;">→</span>
+                <span class="free">$0</span>
+                <span style="font-weight: 600; margin-left: 0.5rem;">+ Your Data Stays Private</span>
+            </div>
+            <span class="perishable">as of 2026-08-20</span>
+        </div>
+
+        <!-- Pull Quote: Social Currency -->
+        <div class="pull-quote-block">
+            "The smart health app isn't the one that diagnoses you — it's the one that tracks what you actually eat."<br>
+            <span style="font-size: 0.9rem; font-weight: 400; color: #6c757d;">— Contrarian Take, Everyday AI Done Right</span>
+        </div>
+
+        <!-- Walkthrough -->
+        <section class="walkthrough">
+            <h2 class="section-title">Step-by-Step Walkthrough</h2>
+
+            <div class="step open" id="step1">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    Stop. AI is not your doctor.
+                </div>
+                <div class="step-content">
+                    <p><strong>Contrarian Correction:</strong> Most guides tell you to trust AI health apps for medical advice. That's backwards. Even apps with "therapist" in the name explicitly warn: <em>"This is not a substitute for professional care."</em> [citation:2][citation:3][citation:7]</p>
+                    <p><strong>So What?</strong> Relying on AI for medical advice could delay real care. Use AI for <em>tracking</em>, not diagnosis.</p>
+                </div>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    Install FitBuddy from F-Droid
+                </div>
+                <div class="step-content">
+                    <p>FitBuddy is a free, open-source health tracker for Android [citation:4].</p>
+                    <ul>
+                        <li><strong>Android only</strong>: Available on F-Droid (free, no Google Play required).</li>
+                        <li><strong>No account required</strong>: Install and open.</li>
+                        <li><strong>No ads, no tracking by default</strong> [citation:4].</li>
+                    </ul>
+                    <div class="code-block">
+                        <code>f-droid.org/packages/com.anant.fitbuddy/</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    Choose your AI provider (optional)
+                </div>
+                <div class="step-content">
+                    <p>FitBuddy can run entirely offline using its built-in simulator [citation:4]. For photo logging, configure an AI provider:</p>
+                    <ul>
+                        <li><strong>Ollama (Local)</strong>: Install Ollama, pull a vision model (e.g., LLaVA), point FitBuddy to <code>http://localhost:11434</code> — <strong>100% free, fully local</strong>.</li>
+                        <li><strong>Google Gemini</strong>: Free API key from Google AI Studio.</li>
+                        <li><strong>OpenRouter</strong>: Free vision models with automatic model dropdown.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <span class="step-number">4</span>
+                    Log your first meal
+                </div>
+                <div class="step-content">
+                    <p>Snap a photo of your food or type what you ate. The AI estimates calories and macros instantly. Review ingredients, adjust weights, and save [citation:4].</p>
+                    <p><strong>So What?</strong> Logging just one meal breaks the inertia. Once you see the macro breakdown, you'll understand your eating patterns.</p>
+                </div>
+            </div>
+
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <span class="step-number">5</span>
+                    Bookmark presets and check your dashboard
+                </div>
+                <div class="step-content">
+                    <p>For meals you eat regularly, save them as presets. Next time, it's one tap to log [citation:4].</p>
+                    <p>Your dashboard shows: daily calorie ring, combined food/exercise log, macro breakdown, and custom charts tracking trends over time [citation:4].</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- What Breaks -->
+        <div class="breaks-callout">
+            <h3>⚠️ What Breaks (Limitations)</h3>
+            <ul>
+                <li><strong>It's not a doctor.</strong> The app is a tracker, not a diagnostician. <strong>So what?</strong> Trusting it to diagnose you could be harmful.</li>
+                <li><strong>Photo logging requires an AI key.</strong> Without configuring an AI provider, you can still log manually or use the simulator [citation:4].</li>
+                <li><strong>Android only.</strong> No iOS version at this time.</li>
+                <li><strong>Beta features.</strong> AI chatbot and multi-user support are in beta and may have bugs [citation:4].</li>
+            </ul>
+        </div>
+
+        <!-- Share Bar -->
+        <div class="share-bar">
+            <button class="share-btn" id="shareWebShare">📤 Share</button>
+            <button class="share-btn" id="shareTwitter">🐦 X</button>
+            <button class="share-btn" id="shareLinkedIn">💼 LinkedIn</button>
+            <button class="share-btn" id="copyQuote">📋 Copy Quote</button>
+        </div>
+
+        <p class="footnote">
+            This guide is for informational purposes only. AI health tools are not substitutes for professional medical advice, diagnosis, or treatment.
+        </p>
+
+    </main>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('eadr-theme');
+        if (savedTheme) html.setAttribute('data-theme', savedTheme);
+        themeToggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('eadr-theme', next);
+        });
+
+        // Step toggles
+        document.querySelectorAll('.step').forEach(step => {
+            step.addEventListener('click', () => {
+                step.classList.toggle('open');
+            });
+        });
+
+        // Decision Tree
+        const goalMap = {
+            weight_loss: { plan: 'Calorie Deficit Tracking', reason: 'Log every meal with photo AI. Track macros against a deficit target. Pair with exercise logging for full picture.' },
+            muscle_gain: { plan: 'Protein + Strength Tracking', reason: 'Log protein intake per meal. Track workouts and body measurements to monitor progress. Use the exercise database [citation:4].' },
+            general_wellness: { plan: 'Daily Food + Mood Logging', reason: 'Start with meal logging and a daily check-in. Use FitBuddy\'s photo logging and built-in simulator — no API key required to start.' },
+            medical_monitoring: { plan: 'Doctor-Led Tracking', reason: 'Track meals and biomarkers, but <strong>share logs with your doctor</strong>. This is a data-collection tool, not a diagnostic aid.' }
+        };
+
+        const deviceMap = {
+            android_only: 'Android phone only',
+            wearable: 'Android + wearable (Garmin/Fitbit)',
+            no_phone: 'Desktop/laptop only'
+        };
+
+        function updateTree() {
+            const goal = document.getElementById('healthGoal').value;
+            const device = document.getElementById('deviceSetup').value;
+            const rec = goalMap[goal] || goalMap.general_wellness;
+            document.getElementById('recPlan').textContent = rec.plan;
+            document.getElementById('recReason').innerHTML = rec.reason + ' Device: ' + deviceMap[device] + '.';
+        }
+
+        document.getElementById('healthGoal').addEventListener('change', updateTree);
+        document.getElementById('deviceSetup').addEventListener('change', updateTree);
+        updateTree();
+
+        // Share buttons
+        const quote = '"The smart health app isn\'t the one that diagnoses you — it\'s the one that tracks what you actually eat." — Everyday AI Done Right';
+
+        document.getElementById('shareWebShare').addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'AI Health Tracking Without the Hype',
+                    text: quote,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(quote + ' ' + window.location.href).then(() => alert('Copied to clipboard!'));
+            }
+        });
+
+        document.getElementById('shareTwitter').addEventListener('click', () => {
+            const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(quote + ' ' + window.location.href);
+            window.open(url, '_blank');
+        });
+
+        document.getElementById('shareLinkedIn').addEventListener('click', () => {
+            const url = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(window.location.href);
+            window.open(url, '_blank');
+        });
+
+        document.getElementById('copyQuote').addEventListener('click', () => {
+            navigator.clipboard.writeText(quote).then(() => alert('Quote copied!'));
+        });
+
+        // Cloudflare Web Analytics
+        (function() {
+            const script = document.createElement('script');
+            script.defer = true;
+            script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+            script.setAttribute('data-cf-beacon', '{"token": "90c83e9b603641beac9bf45d47ce886d"}');
+            document.body.appendChild(script);
+        })();
+    </script>
+</body>
+</html>
