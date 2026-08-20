@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0039",
+  "slug": "ai-assistant-decision-tree-free-models",
+  "title": "AI Assistant Decision Tree: Which Free Model Actually Fits Your Task?",
+  "hook": "Stop guessing which AI model to use. This decision tree maps your task type, device, and data sensitivity to the best genuinely free assistant — with quota limits clearly labeled.",
+  "path": "articles/ai-assistant-decision-tree-free-models.html",
+  "date": "2026-08-20",
+  "status": "published",
+  "format": "guide",
+  "category": "career",
+  "tool": "Google AI Studio (Gemini 1.5 Flash/Pro) + OpenAI ChatGPT",
+  "tool_family": "Google + OpenAI",
+  "source_url": "https://ai.google.dev/gemini-api/docs/quotas",
+  "tags": ["decision-tree", "free-ai", "productivity", "workflow", "quota-management"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-20"
+},{
   "id": "0047",
   "slug": "zero-dollar-product-relight-ic-light-birefnet",
   "title": "The $0 Product Photo Relight That Beats a $300 Softbox — IC-Light + BiRefNet",

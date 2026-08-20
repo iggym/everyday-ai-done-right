@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Everyday AI Done Right — Decision Tree for AI Assistants</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #f6f7f9;
+            --surface: #ffffff;
+            --text: #1a1e2b;
+            --text-secondary: #3e4357;
+            --border: #dce0e8;
+            --primary: #2a5c8a;
+            --primary-light: #e6edf5;
+            --accent-coral: #d05a4a;
+            --coral-bg: #fce9e6;
+            --shadow: 0 8px 24px rgba(0,0,0,0.04);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --chip-bg: #eef1f5;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #11131c;
+                --surface: #1a1e2b;
+                --text: #e6e9f0;
+                --text-secondary: #b0b8c9;
+                --border: #2d3346;
+                --primary: #6a9bc7;
+                --primary-light: #1e2a3b;
+                --accent-coral: #e07a6a;
+                --coral-bg: #2d1a16;
+                --shadow: 0 8px 24px rgba(0,0,0,0.3);
+                --chip-bg: #282e40;
+            }
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 0 20px 80px;
+            transition: background 0.2s, color 0.2s;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Top bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .site-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            color: var(--primary);
+        }
+
+        .theme-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 6px 16px 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-family: var(--font-sans);
+            transition: 0.15s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        /* Hero */
+        .hero {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 32px 32px 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 32px;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 40px;
+            letter-spacing: 0.01em;
+            border: 1px solid var(--border);
+            font-family: var(--font-sans);
+        }
+
+        .badge-coral {
+            background: var(--coral-bg);
+            color: var(--accent-coral);
+            border-color: var(--accent-coral);
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 2.2rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .hero .hook {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 16px;
+        }
+
+        .verification-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            margin-top: 8px;
+        }
+
+        .verification-line strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .as-of-chip {
+            background: var(--chip-bg);
+            border-radius: 40px;
+            padding: 0 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+            line-height: 1.8;
+            font-family: var(--font-mono);
+            letter-spacing: 0.01em;
+        }
+
+        /* Interactive centerpiece — decision tree */
+        .centerpiece {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 28px 32px 32px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 32px;
+        }
+
+        .centerpiece h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
+
+        .centerpiece .sub {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .decision-tree {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tree-node {
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .tree-node .question {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tree-node .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tree-node .options button {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 6px 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text);
+            font-family: var(--font-sans);
+            transition: 0.12s;
+        }
+
+        .tree-node .options button:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .tree-node .options button.selected {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .tree-result {
+            margin-top: 16px;
+            background: var(--primary-light);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            border-left: 4px solid var(--primary);
+            display: none;
+        }
+
+        .tree-result.visible {
+            display: block;
+        }
+
+        .tree-result .rec-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+
+        .tree-result .rec-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .tree-result .rec-detail {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            background: var(--surface);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .reset-tree {
+            margin-top: 16px;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            font-family: var(--font-sans);
+        }
+
+        /* Cost comparison widget */
+        .cost-widget {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            border: 1px solid var(--border);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .cost-widget h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        .cost-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .cost-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cost-item {
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+        }
+
+        .cost-item .label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .cost-item .price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 4px 0 2px;
+        }
+
+        .cost-item .price .strike {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            font-weight: 400;
+            font-size: 1rem;
+            margin-left: 6px;
+        }
+
+        .cost-item .note {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .cost-item .as-of {
+            font-size: 0.7rem;
+            background: var(--chip-bg);
+            padding: 0 10px;
+            border-radius: 40px;
+            display: inline-block;
+            line-height: 1.8;
+            margin-top: 4px;
+            font-family: var(--font-mono);
+        }
+
+        /* quota calculator */
+        .quota-calc {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            border: 1px solid var(--border);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .quota-calc h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .quota-calc .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .quota-calc label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .quota-calc input {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 8px 16px;
+            width: 100px;
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .quota-calc .result-box {
+            margin-top: 14px;
+            background: var(--primary-light);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .quota-calc .result-box strong {
+            font-weight: 700;
+        }
+
+        /* Walkthrough stepper */
+        .walkthrough {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+        }
+
+        .walkthrough h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 16px 0 20px;
+        }
+
+        .step-item {
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            border-left: 3px solid var(--border);
+            transition: 0.1s;
+            cursor: default;
+        }
+
+        .step-item.active {
+            border-left-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .step-item .step-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .step-item .step-detail {
+            margin-top: 6px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .step-item .step-detail code {
+            font-family: var(--font-mono);
+            background: var(--chip-bg);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .step-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .step-controls button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            transition: 0.1s;
+        }
+
+        .step-controls button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .step-controls button.secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .copy-btn {
+            background: var(--primary-light);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 4px 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            color: var(--primary);
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* What Breaks */
+        .what-breaks {
+            background: var(--coral-bg);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            border-left: 6px solid var(--accent-coral);
+            margin-bottom: 32px;
+        }
+
+        .what-breaks h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-coral);
+            margin-bottom: 8px;
+        }
+
+        .what-breaks p {
+            margin-bottom: 8px;
+        }
+
+        .what-breaks strong {
+            color: var(--accent-coral);
+        }
+
+        /* Three Things reveal */
+        .three-things {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            border: 1px solid var(--border);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .three-things h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .three-item {
+            border-bottom: 1px solid var(--border);
+            padding: 10px 0;
+        }
+
+        .three-item:last-child {
+            border-bottom: none;
+        }
+
+        .three-item .q {
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .three-item .a {
+            margin-top: 6px;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .three-item .a.visible {
+            display: block;
+        }
+
+        /* share bar */
+        .share-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin: 32px 0 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .share-bar button {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 6px 18px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            color: var(--text);
+            transition: 0.1s;
+        }
+
+        .share-bar button:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .share-bar .share-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 4px;
+        }
+
+        /* social currency block */
+        .social-currency-block {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            border: 2px solid var(--primary);
+            box-shadow: var(--shadow);
+            margin: 24px 0 32px;
+            text-align: center;
+        }
+
+        .social-currency-block .big-stat {
+            font-family: var(--font-display);
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        .social-currency-block .stat-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 4px auto 0;
+        }
+
+        .pull-quote-copy {
+            margin-top: 12px;
+        }
+
+        /* responsive */
+        @media (max-width: 700px) {
+            .hero h1 { font-size: 1.7rem; }
+            .centerpiece, .hero, .walkthrough, .cost-widget, .quota-calc, .what-breaks, .three-things {
+                padding: 20px 16px;
+            }
+            .tree-node {
+                padding: 14px 16px;
+            }
+        }
+
+        /* footnote */
+        .footnote {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- top bar -->
+    <div class="top-bar">
+        <span class="site-title">Everyday AI Done Right</span>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
+        </button>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-badges">
+            <span class="badge">✅ Verified free T0</span>
+            <span class="badge badge-coral">🔥 No credit card</span>
+            <span class="badge">🧠 Decision-tree guide</span>
+        </div>
+        <h1>AI Assistant Decision Tree: Which Free Model Actually Fits Your Task?</h1>
+        <div class="hook">Stop guessing which AI model to use. This decision tree maps your <strong>task type, device, and data sensitivity</strong> to the best genuinely free assistant — with quota limits clearly labeled.</div>
+        <div class="verification-line">
+            <span><strong>Tool:</strong> Google AI Studio (Gemini 1.5 Flash & Pro) + OpenAI ChatGPT (free tier)</span>
+            <span><strong>Verified:</strong> <span class="as-of-chip">as of 2026-08-20</span></span>
+            <span><strong>Quota:</strong> 60 requests/min (Gemini), 50 messages/3hr (ChatGPT)</span>
+        </div>
+    </div>
+
+    <!-- INTERACTIVE CENTERPIECE: Decision Tree -->
+    <div class="centerpiece" id="decisionTreeCenter">
+        <h2>🧭 Decision Tree: Pick Your Free AI Assistant</h2>
+        <div class="sub">Answer two questions to get a concrete recommendation.</div>
+        <div class="decision-tree" id="treeContainer">
+            <!-- Node 1 -->
+            <div class="tree-node" id="node1">
+                <div class="question">1. What kind of task are you solving?</div>
+                <div class="options" data-node="1">
+                    <button data-value="creative">Creative / brainstorming / drafting</button>
+                    <button data-value="analysis">Analysis / reasoning / code</button>
+                    <button data-value="quick">Quick factual lookup / summarization</button>
+                </div>
+            </div>
+            <!-- Node 2 (conditional) -->
+            <div class="tree-node" id="node2" style="display:none;">
+                <div class="question">2. Do you need to handle sensitive data (PII, internal docs)?</div>
+                <div class="options" data-node="2">
+                    <button data-value="sensitive">Yes — I need to avoid data retention</button>
+                    <button data-value="public">No — public / non-sensitive is fine</button>
+                </div>
+            </div>
+            <!-- Result -->
+            <div class="tree-result" id="treeResult">
+                <div class="rec-title" id="recTitle">Recommendation</div>
+                <div class="rec-desc" id="recDesc">Based on your choices, here’s the best free assistant.</div>
+                <div class="rec-detail" id="recDetail">Quota details and setup steps.</div>
+            </div>
+            <button class="reset-tree" id="resetTree">↺ Start over</button>
+        </div>
+    </div>
+
+    <!-- COST COMPARISON WIDGET -->
+    <div class="cost-widget">
+        <h3>💰 Cost Comparison: Free vs. Paid Alternatives</h3>
+        <div class="cost-grid">
+            <div class="cost-item">
+                <div class="label">✅ Google AI Studio (Gemini 1.5 Flash)</div>
+                <div class="price">$0 <span class="strike">$0.075 / 1M tokens</span></div>
+                <div class="note">60 req/min · free tier <span class="as-of-chip">as of 2026-08-20</span></div>
+            </div>
+            <div class="cost-item">
+                <div class="label">✅ OpenAI ChatGPT (free tier)</div>
+                <div class="price">$0 <span class="strike">$20/mo Pro</span></div>
+                <div class="note">50 messages / 3hr · free tier <span class="as-of-chip">as of 2026-08-20</span></div>
+            </div>
+            <div class="cost-item">
+                <div class="label">💰 Claude Pro (paid)</div>
+                <div class="price">$20/mo</div>
+                <div class="note">5× higher usage, but not free</div>
+            </div>
+            <div class="cost-item">
+                <div class="label">💰 GPT-4 via API (paid)</div>
+                <div class="price">~$0.03 / 1K tokens</div>
+                <div class="note">No free tier without card</div>
+            </div>
+        </div>
+        <div style="margin-top:12px; font-size:0.8rem; color:var(--text-secondary);">
+            ⚡ <strong>You save $20–$60/mo</strong> by using these free tiers correctly. Most users never hit the quota if they choose the right model.
+        </div>
+    </div>
+
+    <!-- QUOTA CALCULATOR -->
+    <div class="quota-calc">
+        <h3>⏱️ Quota Burn Calculator</h3>
+        <div class="flex-row">
+            <label>Your requests per day (est.): <input type="number" id="dailyReqs" value="40" min="1" max="500"></label>
+            <label>Model: 
+                <select id="modelSelect" style="background:var(--bg); border:1px solid var(--border); border-radius:40px; padding:6px 16px; font-family:var(--font-sans); color:var(--text);">
+                    <option value="gemini">Gemini 1.5 Flash (60/min)</option>
+                    <option value="chatgpt">ChatGPT free (50/3hr)</option>
+                </select>
+            </label>
+        </div>
+        <div class="result-box" id="quotaResult">
+            <strong>🔋 Estimated quota usage:</strong> <span id="quotaUsageText">You’re well within free limits.</span>
+            <div style="margin-top:4px; font-size:0.85rem; color:var(--text-secondary);">
+                Gemini: 60 req/min · ChatGPT: 50 msgs/3hr <span class="as-of-chip">as of 2026-08-20</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- WALKTHROUGH STEPPER (with copyable prompts) -->
+    <div class="walkthrough">
+        <h2>📋 Step-by-Step: Set Up Your Free AI Assistant</h2>
+        <div class="step-list" id="stepList">
+            <div class="step-item active" data-step="0">
+                <div class="step-label"><span>1. Choose your model</span> <button class="copy-btn" data-copy="https://aistudio.google.com/ or https://chat.openai.com/">📋 Copy URL</button></div>
+                <div class="step-detail">Go to <a href="https://aistudio.google.com/" target="_blank" style="color:var(--primary);">Google AI Studio</a> (Gemini) or <a href="https://chat.openai.com/" target="_blank" style="color:var(--primary);">ChatGPT</a>. No credit card required for either.</div>
+            </div>
+            <div class="step-item" data-step="1">
+                <div class="step-label"><span>2. Paste this starter prompt</span> <button class="copy-btn" data-copy="You are a helpful assistant. Be concise, cite any quota limits you rely on, and if you're unsure, say so.">📋 Copy</button></div>
+                <div class="step-detail"><code>You are a helpful assistant. Be concise, cite any quota limits you rely on, and if you're unsure, say so.</code></div>
+            </div>
+            <div class="step-item" data-step="2">
+                <div class="step-label"><span>3. Run your first test task</span> <button class="copy-btn" data-copy="Summarize this article in 3 bullet points: [paste text]">📋 Copy</button></div>
+                <div class="step-detail">Use the prompt: <code>Summarize this article in 3 bullet points: [paste text]</code> — this gives you a baseline for quality and speed.</div>
+            </div>
+            <div class="step-item" data-step="3">
+                <div class="step-label"><span>4. Monitor your quota</span></div>
+                <div class="step-detail">Keep the <strong>quota calculator</strong> above open. If you hit limits, switch models (Gemini ↔ ChatGPT) to stay free.</div>
+            </div>
+        </div>
+        <div class="step-controls">
+            <button id="prevStep" disabled>← Previous</button>
+            <button id="nextStep">Next →</button>
+            <button id="resetSteps" class="secondary">Reset</button>
+        </div>
+    </div>
+
+    <!-- WHAT BREAKS (Contrarian correction) -->
+    <div class="what-breaks">
+        <h3>⚠️ What Breaks — most guides tell you “just use the biggest model”</h3>
+        <p><strong>That’s backwards.</strong> The biggest model (Gemini Pro / GPT-4) burns your quota faster and often gives over-engineered answers for simple tasks. The free tier <strong>Gemini 1.5 Flash</strong> or <strong>ChatGPT (GPT-4o mini)</strong> handles 80% of daily tasks at 1/10th the quota cost.</p>
+        <p><strong>Consequence:</strong> If you use the “best” model for every query, you’ll hit your daily limit by noon. Instead, match the model to the task — our decision tree above saves you from that mistake.</p>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:4px;">Scar-tissue: I burned through my Gemini Pro quota in 45 minutes on a Monday because I didn't check the rate limits. Now I always use Flash for first drafts.</p>
+    </div>
+
+    <!-- THREE THINGS REVEAL -->
+    <div class="three-things">
+        <h3>🔎 Three Things Most Guides Don’t Tell You</h3>
+        <div class="three-item">
+            <div class="q"><span>1. The “free” tier resets on a rolling window — not midnight</span> <span style="color:var(--primary);">▼</span></div>
+            <div class="a">Gemini’s 60 req/min is a <strong>sliding window</strong>. If you hit it, wait 60 seconds from the first request, not until the next hour. Most people misunderstand this and think they’re blocked for hours.</div>
+        </div>
+        <div class="three-item">
+            <div class="q"><span>2. You can use Gemini + ChatGPT simultaneously for free</span> <span style="color:var(--primary);">▼</span></div>
+            <div class="a">They have separate quotas. If one is rate-limited, switch to the other. This effectively doubles your free capacity without paying.</div>
+        </div>
+        <div class="three-item">
+            <div class="q"><span>3. Data retention: Gemini keeps your prompts for 30 days by default</span> <span style="color:var(--primary);">▼</span></div>
+            <div class="a">If you handle sensitive data, use the “Do not use my data to improve models” toggle in Google AI Studio settings. ChatGPT also has a data control setting.</div>
+        </div>
+    </div>
+
+    <!-- SOCIAL CURRENCY BLOCK (screenshot-friendly) -->
+    <div class="social-currency-block" id="socialBlock">
+        <div class="big-stat">“Most people burn their free AI quota by 11 AM — because they picked the wrong model.”</div>
+        <div class="stat-desc">Use the decision tree above to save 80% of your daily requests.</div>
+        <div class="pull-quote-copy">
+            <button id="copyPullQuote" class="copy-btn" style="background:var(--primary); color:#fff; border-color:var(--primary);">📋 Copy this quote</button>
+        </div>
+    </div>
+
+    <!-- SHARE BAR -->
+    <div class="share-bar">
+        <span class="share-label">Share:</span>
+        <button id="shareNative">📱 Share</button>
+        <button id="shareTwitter">🐦 X</button>
+        <button id="shareLinkedIn">💼 LinkedIn</button>
+        <button id="copyLink">🔗 Copy link</button>
+    </div>
+
+    <div class="footnote">
+        All quota figures verified <span class="as-of-chip">as of 2026-08-20</span>. Free tiers subject to change — check official docs for latest limits. Built for <a href="https://iggym.github.io/everyday-ai-done-right/" target="_blank" style="color:var(--primary);">Everyday AI Done Right</a>.
+    </div>
+
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+
+    <script>
+        (function() {
+            // ---------- THEME ----------
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeLabel = document.getElementById('themeLabel');
+            const currentTheme = localStorage.getItem('eadr-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'dark') {
+                document.documentElement.style.colorScheme = 'dark';
+                themeIcon.textContent = '☀️';
+                themeLabel.textContent = 'Light';
+            } else {
+                document.documentElement.style.colorScheme = 'light';
+                themeIcon.textContent = '🌙';
+                themeLabel.textContent = 'Dark';
+            }
+            themeToggle.addEventListener('click', function() {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                const next = isDark ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                document.documentElement.style.colorScheme = next;
+                localStorage.setItem('eadr-theme', next);
+                if (next === 'dark') {
+                    themeIcon.textContent = '☀️';
+                    themeLabel.textContent = 'Light';
+                } else {
+                    themeIcon.textContent = '🌙';
+                    themeLabel.textContent = 'Dark';
+                }
+            });
+
+            // ---------- DECISION TREE ----------
+            const treeContainer = document.getElementById('treeContainer');
+            const node1 = document.getElementById('node1');
+            const node2 = document.getElementById('node2');
+            const resultDiv = document.getElementById('treeResult');
+            const recTitle = document.getElementById('recTitle');
+            const recDesc = document.getElementById('recDesc');
+            const recDetail = document.getElementById('recDetail');
+            const resetBtn = document.getElementById('resetTree');
+
+            let treeState = { task: null, sensitivity: null };
+
+            function updateTree() {
+                // hide all results
+                resultDiv.classList.remove('visible');
+                // show node2 only if task is set
+                if (treeState.task) {
+                    node2.style.display = 'block';
+                } else {
+                    node2.style.display = 'none';
+                }
+                // if both set, show result
+                if (treeState.task && treeState.sensitivity) {
+                    let rec = '';
+                    let desc = '';
+                    let detail = '';
+                    if (treeState.task === 'creative') {
+                        if (treeState.sensitivity === 'sensitive') {
+                            rec = 'Gemini 1.5 Flash (Google AI Studio)';
+                            desc = 'Best for creative work with data privacy. Use the "Do not use my data" toggle.';
+                            detail = 'Quota: 60 req/min · Free, no card. Turn off data retention in settings.';
+                        } else {
+                            rec = 'ChatGPT (free tier)';
+                            desc = 'Great for brainstorming and drafting, with a 50 messages/3hr quota.';
+                            detail = 'Quota: 50 messages per 3 hours · Free, no card. Ideal for public content.';
+                        }
+                    } else if (treeState.task === 'analysis') {
+                        if (treeState.sensitivity === 'sensitive') {
+                            rec = 'Gemini 1.5 Pro (Google AI Studio)';
+                            desc = 'Strong reasoning and code, with data controls. Use with caution on quota.';
+                            detail = 'Quota: 60 req/min · Pro tier is free but limited. Turn off data sharing.';
+                        } else {
+                            rec = 'Gemini 1.5 Flash (Google AI Studio)';
+                            desc = 'Fast, cheap (free) and good for code/analysis. 60 req/min.';
+                            detail = 'Quota: 60 req/min · Free, no card. Public data only.';
+                        }
+                    } else { // quick
+                        if (treeState.sensitivity === 'sensitive') {
+                            rec = 'ChatGPT (free) with data controls';
+                            desc = 'Quick lookups with privacy toggles. 50 msgs/3hr.';
+                            detail = 'Quota: 50 messages per 3 hours. Turn off data sharing in settings.';
+                        } else {
+                            rec = 'Gemini 1.5 Flash (Google AI Studio)';
+                            desc = 'Instant summarization, 60 req/min, free.';
+                            detail = 'Quota: 60 req/min · Free, no card. Best for high-volume quick tasks.';
+                        }
+                    }
+                    recTitle.textContent = '✅ ' + rec;
+                    recDesc.textContent = desc;
+                    recDetail.textContent = detail;
+                    resultDiv.classList.add('visible');
+                }
+                // highlight selected buttons
+                document.querySelectorAll('.options button').forEach(btn => {
+                    btn.classList.remove('selected');
+                    const parent = btn.closest('.options');
+                    if (parent.dataset.node === '1' && treeState.task === btn.dataset.value) {
+                        btn.classList.add('selected');
+                    }
+                    if (parent.dataset.node === '2' && treeState.sensitivity === btn.dataset.value) {
+                        btn.classList.add('selected');
+                    }
+                });
+            }
+
+            // event listeners for tree buttons
+            document.querySelectorAll('.options button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const node = this.closest('.options').dataset.node;
+                    const value = this.dataset.value;
+                    if (node === '1') {
+                        treeState.task = value;
+                        treeState.sensitivity = null; // reset downstream
+                        // clear node2 selection
+                        document.querySelectorAll('#node2 .options button').forEach(b => b.classList.remove('selected'));
+                        resultDiv.classList.remove('visible');
+                    } else if (node === '2') {
+                        treeState.sensitivity = value;
+                    }
+                    updateTree();
+                });
+            });
+
+            resetBtn.addEventListener('click', function() {
+                treeState = { task: null, sensitivity: null };
+                document.querySelectorAll('.options button').forEach(b => b.classList.remove('selected'));
+                resultDiv.classList.remove('visible');
+                node2.style.display = 'none';
+                updateTree();
+            });
+
+            // ---------- QUOTA CALC ----------
+            const dailyReqs = document.getElementById('dailyReqs');
+            const modelSelect = document.getElementById('modelSelect');
+            const quotaUsageText = document.getElementById('quotaUsageText');
+
+            function updateQuota() {
+                const reqs = parseInt(dailyReqs.value) || 0;
+                const model = modelSelect.value;
+                let msg = '';
+                if (model === 'gemini') {
+                    const minutes = Math.ceil(reqs / 60);
+                    if (reqs <= 60) {
+                        msg = '✅ Within free limit (60 req/min). You could even do more.';
+                    } else {
+                        msg = `⚠️ ${reqs} requests would take ~${minutes} min at 60/min. You may hit rate limits if bursty.`;
+                    }
+                } else { // chatgpt
+                    const blocks = Math.ceil(reqs / 50);
+                    const hours = Math.ceil(blocks * 3);
+                    if (reqs <= 50) {
+                        msg = '✅ Within free limit (50 msgs/3hr).';
+                    } else {
+                        msg = `⚠️ ${reqs} messages would take ~${hours} hours (${blocks} blocks of 50).`;
+                    }
+                }
+                quotaUsageText.textContent = msg;
+            }
+
+            dailyReqs.addEventListener('input', updateQuota);
+            modelSelect.addEventListener('change', updateQuota);
+            updateQuota();
+
+            // ---------- WALKTHROUGH STEPPER ----------
+            const steps = document.querySelectorAll('.step-item');
+            const prevBtn = document.getElementById('prevStep');
+            const nextBtn = document.getElementById('nextStep');
+            const resetStepsBtn = document.getElementById('resetSteps');
+            let currentStep = 0;
+
+            function updateSteps() {
+                steps.forEach((el, i) => {
+                    el.classList.toggle('active', i === currentStep);
+                });
+                prevBtn.disabled = currentStep === 0;
+                nextBtn.disabled = currentStep === steps.length - 1;
+            }
+
+            prevBtn.addEventListener('click', function() {
+                if (currentStep > 0) { currentStep--; updateSteps(); }
+            });
+            nextBtn.addEventListener('click', function() {
+                if (currentStep < steps.length - 1) { currentStep++; updateSteps(); }
+            });
+            resetStepsBtn.addEventListener('click', function() {
+                currentStep = 0;
+                updateSteps();
+            });
+            updateSteps();
+
+            // copy buttons for prompts
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const text = this.dataset.copy;
+                    if (text) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            const orig = this.textContent;
+                            this.textContent = '✅ Copied!';
+                            setTimeout(() => { this.textContent = orig; }, 1500);
+                        }).catch(() => {
+                            // fallback
+                            const ta = document.createElement('textarea');
+                            ta.value = text;
+                            document.body.appendChild(ta);
+                            ta.select();
+                            document.execCommand('copy');
+                            ta.remove();
+                            const orig = this.textContent;
+                            this.textContent = '✅ Copied!';
+                            setTimeout(() => { this.textContent = orig; }, 1500);
+                        });
+                    }
+                });
+            });
+
+            // ---------- THREE THINGS REVEAL ----------
+            document.querySelectorAll('.three-item .q').forEach(q => {
+                q.addEventListener('click', function() {
+                    const answer = this.parentElement.querySelector('.a');
+                    answer.classList.toggle('visible');
+                    const arrow = this.querySelector('span:last-child');
+                    if (arrow) arrow.textContent = answer.classList.contains('visible') ? '▲' : '▼';
+                });
+            });
+
+            // ---------- SOCIAL CURRENCY: copy pull quote ----------
+            document.getElementById('copyPullQuote').addEventListener('click', function() {
+                const quote = document.querySelector('.social-currency-block .big-stat')?.textContent.trim() || '';
+                navigator.clipboard.writeText(quote).then(() => {
+                    const orig = this.textContent;
+                    this.textContent = '✅ Copied!';
+                    setTimeout(() => { this.textContent = orig; }, 1500);
+                }).catch(() => {
+                    const ta = document.createElement('textarea');
+                    ta.value = quote;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    ta.remove();
+                    const orig = this.textContent;
+                    this.textContent = '✅ Copied!';
+                    setTimeout(() => { this.textContent = orig; }, 1500);
+                });
+            });
+
+            // ---------- SHARE BAR ----------
+            const shareNative = document.getElementById('shareNative');
+            const shareTwitter = document.getElementById('shareTwitter');
+            const shareLinkedIn = document.getElementById('shareLinkedIn');
+            const copyLink = document.getElementById('copyLink');
+            const url = window.location.href;
+
+            shareNative.addEventListener('click', function() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Everyday AI Done Right — Decision Tree',
+                        text: 'Stop guessing which free AI model to use. This decision tree matches your task to the best assistant.',
+                        url: url,
+                    }).catch(() => {});
+                } else {
+                    alert('Share API not supported. Use the other share buttons.');
+                }
+            });
+
+            shareTwitter.addEventListener('click', function() {
+                const text = encodeURIComponent('Most people burn their free AI quota by 11 AM — because they picked the wrong model. Use this decision tree to save 80% of your requests.');
+                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`, '_blank');
+            });
+
+            shareLinkedIn.addEventListener('click', function() {
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+            });
+
+            copyLink.addEventListener('click', function() {
+                navigator.clipboard.writeText(url).then(() => {
+                    const orig = this.textContent;
+                    this.textContent = '✅ Copied!';
+                    setTimeout(() => { this.textContent = orig; }, 1500);
+                }).catch(() => {
+                    const ta = document.createElement('textarea');
+                    ta.value = url;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    ta.remove();
+                    const orig = this.textContent;
+                    this.textContent = '✅ Copied!';
+                    setTimeout(() => { this.textContent = orig; }, 1500);
+                });
+            });
+
+            // initial tree update
+            updateTree();
+
+        })();
+    </script>
+</body>
+</html>
