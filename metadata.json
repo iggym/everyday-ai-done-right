@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0050",
+  "slug": "zero-dollar-posture-guard-mediapipe-browser-free",
+  "title": "$0 Posture Guard — Browser BlazePose That Never Uploads Your Video",
+  "hook": "Real-time forward-head detection 100% in browser via MediaPipe Tasks Vision free open source — measures ear-shoulder angle to lbs neck load, beeps after 60s >25°, no upload, unlimited free as of 2026-08-20.",
+  "path": "articles/zero-dollar-posture-guard-mediapipe-browser-free.html",
+  "date": "2026-08-20",
+  "status": "published",
+  "format": "guide",
+  "category": "health",
+  "tool": "MediaPipe Tasks Vision BlazePose + Face Landmarker",
+  "tool_family": "Google",
+  "source_url": "https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker",
+  "tags": ["health", "posture", "mediapipe", "browser", "free"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-20"
+},{
   "id": "4591",
   "slug": "ai-health-tracking-fitbuddy-guide",
   "title": "AI Health Tracking Without the Hype",
