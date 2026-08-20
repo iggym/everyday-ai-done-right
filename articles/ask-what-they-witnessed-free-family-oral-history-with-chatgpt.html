@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask What They Witnessed — Free Family Oral History with ChatGPT's Voice · Everyday AI Done Right</title>
+<meta name="description" content="ChatGPT's free voice mode interviews your relatives — one question at a time up a 12-rung ladder from facts to feelings. No card, no interview skills. The voice is the artifact.">
+<script>
+(function(){try{var t=localStorage.getItem('eadr-theme');if(t){document.documentElement.setAttribute('data-theme',t);}else if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F2EA; --panel:#FBF9F3; --ink:#221D15; --ink-soft:#5E5647;
+  --line:#DED6C4; --coral:#C7481C; --coral-deep:#A63812; --coral-soft:#F8E7DC;
+  --code-bg:#241F17; --code-fg:#ECE2CC;
+  --ok:#3F7A4E; --ok-soft:#E4EEE3;
+}
+[data-theme="dark"]{
+  --paper:#171310; --panel:#201C15; --ink:#ECE4D2; --ink-soft:#A79C86;
+  --line:#3B3326; --coral:#FF6B47; --coral-deep:#E4552F; --coral-soft:#2E1A11;
+  --code-bg:#100D08; --code-fg:#E2D7BF;
+  --ok:#7FBF8E; --ok-soft:#1D2A1F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:16.5px;line-height:1.68;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+.container{max-width:1140px;margin:0 auto;padding:0 24px}
+a{color:var(--coral);text-decoration:none}
+a:hover{text-decoration:underline}
+svg{flex-shrink:0}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.wordmark{font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.top-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.08em;white-space:nowrap}
+.top-actions{display:flex;gap:10px;align-items:center}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;border-radius:4px;transition:background .18s,border-color .18s,color .18s}
+.btn:hover{background:var(--coral);border-color:var(--coral);color:#FFF7ED}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink-soft)}
+.btn.ghost:hover{background:transparent;color:var(--coral);border-color:var(--coral)}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;cursor:pointer;transition:border-color .18s,color .18s}
+.icon-btn:hover{border-color:var(--coral);color:var(--coral)}
+.icon-btn:disabled{cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+
+/* hero */
+.hero{padding:72px 0 56px}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin-bottom:20px}
+h1{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(2.4rem,5.4vw,4.2rem);line-height:1.05;letter-spacing:-.035em;max-width:16ch}
+h1 .coral{color:var(--coral)}
+h1 .strike{text-decoration:line-through;text-decoration-color:var(--coral);text-decoration-thickness:.075em}
+.hook{max-width:70ch;margin-top:26px;font-size:17.5px;color:var(--ink-soft)}
+.hook strong{color:var(--ink)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.badge{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:8px 12px;border:1px solid var(--line);border-radius:3px;background:var(--panel);color:var(--ink)}
+.badge svg{color:var(--coral)}
+.asof{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--coral);border:1px dashed var(--coral);border-radius:3px;padding:0 6px;margin-left:6px;white-space:nowrap;vertical-align:middle;line-height:1.7}
+.legend{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+.legend svg{color:var(--coral)}
+
+/* centerpiece band */
+.band-tree{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--panel);padding:56px 0 64px}
+.sec-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral)}
+.sec-title{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.02em;margin-top:10px}
+.sec-sub{color:var(--ink-soft);max-width:66ch;margin-top:12px}
+.tree-grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:34px;margin-top:36px}
+.tree-panel{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:0 0 8px 8px;padding:26px}
+.tree-progress{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:16px}
+.tree-q{font-family:'Manrope',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.01em;line-height:1.3}
+.tree-opts{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.tree-opt{text-align:left;font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;cursor:pointer;transition:border-color .18s,background .18s;line-height:1.45}
+.tree-opt:hover{border-color:var(--coral);background:var(--coral-soft)}
+.tree-opt b{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--coral);margin-bottom:4px}
+.tree-trail{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;min-height:26px}
+.trail-chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:4px 9px;border-radius:99px;border:1px dashed var(--ink-soft);color:var(--ink-soft)}
+.tree-restart{margin-top:18px}
+/* plan (leaf) card */
+.plan-panel{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:26px;display:flex;flex-direction:column}
+.plan-empty{color:var(--ink-soft);font-size:15px;max-width:44ch;margin:auto 0;padding:30px 0;text-align:center}
+.plan-empty .mono{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:12px;color:var(--coral)}
+.plan-pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:800;letter-spacing:.14em;padding:7px 12px;border-radius:3px;background:var(--coral-soft);color:var(--coral);border:1px solid var(--coral);align-self:flex-start}
+.plan-rows{margin-top:18px}
+.plan-row{padding:13px 0;border-bottom:1px dashed var(--line)}
+.plan-row .plabel{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral);display:block;margin-bottom:5px}
+.plan-row p{font-size:14.5px;color:var(--ink-soft);max-width:52ch}
+.plan-row p b{color:var(--ink)}
+.plan-row p em{font-style:italic}
+.plan-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+
+/* pull quote (social currency, screenshot block) */
+.pullquote{background:var(--ink);color:var(--paper);padding:84px 24px;text-align:center;position:relative}
+.pq-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
+.pq-text{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.9rem,4.6vw,3.2rem);line-height:1.12;letter-spacing:-.02em;max-width:24ch;margin:26px auto 12px}
+.pq-text .coral{color:var(--coral)}
+.pq-sub{font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(1rem,2vw,1.25rem);opacity:.8;margin-bottom:30px}
+.pq-btn{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border:1px solid rgba(236,228,210,.5);background:transparent;color:var(--paper);border-radius:4px;cursor:pointer;transition:background .18s}
+.pq-btn:hover{background:rgba(236,228,210,.12)}
+.mark{position:absolute;width:15px;height:15px;opacity:.55}
+.mark::before,.mark::after{content:"";position:absolute;background:var(--paper)}
+.mark::before{left:0;top:6.5px;width:15px;height:2px}
+.mark::after{left:6.5px;top:0;width:2px;height:15px}
+.m-tl{top:20px;left:20px}.m-tr{top:20px;right:20px}.m-bl{bottom:20px;left:20px}.m-br{bottom:20px;right:20px}
+
+/* sections */
+section.block{padding:72px 0}
+.split{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:44px;margin-top:36px;align-items:start}
+.prose p{color:var(--ink-soft);margin-bottom:18px;max-width:62ch}
+.prose p strong{color:var(--ink)}
+
+/* cost card */
+.cost-card{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:24px}
+.cost-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.cost-row input[type=checkbox]{accent-color:var(--coral);width:16px;height:16px;flex-shrink:0;cursor:pointer}
+.cost-name{flex:1;min-width:0}
+.cost-name b{font-family:'Manrope',sans-serif;font-weight:700;font-size:15px;display:block}
+.cost-name span{font-size:12.5px;color:var(--ink-soft)}
+.price{font-family:'JetBrains Mono',monospace;font-size:13px;white-space:nowrap;position:relative;display:inline-block}
+.price.struck::after{content:"";position:absolute;left:-2px;top:54%;height:2px;width:0;background:var(--coral);transition:width .55s cubic-bezier(.6,0,.2,1)}
+.price.struck.go::after{width:calc(100% + 4px)}
+.cost-total{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 4px}
+.cost-total .label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.cost-total .amount{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600}
+.keep-line{font-size:14px;color:var(--coral);font-weight:500;margin-top:14px;display:none}
+.keep-line.show{display:block;animation:fade .4s ease}
+
+/* stepper */
+.stepper{border:1px solid var(--line);border-radius:8px;background:var(--panel);margin-top:36px;overflow:hidden}
+.step-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);gap:12px;flex-wrap:wrap}
+.step-count{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.1em;color:var(--ink-soft)}
+.dots{display:flex;gap:8px}
+.dots span{width:9px;height:9px;border-radius:50%;border:1px solid var(--ink-soft);cursor:pointer;transition:background .2s,border-color .2s}
+.dots span.on{background:var(--coral);border-color:var(--coral)}
+.step-nav{display:flex;gap:8px}
+.step{display:none;padding:28px 28px 32px}
+.step.active{display:block;animation:fade .35s ease}
+.step h3{font-family:'Manrope',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.01em;margin-bottom:14px}
+.step p{color:var(--ink-soft);max-width:64ch;margin-bottom:14px}
+.step p strong{color:var(--ink)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* prompts */
+.promptwrap{position:relative;margin-top:8px}
+pre.prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;background:var(--code-bg);color:var(--code-fg);padding:20px 20px 18px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;min-height:100px}
+.copy-btn{position:absolute;top:10px;right:10px;display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border:1px solid rgba(236,226,204,.35);background:rgba(236,226,204,.08);color:var(--code-fg);border-radius:3px;cursor:pointer;transition:background .18s,border-color .18s}
+.copy-btn:hover{background:var(--coral);border-color:var(--coral);color:#FFF7ED}
+
+/* archive math */
+.quota-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;margin-top:36px;align-items:start}
+.q-inputs{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}
+.field{margin-bottom:15px}
+.field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+.q-inputs input[type=number]{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--ink)}
+.q-inputs input:focus{border-color:var(--coral);outline:none;box-shadow:0 0 0 3px var(--coral-soft)}
+.q-note{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);line-height:1.7;margin-top:14px}
+.q-results .stat{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px dashed var(--line);gap:14px}
+.q-results .stat .label{font-size:13.5px;color:var(--ink-soft)}
+.q-results .stat .val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:600;white-space:nowrap}
+.qbar{height:10px;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:18px 0 6px;background:var(--panel)}
+.qbar-fill{height:100%;background:var(--coral);width:0;transition:width .4s ease}
+.verdict{margin-top:16px;color:var(--ink-soft);font-size:15px;max-width:58ch}
+.verdict strong{color:var(--coral)}
+
+/* what breaks */
+.breaks{background:var(--coral-soft);border-left:4px solid var(--coral);border-radius:0 8px 8px 0;padding:34px 36px;margin-top:36px}
+.breaks h2{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.5rem,2.6vw,2.1rem);letter-spacing:-.02em;display:flex;align-items:center;gap:12px}
+.breaks h2 svg{color:var(--coral)}
+.breaks .lead{margin:20px 0 8px;font-size:17px;line-height:1.6;max-width:64ch;color:var(--ink)}
+.breaks .lead strong{color:var(--coral-deep)}
+[data-theme="dark"] .breaks .lead strong{color:var(--coral)}
+.breaks ul{list-style:none;margin-top:16px}
+.breaks li{padding:13px 0 13px 26px;border-top:1px dashed rgba(199,72,28,.28);position:relative;color:var(--ink-soft);max-width:66ch}
+.breaks li:first-of-type{border-top:none}
+.breaks li::before{content:"";position:absolute;left:2px;top:21px;width:9px;height:2px;background:var(--coral)}
+.breaks li strong{color:var(--ink)}
+
+/* three things */
+.rv-list{margin-top:36px;border-top:1px dashed var(--line)}
+.rv-item{border-bottom:1px dashed var(--line)}
+.rv-head{display:flex;gap:18px;align-items:baseline;width:100%;background:none;border:none;padding:24px 0;cursor:pointer;text-align:left;color:var(--ink)}
+.rv-num{font-family:'JetBrains Mono',monospace;color:var(--coral);font-size:13px;font-weight:600}
+.rv-title{font-family:'Manrope',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.01em;flex:1}
+.rv-x{font-family:'JetBrains Mono',monospace;color:var(--ink-soft);font-size:16px}
+.rv-body{max-height:0;overflow:hidden;transition:max-height .45s ease;color:var(--ink-soft);padding:0 0 0 45px}
+.rv-body p{max-width:60ch;padding-bottom:6px}
+.rv-item.open .rv-body{max-height:420px;padding-bottom:26px}
+
+/* try it */
+.try-steps{counter-reset:try;margin-top:30px;max-width:66ch}
+.try-steps li{list-style:none;counter-increment:try;display:flex;gap:16px;padding:13px 0;border-bottom:1px dashed var(--line);color:var(--ink-soft);align-items:baseline}
+.try-steps li::before{content:counter(try,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--coral);font-weight:600}
+.try-actions{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}
+
+/* share */
+.share-card{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:32px;margin-top:36px}
+.share-quote{font-family:'Manrope',sans-serif;font-weight:700;font-size:19px;line-height:1.4;border-left:3px solid var(--coral);padding-left:18px;max-width:56ch;margin-bottom:24px}
+.share-btns{display:flex;flex-wrap:wrap;gap:10px}
+
+/* footer */
+footer{padding:44px 0 64px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);line-height:2}
+footer a{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--line)}
+footer a:hover{color:var(--coral)}
+
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:12px;padding:11px 18px;border-radius:4px;transition:opacity .3s,transform .3s;z-index:99;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:960px){
+  .tree-grid,.split,.quota-grid{grid-template-columns:1fr}
+  .top-meta{display:none}
+  .hero{padding:52px 0 44px}
+  section.block{padding:56px 0}
+  .breaks{padding:26px 22px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="wordmark">Everyday AI Done Right</span>
+      <span class="top-meta">#0003 · FAMILY</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle light or dark theme">
+        <svg id="iconSun" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M13 3l-1.4 1.4M4.4 11.6L3 13"/></svg>
+        <svg id="iconMoon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" style="display:none"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5 6 6 0 1 0 13.5 9.5z"/></svg>
+      </button>
+      <button class="btn" id="shareTop">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12.5" cy="3" r="2"/><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="13" r="2"/><path d="M5.3 7L10.7 4M5.3 9l5.4 3"/></svg>
+        Share
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <p class="kicker">Family · Guide №0003 · 4 min read</p>
+    <h1>Ask what they <span class="coral">witnessed</span>, not what they <span class="strike">lived</span>.</h1>
+    <p class="hook">ChatGPT's free voice mode will interview your relatives for you — one question at a time, up a 12-rung ladder from facts to feelings — <strong>no card, no interviewing skill</strong>. One setup prompt, one branch chosen by their temperament, one session this week. The catches, stated up front: the free tier's <strong>daily voice allowance is unpublished and varies</strong> (a session can cut out mid-rung), chats <strong>train OpenAI's models unless you flip one toggle first</strong>, and the transcript it saves you is not the same artifact as the voice.</p>
+    <div class="badges">
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 5"/></svg>T0 — no card, email only</span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 5"/></svg>Verified 2025-06-26</span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2a3 3 0 0 1 3 3v2a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M3.5 8.5A4.5 4.5 0 0 0 12.5 8.5M8 13v1.5"/></svg>Voice mode on the free tier · daily limit varies<span class="asof">as of 2025-06-26</span></span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="9" height="10" rx="1.5"/><path d="M11 6l3-2v8l-3-2"/></svg>Android · iOS · desktop</span>
+    </div>
+    <p class="legend"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.5V8l2.5 1.5"/></svg>Numbers wearing an "as of" chip drift. The ladder, the reframe, and the branches don't.</p>
+  </div>
+</section>
+
+<!-- ============ CENTERPIECE: PICK THE BRANCH ============ -->
+<section class="band-tree" id="branch">
+  <div class="container">
+    <p class="sec-kicker">The centerpiece — Pick the Branch</p>
+    <h2 class="sec-title">The interview forks on the subject, not the topic</h2>
+    <p class="sec-sub">Answer two questions about the actual person. Each path lands on a different session plan — different setup, different first question, different steering rule. Nothing is sent anywhere; this runs entirely inside the page.</p>
+    <div class="tree-grid">
+      <div class="tree-panel">
+        <p class="tree-progress" id="treeProgress">QUESTION 1 OF 2</p>
+        <p class="tree-q" id="treeQ"></p>
+        <div class="tree-opts" id="treeOpts"></div>
+        <div class="tree-trail" id="treeTrail"></div>
+        <div class="tree-restart"><button class="btn ghost" id="treeRestart">Start over</button></div>
+      </div>
+      <div class="plan-panel" id="planPanel">
+        <div class="plan-empty" id="planEmpty"><span class="mono">Session plan</span>The plan for your subject appears here — setup, the exact first question, and the one rule that keeps the session alive.</div>
+        <div id="planCard" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PULL QUOTE (SOCIAL CURRENCY) ============ -->
+<section class="pullquote">
+  <span class="mark m-tl"></span><span class="mark m-tr"></span><span class="mark m-bl"></span><span class="mark m-br"></span>
+  <p class="pq-kicker">The one-line reframe</p>
+  <p class="pq-text">Ask what they <span class="coral">witnessed</span>, not what they lived.</p>
+  <p class="pq-sub">Protagonists freeze. Witnesses talk.</p>
+  <button class="pq-btn" id="copyPullTop"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy this line</button>
+</section>
+
+<!-- ============ 01 · WHY THE LADDER WINS + COST ============ -->
+<section class="block">
+  <div class="container">
+    <p class="sec-kicker">01 — Why the ladder wins</p>
+    <h2 class="sec-title">An interviewer, not a compiler</h2>
+    <div class="split">
+      <div class="prose">
+        <p>Every generic version of this workflow ends the same way: paste the recording into an AI and ask for a memoir. That ending destroys the one thing the process actually produced — <strong>her voice, her pauses, her laugh in the middle of the sad story</strong>. The compiled book is the least valuable artifact; the recording is the heirloom. So here the AI works at the front of the process, conducting, and the raw session is the deliverable.</p>
+        <p>The 12-rung ladder is the engine. "What's your biggest regret" asked cold gets a deflection; asked forty-five minutes after the smell of her mother's kitchen on Sundays, it gets the answer. <strong>Depth isn't requested — it's earned by rungs 1–9.</strong> Rung-10 answers don't exist on visit one, which is why question lists fail: they hand you rung 10 on page one.</p>
+        <p>And the witness reframe is what unlocks the subjects who insist nothing interesting ever happened to them. <strong>"What did you do" demands a performance</strong> — a life summarized, judged. <strong>"What did you see" offers company</strong> — the subject becomes the storyteller about everyone else, and their own story slips in sideways, unguarded.</p>
+        <p>When a session matters enough for permanence beyond your family, <strong>StoryCorps (free)</strong> is the institutional deposit — the Library of Congress keeps those recordings. Pair it with this protocol: the ladder runs the interview; StoryCorps keeps it forever.</p>
+      </div>
+      <div class="cost-card">
+        <p class="sec-kicker" style="margin-bottom:6px">What it replaces</p>
+        <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:6px">Tick what you'd otherwise buy to capture the stories — then run the swap.</p>
+        <div class="cost-row"><input type="checkbox" checked data-mo="8.25" id="cSW" aria-label="StoryWorth"><div class="cost-name"><b>StoryWorth</b><span>weekly email prompts → printed book</span></div><span class="price">$99/yr<span class="asof">as of 2025-06-26</span></span></div>
+        <div class="cost-row"><input type="checkbox" checked data-mo="8.25" id="cRM" aria-label="Remento"><div class="cost-name"><b>Remento</b><span>voice prompts → AI-written keepsake book</span></div><span class="price">$99/yr<span class="asof">as of 2025-06-26</span></span></div>
+        <div class="cost-row"><input type="checkbox" data-mo="75" id="cPH" aria-label="Personal historian"><div class="cost-name"><b>Personal historian</b><span>~$300/session · 3 sessions/yr</span></div><span class="price">$900/yr<span class="asof">as of 2025-06-26</span></span></div>
+        <div class="cost-total"><span class="label">Annual total</span><span class="amount" id="costTotal">$198</span></div>
+        <button class="btn" id="runSwap" style="margin-top:12px;width:100%;justify-content:center">Run the swap → $0</button>
+        <p class="keep-line" id="keepLine"></p>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);margin-top:12px;line-height:1.7">List prices, secondary-source — treat as estimates, not quotes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 · WALKTHROUGH STEPPER ============ -->
+<section class="block" id="walkthrough" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">02 — The walkthrough</p>
+    <h2 class="sec-title">Five steps, one archive</h2>
+    <div class="stepper">
+      <div class="step-head">
+        <span class="step-count" id="stepCount">STEP 1 / 5</span>
+        <div class="dots" id="stepDots"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+        <div class="step-nav">
+          <button class="icon-btn" id="stepPrev" aria-label="Previous step"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg></button>
+          <button class="icon-btn" id="stepNext" aria-label="Next step"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3l5 5-5 5"/></svg></button>
+        </div>
+      </div>
+      <div class="step active">
+        <h3>Flip one switch before anything else</h3>
+        <p>Create the free account (email, no card — T0) and, before the first session, open <strong>Settings → Data Controls</strong> and turn <strong>off</strong> "Improve the model for everyone." Free-tier conversations are training data by default: names, birthdates, and the story about the uncle nobody mentions.</p>
+        <p>There is no un-telling a story to a training corpus. The toggle takes forty seconds and belongs <strong>before session one</strong>, not after.</p>
+      </div>
+      <div class="step">
+        <h3>Write the interviewer's instructions</h3>
+        <p>Open a chat, switch to voice mode, and paste this before the subject arrives:</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="pInterviewer" data-msg="Interviewer prompt copied — paste it before the subject arrives"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="pInterviewer">You are conducting an oral-history interview with my [relation], [name], born [year]. Your rules:
+• Ask exactly ONE question at a time, then stop and wait — never fill silence, however long.
+• Follow this ladder, advancing one rung only after a full answer: rungs 1–3 FACTS (streets, jobs, prices, neighbors) · rungs 4–6 SENSES (smells, sounds, objects) · rungs 7–9 PEOPLE (who argued, who laughed, who disappeared) · rungs 10–12 MEANING (proudest moment, biggest regret, advice for a great-grandchild).
+• Build follow-ups from [name]'s own words.
+• Never correct, never rush, never judge — you are a witness, not an editor.
+Begin with the question I give you after this message.</pre></div>
+        <p>The silence rule is in the prompt on purpose: <strong>the AI will wait even when the humans in the room can't.</strong> That's the machine's one unbeatable advantage over a nervous grandchild.</p>
+      </div>
+      <div class="step">
+        <h3>Take the branch the subject dictates</h3>
+        <p>Run <strong>Pick the Branch</strong> at the top of this page — the interview forks on <em>them</em>. The short version: freezers get object-anchored questions (<em>"before you tell me who's in this photo — where was this kitchen, and what did it smell like on a Sunday?"</em>), ramblers get one-story-at-a-time steering, heritage-language subjects get the whole interview in their strongest language — memories encoded in a first language surface in that language — and the tech-averse get a printed deck with AI doing the before (questions) and after (transcript cleanup) instead.</p>
+        <p>Getting this branch wrong isn't fatal, but it costs you a session: an object question to a natural storyteller wastes their momentum, and a life question to a freezer ends the interview in ninety seconds.</p>
+      </div>
+      <div class="step">
+        <h3>Run the session, and out-sit the machine</h3>
+        <p>Phone flat on the table between you, voice mode on, speaker up — and a <strong>second device recording the room</strong> on plain Voice Memos. That's dual capture: the transcript is for searching, the audio is the artifact. Twenty to forty minutes; the free voice ceiling is more likely to spare you at that length<span class="asof">as of 2025-06-26</span>.</p>
+        <p>Your only job is the hard one: when she goes quiet after a hard question, <strong>nobody speaks.</strong> The ten seconds of silence is where the real material surfaces — every helpful fill cuts off a story that was fifteen seconds from arriving.</p>
+      </div>
+      <div class="step">
+        <h3>Close the loop between sessions</h3>
+        <p>The archive compounds only if each session starts where the last ended. Paste the transcript into a fresh chat and send:</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="pContinuity" data-msg="Continuity prompt copied — paste the transcript with it"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="pContinuity">Here is the transcript of session [n] with [name]: [paste transcript]. Do three things:
+1. List the three threads [name] left unfinished — quote the exact lines.
+2. Write the next session's questions for rungs [x]–[y], each one built from a word [name] actually used.
+3. Flag any names, dates, or places I should verify against family records.
+Do not invent details that are not in this transcript.</pre></div>
+        <p>The last line is load-bearing: chat memory drifts, and an AI that "remembers" a detail that was never said will build follow-up questions on top of it. Paste the transcript; trust nothing else. For sessions worth permanence, <strong>StoryCorps</strong> (free) deposits recordings with the Library of Congress.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 · ARCHIVE MATH ============ -->
+<section class="block" id="archive" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">03 — Archive math</p>
+    <h2 class="sec-title">What does the plan actually capture?</h2>
+    <div class="quota-grid">
+      <div class="q-inputs">
+        <div class="field"><label for="aLen">Session length (minutes)</label><input type="number" id="aLen" min="10" max="120" value="30"></div>
+        <div class="field"><label for="aFreq">Sessions per week</label><input type="number" id="aFreq" min="1" max="7" value="1"></div>
+        <div class="field" style="margin-bottom:0"><label for="aWeeks">Weeks available (until the visit ends, the move, the year turns)</label><input type="number" id="aWeeks" min="1" max="104" value="8"></div>
+        <p class="q-note">Framework constant: the full ladder is 12 rungs × 3 questions × ~7 minutes ≈ 252 minutes of interview. Ceiling: one session per day is the practical max on free voice<span class="asof">as of 2025-06-26</span> — the daily limit is unpublished and varies.</p>
+      </div>
+      <div class="q-results">
+        <div class="stat"><span class="label">Total recording time the plan captures</span><span class="val" id="aTotal">—</span></div>
+        <div class="stat"><span class="label">Ladder coverage (of ~252 min)</span><span class="val" id="aCov">—</span></div>
+        <div class="stat"><span class="label">Rungs the plan finishes</span><span class="val" id="aRungs">—</span></div>
+        <div class="qbar"><div class="qbar-fill" id="aFill"></div></div>
+        <p class="verdict" id="aVerdict"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · WHAT BREAKS ============ -->
+<section class="block" id="breaks" style="padding-top:0">
+  <div class="container">
+    <div class="breaks">
+      <h2><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3L2.5 20h19L12 3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".4" fill="currentColor"/></svg>What breaks</h2>
+      <p class="lead"><strong>The silence is the answer working.</strong> The subject stares at the table, someone says "you don't have to answer that," and the story that was fifteen seconds from arriving never does. The AI waits because it was told to. Your job is to wait longer than the machine.</p>
+      <ul>
+        <li><strong>Voice caps are unpublished and variable.</strong> The free tier's daily voice allowance has no published number — a countdown appears only when you're near it, and a long session can end mid-rung. The protocol survives it: the continuity prompt restarts any cut session from its transcript in a fresh chat. Keep sessions at 20–40 minutes and you'll rarely see the ceiling.</li>
+        <li><strong>Training on by default.</strong> Free-tier chats improve the model unless you opt out. Flip the Data Controls toggle before session one — family names and dates in a training corpus can't be recalled.</li>
+        <li><strong>Transcript ≠ audio.</strong> The shared-link transcript strips the pause before the hard sentence and the laugh in the middle of the sad story. Dual capture is the difference between an index and an heirloom.</li>
+        <li><strong>Invented follow-ups.</strong> Asked to "continue last time," a model will sometimes recall details that were never said — and build questions on them. Always paste the transcript; treat any follow-up that doesn't quote a real line as suspect.</li>
+        <li><strong>Accents and dialects.</strong> Heavy accents garble transcripts. The audio is the truth; the transcript is the finding aid — label it that way in your archive.</li>
+        <li><strong>The deflector.</strong> "Nothing interesting ever happened to me" is near-universal, and the witness reframe exists for it — but if three object-anchored questions still get nothing, drop to rung-1 facts and let the ladder work. Pushing feelings on visit one buys you no visit two.</li>
+        <li><strong>Grief timing.</strong> After a loss, the recordings you have become fixed and the ones you planned become the regret. One imperfect session this month outranks a perfect protocol next year — the phone call to book it is the hardest step in the entire method.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 · THREE THINGS ============ -->
+<section class="block" id="three" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">05 — Three things worth keeping</p>
+    <h2 class="sec-title">If you forget everything else</h2>
+    <div class="rv-list">
+      <div class="rv-item open">
+        <button class="rv-head" aria-expanded="true"><span class="rv-num">01</span><span class="rv-title">The ladder, not a question list</span><span class="rv-x">−</span></button>
+        <div class="rv-body"><p>Depth is earned by escalation, not requested. A question list hands you rung 10 on page one and gets a deflection; forty-five minutes of streets, smells, and neighbors gets the same question answered without being asked.</p></div>
+      </div>
+      <div class="rv-item">
+        <button class="rv-head" aria-expanded="false"><span class="rv-num">02</span><span class="rv-title">Witnesses talk</span><span class="rv-x">+</span></button>
+        <div class="rv-body"><p>"What did you do" demands a performance; "what did you see" offers company. The subject becomes the storyteller about everyone else — and their own story slips in sideways, unguarded. This one reframe converts most "nothing interesting" subjects into talkers.</p></div>
+      </div>
+      <div class="rv-item">
+        <button class="rv-head" aria-expanded="false"><span class="rv-num">03</span><span class="rv-title">The voice is the artifact</span><span class="rv-x">+</span></button>
+        <div class="rv-body"><p>The compiled memoir is the least valuable output — it strips exactly the part you can't get back. Record the room on a second device, keep the transcript as the finding aid, and let the AI's job be the interviewing, not the rewriting.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 · TRY IT NOW ============ -->
+<section class="block" id="try" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">06 — Try it now</p>
+    <h2 class="sec-title">This week, not "sometime"</h2>
+    <ol class="try-steps">
+      <li>Pick the relative whose stories you'd miss most.</li>
+      <li>Flip the training toggle (Settings → Data Controls) — forty seconds.</li>
+      <li>Run Pick the Branch for them; copy their path's opener.</li>
+      <li>Paste the interviewer prompt; start the second-device recording.</li>
+      <li>Book twenty minutes. The phone call to book it is the hardest step in the whole method.</li>
+    </ol>
+    <div class="try-actions">
+      <button class="btn" id="tryScroll">Take their branch</button>
+      <a class="btn ghost" href="https://chatgpt.com" target="_blank" rel="noopener">Open ChatGPT<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 11L11 5M6.5 5H11v4.5"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHARE ============ -->
+<section class="block" id="share" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">Pass it on</p>
+    <h2 class="sec-title">Two lines that travel well</h2>
+    <div class="share-card">
+      <p class="share-quote" id="shareQuote">The question that unlocks a grandfather's stories isn't "tell me about your life." It's "what's something you saw that nobody talks about anymore?" Witnesses talk when protagonists freeze.</p>
+      <div class="share-btns">
+        <button class="btn" id="btnShare"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12.5" cy="3" r="2"/><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="13" r="2"/><path d="M5.3 7L10.7 4M5.3 9l5.4 3"/></svg>Share</button>
+        <button class="btn ghost" id="btnX"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l10 10M13 3L3 13"/></svg>Post on X</button>
+        <button class="btn ghost" id="btnLI"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5.2 11V7M5.2 5.2v.1M8.3 11V7c0-1.5 3.2-1.6 3.2.2V11"/></svg>LinkedIn</button>
+        <button class="btn ghost" id="btnPull"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy pull-quote</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <p>Verified 2025-06-26 · Guide №0003 · Family · Everyday AI Done Right</p>
+    <p>Sources: <a href="https://help.openai.com/en/articles/8555545-using-voice-mode-in-the-chatgpt-app" target="_blank" rel="noopener">OpenAI Help Center — Voice Mode</a> · <a href="https://help.openai.com/en/articles/5732477-how-to-manage-your-data-when-using-chatgpt" target="_blank" rel="noopener">OpenAI — managing your data</a> · <a href="https://storycorps.org" target="_blank" rel="noopener">StoryCorps</a></p>
+    <p>Perishable numbers wear "as of" chips. Paid-tool prices are secondary-source list prices. The ladder, the branches, and the reframe don't age with them.</p>
+  </div>
+</footer>
+
+<!-- hidden leaf-opener prompts for copy buttons -->
+<div style="position:absolute;left:-9999px;top:0" aria-hidden="true">
+<pre class="prompt" id="oPhoto">Interviewer adjustment (object path): anchor every question to an object, a smell, or a specific day — never to a life. Begin with the photo we're holding: "Before you tell me who's in it — where was this kitchen, and what did it smell like on a Sunday?"</pre>
+<pre class="prompt" id="oTuesday">Interviewer adjustment (one-story path): keep to one story at a time. Begin: "Pick one ordinary Tuesday from [year] and walk me through it from breakfast to bedtime." If an answer runs past three minutes, let it finish, then ask her to anchor it to one specific day before moving on.</pre>
+<pre class="prompt" id="oLang">Interviewer adjustment (heritage-language path): conduct this interview entirely in [language] — [name]'s strongest language. Memories encoded in a first language surface in that language. If a story switches to English mid-way, follow it — don't steer back.</pre>
+<pre class="prompt" id="oDeck">Generate a printed interview deck for my [relation], [name], born [year]: 12 rungs × 3 questions, escalating from FACTS (streets, jobs, prices) through SENSES (smells, sounds, objects) and PEOPLE (who argued, who laughed, who disappeared) to MEANING (proudest, regretted, advice for a great-grandchild). One question per line, large type, in [language].</pre>
+<pre class="prompt" id="oTrial">Two-minute test before the real session: in voice mode, ask ChatGPT to tell a joke about [their hobby] so [name] can hear the voice. If they lean in and answer it back, run the AI-conducted paths. If they clam up, switch silently to the printed deck — no explanation needed.</pre>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+function fmtMoney(v){ return '$' + Math.round(v).toLocaleString('en-US'); }
+
+/* ---------- theme ---------- */
+var root = document.documentElement;
+if(!root.getAttribute('data-theme')){ root.setAttribute('data-theme','light'); }
+var themeBtn = $('#themeToggle'), iconSun = $('#iconSun'), iconMoon = $('#iconMoon');
+function paintThemeBtn(){
+  var dark = root.getAttribute('data-theme') === 'dark';
+  iconSun.style.display = dark ? 'none' : 'block';
+  iconMoon.style.display = dark ? 'block' : 'none';
+}
+themeBtn.addEventListener('click', function(){
+  var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  try{ localStorage.setItem('eadr-theme', next); }catch(e){}
+  paintThemeBtn();
+});
+paintThemeBtn();
+
+/* ---------- toast ---------- */
+var toastEl = $('#toast'), toastTimer = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2300);
+}
+
+/* ---------- clipboard ---------- */
+function copyText(text, label){
+  var done = function(){ toast(label || 'Copied'); };
+  var fallback = function(){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); done(); }
+    catch(e){ toast('Copy failed — select the text manually'); }
+    document.body.removeChild(ta);
+  };
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(done).catch(fallback);
+  } else { fallback(); }
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-copy]');
+  if(!b){ return; }
+  var src = document.getElementById(b.getAttribute('data-copy'));
+  if(src){ copyText(src.textContent.trim(), b.getAttribute('data-msg')); }
+});
+
+/* ---------- PICK THE BRANCH (centerpiece decision tree) ---------- */
+var TREE = {
+  q1: { progress:'QUESTION 1 OF 2',
+        q: 'Would they talk to a voice coming out of a speakerphone?',
+        opts: [
+          { t:'Yes — they\u2019d get a kick out of it', tag:'Curious about the voice', next:'q2' },
+          { t:'No — but they\u2019ll talk to me all day', tag:'Human-conducted', leaf:'human' },
+          { t:'Honestly, no idea', tag:'Untested', leaf:'trial' }
+        ] },
+  q2: { progress:'QUESTION 2 OF 2',
+        q: 'Ask them: \u201CWhat was your childhood like?\u201D What happens?',
+        opts: [
+          { t:'One line, then nothing', tag:'Freezer', leaf:'freezer' },
+          { t:'Fifteen unbroken minutes', tag:'Rambler', leaf:'rambler' },
+          { t:'They\u2019d tell it in another language — or hearing is the issue', tag:'Heritage language', leaf:'heritage' }
+        ] }
+};
+var LEAVES = {
+  freezer: {
+    name:'THE OBJECT PATH — AI-CONDUCTED', copyId:'oPhoto',
+    rows:[
+      ['SETUP','Phone flat on the table between you, voice mode on, speaker up. A second device records the room on Voice Memos — the transcript is the index, the audio is the artifact.'],
+      ['FIRST QUESTION','\u201CBefore you tell me who\u2019s in this photo — where was this kitchen, and what did it smell like on a Sunday?\u201D Bring one photo or one recipe card. Objects are doors; life questions are walls.'],
+      ['YOUR ONLY JOB','Never fill silence. The freezer\u2019s answers arrive after a pause — the pause <b>is</b> the answer forming. Let the AI wait; out-sit it.'],
+      ['WHY IT WORKS','\u201CWhat did you do\u201D demands a performance. \u201CWhat did you see\u201D offers company — swap every planned question to the witness form before you start.']
+    ]},
+  rambler: {
+    name:'THE ONE-STORY PATH — AI-CONDUCTED', copyId:'oTuesday',
+    rows:[
+      ['SETUP','Voice mode conducts; you hold the steering prompt below. Second device records the room. Sessions of 20–40 minutes keep you clear of the voice ceiling.'],
+      ['FIRST QUESTION','\u201CPick one ordinary Tuesday from [year] and walk me through it from breakfast to bedtime.\u201D Ordinary days carry the texture that highlight reels skip.'],
+      ['YOUR ONLY JOB','Paste the steering rule when stories sprawl: one story at a time; after three minutes, let it finish, then anchor it to one specific day.'],
+      ['WHY IT WORKS','The rambler\u2019s risk isn\u2019t silence — it\u2019s a recording with no structure. Anchoring to single days turns monologue into an archive you can navigate.']
+    ]},
+  heritage: {
+    name:'THE FIRST-LANGUAGE PATH — AI-CONDUCTED', copyId:'oLang',
+    rows:[
+      ['SETUP','Switch the interview to their strongest language entirely. If hearing is the issue, shorten questions and let them answer in either language.'],
+      ['FIRST QUESTION','The Sunday-kitchen question, asked in their first language: smells, streets, and who was in the kitchen.'],
+      ['YOUR ONLY JOB','Don\u2019t steer back when the story switches languages mid-stream — follow it. The transcript will mix languages; that\u2019s fine, the audio is the truth.'],
+      ['WHY IT WORKS','Memories encoded in a first language surface in that language. The English answers will be thinner translations of richer originals.']
+    ]},
+  human: {
+    name:'THE PRINTED-DECK PATH — HUMAN-CONDUCTED', copyId:'oDeck',
+    rows:[
+      ['SETUP','AI writes the deck; you print it large and ask the questions yourself. A plain voice memo records the session. No talking phone at the table.'],
+      ['FIRST QUESTION','Rung 1, from the deck: \u201CWhat street did you grow up on, and who lived next door?\u201D Then climb — facts, senses, people, meaning.'],
+      ['AI\u2019S OTHER JOB','Afterward: clean the transcript verbatim — flag names, dates, and places to verify, change nothing else. The voice stays hers.'],
+      ['WHY IT WORKS','Some subjects perform for family and talk to strangers — or the reverse. The deck path removes the machine from the room and keeps every other part of the ladder.']
+    ]},
+  trial: {
+    name:'THE TWO-MINUTE TEST', copyId:'oTrial',
+    rows:[
+      ['SETUP','Don\u2019t guess — run the test. Voice mode on, speaker up, subject in the room.'],
+      ['THE TEST','Ask ChatGPT to tell a joke about [their hobby] so they can hear the voice first. Sixty seconds, no stakes.'],
+      ['READ THE ROOM','They lean in and answer the joke back → run an AI-conducted path. They clam up → switch silently to the printed deck, no explanation needed.'],
+      ['WHY IT WORKS','The branch costs two minutes to get right and a whole session to get wrong. Testing beats guessing — and the subject never has to know they were being assessed.']
+    ]}
+};
+var treeState = { node:'q1', trail:[] };
+var treeQ = $('#treeQ'), treeOpts = $('#treeOpts'), treeTrail = $('#treeTrail'),
+    treeProgress = $('#treeProgress'), planCard = $('#planCard'), planEmpty = $('#planEmpty');
+
+function renderTree(){
+  var node = TREE[treeState.node];
+  if(node){
+    treeProgress.textContent = node.progress;
+    treeQ.textContent = node.q;
+    treeOpts.innerHTML = '';
+    node.opts.forEach(function(o){
+      var b = document.createElement('button');
+      b.className = 'tree-opt';
+      b.innerHTML = '<b>' + o.tag + '</b>' + o.t;
+      b.addEventListener('click', function(){
+        treeState.trail.push(o.tag);
+        if(o.leaf){ treeState.node = null; renderLeaf(o.leaf); }
+        else { treeState.node = o.next; }
+        renderTree();
+      });
+      treeOpts.appendChild(b);
+    });
+  } else {
+    treeProgress.textContent = 'PATH SET';
+    treeQ.textContent = 'Your session plan is on the right — restart to try another subject\u2019s path.';
+    treeOpts.innerHTML = '';
+  }
+  treeTrail.innerHTML = treeState.trail.map(function(t){
+    return '<span class="trail-chip">' + t + '</span>';
+  }).join('');
+}
+function renderLeaf(key){
+  var L = LEAVES[key];
+  var html = '<span class="plan-pill">' + L.name + '</span><div class="plan-rows">';
+  L.rows.forEach(function(r){
+    html += '<div class="plan-row"><span class="plabel">' + r[0] + '</span><p>' + r[1] + '</p></div>';
+  });
+  html += '</div><div class="plan-actions">' +
+    '<button class="btn" data-copy="' + L.copyId + '" data-msg="Path opener copied — paste it above the interviewer prompt"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy this path\u2019s opener</button>' +
+    '</div>';
+  planCard.innerHTML = html;
+  planCard.style.display = '';
+  planEmpty.style.display = 'none';
+}
+ $('#treeRestart').addEventListener('click', function(){
+  treeState = { node:'q1', trail:[] };
+  planCard.style.display = 'none';
+  planEmpty.style.display = '';
+  renderTree();
+});
+renderTree();
+
+/* ---------- ARCHIVE MATH ---------- */
+var LADDER_MIN = 252, RUNGS = 12, MAX_SESSION_MIN = 45; /* ladder constant; voice ceiling logged as of 2025-06-26 */
+var aLen = $('#aLen'), aFreq = $('#aFreq'), aWeeks = $('#aWeeks'),
+    aTotal = $('#aTotal'), aCov = $('#aCov'), aRungs = $('#aRungs'), aFill = $('#aFill'), aVerdict = $('#aVerdict');
+function calcArchive(){
+  var len = Math.max(5, Math.floor(+aLen.value || 0));
+  var freq = Math.max(1, Math.min(7, Math.floor(+aFreq.value || 1)));
+  var weeks = Math.max(1, Math.floor(+aWeeks.value || 1));
+  var total = len * freq * weeks;
+  var cov = total / LADDER_MIN * 100;
+  var rungs = Math.max(0, Math.min(RUNGS, Math.floor(total / (LADDER_MIN / RUNGS))));
+  var hrs = Math.floor(total / 60), mins = total % 60;
+  aTotal.textContent = (hrs > 0 ? hrs + ' hr ' : '') + mins + ' min';
+  aCov.textContent = (Math.round(cov)) + '%';
+  aRungs.textContent = rungs + ' of 12';
+  aFill.style.width = Math.min(100, cov) + '%';
+  var v = '';
+  if(len > MAX_SESSION_MIN){
+    v = '<strong>Long sessions risk the voice ceiling.</strong> Sessions past ~' + MAX_SESSION_MIN + ' minutes are where the free tier\u2019s unpublished daily cutoff tends to land mid-rung — split into two sittings; the continuity prompt stitches them back together.';
+  } else if(cov < 60){
+    v = '<strong>You\u2019ll finish rungs 1\u2013' + Math.max(1, rungs) + '.</strong> The meaning rungs (10\u201312) are exactly the ones that need visit two or three — that\u2019s the ladder working, not the plan failing. Add weeks, not session length.';
+  } else if(cov < 100){
+    v = '<strong>On track for the full ladder plus follow-ups.</strong> Schedule one extra session for the threads she leaves unfinished — the continuity prompt will name them from the transcript.';
+  } else {
+    v = '<strong>Full ladder and then some — you\u2019re building an archive, not an interview.</strong> Each finished ladder restarts on a new chapter of her life; the continuity prompt is the table of contents.';
+  }
+  aVerdict.innerHTML = v;
+}
+aLen.addEventListener('input', calcArchive);
+aFreq.addEventListener('input', calcArchive);
+aWeeks.addEventListener('input', calcArchive);
+calcArchive();
+
+/* ---------- COST COMPARISON ---------- */
+var costChecks = $$('.cost-row input[type=checkbox]');
+var costTotal = $('#costTotal'), keepLine = $('#keepLine');
+function annualTotal(){
+  return costChecks.filter(function(c){ return c.checked; })
+    .reduce(function(s, c){ return s + parseFloat(c.getAttribute('data-mo')); }, 0) * 12;
+}
+function renderTotal(){ costTotal.textContent = fmtMoney(annualTotal()); }
+costChecks.forEach(function(c){
+  c.addEventListener('change', function(){
+    $$('.price').forEach(function(p){ p.classList.remove('struck','go'); });
+    keepLine.classList.remove('show');
+    renderTotal();
+  });
+});
+renderTotal();
+ $('#runSwap').addEventListener('click', function(){
+  var chosen = costChecks.filter(function(c){ return c.checked; });
+  if(!chosen.length){ toast('Tick at least one line first'); return; }
+  var total = annualTotal();
+  chosen.forEach(function(c){
+    c.closest('.cost-row').querySelector('.price').classList.add('struck');
+  });
+  setTimeout(function(){
+    $$('.price.struck').forEach(function(p){ p.classList.add('go'); });
+    var t0 = performance.now(), dur = 900;
+    (function tick(now){
+      var p = Math.min(1, (now - t0) / dur);
+      costTotal.textContent = fmtMoney(total * (1 - p));
+      if(p < 1){ requestAnimationFrame(tick); }
+      else {
+        costTotal.textContent = '$0';
+        keepLine.textContent = 'You keep ' + fmtMoney(total) + ' a year. The paid tools end in a book — this protocol ends in her voice, which is the part the book can\u2019t hold.';
+        keepLine.classList.add('show');
+      }
+    })(t0);
+  }, 60);
+});
+
+/* ---------- STEPPER ---------- */
+var steps = $$('.step'), dots = $$('#stepDots span');
+var stepIdx = 0, stepCount = $('#stepCount');
+function showStep(i){
+  stepIdx = Math.max(0, Math.min(steps.length - 1, i));
+  steps.forEach(function(s, j){ s.classList.toggle('active', j === stepIdx); });
+  dots.forEach(function(d, j){ d.classList.toggle('on', j === stepIdx); });
+  stepCount.textContent = 'STEP ' + (stepIdx + 1) + ' / ' + steps.length;
+  $('#stepPrev').disabled = stepIdx === 0;
+  $('#stepPrev').style.opacity = stepIdx === 0 ? '.4' : '1';
+  $('#stepNext').disabled = stepIdx === steps.length - 1;
+  $('#stepNext').style.opacity = stepIdx === steps.length - 1 ? '.4' : '1';
+}
+ $('#stepPrev').addEventListener('click', function(){ showStep(stepIdx - 1); });
+ $('#stepNext').addEventListener('click', function(){ showStep(stepIdx + 1); });
+dots.forEach(function(d, j){ d.addEventListener('click', function(){ showStep(j); }); });
+showStep(0);
+
+/* ---------- THREE THINGS REVEAL ---------- */
+ $$('.rv-head').forEach(function(h){
+  h.addEventListener('click', function(){
+    var item = h.parentElement, open = item.classList.toggle('open');
+    h.setAttribute('aria-expanded', open ? 'true' : 'false');
+    h.querySelector('.rv-x').textContent = open ? '−' : '+';
+  });
+});
+
+/* ---------- TRY IT ---------- */
+ $('#tryScroll').addEventListener('click', function(){
+  document.getElementById('branch').scrollIntoView({ behavior: 'smooth' });
+});
+
+/* ---------- SHARE ---------- */
+var PAGE_URL = 'https://iggym.github.io/everyday-ai-done-right/articles/ask-what-they-witnessed-free-family-oral-history-with-chatgpt.html';
+var TITLE = 'Ask What They Witnessed \u2014 Free Family Oral History with ChatGPT\u2019s Voice';
+var SOCIAL_TEXT = 'The question that unlocks a grandfather\u2019s stories isn\u2019t \u201Ctell me about your life.\u201D It\u2019s \u201Cwhat\u2019s something you saw that nobody talks about anymore?\u201D Witnesses talk when protagonists freeze.';
+var LOSS_TEXT = 'Photos, passwords, contracts \u2014 almost everything is recoverable. A voice isn\u2019t. One 20-minute session with a free AI interviewer this week is the whole protocol.';
+var PULL_TEXT = 'Ask what they witnessed, not what they lived \u2014 protagonists freeze, witnesses talk.';
+
+function nativeShare(){
+  if(navigator.share){
+    navigator.share({ title: TITLE, text: SOCIAL_TEXT, url: PAGE_URL }).catch(function(){});
+  } else {
+    copyText(PAGE_URL, 'Link copied \u2014 the share sheet isn\u2019t available here');
+  }
+}
+ $('#btnShare').addEventListener('click', nativeShare);
+ $('#shareTop').addEventListener('click', nativeShare);
+ $('#btnX').addEventListener('click', function(){
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(SOCIAL_TEXT) + '&url=' + encodeURIComponent(PAGE_URL), '_blank', 'noopener');
+});
+ $('#btnLI').addEventListener('click', function(){
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(PAGE_URL), '_blank', 'noopener');
+});
+var copyPull = function(){ copyText(PULL_TEXT + ' ' + PAGE_URL, 'Pull-quote copied \u2014 paste it anywhere'); };
+ $('#btnPull').addEventListener('click', copyPull);
+ $('#copyPullTop').addEventListener('click', copyPull);
+})();
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

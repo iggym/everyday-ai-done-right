@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0003",
+  "slug": "ask-what-they-witnessed-free-family-oral-history-with-chatgpt",
+  "title": "Ask What They Witnessed: Free Family Oral History with ChatGPT's Voice",
+  "hook": "ChatGPT's free voice mode will interview your relatives — one question at a time up a 12-rung ladder from facts to feelings — with no card and no interviewing skill; the trade is unpublished daily voice caps, a training-data toggle you must flip first, and a transcript that isn't the voice.",
+  "path": "articles/ask-what-they-witnessed-free-family-oral-history-with-chatgpt.html",
+  "date": "2025-06-26",
+  "status": "published",
+  "format": "guide",
+  "category": "family",
+  "tool": "ChatGPT Free — Voice Mode (OpenAI)",
+  "tool_family": "OpenAI (ChatGPT)",
+  "source_url": "https://help.openai.com/en/articles/8555545-using-voice-mode-in-the-chatgpt-app",
+  "tags": ["chatgpt", "openai", "voice-mode", "oral-history", "family-archive"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2025-06-26"
+},{
   "id": "0049",
   "slug": "family-memory-qa-notebooklm-whatsapp-free",
   "title": "Your WhatsApp Is Already a Family History Book — $0 Private Q&A with NotebookLM",
