@@ -8,7 +8,7 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
-  "id": "0000",
+  "id": "3802",
   "slug": "stable-diffusion-comfyui-setup-guide",
   "title": "Stable Diffusion: Stop Installing the Wrong UI",
   "hook": "A 100% free, open-source guide to setting up local AI image generation the right way — on your own hardware, with no quotas.",
