@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0001",
+  "slug": "grounded-ai-research-notebooklm",
+  "title": "Grounded AI Research Synthesis via Free Google NotebookLM",
+  "hook": "Transform Google NotebookLM into a zero-hallucination document synthesis engine using a Source Priming Anchor.",
+  "path": "articles/grounded-ai-research-notebooklm.html",
+  "date": "2026-08-20",
+  "status": "published",
+  "format": "guide",
+  "category": "learning",
+  "tool": "NotebookLM (Google AI)",
+  "tool_family": "Google",
+  "source_url": "https://notebooklm.google.com",
+  "tags": ["research", "learning", "rag", "notebooklm", "free-tier"],
+  "reading_time_minutes": 3,
+  "pinned": false,
+  "verified": "2026-08-20"
+},{
   "id": "0005",
   "slug": "free-flight-delay-compensation-claims-with-gemini",
   "title": "Free Flight Delay Compensation Claims with Google Gemini",
