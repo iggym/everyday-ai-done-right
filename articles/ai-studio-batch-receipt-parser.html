@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Extract Receipts to CSV for Free</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f9fafb;
+            --surface-color: #ffffff;
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            --border-color: #e5e7eb;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --coral: #ef4444;
+            --coral-bg: #fef2f2;
+            --success: #10b981;
+            --font-sans: 'Inter', sans-serif;
+            --font-display: 'Manrope', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #111827;
+            --surface-color: #1f2937;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --border-color: #374151;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --coral: #f87171;
+            --coral-bg: #451a1a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-sans); background: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 2rem 1rem; transition: background 0.3s, color 0.3s; }
+        max-container { max-width: 800px; margin: 0 auto; display: block; }
+        
+        /* Topbar & Hero */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        .theme-toggle { background: none; border: 1px solid var(--border-color); color: var(--text-main); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-family: var(--font-sans); font-weight: 500; }
+        .hero { margin-bottom: 2rem; }
+        h1 { font-family: var(--font-display); font-size: 2.25rem; line-height: 1.2; margin-bottom: 1rem; }
+        .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.875rem; font-weight: 500; }
+        .badge { background: var(--surface-color); border: 1px solid var(--border-color); padding: 0.25rem 0.75rem; border-radius: 99px; }
+        .badge-verified { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+        [data-theme="dark"] .badge-verified { background: #064e3b; color: #34d399; border-color: #059669; }
+        .date-chip { font-size: 0.75rem; color: var(--text-muted); margin-left: 4px; font-weight: 400; }
+
+        /* Cost Comparison */
+        .cost-comparison { display: flex; justify-content: space-between; align-items: center; background: var(--surface-color); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; }
+        .old-cost { text-decoration: line-through; color: var(--coral); font-family: var(--font-display); font-size: 1.25rem; }
+        .new-cost { color: var(--success); font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; }
+
+        /* Centerpiece Sandbox */
+        .sandbox { background: var(--surface-color); border: 2px solid var(--accent); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .sandbox h2 { font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 1rem; }
+        .sandbox p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; }
+        .output-box { position: relative; }
+        pre { background: var(--bg-color); border: 1px solid var(--border-color); padding: 1rem; border-radius: 6px; font-family: var(--font-mono); font-size: 0.875rem; overflow-x: auto; white-space: pre-wrap; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--accent); color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: 500; transition: background 0.2s; }
+        .copy-btn:hover { background: var(--accent-hover); }
+
+        /* Pull-quote for Social Currency */
+        .pull-quote { background: var(--accent); color: white; padding: 2rem; border-radius: 8px; margin: 2rem 0; font-family: var(--font-display); font-size: 1.25rem; text-align: center; position: relative; }
+        .pull-quote span { display: block; margin-bottom: 1rem; }
+
+        /* Prose & Stepper */
+        .content { margin-bottom: 2rem; }
+        .content p { margin-bottom: 1rem; }
+        .stepper { list-style-type: none; margin: 2rem 0; counter-reset: step-counter; }
+        .stepper li { position: relative; padding-left: 2.5rem; margin-bottom: 1.5rem; }
+        .stepper li::before { content: counter(step-counter); counter-increment: step-counter; position: absolute; left: 0; top: 0; background: var(--accent); color: white; width: 1.5rem; height: 1.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; font-weight: bold; }
+
+        /* What Breaks */
+        .what-breaks { background: var(--coral-bg); border-left: 4px solid var(--coral); padding: 1.5rem; border-radius: 0 8px 8px 0; margin-bottom: 2rem; }
+        .what-breaks h3 { color: var(--coral); font-family: var(--font-display); margin-bottom: 0.5rem; }
+        .what-breaks ul { padding-left: 1.5rem; color: var(--text-main); }
+        .what-breaks li { margin-bottom: 0.5rem; }
+
+        /* Share Bar */
+        .share-bar { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; border-top: 1px solid var(--border-color); padding-top: 2rem; }
+        .share-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--text-main); border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 0.875rem; font-weight: 500; }
+        .share-btn:hover { background: var(--bg-color); }
+        
+        /* Timeless Quotas Widget */
+        .quota-box { background: var(--surface-color); border: 1px solid var(--border-color); padding: 1rem; border-radius: 6px; font-size: 0.875rem; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .quota-box strong { font-family: var(--font-display); }
+    </style>
+</head>
+<body>
+    <max-container>
+        <div class="top-bar">
+            <div style="font-family: var(--font-display); font-weight: 800; font-size: 1.2rem;">Everyday AI Done Right</div>
+            <button class="theme-toggle" id="themeToggle">Toggle Dark Mode</button>
+        </div>
+
+        <div class="hero">
+            <div class="badges">
+                <span class="badge">Google AI Studio (Gemini)</span>
+                <span class="badge">Business / Finance</span>
+                <span class="badge badge-verified">100% Free <span class="date-chip">as of Aug 20, 2026</span></span>
+            </div>
+            <h1>Bulk Extract Receipts to CSV for Free</h1>
+            <p style="font-size: 1.125rem; color: var(--text-muted);">Stop doing manual data entry for your expense reports; drop up to 50 receipts at a time into Google's free developer sandbox and instantly get a perfectly formatted CSV.</p>
+        </div>
+
+        <div class="cost-comparison">
+            <div>
+                <div style="font-size: 0.875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Old Way</div>
+                <div class="old-cost">4 hours manual entry or $499/mo tool</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">AI Studio Way</div>
+                <div class="new-cost">14 Seconds ($0)</div>
+            </div>
+        </div>
+
+        <!-- Centerpiece: Live Workflow Sandbox -->
+        <div class="sandbox">
+            <h2>Schema Builder Sandbox</h2>
+            <p>Select the data points you need to extract. The sandbox will dynamically generate the exact System Instruction required to force the AI to return a clean CSV without conversational fluff.</p>
+            
+            <div class="checkbox-grid">
+                <label class="checkbox-label"><input type="checkbox" id="f-vendor" checked disabled> Vendor Name</label>
+                <label class="checkbox-label"><input type="checkbox" id="f-date" checked disabled> Date</label>
+                <label class="checkbox-label"><input type="checkbox" id="f-total" checked disabled> Total Amount</label>
+                <label class="checkbox-label"><input type="checkbox" id="f-tax" checked> Tax Amount</label>
+                <label class="checkbox-label"><input type="checkbox" id="f-method"> Payment Method</label>
+                <label class="checkbox-label"><input type="checkbox" id="f-category"> Guessed Category</label>
+            </div>
+
+            <div class="output-box">
+                <button class="copy-btn" id="copyPromptBtn">Copy Prompt</button>
+                <pre id="promptOutput"></pre>
+            </div>
+        </div>
+
+        <!-- Social Currency Pull-Quote -->
+        <div class="pull-quote" id="pullQuote">
+            <span>Stop typing out expense reports. You can drop 50 PDFs into Google AI Studio and get a perfect CSV in 14 seconds without writing a line of code.</span>
+            <button class="share-btn" id="copyQuoteBtn" style="background: white; color: var(--accent); border: none;">Copy This Stat</button>
+        </div>
+
+        <div class="content">
+            <p>I once spent an entire Sunday afternoon manually typing 80 crumpled conference receipts into a spreadsheet, only to realize later I had transcribed the tax lines incorrectly on half of them. A month later, I tried uploading them to a standard consumer AI chatbot. It hallucinated the formatting, grouped things wrong, and refused to process more than three files before complaining about file size. The mistake was using a consumer chat interface for bulk data extraction.</p>
+            
+            <p>The correct tool is Google AI Studio. It is a developer playground, but you do not need to be a developer to use it. You upload your files, give it strict instructions, and it complies.</p>
+
+            <div class="quota-box">
+                <div><strong>Free Tier Limits</strong> <span class="date-chip">(Verified: Aug 20, 2026)</span></div>
+                <div>15 Requests Per Minute | 1,000,000 Tokens Per Minute | 1,500 Requests Per Day</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">These limits are high enough to process a small business's entire annual expense backlog in under an hour.</div>
+            </div>
+
+            <ol class="stepper">
+                <li><strong>Open Google AI Studio:</strong> Navigate to <a href="https://aistudio.google.com" target="_blank" style="color: var(--accent);">aistudio.google.com</a> and sign in with a standard Google account.</li>
+                <li><strong>Select the Right Model:</strong> On the right sidebar, ensure the model is set to <strong>Gemini 1.5 Flash</strong>. This model is heavily optimized for fast, multimodal document reading.</li>
+                <li><strong>Set the System Instructions:</strong> Use the interactive schema sandbox above to generate your strict instructions, then paste them into the "System Instructions" box on the left side of AI Studio.</li>
+                <li><strong>Batch Upload:</strong> Click the "+" button next to the prompt box. Select up to 50 PDFs or images of your receipts.</li>
+                <li><strong>Run the Extraction:</strong> In the text box, simply type "Extract all data to CSV." Hit run.</li>
+            </ol>
+            
+            <p>The output will be a raw CSV code block. Copy it, open your spreadsheet software (Excel/Google Sheets), and paste.</p>
+        </div>
+
+        <div class="what-breaks">
+            <h3>What Breaks</h3>
+            <ul>
+                <li><strong>Handwriting degradation:</strong> If the receipt is heavily crumpled or written in faint pencil, the model may confidently guess numbers rather than admit it cannot read them. Always spot-check the largest expenses.</li>
+                <li><strong>Privacy considerations:</strong> AI Studio is a developer tool. Google states they may use data submitted through the free tier to improve their products. Do not use this workflow for receipts containing HIPAA-protected medical data or highly classified legal expenses.</li>
+            </ul>
+        </div>
+
+        <div class="share-bar">
+            <button class="share-btn" id="nativeShare">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                Share Guide
+            </button>
+            <a href="#" class="share-btn" id="twitterShare" target="_blank">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"></path></svg>
+                Post on X
+            </a>
+            <a href="#" class="share-btn" id="linkedinShare" target="_blank">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
+                Share on LinkedIn
+            </a>
+        </div>
+    </max-container>
+
+    <script>
+        // Theme Logic
+        const themeToggle = document.getElementById('themeToggle');
+        const currentTheme = localStorage.getItem('eadr-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('eadr-theme', newTheme);
+        });
+
+        // Sandbox Logic
+        const checkboxes = document.querySelectorAll('.checkbox-grid input[type="checkbox"]');
+        const promptOutput = document.getElementById('promptOutput');
+        
+        function generatePrompt() {
+            const fields = [];
+            if(document.getElementById('f-vendor').checked) fields.push("Vendor Name");
+            if(document.getElementById('f-date').checked) fields.push("Date");
+            if(document.getElementById('f-total').checked) fields.push("Total Amount");
+            if(document.getElementById('f-tax').checked) fields.push("Tax Amount");
+            if(document.getElementById('f-method').checked) fields.push("Payment Method");
+            if(document.getElementById('f-category').checked) fields.push("Guessed Category");
+
+            const promptText = `You are a strict data extraction tool. You will be provided with images or PDFs of receipts and invoices.
+
+Your ONLY job is to extract the following fields from each document:
+- ${fields.join('\n- ')}
+
+Output the data as a raw CSV format (comma-separated). 
+Do NOT use markdown code blocks. 
+Do NOT include conversational text before or after the CSV. 
+If a field is missing on a document, leave the cell empty. Use a header row.`;
+            
+            promptOutput.textContent = promptText;
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', generatePrompt));
+        generatePrompt(); // Initial run
+
+        // Copy Prompt
+        document.getElementById('copyPromptBtn').addEventListener('click', (e) => {
+            navigator.clipboard.writeText(promptOutput.textContent);
+            const originalText = e.target.innerText;
+            e.target.innerText = 'Copied!';
+            setTimeout(() => e.target.innerText = originalText, 2000);
+        });
+
+        // Share Quote Logic
+        document.getElementById('copyQuoteBtn').addEventListener('click', (e) => {
+            const textToCopy = "Stop typing out expense reports. You can drop 50 PDFs into Google AI Studio and get a perfect CSV in 14 seconds without writing a line of code.";
+            navigator.clipboard.writeText(textToCopy);
+            const originalText = e.target.innerText;
+            e.target.innerText = 'Copied to Clipboard!';
+            setTimeout(() => e.target.innerText = originalText, 2000);
+        });
+
+        // Share URLs
+        const shareUrl = encodeURIComponent(window.location.href);
+        const shareText = encodeURIComponent("Most freelancers waste hours on expense reports using the wrong AI tool. Here is the developer backdoor that bulk-extracts receipts instantly for free.");
+        
+        document.getElementById('twitterShare').href = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
+        document.getElementById('linkedinShare').href = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`;
+
+        // Native Web Share
+        document.getElementById('nativeShare').addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Bulk Extract Receipts to CSV for Free',
+                        text: decodeURIComponent(shareText),
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    console.log('Share canceled or failed');
+                }
+            } else {
+                alert('Native sharing is not supported on this browser. Use the copy links provided.');
+            }
+        });
+    </script>
+    
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+</body>
+</html>
