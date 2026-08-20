@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Never Ask If It's Fine — Free Contract Triage in Claude · Everyday AI Done Right</title>
+<meta name="description" content="A free 20-minute extraction protocol turns Claude's free tier into a contract triage layer — no card, no lawyer retainer. Transcribe eight clauses; never ask for a verdict.">
+<script>
+(function(){try{var t=localStorage.getItem('eadr-theme');if(t){document.documentElement.setAttribute('data-theme',t);}else if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F1EA; --panel:#FBF9F4; --ink:#1E1B16; --ink-soft:#5C554A;
+  --line:#DCD5C6; --coral:#C2431A; --coral-deep:#A33611; --coral-soft:#F7E5DB;
+  --code-bg:#221E18; --code-fg:#EBE1CC;
+  --ok:#3F7A4E; --ok-soft:#E4EEE3; --warn:#9A6D14; --warn-soft:#F3EAD2;
+}
+[data-theme="dark"]{
+  --paper:#161310; --panel:#1F1B15; --ink:#EBE3D1; --ink-soft:#A69C88;
+  --line:#3A3327; --coral:#FF6B47; --coral-deep:#E4552F; --coral-soft:#2E1A12;
+  --code-bg:#100D09; --code-fg:#E2D7BF;
+  --ok:#7FBF8E; --ok-soft:#1D2A1F; --warn:#D9AE4F; --warn-soft:#2C2413;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:16.5px;line-height:1.68;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+.container{max-width:1140px;margin:0 auto;padding:0 24px}
+.mono{font-family:'JetBrains Mono',monospace}
+a{color:var(--coral);text-decoration:none}
+a:hover{text-decoration:underline}
+svg{flex-shrink:0}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.wordmark{font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.top-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.08em;white-space:nowrap}
+.top-actions{display:flex;gap:10px;align-items:center}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;border-radius:4px;transition:background .18s,border-color .18s,color .18s}
+.btn:hover{background:var(--coral);border-color:var(--coral);color:#FFF7ED}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink-soft)}
+.btn.ghost:hover{background:transparent;color:var(--coral);border-color:var(--coral)}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;cursor:pointer;transition:border-color .18s,color .18s}
+.icon-btn:hover{border-color:var(--coral);color:var(--coral)}
+.icon-btn:disabled{cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+
+/* hero */
+.hero{padding:72px 0 56px}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin-bottom:20px}
+h1{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(2.5rem,5.6vw,4.4rem);line-height:1.04;letter-spacing:-.035em;max-width:16ch}
+h1 .q{color:var(--coral)}
+.hook{max-width:70ch;margin-top:26px;font-size:17.5px;color:var(--ink-soft)}
+.hook strong{color:var(--ink)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.badge{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:8px 12px;border:1px solid var(--line);border-radius:3px;background:var(--panel);color:var(--ink)}
+.badge svg{color:var(--coral)}
+.asof{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--coral);border:1px dashed var(--coral);border-radius:3px;padding:0 6px;margin-left:6px;white-space:nowrap;vertical-align:middle;line-height:1.7}
+.legend{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+.legend svg{color:var(--coral)}
+
+/* centerpiece band */
+.band-triage{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--panel);padding:56px 0 64px}
+.sec-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral)}
+.sec-title{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.02em;margin-top:10px}
+.sec-sub{color:var(--ink-soft);max-width:66ch;margin-top:12px}
+.triage-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:34px;margin-top:36px}
+.t-form{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:0 0 8px 8px;padding:24px}
+.field{margin-bottom:15px}
+.field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+.field input[type=number],.field select{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:14.5px;color:var(--ink)}
+.field input:focus,.field select:focus{border-color:var(--coral);outline:none;box-shadow:0 0 0 3px var(--coral-soft)}
+.check-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--panel);margin-bottom:15px;cursor:pointer}
+.check-row input{accent-color:var(--coral);width:16px;height:16px;margin-top:3px;cursor:pointer}
+.check-row span{font-size:13.5px;color:var(--ink-soft)}
+.check-row b{color:var(--ink)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.t-out{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:26px}
+.verdict-pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;letter-spacing:.14em;padding:7px 14px;border-radius:3px}
+.vp-green{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok)}
+.vp-yellow{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+.vp-red{background:var(--coral-soft);color:var(--coral);border:1px solid var(--coral)}
+.score-line{display:flex;align-items:baseline;gap:14px;margin:16px 0 6px;flex-wrap:wrap}
+.score-num{font-family:'JetBrains Mono',monospace;font-size:52px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.score-lbl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase}
+.verdict-copy{font-size:15.5px;color:var(--ink);max-width:56ch;margin-top:10px}
+.verdict-copy strong{color:var(--coral-deep)}
+[data-theme="dark"] .verdict-copy strong{color:var(--coral)}
+.expo{margin-top:18px;padding:14px 16px;border:1px dashed var(--coral);border-radius:6px;font-size:14.5px;color:var(--ink-soft)}
+.expo b{font-family:'JetBrains Mono',monospace;color:var(--coral);font-size:17px}
+.findings{margin-top:18px;border-top:1px dashed var(--line)}
+.finding{display:flex;gap:12px;padding:13px 0;border-bottom:1px dashed var(--line);align-items:flex-start}
+.f-tag{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:800;letter-spacing:.08em;padding:3px 7px;border-radius:3px;margin-top:3px;white-space:nowrap}
+.ft-high{background:var(--coral-soft);color:var(--coral)}
+.ft-med{background:var(--warn-soft);color:var(--warn)}
+.ft-low{background:var(--ok-soft);color:var(--ok)}
+.finding p{font-size:14px;color:var(--ink-soft);max-width:56ch}
+.finding p b{color:var(--ink)}
+.t-note{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);line-height:1.7}
+
+/* pull quote (loss-aversion stat, screenshot block) */
+.pullquote{background:var(--ink);color:var(--paper);padding:80px 24px;text-align:center;position:relative}
+.pq-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
+.pq-num{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(3.4rem,9vw,6.4rem);line-height:1;letter-spacing:-.04em;color:var(--coral);display:block;margin:26px 0 10px}
+.pq-text{font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(1.15rem,2.4vw,1.5rem);line-height:1.35;max-width:34ch;margin:0 auto 28px}
+.pq-btn{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border:1px solid rgba(239,229,210,.5);background:transparent;color:var(--paper);border-radius:4px;cursor:pointer;transition:background .18s}
+.pq-btn:hover{background:rgba(239,229,210,.12)}
+.mark{position:absolute;width:15px;height:15px;opacity:.55}
+.mark::before,.mark::after{content:"";position:absolute;background:var(--paper)}
+.mark::before{left:0;top:6.5px;width:15px;height:2px}
+.mark::after{left:6.5px;top:0;width:2px;height:15px}
+.m-tl{top:20px;left:20px}.m-tr{top:20px;right:20px}.m-bl{bottom:20px;left:20px}.m-br{bottom:20px;right:20px}
+
+/* sections */
+section.block{padding:72px 0}
+.split{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:44px;margin-top:36px;align-items:start}
+.prose p{color:var(--ink-soft);margin-bottom:18px;max-width:62ch}
+.prose p strong{color:var(--ink)}
+
+/* cost card */
+.cost-card{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:24px}
+.cost-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.cost-row input[type=checkbox]{accent-color:var(--coral);width:16px;height:16px;flex-shrink:0;cursor:pointer}
+.cost-name{flex:1;min-width:0}
+.cost-name b{font-family:'Manrope',sans-serif;font-weight:700;font-size:15px;display:block}
+.cost-name span{font-size:12.5px;color:var(--ink-soft)}
+.price{font-family:'JetBrains Mono',monospace;font-size:13px;white-space:nowrap;position:relative;display:inline-block}
+.price.struck::after{content:"";position:absolute;left:-2px;top:54%;height:2px;width:0;background:var(--coral);transition:width .55s cubic-bezier(.6,0,.2,1)}
+.price.struck.go::after{width:calc(100% + 4px)}
+.cost-total{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 4px}
+.cost-total .label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.cost-total .amount{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600}
+.keep-line{font-size:14px;color:var(--coral);font-weight:500;margin-top:14px;display:none}
+.keep-line.show{display:block;animation:fade .4s ease}
+
+/* stepper */
+.stepper{border:1px solid var(--line);border-radius:8px;background:var(--panel);margin-top:36px;overflow:hidden}
+.step-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);gap:12px;flex-wrap:wrap}
+.step-count{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.1em;color:var(--ink-soft)}
+.dots{display:flex;gap:8px}
+.dots span{width:9px;height:9px;border-radius:50%;border:1px solid var(--ink-soft);cursor:pointer;transition:background .2s,border-color .2s}
+.dots span.on{background:var(--coral);border-color:var(--coral)}
+.step-nav{display:flex;gap:8px}
+.step{display:none;padding:28px 28px 32px}
+.step.active{display:block;animation:fade .35s ease}
+.step h3{font-family:'Manrope',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.01em;margin-bottom:14px}
+.step p{color:var(--ink-soft);max-width:64ch;margin-bottom:14px}
+.step p strong{color:var(--ink)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* confession block (scar tissue) */
+.confession{border:1px solid var(--ink);border-left:5px solid var(--ink);background:var(--panel);padding:22px 24px;margin:22px 0 8px;border-radius:0 6px 6px 0}
+.confession .tag{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:800;letter-spacing:.18em;color:var(--paper);background:var(--ink);display:inline-block;padding:4px 9px;margin-bottom:12px}
+.confession p{color:var(--ink);font-size:15.5px;max-width:62ch}
+.confession p b{font-family:'JetBrains Mono',monospace;color:var(--coral)}
+
+/* prompts */
+.promptwrap{position:relative;margin-top:8px}
+pre.prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;background:var(--code-bg);color:var(--code-fg);padding:20px 20px 18px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;min-height:100px}
+.copy-btn{position:absolute;top:10px;right:10px;display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border:1px solid rgba(239,229,210,.35);background:rgba(239,229,210,.08);color:var(--code-fg);border-radius:3px;cursor:pointer;transition:background .18s,border-color .18s}
+.copy-btn:hover{background:var(--coral);border-color:var(--coral);color:#FFF7ED}
+
+/* capacity calculator */
+.quota-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;margin-top:36px;align-items:start}
+.q-inputs{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}
+.q-inputs input[type=number]{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--ink)}
+.q-results .stat{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px dashed var(--line);gap:14px}
+.q-results .stat .label{font-size:13.5px;color:var(--ink-soft)}
+.q-results .stat .val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:600;white-space:nowrap}
+.qbar{height:10px;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:18px 0 6px;background:var(--panel)}
+.qbar-fill{height:100%;background:var(--coral);width:0;transition:width .4s ease}
+.verdict{margin-top:16px;color:var(--ink-soft);font-size:15px;max-width:58ch}
+.verdict strong{color:var(--coral)}
+
+/* what breaks */
+.breaks{background:var(--coral-soft);border-left:4px solid var(--coral);border-radius:0 8px 8px 0;padding:34px 36px;margin-top:36px}
+.breaks h2{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.5rem,2.6vw,2.1rem);letter-spacing:-.02em;display:flex;align-items:center;gap:12px}
+.breaks h2 svg{color:var(--coral)}
+.breaks .lead{margin:20px 0 8px;font-size:17px;line-height:1.6;max-width:64ch;color:var(--ink)}
+.breaks .lead strong{color:var(--coral-deep)}
+[data-theme="dark"] .breaks .lead strong{color:var(--coral)}
+.breaks ul{list-style:none;margin-top:16px}
+.breaks li{padding:13px 0 13px 26px;border-top:1px dashed rgba(194,67,26,.28);position:relative;color:var(--ink-soft);max-width:66ch}
+.breaks li:first-of-type{border-top:none}
+.breaks li::before{content:"";position:absolute;left:2px;top:21px;width:9px;height:2px;background:var(--coral)}
+.breaks li strong{color:var(--ink)}
+
+/* three things */
+.rv-list{margin-top:36px;border-top:1px dashed var(--line)}
+.rv-item{border-bottom:1px dashed var(--line)}
+.rv-head{display:flex;gap:18px;align-items:baseline;width:100%;background:none;border:none;padding:24px 0;cursor:pointer;text-align:left;color:var(--ink)}
+.rv-num{font-family:'JetBrains Mono',monospace;color:var(--coral);font-size:13px;font-weight:600}
+.rv-title{font-family:'Manrope',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.01em;flex:1}
+.rv-x{font-family:'JetBrains Mono',monospace;color:var(--ink-soft);font-size:16px}
+.rv-body{max-height:0;overflow:hidden;transition:max-height .45s ease;color:var(--ink-soft);padding:0 0 0 45px}
+.rv-body p{max-width:60ch;padding-bottom:6px}
+.rv-item.open .rv-body{max-height:420px;padding-bottom:26px}
+
+/* try it */
+.try-steps{counter-reset:try;margin-top:30px;max-width:66ch}
+.try-steps li{list-style:none;counter-increment:try;display:flex;gap:16px;padding:13px 0;border-bottom:1px dashed var(--line);color:var(--ink-soft);align-items:baseline}
+.try-steps li::before{content:counter(try,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--coral);font-weight:600}
+.try-actions{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}
+
+/* share */
+.share-card{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:32px;margin-top:36px}
+.share-quote{font-family:'Manrope',sans-serif;font-weight:700;font-size:19px;line-height:1.4;border-left:3px solid var(--coral);padding-left:18px;max-width:56ch;margin-bottom:24px}
+.share-btns{display:flex;flex-wrap:wrap;gap:10px}
+
+/* footer */
+footer{padding:44px 0 64px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);line-height:2}
+footer a{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--line)}
+footer a:hover{color:var(--coral)}
+
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:12px;padding:11px 18px;border-radius:4px;transition:opacity .3s,transform .3s;z-index:99;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:960px){
+  .triage-grid,.split,.quota-grid,.two-col{grid-template-columns:1fr}
+  .top-meta{display:none}
+  .hero{padding:52px 0 44px}
+  section.block{padding:56px 0}
+  .breaks{padding:26px 22px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="wordmark">Everyday AI Done Right</span>
+      <span class="top-meta">#0002 · BUSINESS</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle light or dark theme">
+        <svg id="iconSun" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M13 3l-1.4 1.4M4.4 11.6L3 13"/></svg>
+        <svg id="iconMoon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" style="display:none"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5 6 6 0 1 0 13.5 9.5z"/></svg>
+      </button>
+      <button class="btn" id="shareTop">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12.5" cy="3" r="2"/><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="13" r="2"/><path d="M5.3 7L10.7 4M5.3 9l5.4 3"/></svg>
+        Share
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <p class="kicker">Business · Guide №0002 · 4 min read</p>
+    <h1>Never ask if it's <span class="q">"fine."</span></h1>
+    <p class="hook">Triage any vendor contract, lease, or MSA in about 20 minutes — <strong>free, in Claude's web app, no card</strong> — by making the model <strong>transcribe</strong> the eight clauses that cost money instead of asking its opinion. The catches, stated up front: the free tier's <strong>message caps are unpublished</strong> and vary by model and hour, your conversations <strong>can be used for model improvement</strong>, and this is triage that decides when you need a lawyer — not whether.</p>
+    <div class="badges">
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 5"/></svg>T0 — no card, email + phone only</span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 5"/></svg>Verified 2025-06-19</span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.5V8l2.5 1.5"/></svg>200K-token context window<span class="asof">as of 2025-06-19</span></span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 8.5h11M4 11.5h8M5.5 14.5h5"/></svg>Triage — not legal advice</span>
+    </div>
+    <p class="legend"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.5V8l2.5 1.5"/></svg>Numbers wearing an "as of" chip drift. The eight-clause framework doesn't.</p>
+  </div>
+</section>
+
+<!-- ============ CENTERPIECE: RED-FLAG TRIAGE ============ -->
+<section class="band-triage" id="triage">
+  <div class="container">
+    <p class="sec-kicker">The centerpiece — Red-Flag Triage</p>
+    <h2 class="sec-title">Score the contract before you sign it</h2>
+    <p class="sec-sub">Answer eight questions from the extraction table (Step 2 below gives you that table in four minutes). The verdict updates live and tells you which branch you're on: sign it, renegotiate it, or hand it to a lawyer. Nothing is sent anywhere — this runs entirely inside the page.</p>
+    <div class="triage-grid">
+      <div class="t-form">
+        <div class="field"><label for="tValue">Annual value of the contract ($)</label><input type="number" id="tValue" min="0" max="10000000" value="6000"></div>
+        <div class="field"><label for="tRenew">Renewal structure</label>
+          <select id="tRenew">
+            <option value="auto" selected>Auto-renews, with notice window</option>
+            <option value="evergreen">Evergreen — no fixed end date</option>
+            <option value="none">Fixed term, no auto-renewal</option>
+          </select>
+        </div>
+        <div class="field" id="rowNotice"><label for="tNotice">Notice window (days before renewal)</label><input type="number" id="tNotice" min="0" max="365" value="60"></div>
+        <label class="check-row" for="tConv"><input type="checkbox" id="tConv"><span><b>Termination for convenience</b> — you can exit mid-term without breach</span></label>
+        <div class="field"><label for="tCap">Liability cap</label>
+          <select id="tCap">
+            <option value="twelve" selected>Capped at ~12 months of fees</option>
+            <option value="fees">Capped at fees paid to date only</option>
+            <option value="absent">Absent — no cap found</option>
+            <option value="unknown">Language unclear</option>
+          </select>
+        </div>
+        <div class="field"><label for="tInd">Indemnification</label>
+          <select id="tInd">
+            <option value="oneway" selected>One-way — you cover them</option>
+            <option value="mutual">Mutual</option>
+            <option value="silent">Silent</option>
+          </select>
+        </div>
+        <div class="field"><label for="tIp">IP ownership / license</label>
+          <select id="tIp">
+            <option value="you" selected>You own the work product</option>
+            <option value="they">They own it, or take a perpetual license</option>
+            <option value="silent">Silent</option>
+          </select>
+        </div>
+        <div class="field"><label for="tEsc">Price escalator</label>
+          <select id="tEsc">
+            <option value="fixed" selected>Fixed % per year</option>
+            <option value="cpi">CPI or "market" — uncapped</option>
+            <option value="none">None</option>
+          </select>
+        </div>
+        <div class="field" id="rowPct"><label for="tEscPct">Escalator (% per year)</label><input type="number" id="tEscPct" min="0" max="50" value="4"></div>
+        <div class="field" style="margin-bottom:0"><label for="tLaw">Governing law & disputes</label>
+          <select id="tLaw">
+            <option value="yours" selected>Your state / neutral venue</option>
+            <option value="theirs">Their state + mandatory arbitration</option>
+            <option value="silent">Silent</option>
+          </select>
+        </div>
+      </div>
+      <div class="t-out">
+        <span class="verdict-pill vp-yellow" id="vPill">YELLOW — RENEGOTIATE</span>
+        <div class="score-line"><span class="score-num" id="scoreNum">33</span><span class="score-lbl">Red-flag<br>score</span></div>
+        <p class="verdict-copy" id="vCopy"></p>
+        <div class="expo" id="expoBox"></div>
+        <div class="findings" id="findList"></div>
+        <p class="t-note">Triage is a ranking of what to escalate — not legal advice. Regulated industries, employment agreements, and IP-heavy deals start at RED regardless of score.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PULL QUOTE (LOSS-AVERSION STAT) ============ -->
+<section class="pullquote">
+  <span class="mark m-tl"></span><span class="mark m-tr"></span><span class="mark m-bl"></span><span class="mark m-br"></span>
+  <p class="pq-kicker">The cost of one "looks standard"</p>
+  <span class="pq-num">$14,400</span>
+  <p class="pq-text">One auto-renewal clause on page 51, missed because the question was "any red flags?" instead of "transcribe clause 2."</p>
+  <button class="pq-btn" id="copyPullTop"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy this stat</button>
+</section>
+
+<!-- ============ 01 · WHY EXTRACTION WINS + COST ============ -->
+<section class="block">
+  <div class="container">
+    <p class="sec-kicker">01 — Why extraction wins</p>
+    <h2 class="sec-title">A clerk, not a judge</h2>
+    <div class="split">
+      <div class="prose">
+        <p>Models trained on the internet's collective hedging produce <strong>"fairly standard agreement"</strong> the way a coin produces heads — it's the statistically safe completion of a vague question, not a judgment about your document. Ask for a verdict and you get the average of the internet. Ask for transcription and the same model becomes a tireless clerk that quotes page 51 verbatim.</p>
+        <p>That's why the protocol has exactly <strong>eight clauses</strong> and an ABSENT-or-quote rule. Eight is what fits in one readable table and what covers the clauses that actually cost money: renewal mechanics, exit rights, liability, indemnity, IP, fees, and where disputes happen. Everything else is prose.</p>
+        <p>And it's why the division of labor is fixed: <strong>the model reads; you judge.</strong> The model can quote a 90-day notice window, but only you know whether anyone at your company will remember it in January. That judgment against your own calendar — not the model's opinion — is what the triage calculator above turns into a verdict.</p>
+        <p>When a contract does deserve a lawyer, the 8-row table is what you hand over. You're paying for judgment, not page-turning — and the table cuts the billable read from hours to minutes.</p>
+      </div>
+      <div class="cost-card">
+        <p class="sec-kicker" style="margin-bottom:6px">What it replaces</p>
+        <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:6px">Tick what you'd otherwise pay for first-pass review — then run the swap.</p>
+        <div class="cost-row"><input type="checkbox" checked data-mo="150" id="cLaw" aria-label="Attorney review"><div class="cost-name"><b>Attorney flat-rate review</b><span>$300–800 per contract · ~4/yr</span></div><span class="price">$1,800/yr<span class="asof">as of 2025-06-19</span></span></div>
+        <div class="cost-row"><input type="checkbox" checked data-mo="39" id="cPlan" aria-label="Legal plan subscription"><div class="cost-name"><b>Legal-plan subscription</b><span>Rocket Lawyer / LegalZoom tier</span></div><span class="price">$468/yr<span class="asof">as of 2025-06-19</span></span></div>
+        <div class="cost-row"><input type="checkbox" data-mo="60" id="cSaaS" aria-label="Contract review SaaS"><div class="cost-name"><b>AI contract-review SaaS</b><span>per seat, quote-gated above this</span></div><span class="price">$720/yr<span class="asof">as of 2025-06-19</span></span></div>
+        <div class="cost-total"><span class="label">Annual total</span><span class="amount" id="costTotal">$2,268</span></div>
+        <button class="btn" id="runSwap" style="margin-top:12px;width:100%;justify-content:center">Run the swap → $0</button>
+        <p class="keep-line" id="keepLine"></p>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);margin-top:12px;line-height:1.7">Pricing is typical-range, secondary-source — treat as an estimate, not a quote.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 · WALKTHROUGH STEPPER ============ -->
+<section class="block" id="walkthrough" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">02 — The walkthrough</p>
+    <h2 class="sec-title">Five steps, one verdict</h2>
+    <div class="stepper">
+      <div class="step-head">
+        <span class="step-count" id="stepCount">STEP 1 / 5</span>
+        <div class="dots" id="stepDots"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+        <div class="step-nav">
+          <button class="icon-btn" id="stepPrev" aria-label="Previous step"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg></button>
+          <button class="icon-btn" id="stepNext" aria-label="Next step"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3l5 5-5 5"/></svg></button>
+        </div>
+      </div>
+      <div class="step active">
+        <h3>Anonymize before you upload</h3>
+        <p>Open the contract and find-replace: party names become <strong>"Customer"</strong> and <strong>"Vendor"</strong>, dollar amounts become rounded placeholders, everything else stays. The free tier's terms allow conversations to be used for model improvement — there is no un-upload, so redaction happens on your copy before it ever touches a browser tab.</p>
+        <p>Anonymizing takes four minutes. Skipping it means your real vendor names and rates live in a training corpus forever — and a confidentiality clause you're about to sign probably forbids exactly that.</p>
+      </div>
+      <div class="step">
+        <h3>The extraction pass</h3>
+        <p>In Claude, pick a <strong>mid-tier model, not the flagship</strong>. Transcription is a clerk's job, and mid-tier models get you more messages per day — burning the flagship's small budget on page-turning is how people run dry after one contract. Upload the anonymized PDF and send:</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="pExtract" data-msg="Extraction prompt copied — paste into Claude with the PDF attached"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="pExtract">You are a contract-transcription assistant, not an advisor. From the attached agreement, extract the following eight items. For each: quote the contract VERBATIM, give the section or page reference, and if the item does not appear, write exactly ABSENT. Do not evaluate, summarize, or reassure.
+
+1. Initial term and renewal term
+2. Auto-renewal notice window — days, and the required delivery channel
+3. Termination for convenience — allowed or not, and any exit fee
+4. Liability cap — the multiple of fees, and any carve-outs
+5. Indemnification — direction (who indemnifies whom) and scope
+6. IP ownership, and any license either party grants the other
+7. Fees — escalators, minimum commitments, late penalties, true-ups
+8. Governing law and dispute path
+
+Output as an 8-row table. If you cannot find something, say ABSENT — never guess a clause.</pre></div>
+        <div class="confession">
+          <span class="tag">SCAR TISSUE</span>
+          <p>I ran the naive version first: uploaded a 62-page MSA and asked, <b>"Any red flags?"</b> The reply opened "Overall, this looks like a fairly standard agreement," flagged two cosmetic items, and moved on. Nine months later we missed a renewal clause requiring 90 days' written notice — delivered by certified mail to a Delaware address — and auto-renewed for a full year at <b>$1,200</b> a month for a tool the team had stopped using in October. <b>$14,400.</b> The clause was on page 51. The extraction pass takes four minutes and would have quoted it verbatim in row two of the table.</p>
+        </div>
+      </div>
+      <div class="step">
+        <h3>Spot-check three quotes, then add your numbers</h3>
+        <p>Ctrl-F three of the verbatim quotes in the original PDF. If a cited section doesn't exist, the model invented it — re-run with <strong>"quote only what you can point to."</strong> Ninety seconds of checking is the only firewall between you and a hallucinated clause number; on contracts over 40 pages, that's where the mistakes hide.</p>
+        <p>Then fill in what the model can never know: your annual spend against the cap multiple, the notice window against your actual calendar, the escalator against your actual budget. The model reads; you judge.</p>
+      </div>
+      <div class="step">
+        <h3>Failure scenarios, narrowly</h3>
+        <p>Take the one to three worst rows from the triage calculator and only those. Scope discipline is the budget: broad questions get the internet's average answer; narrow questions about quoted text get specific ones — and on a message-capped free tier, that difference decides whether you finish the contract today.</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="pFail" data-msg="Failure-scenario prompt copied"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="pFail">Here is a clause quoted verbatim from our agreement: [paste the row's quote].
+Without reassurance or hedging, list the three most expensive failure scenarios this clause permits — each with the trigger, who pays, and an order-of-magnitude cost for a business of our size ([employees / annual revenue]).
+Do not comment on whether the clause is "standard."</pre></div>
+      </div>
+      <div class="step">
+        <h3>Verdict and calendar</h3>
+        <p>Run the <strong>Red-Flag Triage</strong> calculator at the top of this page with your eight answers. GREEN: sign after your own read — and put the renewal date in two calendars <em>before</em> signing, not the week it matters. YELLOW: send the ask-script below; one email round-trip. RED: lawyer — hand them the table, not the PDF.</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="pAsk" data-msg="Renegotiation ask-script copied"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="pAsk">Draft a 120-word email to [vendor] requesting: [the specific change]. Reference the clause by section number. Neutral, professional, assumes the change is routine. No apologetic language.</pre></div>
+        <p>Send it yourself. A letter from counsel changes the temperature of the conversation — and the price of the next one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 · CAPACITY MATH ============ -->
+<section class="block" id="capacity" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">03 — Capacity math</p>
+    <h2 class="sec-title">Will the contract fit?</h2>
+    <div class="quota-grid">
+      <div class="q-inputs">
+        <div class="field"><label for="cPages">Contract length (pages)</label><input type="number" id="cPages" min="1" max="2000" value="62"></div>
+        <div class="field" style="margin-bottom:0"><label for="cWpp">Words per page</label><input type="number" id="cWpp" min="100" max="1200" value="500"></div>
+        <p class="t-note" style="margin-top:16px">Token estimate: words × ~1.35 tokens/word. The 200K-token context window is the one hard, published number in this workflow<span class="asof">as of 2025-06-19</span> — the free tier's message caps are deliberately unpublished and vary by model and demand.</p>
+      </div>
+      <div class="q-results">
+        <div class="stat"><span class="label">Estimated tokens in the document</span><span class="val" id="cTok">—</span></div>
+        <div class="stat"><span class="label">Share of the 200K-token context window<span class="asof">as of 2025-06-19</span></span><span class="val" id="cPct">—</span></div>
+        <div class="stat"><span class="label">Pages of headroom at this density</span><span class="val" id="cRoom">—</span></div>
+        <div class="qbar"><div class="qbar-fill" id="cFill"></div></div>
+        <p class="verdict" id="cVerdict"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · WHAT BREAKS ============ -->
+<section class="block" id="breaks" style="padding-top:0">
+  <div class="container">
+    <div class="breaks">
+      <h2><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3L2.5 20h19L12 3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".4" fill="currentColor"/></svg>What breaks</h2>
+      <p class="lead"><strong>Never ask an LLM whether a contract is fine.</strong> "Fairly standard" is the statistically safe completion of a vague question, not a judgment about your document. Ask for transcription and the same model becomes a tireless clerk. The failure in the $14,400 story wasn't the tool — it was asking the tool for an opinion.</p>
+      <ul>
+        <li><strong>Message caps are unpublished.</strong> Anthropic doesn't state the free tier's daily message count — it varies by model and demand, and the countdown appears only in the UI. The protocol survives it: extraction is idempotent, so if you run out mid-contract, re-upload in a fresh chat and re-run the same prompt. Nothing depends on conversation memory.</li>
+        <li><strong>Free-tier data usage.</strong> Conversations may be used for model improvement per Anthropic's consumer terms. That's why Step 1 exists — anonymize before upload, and check your account's privacy settings before sending anything sensitive.</li>
+        <li><strong>Hallucinated citations.</strong> The model may cite a §8.2 that doesn't exist. The three-quote Ctrl-F check in Step 3 is non-negotiable for exactly this reason.</li>
+        <li><strong>Scan-only PDFs.</strong> If the contract is a scan without a text layer, extraction gets garbage. Test by copy-pasting one paragraph from the PDF first; if nothing pastes, OCR it before starting.</li>
+        <li><strong>Giant contracts.</strong> A 200K-token window<span class="asof">as of 2025-06-19</span> fits roughly 250–300 pages, but accuracy degrades as you approach the limit. Over ~200 pages, split by exhibit, run the extraction prompt per chunk, and merge the tables yourself.</li>
+        <li><strong>The flagship temptation.</strong> On small message budgets, people pick the biggest model and run dry after one contract. Use a mid-tier model for extraction — it's a transcription job — and save the flagship for the failure-scenario pass.</li>
+        <li><strong>This is triage, not review.</strong> Regulated industries, employment agreements, and IP-heavy deals start at RED regardless of the score. The calculator ranks what to escalate; it doesn't replace the person you escalate to.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 · THREE THINGS ============ -->
+<section class="block" id="three" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">05 — Three things worth keeping</p>
+    <h2 class="sec-title">If you forget everything else</h2>
+    <div class="rv-list">
+      <div class="rv-item open">
+        <button class="rv-head" aria-expanded="true"><span class="rv-num">01</span><span class="rv-title">Extraction, not evaluation</span><span class="rv-x">−</span></button>
+        <div class="rv-body"><p>Never ask if a contract is fine — "fairly standard" is the safe answer to a vague question, and it costs $14,400 when it's wrong. Ask for verbatim transcription and the model does the one thing it's genuinely tireless at.</p></div>
+      </div>
+      <div class="rv-item">
+        <button class="rv-head" aria-expanded="false"><span class="rv-num">02</span><span class="rv-title">Verbatim quotes or ABSENT</span><span class="rv-x">+</span></button>
+        <div class="rv-body"><p>The ABSENT-or-quote rule is the hallucination firewall. A model forced to quote can be checked with Ctrl-F in ninety seconds; a model asked to summarize can quietly invent a clause number you'll never verify.</p></div>
+      </div>
+      <div class="rv-item">
+        <button class="rv-head" aria-expanded="false"><span class="rv-num">03</span><span class="rv-title">The model reads; you judge</span><span class="rv-x">+</span></button>
+        <div class="rv-body"><p>The model can quote a 90-day notice window, but only you know whether anyone at your company will remember it in January. Numbers against your calendar, cap multiples against your spend — that judgment is what the verdict actually runs on.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 · TRY IT NOW ============ -->
+<section class="block" id="try" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">06 — Try it now</p>
+    <h2 class="sec-title">Start with the one you're already inside</h2>
+    <ol class="try-steps">
+      <li>Pick a contract you've already signed — the one whose renewal date you can't name from memory.</li>
+      <li>Anonymize it (Step 1) and run the extraction prompt (Step 2).</li>
+      <li>Feed the eight answers into the Red-Flag Triage calculator above.</li>
+      <li>YELLOW or worse? The renegotiation ask-script works mid-term too — windows re-open at every renewal.</li>
+      <li>Calendar the notice date in two systems before you close the tab.</li>
+    </ol>
+    <div class="try-actions">
+      <button class="btn" id="tryScroll">Open the Red-Flag Triage</button>
+      <a class="btn ghost" href="https://claude.ai" target="_blank" rel="noopener">Open Claude<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 11L11 5M6.5 5H11v4.5"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHARE ============ -->
+<section class="block" id="share" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">Pass it on</p>
+    <h2 class="sec-title">Two lines that travel well</h2>
+    <div class="share-card">
+      <p class="share-quote" id="shareQuote">A missed 90-day auto-renewal window means paying for a full year of a service you already cancelled. A free extraction protocol catches it before you sign — 20 minutes, no card.</p>
+      <div class="share-btns">
+        <button class="btn" id="btnShare"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12.5" cy="3" r="2"/><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="13" r="2"/><path d="M5.3 7L10.7 4M5.3 9l5.4 3"/></svg>Share</button>
+        <button class="btn ghost" id="btnX"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l10 10M13 3L3 13"/></svg>Post on X</button>
+        <button class="btn ghost" id="btnLI"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5.2 11V7M5.2 5.2v.1M8.3 11V7c0-1.5 3.2-1.6 3.2.2V11"/></svg>LinkedIn</button>
+        <button class="btn ghost" id="btnPull"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy pull-quote</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <p>Verified 2025-06-19 · Guide №0002 · Business · Everyday AI Done Right</p>
+    <p>Sources: <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/models" target="_blank" rel="noopener">Anthropic models & context documentation</a> · <a href="https://www.anthropic.com/legal/consumer-terms" target="_blank" rel="noopener">Anthropic consumer terms</a></p>
+    <p>Perishable numbers wear "as of" chips. Attorney pricing is typical-range, secondary-source. Triage ranks what to escalate — it is not legal advice.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+function fmt(v){ return '$' + Math.round(v).toLocaleString('en-US'); }
+
+/* ---------- theme ---------- */
+var root = document.documentElement;
+if(!root.getAttribute('data-theme')){ root.setAttribute('data-theme','light'); }
+var themeBtn = $('#themeToggle'), iconSun = $('#iconSun'), iconMoon = $('#iconMoon');
+function paintThemeBtn(){
+  var dark = root.getAttribute('data-theme') === 'dark';
+  iconSun.style.display = dark ? 'none' : 'block';
+  iconMoon.style.display = dark ? 'block' : 'none';
+}
+themeBtn.addEventListener('click', function(){
+  var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  try{ localStorage.setItem('eadr-theme', next); }catch(e){}
+  paintThemeBtn();
+});
+paintThemeBtn();
+
+/* ---------- toast ---------- */
+var toastEl = $('#toast'), toastTimer = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2300);
+}
+
+/* ---------- clipboard ---------- */
+function copyText(text, label){
+  var done = function(){ toast(label || 'Copied'); };
+  var fallback = function(){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); done(); }
+    catch(e){ toast('Copy failed — select the text manually'); }
+    document.body.removeChild(ta);
+  };
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(done).catch(fallback);
+  } else { fallback(); }
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-copy]');
+  if(!b){ return; }
+  var src = document.getElementById(b.getAttribute('data-copy'));
+  if(src){ copyText(src.textContent.trim(), b.getAttribute('data-msg')); }
+});
+
+/* ---------- RED-FLAG TRIAGE (centerpiece diagnostic calculator) ---------- */
+var T = { value: $('#tValue'), renew: $('#tRenew'), notice: $('#tNotice'), conv: $('#tConv'),
+          cap: $('#tCap'), ind: $('#tInd'), ip: $('#tIp'), esc: $('#tEsc'), escPct: $('#tEscPct'), law: $('#tLaw') };
+var vPill = $('#vPill'), scoreNum = $('#scoreNum'), vCopy = $('#vCopy'),
+    expoBox = $('#expoBox'), findList = $('#findList');
+
+function toggleRows(){
+  document.getElementById('rowNotice').style.display = (T.renew.value === 'auto') ? '' : 'none';
+  document.getElementById('rowPct').style.display = (T.esc.value === 'fixed') ? '' : 'none';
+}
+
+function triage(){
+  var v = Math.max(0, Math.floor(+T.value.value || 0));
+  var pts = 0, F = [];
+  var renew = T.renew.value, notice = Math.max(0, Math.floor(+T.notice.value || 0));
+
+  if(renew === 'auto'){
+    var p = notice >= 90 ? 6 : (notice >= 60 ? 10 : 16);
+    pts += p;
+    F.push({pts:p, text:'<b>Auto-renewal, ' + notice + '-day notice window.</b> A missed notice costs one full renewal term ≈ <b>' + fmt(v) + '</b>. Calendar two reminders — T-' + (notice + 30) + ' and T-' + Math.max(15, notice - 15) + ' days out — in two different systems.'});
+  } else if(renew === 'evergreen'){
+    pts += 14;
+    F.push({pts:14, text:'<b>No fixed end date.</b> This contract ends only when you end it. Schedule a quarterly ten-minute re-read of the exit terms — there is no anniversary to save you.'});
+  }
+
+  if(!T.conv.checked){
+    pts += 7;
+    F.push({pts:7, text:'<b>No termination for convenience.</b> You can exit only via breach, expiry, or mutual agreement — which makes the renewal window your only lever. Treat it as a hard deadline.'});
+  }
+
+  var capPts = {absent:12, fees:8, twelve:3, unknown:12}[T.cap.value];
+  pts += capPts;
+  if(T.cap.value === 'absent' || T.cap.value === 'unknown'){
+    F.push({pts:capPts, text:'<b>' + (T.cap.value === 'absent' ? 'No liability cap found.' : 'Liability language unclear.') + '</b> Unclear and absent score the same: unlimited exposure cuts both ways. Market-normal ask on deals this size: mutual caps at 12 months of fees.'});
+  } else if(T.cap.value === 'fees'){
+    F.push({pts:8, text:'<b>Cap at fees paid to date.</b> A year-one incident is capped at whatever you have spent so far. Ask for a 12-month floor at minimum.'});
+  }
+
+  var indPts = {mutual:2, oneway:10, silent:6}[T.ind.value];
+  pts += indPts;
+  if(T.ind.value !== 'mutual'){
+    F.push({pts:indPts, text:T.ind.value === 'oneway'
+      ? '<b>One-way indemnification.</b> You cover their defense costs on their triggers. Ask for mutual, or cap your indemnity at fees paid.'
+      : '<b>Indemnification silent.</b> Silence gets interpreted later by whoever has the better lawyer. Get it mutual in writing or struck entirely.'});
+  }
+
+  if(T.ip.value === 'they'){ pts += 9; F.push({pts:9, text:'<b>They own the work product</b> (or take a perpetual license). Everything built under this contract leaves with them — unacceptable if the output is your product or your data.'}); }
+  else if(T.ip.value === 'silent'){ pts += 6; F.push({pts:6, text:'<b>IP ownership silent.</b> On service contracts, silence usually resolves in the vendor\u2019s favor. One sentence fixes it.'}); }
+
+  if(T.esc.value === 'fixed'){
+    var pct = Math.max(0, Math.min(50, +T.escPct.value || 0));
+    var p3 = Math.round((Math.pow(1 + pct / 100, 3) - 1) * 100);
+    var ep = pct >= 8 ? 9 : (pct >= 5 ? 6 : 3);
+    pts += ep;
+    F.push({pts:ep, text:'<b>' + pct + '% annual escalator</b> compounds to +' + p3 + '% by year three — ' + fmt(v * Math.pow(1 + pct / 100, 3) - v) + ' of extra annual spend on a ' + fmt(v) + ' contract. Cap it or shorten the term.'});
+  } else if(T.esc.value === 'cpi'){
+    pts += 8;
+    F.push({pts:8, text:'<b>Uncapped CPI or \u201Cmarket\u201D escalator.</b> You have signed an unknown future price. Ask for a ceiling (CPI + 2%, max) or a fixed schedule.'});
+  }
+
+  if(T.law.value === 'theirs'){ pts += 6; F.push({pts:6, text:'<b>Their venue + mandatory arbitration.</b> Disputes happen where it is expensive for you to show up. Strike the arbitration clause or move to a neutral venue.'}); }
+  else if(T.law.value === 'silent'){ pts += 4; F.push({pts:4, text:'<b>Governing law silent.</b> A default you did not choose — one line fixes it; two years of litigation could hinge on it.'}); }
+
+  /* verdict — three genuinely different branches */
+  var cls, pill, copy;
+  if(pts <= 17){
+    cls = 'vp-green'; pill = 'GREEN — SIGN AFTER YOUR READ';
+    copy = '<strong>Sign-ready after your own read.</strong> Log the renewal date in two calendars <em>before</em> you sign — not the week it matters. The findings below are the sentences to re-read at signing.';
+  } else if(pts <= 37){
+    cls = 'vp-yellow'; pill = 'YELLOW — RENEGOTIATE';
+    copy = '<strong>Renegotiate before signing.</strong> Take the heaviest finding, run the failure-scenario prompt on its verbatim clause, and send the ask-script. Budget one email round-trip.';
+  } else {
+    cls = 'vp-red'; pill = 'RED — LAWYER BEFORE SIGNATURE';
+    copy = '<strong>Lawyer before signature.</strong> Hand them the 8-row extraction table, not the PDF — you are paying for judgment, not page-turning, and the table cuts the billable read from hours to minutes.';
+  }
+  vPill.className = 'verdict-pill ' + cls;
+  vPill.textContent = pill;
+  scoreNum.textContent = pts;
+  vCopy.innerHTML = copy;
+
+  /* exposure (loss-aversion output) */
+  if(renew !== 'none' && v > 0){
+    expoBox.innerHTML = 'If the notice window slips: <b>' + fmt(v) + '</b> — one full renewal term at your stated value. That is the number this protocol exists to protect.';
+  } else if(renew !== 'none'){
+    expoBox.innerHTML = 'Set the annual value above to see your exposure per missed renewal window.';
+  } else {
+    expoBox.innerHTML = 'Fixed term, no auto-renewal — your exposure is the escalator and exit terms, not a missed window.';
+  }
+
+  /* findings, heaviest first */
+  F.sort(function(a, b){ return b.pts - a.pts; });
+  var html = '';
+  F.slice(0, 5).forEach(function(f){
+    var tag = f.pts >= 9 ? ['ft-high', 'HIGH'] : (f.pts >= 6 ? ['ft-med', 'MED'] : ['ft-low', 'LOW']);
+    html += '<div class="finding"><span class="f-tag ' + tag[0] + '">' + tag[1] + '</span><p>' + f.text + '</p></div>';
+  });
+  findList.innerHTML = html || '<div class="finding"><p>No flags at these answers — the eight clauses came back clean. Re-read the extraction table once at signing anyway.</p></div>';
+}
+Object.keys(T).forEach(function(k){
+  T[k].addEventListener('input', triage);
+  T[k].addEventListener('change', function(){ toggleRows(); triage(); });
+});
+toggleRows();
+triage();
+
+/* ---------- CAPACITY CALCULATOR (context window math) ---------- */
+var CTX = 200000; /* published context window, logged as of 2025-06-19 */
+var cPages = $('#cPages'), cWpp = $('#cWpp'),
+    cTok = $('#cTok'), cPct = $('#cPct'), cRoom = $('#cRoom'), cFill = $('#cFill'), cVerdict = $('#cVerdict');
+function calcCap(){
+  var pages = Math.max(1, Math.floor(+cPages.value || 0));
+  var wpp = Math.max(50, Math.floor(+cWpp.value || 0));
+  var tok = Math.round(pages * wpp * 1.35);
+  var pct = tok / CTX * 100;
+  cTok.textContent = tok.toLocaleString('en-US');
+  cPct.textContent = (Math.round(pct * 10) / 10) + '%';
+  cFill.style.width = Math.min(100, pct) + '%';
+  var perPage = wpp * 1.35;
+  var roomPages = Math.max(0, Math.floor((CTX - tok) / perPage));
+  cRoom.textContent = roomPages.toLocaleString('en-US') + ' pp';
+  if(pct <= 50){
+    cVerdict.innerHTML = '<strong>Fits comfortably.</strong> One conversation, one extraction pass, and still over half the window free for the failure-scenario follow-ups.';
+  } else if(pct <= 85){
+    cVerdict.innerHTML = '<strong>Fits — barely.</strong> Keep the chat single-purpose: extraction only, then a fresh chat for scenario questions. Long chats compete with the document for the same window.';
+  } else {
+    cVerdict.innerHTML = '<strong>Too big for one pass.</strong> Split by exhibit or appendix, run the extraction prompt per chunk, and merge the tables yourself. Extraction past ~85% of the window is where invented section numbers start.';
+  }
+}
+cPages.addEventListener('input', calcCap);
+cWpp.addEventListener('input', calcCap);
+calcCap();
+
+/* ---------- COST COMPARISON ---------- */
+var costChecks = $$('.cost-row input[type=checkbox]');
+var costTotal = $('#costTotal'), keepLine = $('#keepLine');
+function annualTotal(){
+  return costChecks.filter(function(c){ return c.checked; })
+    .reduce(function(s, c){ return s + parseInt(c.getAttribute('data-mo'), 10); }, 0) * 12;
+}
+function renderTotal(){ costTotal.textContent = fmt(annualTotal()); }
+costChecks.forEach(function(c){
+  c.addEventListener('change', function(){
+    $$('.price').forEach(function(p){ p.classList.remove('struck','go'); });
+    keepLine.classList.remove('show');
+    renderTotal();
+  });
+});
+renderTotal();
+ $('#runSwap').addEventListener('click', function(){
+  var chosen = costChecks.filter(function(c){ return c.checked; });
+  if(!chosen.length){ toast('Tick at least one line first'); return; }
+  var total = annualTotal();
+  chosen.forEach(function(c){
+    c.closest('.cost-row').querySelector('.price').classList.add('struck');
+  });
+  setTimeout(function(){
+    $$('.price.struck').forEach(function(p){ p.classList.add('go'); });
+    var t0 = performance.now(), dur = 900;
+    (function tick(now){
+      var p = Math.min(1, (now - t0) / dur);
+      costTotal.textContent = fmt(total * (1 - p));
+      if(p < 1){ requestAnimationFrame(tick); }
+      else {
+        costTotal.textContent = '$0';
+        keepLine.textContent = 'You keep ' + fmt(total) + ' a year on first-pass screening — run the triage layer yourself, and spend a slice of it on the hour of lawyer time the RED verdicts genuinely need.';
+        keepLine.classList.add('show');
+      }
+    })(t0);
+  }, 60);
+});
+
+/* ---------- STEPPER ---------- */
+var steps = $$('.step'), dots = $$('#stepDots span');
+var stepIdx = 0, stepCount = $('#stepCount');
+function showStep(i){
+  stepIdx = Math.max(0, Math.min(steps.length - 1, i));
+  steps.forEach(function(s, j){ s.classList.toggle('active', j === stepIdx); });
+  dots.forEach(function(d, j){ d.classList.toggle('on', j === stepIdx); });
+  stepCount.textContent = 'STEP ' + (stepIdx + 1) + ' / ' + steps.length;
+  $('#stepPrev').disabled = stepIdx === 0;
+  $('#stepPrev').style.opacity = stepIdx === 0 ? '.4' : '1';
+  $('#stepNext').disabled = stepIdx === steps.length - 1;
+  $('#stepNext').style.opacity = stepIdx === steps.length - 1 ? '.4' : '1';
+}
+ $('#stepPrev').addEventListener('click', function(){ showStep(stepIdx - 1); });
+ $('#stepNext').addEventListener('click', function(){ showStep(stepIdx + 1); });
+dots.forEach(function(d, j){ d.addEventListener('click', function(){ showStep(j); }); });
+showStep(0);
+
+/* ---------- THREE THINGS REVEAL ---------- */
+ $$('.rv-head').forEach(function(h){
+  h.addEventListener('click', function(){
+    var item = h.parentElement, open = item.classList.toggle('open');
+    h.setAttribute('aria-expanded', open ? 'true' : 'false');
+    h.querySelector('.rv-x').textContent = open ? '−' : '+';
+  });
+});
+
+/* ---------- TRY IT ---------- */
+ $('#tryScroll').addEventListener('click', function(){
+  document.getElementById('triage').scrollIntoView({ behavior: 'smooth' });
+});
+
+/* ---------- SHARE ---------- */
+var PAGE_URL = 'https://iggym.github.io/everyday-ai-done-right/articles/never-ask-if-its-fine-free-contract-triage-with-claude.html';
+var TITLE = 'Never Ask If It\u2019s Fine — Free Contract Triage in Claude';
+var GAP_TEXT = 'I asked Claude if my vendor contract \u201Clooked fine.\u201D It said yes. Nine months later, that answer cost $14,400. The 20-minute protocol that catches it first — free, no card:';
+var LOSS_TEXT = '$14,400 — the cost of one \u201Clooks standard.\u201D A missed 90-day auto-renewal window pays for a full year of a service you cancelled. Free fix: extraction, not opinions.';
+
+function nativeShare(){
+  if(navigator.share){
+    navigator.share({ title: TITLE, text: GAP_TEXT, url: PAGE_URL }).catch(function(){});
+  } else {
+    copyText(PAGE_URL, 'Link copied — the share sheet isn\u2019t available here');
+  }
+}
+ $('#btnShare').addEventListener('click', nativeShare);
+ $('#shareTop').addEventListener('click', nativeShare);
+ $('#btnX').addEventListener('click', function(){
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(GAP_TEXT) + '&url=' + encodeURIComponent(PAGE_URL), '_blank', 'noopener');
+});
+ $('#btnLI').addEventListener('click', function(){
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(PAGE_URL), '_blank', 'noopener');
+});
+var copyPull = function(){ copyText(LOSS_TEXT + ' ' + PAGE_URL, 'Pull-quote copied — paste it anywhere'); };
+ $('#btnPull').addEventListener('click', copyPull);
+ $('#copyPullTop').addEventListener('click', copyPull);
+})();
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

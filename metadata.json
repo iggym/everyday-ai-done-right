@@ -8,6 +8,23 @@
     "description": "A verified directory of the highest-leverage, highest-value, highest-agency things an ordinary person can do with AI tools that are genuinely, currently free — checked against real provider docs, not vibes."
   },
   "articles": [{
+  "id": "0002",
+  "slug": "never-ask-if-its-fine-free-contract-triage-with-claude",
+  "title": "Never Ask If It's Fine: Free Contract Triage in Claude",
+  "hook": "Claude's free tier can transcribe and stress-test the eight clauses that actually cost money in any vendor contract — no card required — as long as you never ask it for a verdict; the trade is unpublished message caps, free-tier data usage, and triage that decides when to hire a lawyer, not whether.",
+  "path": "articles/never-ask-if-its-fine-free-contract-triage-with-claude.html",
+  "date": "2025-06-19",
+  "status": "published",
+  "format": "guide",
+  "category": "business",
+  "tool": "Claude.ai Free (Anthropic)",
+  "tool_family": "Anthropic (Claude)",
+  "source_url": "https://docs.anthropic.com/en/docs/about-claude/models",
+  "tags": ["claude", "anthropic", "contracts", "small-business", "risk"],
+  "reading_time_minutes": 4,
+  "pinned": false,
+  "verified": "2025-06-19"
+},{
   "id": "0048",
   "slug": "saas-waste-detector-takeout-cloudflare-free",
   "title": "$0 SaaS Waste Detector — Takeout + Cloudflare Workers AI Free (No Card, No Hallucinated Dates)",
