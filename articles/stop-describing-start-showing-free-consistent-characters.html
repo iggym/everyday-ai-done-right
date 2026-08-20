@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stop Describing, Start Showing — Consistent AI Characters for $0 · Everyday AI Done Right</title>
+<meta name="description" content="Keep one character looking like themselves across every scene — free in Google AI Studio. One anchor sheet, one pinned reference image, no card, no API key.">
+<script>
+/* Set theme before first paint: stored preference, else OS preference */
+(function(){try{var t=localStorage.getItem('eadr-theme');if(t){document.documentElement.setAttribute('data-theme',t);}else if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F1E7; --panel:#FCFAF3; --ink:#241E15; --ink-soft:#5E5442;
+  --line:#E2D8C3; --coral:#D3491F; --coral-deep:#B23A16; --coral-soft:#F9E7DD;
+  --code-bg:#26201A; --code-fg:#EDE3CF;
+}
+[data-theme="dark"]{
+  --paper:#181410; --panel:#211C16; --ink:#EDE5D3; --ink-soft:#A79C86;
+  --line:#383024; --coral:#FF6B47; --coral-deep:#E4552F; --coral-soft:#2E1B14;
+  --code-bg:#14100C; --code-fg:#E4D9C2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:16.5px;line-height:1.68;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+.container{max-width:1140px;margin:0 auto;padding:0 24px}
+.mono{font-family:'JetBrains Mono',monospace}
+a{color:var(--coral);text-decoration:none}
+a:hover{text-decoration:underline}
+svg{flex-shrink:0}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.wordmark{font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.top-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.08em;white-space:nowrap}
+.top-actions{display:flex;gap:10px;align-items:center}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;border-radius:4px;transition:background .18s,border-color .18s,color .18s}
+.btn:hover{background:var(--coral);border-color:var(--coral);color:#FFF7ED}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink-soft)}
+.btn.ghost:hover{background:transparent;color:var(--coral);border-color:var(--coral)}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;cursor:pointer;transition:border-color .18s,color .18s}
+.icon-btn:hover{border-color:var(--coral);color:var(--coral)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+
+/* ---------- hero ---------- */
+.hero{padding:72px 0 56px}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin-bottom:20px}
+h1{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(2.5rem,5.6vw,4.4rem);line-height:1.04;letter-spacing:-.035em;max-width:15ch}
+h1 .strike{text-decoration:line-through;text-decoration-color:var(--coral);text-decoration-thickness:.075em}
+h1 .coral{color:var(--coral)}
+.hook{max-width:70ch;margin-top:26px;font-size:17.5px;color:var(--ink-soft)}
+.hook strong{color:var(--ink)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.badge{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:8px 12px;border:1px solid var(--line);border-radius:3px;background:var(--panel);color:var(--ink)}
+.badge svg{color:var(--coral)}
+.asof{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--coral);border:1px dashed var(--coral);border-radius:3px;padding:0 6px;margin-left:6px;white-space:nowrap;vertical-align:middle;line-height:1.7}
+.legend{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+.legend svg{color:var(--coral)}
+
+/* ---------- builder band ---------- */
+.band-builder{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background-color:var(--panel);background-image:radial-gradient(var(--line) 1px,transparent 1.5px);background-size:22px 22px;padding:60px 0 68px}
+.sec-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral)}
+.sec-title{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.02em;margin-top:10px}
+.sec-sub{color:var(--ink-soft);max-width:66ch;margin-top:12px}
+.builder-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:34px;margin-top:36px}
+.form-panel{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:24px}
+.field{margin-bottom:16px}
+.field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+.field input[type=text],.field select{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:14.5px;color:var(--ink)}
+.field input:focus,.field select:focus{border-color:var(--coral);outline:none;box-shadow:0 0 0 3px var(--coral-soft)}
+.anchor-row{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.anchor-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--coral);width:14px}
+.form-note{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:14px;line-height:1.6}
+.out-panel{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.05em;padding:11px 14px;background:none;border:none;border-right:1px solid var(--line);cursor:pointer;color:var(--ink-soft)}
+.tab.active{background:var(--ink);color:var(--paper)}
+.tabpane{display:none}
+.tabpane.active{display:block}
+.promptwrap{position:relative}
+pre.prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;background:var(--code-bg);color:var(--code-fg);padding:20px 20px 18px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;min-height:120px}
+.copy-btn{position:absolute;top:10px;right:10px;display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border:1px solid rgba(255,247,237,.35);background:rgba(255,247,237,.08);color:#FFF7ED;border-radius:3px;cursor:pointer;transition:background .18s,border-color .18s}
+.copy-btn:hover{background:var(--coral);border-color:var(--coral)}
+.copy-btn.light{border-color:var(--line);background:var(--panel);color:var(--ink)}
+.copy-btn.light:hover{background:var(--coral);border-color:var(--coral);color:#FFF7ED}
+
+/* ---------- pull quote ---------- */
+.pullquote{background:var(--coral);color:#FFF7ED;padding:78px 24px;text-align:center;position:relative}
+.pq-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:.85}
+.pq-text{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.14;letter-spacing:-.02em;max-width:22ch;margin:22px auto 26px}
+.pq-btn{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border:1px solid rgba(255,247,237,.6);background:transparent;color:#FFF7ED;border-radius:4px;cursor:pointer;transition:background .18s}
+.pq-btn:hover{background:rgba(255,247,237,.14)}
+.mark{position:absolute;width:16px;height:16px;opacity:.7}
+.mark::before,.mark::after{content:"";position:absolute;background:#FFF7ED}
+.mark::before{left:0;top:7px;width:16px;height:2px}
+.mark::after{left:7px;top:0;width:2px;height:16px}
+.m-tl{top:20px;left:20px}.m-tr{top:20px;right:20px}.m-bl{bottom:20px;left:20px}.m-br{bottom:20px;right:20px}
+
+/* ---------- sections ---------- */
+section.block{padding:72px 0}
+.split{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:44px;margin-top:36px;align-items:start}
+.prose p{color:var(--ink-soft);margin-bottom:18px;max-width:62ch}
+.prose p strong{color:var(--ink)}
+
+/* cost card */
+.cost-card{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:24px}
+.cost-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.cost-row input[type=checkbox]{accent-color:var(--coral);width:16px;height:16px;flex-shrink:0;cursor:pointer}
+.cost-name{flex:1;min-width:0}
+.cost-name b{font-family:'Manrope',sans-serif;font-weight:700;font-size:15px;display:block}
+.cost-name span{font-size:12.5px;color:var(--ink-soft)}
+.price{font-family:'JetBrains Mono',monospace;font-size:14px;white-space:nowrap;position:relative;display:inline-block}
+.price.struck::after{content:"";position:absolute;left:-2px;top:54%;height:2px;width:0;background:var(--coral);transition:width .55s cubic-bezier(.6,0,.2,1)}
+.price.struck.go::after{width:calc(100% + 4px)}
+.cost-total{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 4px}
+.cost-total .label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.cost-total .amount{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600}
+.keep-line{font-size:14px;color:var(--coral);font-weight:500;margin-top:14px;display:none}
+.keep-line.show{display:block;animation:fade .4s ease}
+
+/* stepper */
+.stepper{border:1px solid var(--line);border-radius:8px;background:var(--panel);margin-top:36px;overflow:hidden}
+.step-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);gap:12px;flex-wrap:wrap}
+.step-count{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.1em;color:var(--ink-soft)}
+.dots{display:flex;gap:8px}
+.dots span{width:9px;height:9px;border-radius:50%;border:1px solid var(--ink-soft);cursor:pointer;transition:background .2s,border-color .2s}
+.dots span.on{background:var(--coral);border-color:var(--coral)}
+.step-nav{display:flex;gap:8px}
+.step{display:none;padding:28px 28px 32px}
+.step.active{display:block;animation:fade .35s ease}
+.step h3{font-family:'Manrope',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.01em;margin-bottom:14px}
+.step p{color:var(--ink-soft);max-width:64ch;margin-bottom:14px}
+.step p strong{color:var(--ink)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* quota */
+.quota-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;margin-top:36px;align-items:start}
+.q-inputs{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}
+.q-inputs input[type=number]{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--ink)}
+.q-inputs input[type=range]{width:100%;accent-color:var(--coral);margin-top:8px}
+.q-rate-val{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--coral);font-weight:600}
+.q-results .stat{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px dashed var(--line)}
+.q-results .stat .label{font-size:13.5px;color:var(--ink-soft)}
+.q-results .stat .val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:600}
+.qbar{height:10px;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:18px 0 6px;background:var(--panel)}
+.qbar-fill{height:100%;background:var(--coral);width:0;transition:width .4s ease}
+.verdict{margin-top:16px;color:var(--ink-soft);font-size:15px;max-width:58ch}
+.verdict strong{color:var(--coral)}
+
+/* what breaks */
+.breaks{background:var(--coral-soft);border-left:4px solid var(--coral);border-radius:0 8px 8px 0;padding:34px 36px;margin-top:36px}
+.breaks h2{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(1.5rem,2.6vw,2.1rem);letter-spacing:-.02em;display:flex;align-items:center;gap:12px}
+.breaks h2 svg{color:var(--coral)}
+.breaks .correction{margin:20px 0 8px;font-size:17px;line-height:1.6;max-width:64ch}
+.breaks .correction strong{color:var(--coral-deep)}
+[data-theme="dark"] .breaks .correction strong{color:var(--coral)}
+.breaks ul{list-style:none;margin-top:16px}
+.breaks li{padding:13px 0 13px 26px;border-top:1px dashed rgba(211,73,31,.25);position:relative;color:var(--ink-soft);max-width:66ch}
+.breaks li::before{content:"";position:absolute;left:2px;top:21px;width:9px;height:2px;background:var(--coral)}
+.breaks li strong{color:var(--ink)}
+
+/* three things reveal */
+.rv-list{margin-top:36px;border-top:1px dashed var(--line)}
+.rv-item{border-bottom:1px dashed var(--line)}
+.rv-head{display:flex;gap:18px;align-items:baseline;width:100%;background:none;border:none;padding:24px 0;cursor:pointer;text-align:left;color:var(--ink)}
+.rv-num{font-family:'JetBrains Mono',monospace;color:var(--coral);font-size:13px;font-weight:600}
+.rv-title{font-family:'Manrope',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.01em;flex:1}
+.rv-x{font-family:'JetBrains Mono',monospace;color:var(--ink-soft);font-size:16px}
+.rv-body{max-height:0;overflow:hidden;transition:max-height .45s ease;color:var(--ink-soft);padding:0 0 0 45px}
+.rv-body p{max-width:60ch;padding-bottom:6px}
+.rv-item.open .rv-body{max-height:420px;padding-bottom:26px}
+
+/* try it now */
+.try-steps{counter-reset:try;margin-top:30px;max-width:66ch}
+.try-steps li{list-style:none;counter-increment:try;display:flex;gap:16px;padding:13px 0;border-bottom:1px dashed var(--line);color:var(--ink-soft);align-items:baseline}
+.try-steps li::before{content:counter(try,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--coral);font-weight:600}
+.try-actions{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}
+
+/* share */
+.share-card{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:32px;margin-top:36px}
+.share-quote{font-family:'Manrope',sans-serif;font-weight:700;font-size:19px;line-height:1.4;border-left:3px solid var(--coral);padding-left:18px;max-width:56ch;margin-bottom:24px}
+.share-btns{display:flex;flex-wrap:wrap;gap:10px}
+
+/* footer */
+footer{padding:44px 0 64px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);line-height:2}
+footer a{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--line)}
+footer a:hover{color:var(--coral)}
+
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:12px;padding:11px 18px;border-radius:4px;transition:opacity .3s,transform .3s;z-index:99;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:960px){
+  .builder-grid,.split,.quota-grid{grid-template-columns:1fr}
+  .top-meta{display:none}
+  .hero{padding:52px 0 44px}
+  section.block{padding:56px 0}
+  .breaks{padding:26px 22px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="wordmark">Everyday AI Done Right</span>
+      <span class="top-meta">#0001 · CREATIVE</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle light or dark theme">
+        <svg id="iconSun" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M13 3l-1.4 1.4M4.4 11.6L3 13"/></svg>
+        <svg id="iconMoon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" style="display:none"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5 6 6 0 1 0 13.5 9.5z"/></svg>
+      </button>
+      <button class="btn" id="shareTop">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12.5" cy="3" r="2"/><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="13" r="2"/><path d="M5.3 7L10.7 4M5.3 9l5.4 3"/></svg>
+        Share
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <p class="kicker">Creative · Guide №0001 · 4 min read</p>
+    <h1>Stop <span class="strike">describing</span> your characters. Start <span class="coral">showing</span> them.</h1>
+    <p class="hook">Keep one character looking like themselves across every scene of a picture book, webcomic, or campaign — <strong>free, inside Google AI Studio</strong>, with nothing but a Google account: one anchor sheet, one pinned reference image, zero re-roll lottery. The catches, stated up front: the image model is an <strong>experimental preview whose name keeps changing</strong>, free-tier uploads can be used to improve Google's models, and if you script with an API key you get 15 requests/minute and 1,500/day<span class="asof">as of 2025-06-12</span>.</p>
+    <div class="badges">
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 5"/></svg>T0 — no card, no API key</span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3.5 3.5L13 5"/></svg>Verified 2025-06-12</span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.5V8l2.5 1.5"/></svg>15 req/min · 1,500/day on the API tier<span class="asof">as of 2025-06-12</span></span>
+      <span class="badge"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 13.5c.8-2.6 2.7-4 5-4s4.2 1.4 5 4"/></svg>Any Google account</span>
+    </div>
+    <p class="legend"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.5V8l2.5 1.5"/></svg>Numbers wearing an "as of" chip drift. The method doesn't.</p>
+  </div>
+</section>
+
+<!-- ============ CENTERPIECE: THE ANCHOR BUILDER ============ -->
+<section class="band-builder" id="builder">
+  <div class="container">
+    <p class="sec-kicker">The centerpiece — Anchor Builder</p>
+    <h2 class="sec-title">Build the sheet. Copy the prompts. Pin the reference.</h2>
+    <p class="sec-sub">This is the whole workflow as a tool. Fill in your character once, then copy each output into Google AI Studio at the moment the walkthrough tells you to. Nothing is sent anywhere — the builder runs entirely inside this page.</p>
+    <div class="builder-grid">
+      <div class="form-panel">
+        <div class="field"><label for="bName">Character name</label><input type="text" id="bName" placeholder="Juno"></div>
+        <div class="field"><label>Three immutable anchors — one facial mark, one worn item, one proportion</label>
+          <div class="anchor-row"><span class="anchor-num">1</span><input type="text" id="bA1" placeholder="freckles on her left cheek only" aria-label="Anchor one"></div>
+          <div class="anchor-row"><span class="anchor-num">2</span><input type="text" id="bA2" placeholder="red knit beanie — always" aria-label="Anchor two"></div>
+          <div class="anchor-row"><span class="anchor-num">3</span><input type="text" id="bA3" placeholder="rain boots two sizes too big" aria-label="Anchor three"></div>
+        </div>
+        <div class="field"><label for="bSig">Signature item</label><input type="text" id="bSig" placeholder="oversized mustard-yellow raincoat"></div>
+        <div class="field"><label for="bPal">Palette (3 colors)</label><input type="text" id="bPal" placeholder="mustard, charcoal, cream"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="field"><label for="bStyle">Art style</label>
+            <select id="bStyle">
+              <option>Picture-book gouache</option><option>Flat vector</option><option>Watercolor and ink</option><option>Anime cel shading</option><option>Ink and wash</option><option>3D clay render</option>
+            </select>
+          </div>
+          <div class="field"><label for="bFrame">Default framing</label>
+            <select id="bFrame"><option>full-body</option><option>waist-up</option><option>close-up</option></select>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:8px"><label for="bScene">First scene</label><input type="text" id="bScene" placeholder="waiting at a rainy bus stop, seen from across the street"></div>
+        <button class="btn ghost" id="loadExample" style="width:100%;justify-content:center">Load example — Juno, age 7, storm-spotter</button>
+        <p class="form-note">Why only three anchors? A twelve-trait sheet is a sheet the model half-remembers — every extra immutable is one more thing to drift.</p>
+      </div>
+      <div class="out-panel">
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="paneSys" role="tab">1 · SYSTEM INSTRUCTION</button>
+          <button class="tab" data-tab="paneMaster" role="tab">2 · MASTER REFERENCE</button>
+          <button class="tab" data-tab="paneScene" role="tab">3 · SCENE PROMPT</button>
+          <button class="tab" data-tab="paneDrill" role="tab">4 · DRILL + FIX</button>
+        </div>
+        <div class="tabpane active" id="paneSys"><div class="promptwrap"><button class="copy-btn" data-copy="outSystem" data-msg="System instruction copied — paste into AI Studio's right-hand panel"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="outSystem"></pre></div></div>
+        <div class="tabpane" id="paneMaster"><div class="promptwrap"><button class="copy-btn" data-copy="outMaster" data-msg="Master-reference prompt copied"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="outMaster"></pre></div></div>
+        <div class="tabpane" id="paneScene"><div class="promptwrap"><button class="copy-btn" data-copy="outScene" data-msg="Scene prompt copied — attach your master reference first"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="outScene"></pre></div></div>
+        <div class="tabpane" id="paneDrill"><div class="promptwrap"><button class="copy-btn" data-copy="outDrill" data-msg="Consistency drill copied"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="outDrill"></pre></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PULL QUOTE (SOCIAL CURRENCY) ============ -->
+<section class="pullquote">
+  <span class="mark m-tl"></span><span class="mark m-tr"></span><span class="mark m-bl"></span><span class="mark m-br"></span>
+  <p class="pq-kicker">The whole method, one line</p>
+  <p class="pq-text">More words make a character less consistent. A reference makes it more.</p>
+  <button class="pq-btn" id="copyPullTop"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy this line</button>
+</section>
+
+<!-- ============ 01 · WHY REFERENCES WIN + COST ============ -->
+<section class="block">
+  <div class="container">
+    <p class="sec-kicker">01 — Why references win</p>
+    <h2 class="sec-title">A text prompt is a suggestion. An image is evidence.</h2>
+    <div class="split">
+      <div class="prose">
+        <p>Image models re-interpret words on every generation, and each adjective you add is another independent chance to drift — which is why the standard advice, <strong>"describe your character in more detail,"</strong> produces characters that fall apart by scene four. A pinned reference short-circuits the interpretation: the model copies what it sees with far higher fidelity than what it reads.</p>
+        <p>That's why the anchor sheet caps immutable traits at <strong>three</strong>. One mark, one worn item, one proportion — the three survive close-ups, action, and dusk. Everything else is allowed to serve the scene, which is what makes a character feel alive instead of traced.</p>
+        <p>And it's why the workflow says <strong>correct, never re-roll</strong>. A one-line correction ("the beanie stays red — redo this scene only") costs one request and the model keeps the fix for the rest of the session. A re-roll costs the same request and keeps nothing. At 15 requests/minute on the API tier<span class="asof">as of 2025-06-12</span>, that difference is your whole day's budget.</p>
+      </div>
+      <div class="cost-card">
+        <p class="sec-kicker" style="margin-bottom:6px">What it replaces</p>
+        <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:6px">Tick what you'd otherwise rent for consistency — then run the swap.</p>
+        <div class="cost-row"><input type="checkbox" checked data-mo="10" id="cMJ" aria-label="Midjourney Basic"><div class="cost-name"><b>Midjourney Basic</b><span>character reference (--cref)</span></div><span class="price" data-price>$10/mo → $120/yr<span class="asof">as of 2025-06-12</span></span></div>
+        <div class="cost-row"><input type="checkbox" data-mo="20" id="cGPT" aria-label="ChatGPT Plus"><div class="cost-name"><b>ChatGPT Plus</b><span>reference-context image editing</span></div><span class="price" data-price>$20/mo → $240/yr<span class="asof">as of 2025-06-12</span></span></div>
+        <div class="cost-row"><input type="checkbox" data-mo="15" id="cCanva" aria-label="Canva Pro"><div class="cost-name"><b>Canva Pro</b><span>brand kit + Magic Edit</span></div><span class="price" data-price>$15/mo → $180/yr<span class="asof">as of 2025-06-12</span></span></div>
+        <div class="cost-total"><span class="label">Annual total</span><span class="amount" id="costTotal">$120</span></div>
+        <button class="btn" id="runSwap" style="margin-top:12px;width:100%;justify-content:center">Run the swap → $0</button>
+        <p class="keep-line" id="keepLine"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 · WALKTHROUGH STEPPER ============ -->
+<section class="block" id="walkthrough" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">02 — The walkthrough</p>
+    <h2 class="sec-title">Five steps, one character</h2>
+    <div class="stepper">
+      <div class="step-head">
+        <span class="step-count" id="stepCount">STEP 1 / 5</span>
+        <div class="dots" id="stepDots"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+        <div class="step-nav">
+          <button class="icon-btn" id="stepPrev" aria-label="Previous step"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg></button>
+          <button class="icon-btn" id="stepNext" aria-label="Next step"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3l5 5-5 5"/></svg></button>
+        </div>
+      </div>
+      <div class="step active">
+        <h3>Open the studio, not a chat window</h3>
+        <p>Go to <strong>aistudio.google.com</strong> and sign in with any Google account — no card, no key, T0. In the model picker, choose the image-capable model; in June 2025 that's the Gemini 2.0 Flash image preview, and the label has changed at least three times this year<span class="asof">as of 2025-06-12</span>, so take whichever model generates images — the method survives the renames.</p>
+        <p>Before typing anything, open the right-hand settings panel and find <strong>System instructions</strong>. Skipping that panel is why most people end up re-pasting their character description into every message, where it competes with the scene text and quietly loses.</p>
+      </div>
+      <div class="step">
+        <h3>Write an anchor sheet, not a description</h3>
+        <p>Paste this into System instructions (or use the Anchor Builder above for a filled-in version). Three immutable anchors, maximum — every extra one is another drift surface and another instruction diluting the anchors that matter.</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="tplSheet" data-msg="Anchor sheet copied"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="tplSheet">You are illustrating a picture book. Follow this CHARACTER ANCHOR SHEET in every image you generate.
+
+CHARACTER: [name]
+IMMUTABLE ANCHORS — identical in every image, no exceptions:
+1. [anchor 1 — a facial mark or feature]
+2. [anchor 2 — a worn item that never comes off]
+3. [anchor 3 — a body proportion or silhouette note]
+SIGNATURE: [one oversized/distinct item]
+PALETTE: [3 colors]
+STYLE: [art style]; default framing [full-body / waist-up / close-up]
+
+RULES: The three anchors never change — not for close-ups, not for action, not for "artistic interpretation." Everything else (pose, expression, setting, weather) serves the scene.</pre></div>
+      </div>
+      <div class="step">
+        <h3>Make the master reference</h3>
+        <p>Send the prompt below and re-roll until you love one — <strong>this is the last lottery ticket you buy</strong>. Download the keeper at full resolution. That file is now the character; the sheet just describes it. Check the thumbnail: if the anchors don't read at 10% zoom, tighten them and regenerate before building anything else.</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="tplMaster" data-msg="Master-reference prompt copied"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="tplMaster">Using the anchor sheet above, generate ONE [framing] reference of [name] on a plain neutral background. No text. No props beyond the signature item. Make each anchor unmistakable even at thumbnail size.</pre></div>
+      </div>
+      <div class="step">
+        <h3>Pin, don't describe</h3>
+        <p>Drag the master reference into the chat, then send the scene prompt. The reference rides along in the conversation, so later scenes don't strictly need re-pinning — until drift appears (see What Breaks). Keep scenes short and physical; long scene prose gives the model room to reinterpret the anchors.</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="tplScene" data-msg="Scene prompt copied — attach your master reference first"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="tplScene">[Attach the master reference image to this message, then send:]
+
+Same character, same style. Scene: [scene].
+Keep the three anchors and the palette exactly. Change only pose, expression, and setting.</pre></div>
+      </div>
+      <div class="step">
+        <h3>Drill, then correct — never re-roll</h3>
+        <p>Run the five-scene consistency drill. If an anchor breaks, correct in one line. A correction costs one request and compounds — the model remembers the fix. A re-roll costs the same request and resets your luck — the model remembers nothing.</p>
+        <div class="promptwrap"><button class="copy-btn" data-copy="tplDrill" data-msg="Drill and fix templates copied"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button><pre class="prompt" id="tplDrill">Consistency drill — generate these five scenes in order:
+1. front-facing close-up
+2. side profile, framing matched to #1
+3. full-body in action (running, jumping, reaching)
+4. the scene from #3, but at dusk
+5. peak emotion (laughter, tears)
+
+If an anchor breaks, correct in one line — never re-roll:
+"Anchor fix: [which anchor drifted]. Redo this scene only, everything else unchanged."</pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 · QUOTA MATH ============ -->
+<section class="block" id="quota" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">03 — Quota math</p>
+    <h2 class="sec-title">Will you hit the ceiling?</h2>
+    <div class="quota-grid">
+      <div class="q-inputs">
+        <div class="field"><label for="qImg">Images your project needs</label><input type="number" id="qImg" min="1" max="5000" value="24"></div>
+        <div class="field" style="margin-bottom:0"><label for="qRate">Keeper rate — the share of generations you actually keep: <span class="q-rate-val" id="qRateVal">40%</span></label><input type="range" id="qRate" min="10" max="90" step="5" value="40"></div>
+      </div>
+      <div class="q-results">
+        <div class="stat"><span class="label">Requests required (incl. 1 master reference)</span><span class="val" id="qReq">61</span></div>
+        <div class="stat"><span class="label">Share of the 1,500/day API budget<span class="asof">as of 2025-06-12</span></span><span class="val" id="qPct">4.1%</span></div>
+        <div class="stat"><span class="label">Pure generation time at 15 req/min<span class="asof">as of 2025-06-12</span></span><span class="val" id="qMin">5 min</span></div>
+        <div class="qbar"><div class="qbar-fill" id="qFill"></div></div>
+        <p class="verdict" id="qVerdict"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · WHAT BREAKS ============ -->
+<section class="block" id="breaks" style="padding-top:0">
+  <div class="container">
+    <div class="breaks">
+      <h2><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3L2.5 20h19L12 3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".4" fill="currentColor"/></svg>What breaks</h2>
+      <p class="correction"><strong>Most guides tell you to fight inconsistency with prompt detail — more adjectives, full wardrobe inventories, "hyper-detailed, 8k." That's backwards.</strong> Text prompts are a weak conditioning signal: the model re-interprets your words on every generation, and each descriptor you add is another independent chance to drift. Re-rolling a 40-word description is how an afternoon becomes three usable images. References are the strong signal. Put the detail in the anchor sheet; put the truth in the reference image.</p>
+      <ul>
+        <li><strong>The model name is perishable.</strong> It's an experimental preview; the label changed repeatedly in 2025 and quotas moved with it<span class="asof">as of 2025-06-12</span>. Bookmark the method, not the model name — and if a future model gates image output behind a paid tier, the web-app path is the one to re-check first.</li>
+        <li><strong>Free-tier privacy.</strong> Uploads on the free tier can be used to improve Google's models — nothing you send is private in the NDA sense. Client portraits, other people's children, unreleased product shots: keep them out. You can't un-train a model.</li>
+        <li><strong>SynthID.</strong> Every output carries Google's invisible watermark. Harmless for books and web; some stock and marketplace pipelines reject watermarked files — that's your mystery rejection letter.</li>
+        <li><strong>Drift after long sessions.</strong> Past roughly fifteen generations in one chat, earlier references compress and anchors soften. Symptom: the beanie changes color. Fix: re-attach the master reference and restate the sheet in one line — or start a fresh chat per chapter.</li>
+        <li><strong>Quota, if you script it.</strong> The web app is fair-use unmetered; the API-key path is 15 req/min and 1,500/day<span class="asof">as of 2025-06-12</span>. Careless re-rolls at 15/min burn a morning's budget in minutes.</li>
+        <li><strong>Lettering.</strong> Don't ask this model class to render text — signs, covers, speech balloons. Generate the art; add type in any editor.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 · THREE THINGS ============ -->
+<section class="block" id="three" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">05 — Three things worth keeping</p>
+    <h2 class="sec-title">If you forget everything else</h2>
+    <div class="rv-list">
+      <div class="rv-item open">
+        <button class="rv-head" aria-expanded="true"><span class="rv-num">01</span><span class="rv-title">References beat descriptions</span><span class="rv-x">−</span></button>
+        <div class="rv-body"><p>The model copies what it sees more faithfully than what it reads. Test it yourself: run one scene from a 40-word description, then the same scene from a pinned reference, and count surviving anchors. The description version loses at least one per scene — across a 20-scene book, that's a different character by page six.</p></div>
+      </div>
+      <div class="rv-item">
+        <button class="rv-head" aria-expanded="false"><span class="rv-num">02</span><span class="rv-title">Three anchors, not twelve</span><span class="rv-x">+</span></button>
+        <div class="rv-body"><p>Every extra immutable trait dilutes the ones that matter and adds a drift surface. Pick one mark, one worn item, one proportion. If a trait can't survive a close-up on its own, it isn't an anchor — it's set dressing.</p></div>
+      </div>
+      <div class="rv-item">
+        <button class="rv-head" aria-expanded="false"><span class="rv-num">03</span><span class="rv-title">Correct, never re-roll</span><span class="rv-x">+</span></button>
+        <div class="rv-body"><p>A correction ("the beanie stays red — redo this scene only") costs one request and the model keeps the fix for the rest of the session. A re-roll costs the same one request and keeps nothing. Same price, opposite compounding.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 · TRY IT NOW ============ -->
+<section class="block" id="try" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">06 — Try it now</p>
+    <h2 class="sec-title">Five minutes, two matching scenes</h2>
+    <ol class="try-steps">
+      <li>Open aistudio.google.com — sign in, no card, no key.</li>
+      <li>Click "Load example" below — Juno moves into the Anchor Builder.</li>
+      <li>Copy the system instruction into AI Studio's right-hand panel.</li>
+      <li>Send the master-reference prompt; keep the best output.</li>
+      <li>Drag that image back in with the scene prompt — two matching scenes of the same kid before your coffee cools.</li>
+    </ol>
+    <div class="try-actions">
+      <button class="btn" id="tryLoad">Load Juno into the builder</button>
+      <a class="btn ghost" href="https://aistudio.google.com" target="_blank" rel="noopener">Open Google AI Studio<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 11L11 5M6.5 5H11v4.5"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHARE ============ -->
+<section class="block" id="share" style="padding-top:0">
+  <div class="container">
+    <p class="sec-kicker">Pass it on</p>
+    <h2 class="sec-title">Two lines that travel well</h2>
+    <div class="share-card">
+      <p class="share-quote" id="shareQuote">More words make an AI character less consistent. A pinned reference image beats a 40-word description nearly every time — free, no card, no API key.</p>
+      <div class="share-btns">
+        <button class="btn" id="btnShare"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12.5" cy="3" r="2"/><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="13" r="2"/><path d="M5.3 7L10.7 4M5.3 9l5.4 3"/></svg>Share</button>
+        <button class="btn ghost" id="btnX"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l10 10M13 3L3 13"/></svg>Post on X</button>
+        <button class="btn ghost" id="btnLI"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5.2 11V7M5.2 5.2v.1M8.3 11V7c0-1.5 3.2-1.6 3.2.2V11"/></svg>LinkedIn</button>
+        <button class="btn ghost" id="btnPull"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2H3.5A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy pull-quote</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <p>Verified 2025-06-12 · Guide №0001 · Creative · Everyday AI Done Right</p>
+    <p>Sources: <a href="https://aistudio.google.com" target="_blank" rel="noopener">Google AI Studio</a> · <a href="https://ai.google.dev/gemini-api/docs/rate-limits" target="_blank" rel="noopener">Gemini API rate limits</a> · <a href="https://ai.google.dev/gemini-api/docs/prohibited-use-policy" target="_blank" rel="noopener">Prohibited Use Policy</a></p>
+    <p>Perishable numbers wear "as of" chips. The method doesn't age with them. Tool terms change — re-verify before budgeting.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+/* ---------- theme toggle ---------- */
+var root = document.documentElement;
+if(!root.getAttribute('data-theme')){ root.setAttribute('data-theme','light'); }
+var themeBtn = $('#themeToggle'), iconSun = $('#iconSun'), iconMoon = $('#iconMoon');
+function paintThemeBtn(){
+  var dark = root.getAttribute('data-theme') === 'dark';
+  iconSun.style.display = dark ? 'none' : 'block';
+  iconMoon.style.display = dark ? 'block' : 'none';
+}
+themeBtn.addEventListener('click', function(){
+  var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  try{ localStorage.setItem('eadr-theme', next); }catch(e){}
+  paintThemeBtn();
+});
+paintThemeBtn();
+
+/* ---------- toast ---------- */
+var toastEl = $('#toast'), toastTimer = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2300);
+}
+
+/* ---------- clipboard ---------- */
+function copyText(text, label){
+  var done = function(){ toast(label || 'Copied'); };
+  var fallback = function(){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); done(); }
+    catch(e){ toast('Copy failed — select the text manually'); }
+    document.body.removeChild(ta);
+  };
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(done).catch(fallback);
+  } else { fallback(); }
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-copy]');
+  if(!b){ return; }
+  var src = document.getElementById(b.getAttribute('data-copy'));
+  if(src){ copyText(src.textContent.trim(), b.getAttribute('data-msg')); }
+});
+
+/* ---------- anchor builder (centerpiece sandbox) ---------- */
+var F = { name: $('#bName'), a1: $('#bA1'), a2: $('#bA2'), a3: $('#bA3'),
+          sig: $('#bSig'), pal: $('#bPal'), style: $('#bStyle'), frame: $('#bFrame'), scene: $('#bScene') };
+var outSystem = $('#outSystem'), outMaster = $('#outMaster'),
+    outScene = $('#outScene'), outDrill = $('#outDrill');
+
+function fv(el, fb){ var v = el.value.trim(); return v ? v : fb; }
+
+function buildOutputs(){
+  var name  = fv(F.name,  '[name]');
+  var a1    = fv(F.a1,    '[anchor 1 — a facial mark]');
+  var a2    = fv(F.a2,    '[anchor 2 — a worn item]');
+  var a3    = fv(F.a3,    '[anchor 3 — a proportion]');
+  var sig   = fv(F.sig,   '[signature item]');
+  var pal   = fv(F.pal,   '[3 colors]');
+  var style = F.style.value, frame = F.frame.value;
+  var scene = fv(F.scene, '[scene]');
+
+  outSystem.textContent =
+'You are illustrating a picture book. Follow this CHARACTER ANCHOR SHEET in every image you generate.\n\n' +
+'CHARACTER: ' + name + '\n' +
+'IMMUTABLE ANCHORS — identical in every image, no exceptions:\n' +
+'1. ' + a1 + '\n2. ' + a2 + '\n3. ' + a3 + '\n' +
+'SIGNATURE: ' + sig + '\n' +
+'PALETTE: ' + pal + '\n' +
+'STYLE: ' + style + '; default framing ' + frame + '\n\n' +
+'RULES: The three anchors never change — not for close-ups, not for action, not for "artistic interpretation." Everything else (pose, expression, setting, weather) serves the scene.';
+
+  outMaster.textContent =
+'Using the anchor sheet above, generate ONE ' + frame + ' reference of ' + name + ' on a plain neutral background. No text. No props beyond the signature item. Make each anchor unmistakable even at thumbnail size.';
+
+  outScene.textContent =
+'[Attach the master reference image to this message, then send:]\n\n' +
+'Same character, same style. Scene: ' + scene + '.\n' +
+'Keep the three anchors and the palette exactly. Change only pose, expression, and setting.';
+
+  outDrill.textContent =
+'Consistency drill — generate these five scenes in order:\n' +
+'1. front-facing close-up\n' +
+'2. side profile, framing matched to #1\n' +
+'3. ' + frame + ' in action (running, jumping, reaching)\n' +
+'4. the scene from #3, but at dusk\n' +
+'5. peak emotion (laughter, tears)\n\n' +
+'If an anchor breaks, correct in one line — never re-roll:\n' +
+'"Anchor fix: [which anchor drifted]. Redo this scene only, everything else unchanged."';
+}
+Object.keys(F).forEach(function(k){
+  F[k].addEventListener('input', buildOutputs);
+  F[k].addEventListener('change', buildOutputs);
+});
+buildOutputs();
+
+var EXAMPLE = { name:'Juno', a1:'freckles clustered on her left cheek only', a2:'red knit beanie — always, even indoors', a3:'rain boots two sizes too big', sig:'oversized mustard-yellow raincoat', pal:'mustard, charcoal, cream', scene:'waiting at a bus stop in the rain, seen from across the street' };
+function loadExample(){
+  F.name.value = EXAMPLE.name; F.a1.value = EXAMPLE.a1; F.a2.value = EXAMPLE.a2;
+  F.a3.value = EXAMPLE.a3; F.sig.value = EXAMPLE.sig; F.pal.value = EXAMPLE.pal;
+  F.style.value = 'Picture-book gouache'; F.frame.value = 'full-body'; F.scene.value = EXAMPLE.scene;
+  buildOutputs();
+}
+ $('#loadExample').addEventListener('click', function(){ loadExample(); toast('Juno loaded — hit the copy buttons'); });
+ $('#tryLoad').addEventListener('click', function(){
+  loadExample();
+  document.getElementById('builder').scrollIntoView({ behavior: 'smooth' });
+  toast('Juno loaded — hit the copy buttons');
+});
+
+/* ---------- builder tabs ---------- */
+ $$('.tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    $$('.tab').forEach(function(x){ x.classList.remove('active'); });
+    $$('.tabpane').forEach(function(x){ x.classList.remove('active'); });
+    t.classList.add('active');
+    document.getElementById(t.getAttribute('data-tab')).classList.add('active');
+  });
+});
+
+/* ---------- cost comparison ---------- */
+var costChecks = $$('.cost-row input[type=checkbox]');
+var costTotal = $('#costTotal'), keepLine = $('#keepLine');
+function annualTotal(){
+  return costChecks.filter(function(c){ return c.checked; })
+    .reduce(function(s, c){ return s + parseInt(c.getAttribute('data-mo'), 10); }, 0) * 12;
+}
+function renderTotal(){ costTotal.textContent = '$' + annualTotal(); }
+costChecks.forEach(function(c){
+  c.addEventListener('change', function(){
+    $$('.price').forEach(function(p){ p.classList.remove('struck','go'); });
+    keepLine.classList.remove('show');
+    renderTotal();
+  });
+});
+renderTotal();
+ $('#runSwap').addEventListener('click', function(){
+  var chosen = costChecks.filter(function(c){ return c.checked; });
+  if(!chosen.length){ toast('Tick at least one subscription first'); return; }
+  var total = annualTotal();
+  chosen.forEach(function(c){
+    c.closest('.cost-row').querySelector('.price').classList.add('struck');
+  });
+  /* let the strike draw first, then animate the number down */
+  setTimeout(function(){
+    $$('.price.struck').forEach(function(p){ p.classList.add('go'); });
+    var t0 = performance.now(), dur = 900;
+    (function tick(now){
+      var p = Math.min(1, (now - t0) / dur);
+      costTotal.textContent = '$' + Math.round(total * (1 - p));
+      if(p < 1){ requestAnimationFrame(tick); }
+      else {
+        costTotal.textContent = '$0';
+        keepLine.textContent = 'You keep $' + total + ' a year. The reference method replaces the consistency half of these — drop the ones you were paying for exactly that.';
+        keepLine.classList.add('show');
+      }
+    })(t0);
+  }, 60);
+});
+
+/* ---------- quota calculator ---------- */
+var qImg = $('#qImg'), qRate = $('#qRate'), qRateVal = $('#qRateVal');
+var qReq = $('#qReq'), qPct = $('#qPct'), qMin = $('#qMin'), qFill = $('#qFill'), qVerdict = $('#qVerdict');
+var DAILY = 1500, RPM = 15; /* free-tier values logged 2025-06-12 — see as-of chips */
+function calcQuota(){
+  var imgs = Math.max(0, Math.floor(+qImg.value || 0));
+  var rate = Math.max(10, +qRate.value);
+  qRateVal.textContent = rate + '%';
+  var req = imgs > 0 ? Math.ceil(imgs / (rate / 100)) + 1 : 0;
+  qReq.textContent = req;
+  var pct = req > 0 ? Math.min(999, Math.round(req / DAILY * 1000) / 10) : 0;
+  qPct.textContent = pct + '%';
+  qFill.style.width = Math.min(100, pct) + '%';
+  qMin.textContent = req > 0 ? Math.ceil(req / RPM) + ' min' : '—';
+  if(req === 0){
+    qVerdict.innerHTML = 'Enter the images your project needs — the math updates as you type.';
+  } else if(req <= DAILY){
+    qVerdict.innerHTML = '<strong>Fits in one day</strong> — ' + pct + '% of the ' + DAILY.toLocaleString() + '-request API budget, roughly ' + Math.ceil(req / RPM) + ' minutes of pure generation at the ' + RPM + ' req/min cap. The AI Studio web app you click around in is unmetered fair-use; this ceiling only exists once you paste an API key into a script.';
+  } else {
+    qVerdict.innerHTML = '<strong>Exceeds one day\u2019s API budget</strong> — ' + Math.ceil(req / DAILY) + ' days at ' + DAILY.toLocaleString() + '/day, or one unhurried afternoon in the unmetered web app.';
+  }
+}
+qImg.addEventListener('input', calcQuota);
+qRate.addEventListener('input', calcQuota);
+calcQuota();
+
+/* ---------- walkthrough stepper ---------- */
+var steps = $$('.step'), dots = $$('#stepDots span');
+var stepIdx = 0, stepCount = $('#stepCount');
+function showStep(i){
+  stepIdx = Math.max(0, Math.min(steps.length - 1, i));
+  steps.forEach(function(s, j){ s.classList.toggle('active', j === stepIdx); });
+  dots.forEach(function(d, j){ d.classList.toggle('on', j === stepIdx); });
+  stepCount.textContent = 'STEP ' + (stepIdx + 1) + ' / ' + steps.length;
+  $('#stepPrev').disabled = stepIdx === 0;
+  $('#stepPrev').style.opacity = stepIdx === 0 ? '.4' : '1';
+  $('#stepNext').disabled = stepIdx === steps.length - 1;
+  $('#stepNext').style.opacity = stepIdx === steps.length - 1 ? '.4' : '1';
+}
+ $('#stepPrev').addEventListener('click', function(){ showStep(stepIdx - 1); });
+ $('#stepNext').addEventListener('click', function(){ showStep(stepIdx + 1); });
+dots.forEach(function(d, j){ d.addEventListener('click', function(){ showStep(j); }); });
+showStep(0);
+
+/* ---------- three things reveal ---------- */
+ $$('.rv-head').forEach(function(h){
+  h.addEventListener('click', function(){
+    var item = h.parentElement, open = item.classList.toggle('open');
+    h.setAttribute('aria-expanded', open ? 'true' : 'false');
+    h.querySelector('.rv-x').textContent = open ? '−' : '+';
+  });
+});
+
+/* ---------- share ---------- */
+var PAGE_URL = 'https://iggym.github.io/everyday-ai-done-right/articles/stop-describing-start-showing-free-consistent-characters.html';
+var TITLE = 'Stop Describing, Start Showing — Consistent AI Characters for $0';
+var GAP_TEXT = 'Every free AI-art guide teaches the one habit that guarantees your character won\u2019t look like themselves by scene four. The fix costs $0 and it isn\u2019t the prompt.';
+var PULL_TEXT = 'More words make an AI character less consistent. A pinned reference image beats a 40-word description nearly every time — free, no card, no API key.';
+
+function nativeShare(){
+  if(navigator.share){
+    navigator.share({ title: TITLE, text: GAP_TEXT, url: PAGE_URL }).catch(function(){});
+  } else {
+    copyText(PAGE_URL, 'Link copied — the share sheet isn\u2019t available here');
+  }
+}
+ $('#btnShare').addEventListener('click', nativeShare);
+ $('#shareTop').addEventListener('click', nativeShare);
+ $('#btnX').addEventListener('click', function(){
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(GAP_TEXT) + '&url=' + encodeURIComponent(PAGE_URL), '_blank', 'noopener');
+});
+ $('#btnLI').addEventListener('click', function(){
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(PAGE_URL), '_blank', 'noopener');
+});
+var copyPull = function(){ copyText(PULL_TEXT + ' ' + PAGE_URL, 'Pull-quote copied — paste it anywhere'); };
+ $('#btnPull').addEventListener('click', copyPull);
+ $('#copyPullTop').addEventListener('click', copyPull);
+})();
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
