@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Everyday AI Done Right — Free AI Medical Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #1a1a1a;
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --primary: #2b8a3e;
+            --primary-dark: #1b6b2a;
+            --coral: #e67700;
+            --coral-light: #fff4e5;
+            --font-display: 'Manrope', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --coral-light: #2a1f12;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 0 0 2rem 0;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        [data-theme="dark"] .top-bar {
+            background-color: rgba(18, 18, 18, 0.9);
+        }
+
+        .logo { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: var(--primary); }
+        .logo span { color: var(--text-color); }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        .hero {
+            padding: 2.5rem 0 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 2.2rem;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #6c757d;
+            max-width: 700px;
+            margin-bottom: 1.25rem;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .badge {
+            background-color: #d3f9d8;
+            color: var(--primary-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border: 1px solid var(--border-color);
+        }
+
+        .badge-coral {
+            background-color: var(--coral-light);
+            color: var(--coral);
+        }
+
+        .decision-tree {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        .decision-tree h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tree-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.25rem;
+        }
+        @media (max-width: 600px) {
+            .tree-grid { grid-template-columns: 1fr; }
+        }
+
+        .tree-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .tree-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .tree-group select {
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+        }
+
+        .tree-result {
+            grid-column: 1 / -1;
+            background: #d3f9d8;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        [data-theme="dark"] .tree-result {
+            background: #1a2a1f;
+        }
+
+        .tree-result h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .cost-compare {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem 1.75rem;
+            margin: 1.5rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cost-compare .strike {
+            text-decoration: line-through;
+            color: #868e96;
+            font-size: 1.1rem;
+        }
+
+        .cost-compare .free {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: var(--font-display);
+        }
+
+        .walkthrough {
+            margin: 2rem 0;
+        }
+
+        .step {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            margin-top: 0.75rem;
+            padding-left: 2.5rem;
+            display: none;
+        }
+
+        .step.open .step-content { display: block; }
+
+        .step-content ul { padding-left: 1.25rem; margin-bottom: 0.5rem; }
+        .step-content ol { padding-left: 1.25rem; margin-bottom: 0.5rem; }
+
+        .breaks-callout {
+            background: var(--coral-light);
+            border-left: 6px solid var(--coral);
+            padding: 1.25rem 1.75rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        [data-theme="dark"] .breaks-callout {
+            background: #2a1f12;
+        }
+
+        .breaks-callout h3 {
+            color: var(--coral);
+            font-family: var(--font-display);
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .pull-quote-block {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 1.75rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.4rem;
+            line-height: 1.3;
+        }
+
+        .share-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 2rem 0;
+            padding: 1.25rem 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .share-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .share-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .footnote {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .perishable {
+            font-size: 0.8rem;
+            color: #6c757d;
+            background: var(--border-color);
+            padding: 0.1rem 0.6rem;
+            border-radius: 100px;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .emergency-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo">Everyday<span>AI</span> Done Right</div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌓</button>
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+            <h1>The AI Health Assistant That Escalates First</h1>
+            <p>Most AI health apps try to diagnose you. The smart one checks for emergencies first and gives you the local emergency number — in 20 languages. No sign-up. No API key. No cost.[citation:4][citation:8]</p>
+            <div class="badges">
+                <span class="badge">✓ Verified Free (T0)</span>
+                <span class="badge">🚨 Red-Flag Triage</span>
+                <span class="badge">🌍 20 Languages</span>
+                <span class="badge-coral">⚠️ Not Medical Advice</span>
+                <span class="badge">📅 Verified: 2026-08-20</span>
+            </div>
+        </section>
+
+        <!-- Decision Tree: Interactive Centerpiece -->
+        <section class="decision-tree" id="decisionTree">
+            <h2>🧭 Which Free AI Health Assistant Fits You?</h2>
+            <p>Not all health AI is the same. Your choice depends on your goal, your device, and how much setup you want.</p>
+            <div class="tree-grid">
+                <div class="tree-group">
+                    <label for="healthGoal">Your Goal</label>
+                    <select id="healthGoal">
+                        <option value="symptom_check" selected>Quick symptom check</option>
+                        <option value="family">Family health tracking</option>
+                        <option value="privacy">Complete privacy / self-host</option>
+                        <option value="wearable">Wearable data analysis</option>
+                    </select>
+                </div>
+                <div class="tree-group">
+                    <label for="techLevel">Your Technical Comfort</label>
+                    <select id="techLevel">
+                        <option value="none" selected>None — just want it to work</option>
+                        <option value="some">Some — okay with Docker</option>
+                        <option value="advanced">Advanced — CLI / self-host</option>
+                    </select>
+                </div>
+                <div class="tree-result" id="treeResult">
+                    <h3>Recommended: <span id="recApp">MediBot</span></h3>
+                    <p id="recReason">For quick symptom checks with zero setup, MediBot is the best choice. No sign-up, no API key, 20 languages, and built-in emergency escalation.[citation:4][citation:8]</p>
+                    <p><span class="perishable">as of 2026-08-20</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cost Comparison -->
+        <div class="cost-compare">
+            <div>
+                <span class="strike">$30+/month (symptom checkers)</span>
+                <span style="margin: 0 0.75rem; color: #868e96;">→</span>
+                <span class="free">$0</span>
+                <span style="font-weight: 600; margin-left: 0.5rem;">+ No Sign-Up Required</span>
+            </div>
+            <span class="perishable">as of 2026-08-20</span>
+        </div>
+
+        <!-- Pull Quote: Social Currency -->
+        <div class="pull-quote-block">
+            "The AI health assistant that escalates emergencies first — not the one that plays doctor."[citation:4][citation:8]<br>
+            <span style="font-size: 0.9rem; font-weight: 400; color: #6c757d;">— Contrarian Take, Everyday AI Done Right</span>
+        </div>
+
+        <!-- Walkthrough -->
+        <section class="walkthrough">
+            <h2 class="section-title">Step-by-Step Walkthrough</h2>
+
+            <div class="step open" id="step1">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    Stop trusting apps that promise diagnosis.
+                </div>
+                <div class="step-content">
+                    <p><strong>Contrarian Correction:</strong> Most guides tell you to find an AI that "diagnoses" symptoms. That's backwards. The first job of a health assistant is to <strong>detect emergencies</strong> and escalate to real care — not to play doctor.</p>
+                    <p>MediBot's red-flag triage detects cardiac, neurological, respiratory, obstetric, pediatric, and mental-health emergencies in every supported language — and immediately gives you the local emergency number for 190+ countries.[citation:4][citation:8]</p>
+                    <p><strong>So What?</strong> An app that doesn't escalate emergencies could delay real care. MediBot's first check is "is this an emergency?"</p>
+                </div>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    Open MediBot in your browser.
+                </div>
+                <div class="step-content">
+                    <p>No installation required. It's a Progressive Web App (PWA) — you can add it to your phone's home screen and use it like a native app.[citation:4][citation:8]</p>
+                    <ul>
+                        <li>Go to the Hugging Face Space or GitHub Pages deployment.</li>
+                        <li><strong>No sign-up.</strong> No API key. No paywall. No ads.[citation:4][citation:8]</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    Type or speak in your language.
+                </div>
+                <div class="step-content">
+                    <p>MediBot auto-detects from <strong>20 languages</strong> including English, Spanish, French, Arabic, Hindi, Chinese, Japanese, and Russian.[citation:4][citation:8]</p>
+                    <p>It adapts to your region — °C/°F, metric/imperial, local guidance.</p>
+                </div>
+            </div>
+
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <span class="step-number">4</span>
+                    Understand the structured response.
+                </div>
+                <div class="step-content">
+                    <p>Every answer follows a structured format:[citation:4][citation:8]</p>
+                    <ul>
+                        <li><strong>Summary</strong> — what the issue likely is</li>
+                        <li><strong>Possible causes</strong> — based on WHO/CDC/NHS/NIH/ICD-11/BNF/EMA guidelines</li>
+                        <li><strong>Self-care</strong> — what you can try at home</li>
+                        <li><strong>When to see a doctor</strong> — clear escalation thresholds</li>
+                    </ul>
+                    <p><strong>So What?</strong> This isn't a generic LLM response — it's grounded in authoritative medical sources.[citation:4][citation:8]</p>
+                </div>
+            </div>
+
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <span class="step-number">5</span>
+                    Share and stay private.
+                </div>
+                <div class="step-content">
+                    <p>Every AI response has a Share button that generates a clean deep link with a branded preview — perfect for WhatsApp, Twitter, or Telegram.[citation:4]</p>
+                    <p><strong>Privacy matters:</strong> Zero accounts. Zero server-side conversation storage. No IPs logged. Anonymous session counter only.[citation:4][citation:8]</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- What Breaks -->
+        <div class="breaks-callout">
+            <h3>⚠️ What Breaks (Limitations)</h3>
+            <ul>
+                <li><strong>It's not a doctor.</strong> The system explicitly states: "This system is for assistance only; it is not medical advice and does not replace professional care." <strong>So what?</strong> Trusting any AI for diagnosis could be harmful — MediBot is designed to escalate, not replace.</li>
+                <li><strong>Hosted, not self-hosted.</strong> Privacy is anonymous, but your queries do leave your device.[citation:4] If you need 100% local, consider self-hosted alternatives like HiMe[citation:1] or HealthClaw.[citation:9]</li>
+                <li><strong>Internet required.</strong> Unlike self-hosted options, MediBot requires a connection to the Hugging Face Inference API.[citation:4][citation:8]</li>
+            </ul>
+        </div>
+
+        <!-- Share Bar -->
+        <div class="share-bar">
+            <button class="share-btn" id="shareWebShare">📤 Share</button>
+            <button class="share-btn" id="shareTwitter">🐦 X</button>
+            <button class="share-btn" id="shareLinkedIn">💼 LinkedIn</button>
+            <button class="share-btn" id="copyQuote">📋 Copy Quote</button>
+        </div>
+
+        <p class="footnote">
+            This guide is for informational purposes only. AI health tools are not substitutes for professional medical advice, diagnosis, or treatment. In an emergency, call your local emergency number.
+        </p>
+
+    </main>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('eadr-theme');
+        if (savedTheme) html.setAttribute('data-theme', savedTheme);
+        themeToggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('eadr-theme', next);
+        });
+
+        // Step toggles
+        document.querySelectorAll('.step').forEach(step => {
+            step.addEventListener('click', () => {
+                step.classList.toggle('open');
+            });
+        });
+
+        // Decision Tree
+        const goalMap = {
+            symptom_check: {
+                rec: 'MediBot',
+                desc: 'No sign-up, no API key, 20 languages, red-flag triage, WHO/CDC aligned.[citation:4][citation:8]',
+                link: 'Hugging Face Space'
+            },
+            family: {
+                rec: 'MediBot + MedOS Family',
+                desc: 'MediBot now includes a family health mode for local-first family tracking, invites, and monthly records.[citation:4][citation:8]',
+                link: 'Family mode available'
+            },
+            privacy: {
+                rec: 'HiMe or HealthClaw',
+                desc: 'For complete privacy, self-hosted options keep your data local: HiMe for iOS + wearables,[citation:1] HealthClaw for self-evolving agent.[citation:9]',
+                link: 'Self-host required'
+            },
+            wearable: {
+                rec: 'HiMe',
+                desc: 'Real-time wearable data from Apple Watch + iPhone: heart rate, HRV, SpO2, sleep stages, 50+ metrics. Proactive push and in-app chat.[citation:1]',
+                link: 'Self-host + iOS required'
+            }
+        };
+
+        const techMap = {
+            none: 'No setup required',
+            some: 'Some Docker/CLI setup acceptable',
+            advanced: 'Comfortable with CLI and server config'
+        };
+
+        function updateTree() {
+            const goal = document.getElementById('healthGoal').value;
+            const tech = document.getElementById('techLevel').value;
+            const info = goalMap[goal] || goalMap.symptom_check;
+
+            let rec = info.rec;
+            if (goal === 'privacy' && tech === 'none') {
+                rec = 'MediBot (still private, but hosted)';
+                document.getElementById('recReason').textContent = 'For "none" tech level, self-hosting isn\'t practical. MediBot offers anonymous privacy without setup.[citation:4] ' + info.desc;
+            } else if (goal === 'wearable' && tech === 'none') {
+                rec = 'MediBot (no wearables)';
+                document.getElementById('recReason').textContent = 'HiMe requires iOS + server setup, which may be too technical.[citation:1] MediBot is still the easiest entry point.';
+            } else {
+                document.getElementById('recReason').textContent = info.desc + ' Tech level: ' + techMap[tech] + '.';
+            }
+
+            document.getElementById('recApp').textContent = rec;
+        }
+
+        document.getElementById('healthGoal').addEventListener('change', updateTree);
+        document.getElementById('techLevel').addEventListener('change', updateTree);
+        updateTree();
+
+        // Share buttons
+        const quote = '"The AI health assistant that escalates emergencies first — not the one that plays doctor." — Everyday AI Done Right';
+
+        document.getElementById('shareWebShare').addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Free AI Medical Assistant — Emergency-First',
+                    text: quote,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(quote + ' ' + window.location.href).then(() => alert('Copied to clipboard!'));
+            }
+        });
+
+        document.getElementById('shareTwitter').addEventListener('click', () => {
+            const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(quote + ' ' + window.location.href);
+            window.open(url, '_blank');
+        });
+
+        document.getElementById('shareLinkedIn').addEventListener('click', () => {
+            const url = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(window.location.href);
+            window.open(url, '_blank');
+        });
+
+        document.getElementById('copyQuote').addEventListener('click', () => {
+            navigator.clipboard.writeText(quote).then(() => alert('Quote copied!'));
+        });
+
+        // Cloudflare Web Analytics
+        (function() {
+            const script = document.createElement('script');
+            script.defer = true;
+            script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+            script.setAttribute('data-cf-beacon', '{"token": "90c83e9b603641beac9bf45d47ce886d"}');
+            document.body.appendChild(script);
+        })();
+    </script>
+</body>
+</html>

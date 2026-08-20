@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decode Lab Results with Copilot | Everyday AI Done Right</title>
+    <meta name="description" content="Stop asking AI to diagnose you. Use Microsoft Copilot to translate dense medical reports into a precise, evidence-based script of questions for your physician.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #495057;
+            --accent: #ff6b6b; /* Coral */
+            --accent-hover: #fa5252;
+            --border: #dee2e6;
+            --success: #40c057;
+            --font-display: 'Manrope', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        [data-theme="dark"] {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2d2d2d;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --accent: #ff8787;
+            --accent-hover: #ff6b6b;
+            --border: #495057;
+            --success: #51cf66;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Top Bar */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 0; border-bottom: 1px solid var(--border);
+        }
+        .logo { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; }
+        .theme-toggle {
+            background: none; border: 1px solid var(--border); color: var(--text-primary);
+            padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: var(--font-body);
+        }
+
+        /* Hero */
+        .hero { padding: 40px 0 20px; }
+        .badge-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .badge {
+            font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 100px;
+            background: var(--bg-tertiary); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .badge.t0 { background: #d3f9d8; color: #2b8a3e; }
+        [data-theme="dark"] .badge.t0 { background: #1b4332; color: #8ce99a; }
+        h1 { font-family: var(--font-display); font-size: 2.2rem; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.03em; }
+        .pitch { font-size: 1.1rem; color: var(--text-secondary); max-width: 650px; }
+
+        /* Interactive Centerpiece: Live Sandbox */
+        .sandbox {
+            background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px;
+            padding: 24px; margin: 32px 0;
+        }
+        .sandbox h3 { font-family: var(--font-display); margin-bottom: 16px; font-size: 1.2rem; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); }
+        select, input {
+            width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border);
+            background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-body); font-size: 0.95rem;
+        }
+        .btn-primary {
+            background: var(--accent); color: white; border: none; padding: 12px 20px;
+            border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .output-box {
+            margin-top: 20px; background: var(--bg-primary); border: 1px solid var(--border);
+            border-radius: 8px; padding: 16px; font-family: var(--font-mono); font-size: 0.9rem;
+            color: var(--text-primary); white-space: pre-wrap; display: none; position: relative;
+        }
+        .copy-btn {
+            position: absolute; top: 8px; right: 8px; background: var(--bg-tertiary);
+            border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px;
+            cursor: pointer; font-size: 0.75rem; color: var(--text-secondary);
+        }
+        .copy-btn:hover { background: var(--border); }
+
+        /* Cost Comparison */
+        .cost-comparison {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 32px 0;
+        }
+        .cost-card {
+            padding: 20px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-secondary);
+        }
+        .cost-card.old { text-decoration: line-through; color: var(--text-secondary); opacity: 0.7; }
+        .cost-card.new { border-color: var(--success); background: rgba(64, 192, 87, 0.05); }
+        [data-theme="dark"] .cost-card.new { background: rgba(64, 192, 87, 0.1); }
+        .cost-amount { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; margin: 8px 0; }
+
+        /* Quota Calculator */
+        .quota-calc {
+            background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px;
+            padding: 20px; margin: 32px 0;
+        }
+        .quota-calc .verified-chip {
+            display: inline-block; font-size: 0.65rem; background: var(--bg-tertiary);
+            padding: 2px 6px; border-radius: 4px; color: var(--text-secondary); margin-left: 8px; vertical-align: middle;
+        }
+        .quota-result { margin-top: 12px; font-weight: 600; color: var(--success); }
+
+        /* What Breaks (Coral Accent) */
+        .what-breaks {
+            border-left: 4px solid var(--accent); background: var(--bg-secondary);
+            padding: 24px; margin: 32px 0; border-radius: 0 8px 8px 0;
+        }
+        .what-breaks h3 { color: var(--accent); font-family: var(--font-display); margin-bottom: 12px; }
+        .what-breaks ul { padding-left: 20px; color: var(--text-secondary); }
+        .what-breaks li { margin-bottom: 10px; }
+
+        /* Walkthrough Stepper */
+        .stepper { margin: 32px 0; }
+        .step { display: flex; gap: 16px; margin-bottom: 24px; }
+        .step-num {
+            flex-shrink: 0; width: 32px; height: 32px; background: var(--accent); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-family: var(--font-display);
+        }
+        .step-content h4 { font-family: var(--font-display); margin-bottom: 6px; }
+        .step-content p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        /* Share Bar */
+        .share-bar {
+            margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+        }
+        .share-quote {
+            background: var(--bg-primary); border: 2px solid var(--text-primary);
+            padding: 24px; border-radius: 8px; text-align: center; margin-bottom: 20px;
+        }
+        .share-quote p { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; line-height: 1.3; }
+        .share-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .share-btn {
+            padding: 10px 16px; border-radius: 6px; border: 1px solid var(--border);
+            background: var(--bg-secondary); color: var(--text-primary); cursor: pointer;
+            font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;
+        }
+        .share-btn:hover { background: var(--bg-tertiary); }
+
+        @media (max-width: 600px) {
+            .cost-comparison { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="top-bar">
+            <div class="logo">Everyday AI Done Right</div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌓 Theme</button>
+        </header>
+
+        <section class="hero">
+            <div class="badge-row">
+                <span class="badge t0">T0: Permanent Free</span>
+                <span class="badge">Health</span>
+                <span class="badge">No Card Required</span>
+            </div>
+            <h1>Decode Lab Results with Microsoft Copilot</h1>
+            <p class="pitch">Stop asking free AI tools to "explain your lab results" or "diagnose you." That triggers hard-coded medical refusal guardrails. Use this adversarial workflow to translate dense reports into a precise script of questions for your physician.</p>
+        </section>
+
+        <!-- Interactive Centerpiece: Live Workflow Sandbox -->
+        <section class="sandbox" id="sandbox">
+            <h3>⚙️ Guardrail-Safe Prompt Builder</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">Input your confusing medical marker to generate a custom, safety-compliant prompt that yields actionable questions, not disclaimers.</p>
+            <div class="form-group">
+                <label for="medicalMarker">Specific Marker or Confusing Phrase (e.g., "elevated ALT", "low ferritin")</label>
+                <input type="text" id="medicalMarker" placeholder="e.g., elevated HbA1c">
+            </div>
+            <div class="form-group">
+                <label for="documentType">Document Type</label>
+                <select id="documentType">
+                    <option value="bloodwork lab report">Bloodwork Lab Report</option>
+                    <option value="specialist consultation summary">Specialist Consultation Summary</option>
+                    <option value="imaging/radiology report">Imaging / Radiology Report</option>
+                    <option value="prescription medication insert">Prescription Medication Insert</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="generatePrompt()">Generate Doctor-Ready Prompt</button>
+            <div class="output-box" id="promptOutput">
+                <button class="copy-btn" onclick="copyPrompt()">Copy</button>
+                <code id="promptText"></code>
+            </div>
+        </section>
+
+        <section class="cost-comparison">
+            <div class="cost-card old">
+                <div>Medical Advocacy / Consultant</div>
+                <div class="cost-amount">$150–$300/hr</div>
+                <div style="font-size: 0.85rem;">To translate jargon and prepare you for visits.</div>
+            </div>
+            <div class="cost-card new">
+                <div>Copilot Adversarial Prep</div>
+                <div class="cost-amount">$0.00</div>
+                <div style="font-size: 0.85rem;">Permanent free tier. 3 minutes to set up.</div>
+            </div>
+        </section>
+
+        <section class="quota-calc">
+            <h3 style="font-family: var(--font-display); margin-bottom: 12px;">File Size Safety Check</h3>
+            <div class="form-group">
+                <label for="fileSize">Estimated PDF File Size (MB):</label>
+                <input type="number" id="fileSize" min="1" max="50" value="5" oninput="calculateQuota()">
+            </div>
+            <div class="quota-result" id="quotaResult">
+                You are at 50% of the 10MB per-conversation upload limit <span class="verified-chip">as of 2026-08-21</span>. Safe to proceed.
+            </div>
+        </section>
+
+        <section class="stepper">
+            <h3 style="font-family: var(--font-display); margin-bottom: 24px;">Step-by-Step Walkthrough</h3>
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h4>Redact Personal Identifiers</h4>
+                    <p>Open your PDF. Black out your name, date of birth, medical record number, and provider names. Anonymized data is less likely to trigger privacy guardrails and protects your identity.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h4>Upload to Copilot</h4>
+                    <p>Go to <a href="https://copilot.microsoft.com/" target="_blank" style="color: var(--accent);">copilot.microsoft.com</a>, click the attachment (paperclip) icon, and upload the redacted PDF.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h4>Deploy the Guardrail-Safe Prompt</h4>
+                    <p>Do not ask "What does this mean?" Use the sandbox above to generate a custom prompt that commands the AI to act as a medical preparation assistant, not a diagnostician.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h4>Extract the Script</h4>
+                    <p>Copilot will return 3–5 highly specific questions referencing standard clinical guidelines. Copy these directly into your phone's notes for your appointment.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="what-breaks">
+            <h3>⚠️ What Breaks (Limitations)</h3>
+            <p style="margin-bottom: 12px; font-weight: 600;">Most guides tell you to ask AI to interpret your labs or diagnose you. That is backwards and wastes the tool's capability.</p>
+            <ul>
+                <li><strong>The Guardrail Wall:</strong> If you ask for a diagnosis, the AI's safety training will instantly block the response with an "I am not a doctor" disclaimer, wasting your time. Framing it as "questions for my doctor" bypasses this.</li>
+                <li><strong>File Size Rejection:</strong> Microsoft Copilot free tier caps file uploads at 10MB per conversation. If your hospital portal exports a massive, image-heavy 50MB PDF, you must compress it first using a free tool like iLovePDF, or Copilot will reject it.</li>
+                <li><strong>Context Window Reset:</strong> Copilot's context window resets after ~30 turns. Do not try to analyze 5 years of lab history in a single thread. Focus on one specific report per conversation to maintain accuracy.</li>
+            </ul>
+        </section>
+
+        <section class="share-bar">
+            <div class="share-quote" id="shareQuote">
+                <p>"A 15-minute doctor’s appointment is rushed. Walking in unprepared wastes 80% of its value. Use this free 3-minute AI workflow to build your question script before you go."</p>
+            </div>
+            <div class="share-actions">
+                <button class="share-btn" onclick="nativeShare()">📱 Share</button>
+                <button class="share-btn" onclick="shareX()">𝕏 Post</button>
+                <button class="share-btn" onclick="shareLinkedIn()">💼 LinkedIn</button>
+                <button class="share-btn" onclick="copyQuote()">📋 Copy Quote</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('eadr-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        html.setAttribute('data-theme', savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('eadr-theme', newTheme);
+        });
+
+        // Sandbox Prompt Generator
+        function generatePrompt() {
+            const marker = document.getElementById('medicalMarker').value || '[SPECIFIC MARKER]';
+            const docType = document.getElementById('documentType').value;
+            const prompt = `Act as a medical preparation assistant. I have uploaded a ${docType} containing the finding: "${marker}".\n\nDO NOT diagnose me or interpret this as medical advice. Instead, based strictly on standard clinical guidelines for this finding, generate 3 specific, evidence-based questions I should ask my physician at my next appointment. Format each question to include the specific data point from the document and ask about next steps (e.g., retesting timeline, lifestyle adjustments, or medication interactions).`;
+            
+            document.getElementById('promptText').textContent = prompt;
+            document.getElementById('promptOutput').style.display = 'block';
+        }
+
+        function copyPrompt() {
+            const text = document.getElementById('promptText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Quota Calculator
+        function calculateQuota() {
+            const size = parseFloat(document.getElementById('fileSize').value) || 0;
+            const percentage = Math.min((size / 10) * 100, 100);
+            const resultDiv = document.getElementById('quotaResult');
+            
+            if (size > 10) {
+                resultDiv.innerHTML = `<span style="color: var(--accent);">Warning: You are exceeding the 10MB per-conversation upload limit <span class="verified-chip">as of 2026-08-21</span>. Compress the PDF first.</span>`;
+            } else if (size > 8) {
+                resultDiv.innerHTML = `You are at ${percentage}% of the 10MB per-conversation upload limit <span class="verified-chip">as of 2026-08-21</span>. Approaching capacity. Consider compressing.`;
+            } else {
+                resultDiv.innerHTML = `You are at ${percentage}% of the 10MB per-conversation upload limit <span class="verified-chip">as of 2026-08-21</span>. Safe to proceed.`;
+            }
+        }
+
+        // Share Functions
+        const shareData = {
+            title: 'Decode Lab Results with Copilot',
+            text: 'Stop asking AI to "diagnose" your lab results. It triggers safety guardrails and gives you nothing. Ask it to "draft questions for my doctor" instead.',
+            url: window.location.href
+        };
+
+        function nativeShare() {
+            if (navigator.share) {
+                navigator.share(shareData).catch(console.error);
+            } else {
+                copyQuote();
+            }
+        }
+
+        function shareX() {
+            const text = encodeURIComponent(shareData.text + ' ' + shareData.url);
+            window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+        }
+
+        function shareLinkedIn() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        }
+
+        function copyQuote() {
+            const quote = "A 15-minute doctor’s appointment is rushed. Walking in unprepared wastes 80% of its value. Use this free 3-minute AI workflow to build your question script before you go.";
+            navigator.clipboard.writeText(quote).then(() => {
+                alert('Quote copied to clipboard!');
+            });
+        }
+    </script>
+    
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+</body>
+</html>

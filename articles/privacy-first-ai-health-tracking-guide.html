@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Everyday AI Done Right — Privacy-First Health Tracking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #1a1a1a;
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --primary: #2b8a3e;
+            --primary-dark: #1b6b2a;
+            --coral: #ff6b6b;
+            --coral-light: #fff5f5;
+            --font-display: 'Manrope', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --coral-light: #2a1a1a;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 0 0 2rem 0;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        [data-theme="dark"] .top-bar {
+            background-color: rgba(18, 18, 18, 0.9);
+        }
+
+        .logo { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: var(--primary); }
+        .logo span { color: var(--text-color); }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        .hero {
+            padding: 2.5rem 0 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 2.2rem;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #6c757d;
+            max-width: 700px;
+            margin-bottom: 1.25rem;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .badge {
+            background-color: #d3f9d8;
+            color: var(--primary-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border: 1px solid var(--border-color);
+        }
+
+        .badge-coral {
+            background-color: var(--coral-light);
+            color: #c92a2a;
+        }
+
+        .decision-tree {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        .decision-tree h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tree-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.25rem;
+        }
+        @media (max-width: 600px) {
+            .tree-grid { grid-template-columns: 1fr; }
+        }
+
+        .tree-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .tree-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .tree-group select {
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+        }
+
+        .tree-result {
+            grid-column: 1 / -1;
+            background: #d3f9d8;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        [data-theme="dark"] .tree-result {
+            background: #1a2a1f;
+        }
+
+        .tree-result h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .cost-compare {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem 1.75rem;
+            margin: 1.5rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cost-compare .strike {
+            text-decoration: line-through;
+            color: #868e96;
+            font-size: 1.1rem;
+        }
+
+        .cost-compare .free {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: var(--font-display);
+        }
+
+        .walkthrough {
+            margin: 2rem 0;
+        }
+
+        .step {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            margin-top: 0.75rem;
+            padding-left: 2.5rem;
+            display: none;
+        }
+
+        .step.open .step-content { display: block; }
+
+        .step-content ul { padding-left: 1.25rem; margin-bottom: 0.5rem; }
+        .step-content ol { padding-left: 1.25rem; margin-bottom: 0.5rem; }
+
+        .code-block {
+            background: var(--bg-color);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            margin: 0.5rem 0;
+        }
+
+        .breaks-callout {
+            background: #fff4e5;
+            border-left: 6px solid #e67700;
+            padding: 1.25rem 1.75rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        [data-theme="dark"] .breaks-callout {
+            background: #2a1f12;
+            border-left-color: #f59f00;
+        }
+
+        .breaks-callout h3 {
+            color: #e67700;
+            font-family: var(--font-display);
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .pull-quote-block {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 1.75rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.4rem;
+            line-height: 1.3;
+        }
+
+        .share-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 2rem 0;
+            padding: 1.25rem 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .share-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .share-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .footnote {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .perishable {
+            font-size: 0.8rem;
+            color: #6c757d;
+            background: var(--border-color);
+            padding: 0.1rem 0.6rem;
+            border-radius: 100px;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        @media (max-width: 600px) {
+            .platform-grid { grid-template-columns: 1fr; }
+        }
+
+        .platform-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+        }
+
+        .platform-card h4 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo">Everyday<span>AI</span> Done Right</div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌓</button>
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+            <h1>Privacy-First AI Health Tracking</h1>
+            <p>That "free" health app you're using? It's a data business. Here's the open-source tracker that keeps your records on your device — and still recognizes your food from a photo.</p>
+            <div class="badges">
+                <span class="badge">✓ Verified Free (T3)</span>
+                <span class="badge">🛠️ Open Source</span>
+                <span class="badge">📱 iOS + Android</span>
+                <span class="badge-coral">⚠️ BYOK Required</span>
+                <span class="badge">📅 Verified: 2026-08-20</span>
+            </div>
+        </section>
+
+        <!-- Decision Tree: Interactive Centerpiece -->
+        <section class="decision-tree" id="decisionTree">
+            <h2>🧭 Which Health Tool Fits Your Privacy Needs?</h2>
+            <p>Not all trackers are created equal. The right choice depends on your device, your goal, and how much privacy you want.</p>
+            <div class="tree-grid">
+                <div class="tree-group">
+                    <label for="deviceType">Your Device</label>
+                    <select id="deviceType">
+                        <option value="ios" selected>iPhone / iOS</option>
+                        <option value="android">Android</option>
+                        <option value="desktop">Desktop / Web</option>
+                    </select>
+                </div>
+                <div class="tree-group">
+                    <label for="trackingGoal">What You Want to Track</label>
+                    <select id="trackingGoal">
+                        <option value="food" selected>Food + Calories</option>
+                        <option value="fitness">Fitness + Workouts</option>
+                        <option value="medical">Medical Records + Symptoms</option>
+                        <option value="all">All of the above</option>
+                    </select>
+                </div>
+                <div class="tree-result" id="treeResult">
+                    <h3>Recommended: <span id="recApp">Fud AI</span></h3>
+                    <p id="recReason">For iOS and food tracking, Fud AI is the most polished open-source option. Free Gemini key required for photo logging.</p>
+                    <p><span class="perishable">as of 2026-08-20</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cost Comparison -->
+        <div class="cost-compare">
+            <div>
+                <span class="strike">$20/month (MyFitnessPal)</span>
+                <span style="margin: 0 0.75rem; color: #868e96;">→</span>
+                <span class="free">$0</span>
+                <span style="font-weight: 600; margin-left: 0.5rem;">+ Your Data Stays Private</span>
+            </div>
+            <span class="perishable">as of 2026-08-20</span>
+        </div>
+
+        <!-- Pull Quote: Social Currency -->
+        <div class="pull-quote-block">
+            "The smartest health app isn't the one that stores your data — it's the one that never sees it."<br>
+            <span style="font-size: 0.9rem; font-weight: 400; color: #6c757d;">— Contrarian Take, Everyday AI Done Right</span>
+        </div>
+
+        <!-- Platform Quick Picks -->
+        <div style="margin: 1.5rem 0;">
+            <h3 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 0.5rem;">📱 Quick Pick by Platform</h3>
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <h4>🍎 iOS → Fud AI</h4>
+                    <p style="font-size: 0.9rem; color: #6c757d;">MIT licensed, 10-image meal scan, 873 exercises, Apple Watch, Gemini/OpenAI/Ollama <a href="https://apps.apple.com/app/fud-ai-calorie-tracker/id6758935726" target="_blank" style="color: var(--primary);">[citation:5]</a></p>
+                </div>
+                <div class="platform-card">
+                    <h4>🤖 Android → FitBuddy</h4>
+                    <p style="font-size: 0.9rem; color: #6c757d;">GPL-3.0, photo/text logging, offline simulator, OpenRouter/Gemini/Ollama, F-Droid <a href="https://f-droid.org/packages/com.anant.fitbuddy/" target="_blank" style="color: var(--primary);">[citation:2]</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Walkthrough -->
+        <section class="walkthrough">
+            <h2 class="section-title">Step-by-Step Walkthrough</h2>
+
+            <div class="step open" id="step1">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    Stop trusting cloud-hosted health apps.
+                </div>
+                <div class="step-content">
+                    <p><strong>Contrarian Correction:</strong> Most guides tell you to download a popular tracker and let it analyze your health. That's backwards. These apps are data businesses first. The real win is using a bring-your-own-key (BYOK) app.</p>
+                    <p><strong>So What?</strong> If you use a closed-source tracker, your meal logs, weight, and health patterns are a product. With Fud AI or FitBuddy, they're yours. No account, no cloud sync by default.</p>
+                </div>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    Install the right app for your device.
+                </div>
+                <div class="step-content">
+                    <ul>
+                        <li><strong>iOS:</strong> Install <strong>Fud AI</strong> from the App Store. Open source, MIT licensed, no ads, no account <a href="https://apps.apple.com/app/fud-ai-calorie-tracker/id6758935726" target="_blank" style="color: var(--primary);">[citation:5]</a>.</li>
+                        <li><strong>Android:</strong> Install <strong>FitBuddy</strong> from F-Droid. Open source, GPL-3.0, no ads, no tracking by default <a href="https://f-droid.org/packages/com.anant.fitbuddy/" target="_blank" style="color: var(--primary);">[citation:2]</a>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    Get a free Gemini API key.
+                </div>
+                <div class="step-content">
+                    <p>Both apps use the same free tier:</p>
+                    <ol>
+                        <li>Go to <code>aistudio.google.com</code></li>
+                        <li>Sign in with your Google account.</li>
+                        <li>Click "Get API Key" — it's free.</li>
+                        <li>Copy the key.</li>
+                    </ol>
+                    <p><strong>So What?</strong> Without this key, you can still log meals manually, but photo recognition requires it <a href="https://apps.apple.com/app/fud-ai-calorie-tracker/id6758935726" target="_blank" style="color: var(--primary);">[citation:5]</a>. The free Gemini tier gives you enough quota for daily tracking.</p>
+                    <div class="code-block">
+                        <code>aistudio.google.com → Get API Key</code>
+                    </div>
+                    <p><em>Optional:</em> Configure Ollama if you run a local LLM <a href="https://f-droid.org/packages/com.anant.fitbuddy/" target="_blank" style="color: var(--primary);">[citation:2]</a>.</p>
+                </div>
+            </div>
+
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <span class="step-number">4</span>
+                    Configure the app and log your first meal.
+                </div>
+                <div class="step-content">
+                    <ul>
+                        <li>Open Settings → paste your Gemini API key.</li>
+                        <li>Snap a photo of your food (Fud AI supports up to 10 images at once <a href="https://apps.apple.com/app/fud-ai-calorie-tracker/id6758935726" target="_blank" style="color: var(--primary);">[citation:5]</a>).</li>
+                        <li>The AI estimates calories and macros instantly.</li>
+                        <li>Review ingredients, adjust weights, and save.</li>
+                        <li>Bookmark favorite meals as presets for one-tap logging next time <a href="https://f-droid.org/packages/com.anant.fitbuddy/" target="_blank" style="color: var(--primary);">[citation:2]</a>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <span class="step-number">5</span>
+                    Track more than food.
+                </div>
+                <div class="step-content">
+                    <ul>
+                        <li><strong>Fud AI:</strong> 873 exercises with photos, barcode scanning, Apple Watch complications, water tracking, Siri shortcuts <a href="https://apps.apple.com/app/fud-ai-calorie-tracker/id6758935726" target="_blank" style="color: var(--primary);">[citation:5]</a>.</li>
+                        <li><strong>FitBuddy:</strong> workouts, barcode scan, AES-256-GCM encrypted backups <a href="https://f-droid.org/packages/com.anant.fitbuddy/" target="_blank" style="color: var(--primary);">[citation:8]</a>.</li>
+                    </ul>
+                    <p>Check your dashboard: daily calorie ring, combined food/exercise log, macro breakdown, custom charts tracking trends over time <a href="https://f-droid.org/packages/com.anant.fitbuddy/" target="_blank" style="color: var(--primary);">[citation:2]</a>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- What Breaks -->
+        <div class="breaks-callout">
+            <h3>⚠️ What Breaks (Limitations)</h3>
+            <ul>
+                <li><strong>It's not a doctor.</strong> Both apps are trackers, not diagnosticians. <strong>So what?</strong> Trusting them to diagnose you could be harmful.</li>
+                <li><strong>Bring-your-own-key required</strong> for photo logging. Free Gemini key takes 1 minute to create. <strong>So what?</strong> This is the privacy tradeoff — your data isn't stored on their servers, but you need to bring the AI.</li>
+                <li><strong>Fud AI is iOS-only.</strong> Android users should use FitBuddy <a href="https://f-droid.org/packages/com.anant.fitbuddy/" target="_blank" style="color: var(--primary);">[citation:2]</a>.</li>
+                <li><strong>FitBuddy is Android-only.</strong> iOS users should use Fud AI <a href="https://apps.apple.com/app/fud-ai-calorie-tracker/id6758935726" target="_blank" style="color: var(--primary);">[citation:5]</a>.</li>
+                <li><strong>No cross-device sync</strong> unless you use optional cloud backup (off by default in FitBuddy) <a href="https://f-droid.org/packages/com.anant.fitbuddy/" target="_blank" style="color: var(--primary);">[citation:8]</a>.</li>
+            </ul>
+        </div>
+
+        <!-- Share Bar -->
+        <div class="share-bar">
+            <button class="share-btn" id="shareWebShare">📤 Share</button>
+            <button class="share-btn" id="shareTwitter">🐦 X</button>
+            <button class="share-btn" id="shareLinkedIn">💼 LinkedIn</button>
+            <button class="share-btn" id="copyQuote">📋 Copy Quote</button>
+        </div>
+
+        <p class="footnote">
+            This guide is for informational purposes only. AI health tools are not substitutes for professional medical advice, diagnosis, or treatment.
+        </p>
+
+    </main>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('eadr-theme');
+        if (savedTheme) html.setAttribute('data-theme', savedTheme);
+        themeToggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('eadr-theme', next);
+        });
+
+        // Step toggles
+        document.querySelectorAll('.step').forEach(step => {
+            step.addEventListener('click', () => {
+                step.classList.toggle('open');
+            });
+        });
+
+        // Decision Tree
+        const deviceMap = {
+            ios: { label: 'iPhone / iOS', rec: 'Fud AI', icon: '🍎' },
+            android: { label: 'Android', rec: 'FitBuddy', icon: '🤖' },
+            desktop: { label: 'Desktop / Web', rec: 'OpenHealth or HealthClaw', icon: '💻' }
+        };
+
+        const goalMap = {
+            food: { rec: 'Fud AI (iOS) / FitBuddy (Android)', desc: 'Photo logging with Gemini API. Meal presets, macro tracking, barcode scan.' },
+            fitness: { rec: 'Fud AI (iOS) / FitBuddy (Android)', desc: 'Both include workout logging. Fud AI has 873 exercises with photos.' },
+            medical: { rec: 'WellAlly Health (Claude Code)', desc: 'Self-hosted medical records, drug interactions, radiation tracking, MDT consultation. Requires Claude Code.' },
+            all: { rec: 'HiMe (iOS + self-hosted)', desc: 'Real-time wearable data, iOS companion, Telegram/Feishu/WeChat integration. Requires server setup.' }
+        };
+
+        function updateTree() {
+            const device = document.getElementById('deviceType').value;
+            const goal = document.getElementById('trackingGoal').value;
+            const devInfo = deviceMap[device] || deviceMap.ios;
+            const goalInfo = goalMap[goal] || goalMap.food;
+
+            let rec = goalInfo.rec;
+            if (device === 'ios' && goal !== 'medical' && goal !== 'all') rec = 'Fud AI';
+            if (device === 'android' && goal !== 'medical' && goal !== 'all') rec = 'FitBuddy';
+            if (device === 'desktop' && goal === 'medical') rec = 'WellAlly Health';
+            if (device === 'desktop' && goal === 'all') rec = 'HealthClaw';
+
+            document.getElementById('recApp').textContent = rec;
+            document.getElementById('recReason').textContent = goalInfo.desc + ' Device: ' + devInfo.icon + ' ' + devInfo.label + '.';
+        }
+
+        document.getElementById('deviceType').addEventListener('change', updateTree);
+        document.getElementById('trackingGoal').addEventListener('change', updateTree);
+        updateTree();
+
+        // Share buttons
+        const quote = '"The smartest health app isn\'t the one that stores your data — it\'s the one that never sees it." — Everyday AI Done Right';
+
+        document.getElementById('shareWebShare').addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Privacy-First AI Health Tracking',
+                    text: quote,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(quote + ' ' + window.location.href).then(() => alert('Copied to clipboard!'));
+            }
+        });
+
+        document.getElementById('shareTwitter').addEventListener('click', () => {
+            const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(quote + ' ' + window.location.href);
+            window.open(url, '_blank');
+        });
+
+        document.getElementById('shareLinkedIn').addEventListener('click', () => {
+            const url = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(window.location.href);
+            window.open(url, '_blank');
+        });
+
+        document.getElementById('copyQuote').addEventListener('click', () => {
+            navigator.clipboard.writeText(quote).then(() => alert('Quote copied!'));
+        });
+
+        // Cloudflare Web Analytics
+        (function() {
+            const script = document.createElement('script');
+            script.defer = true;
+            script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+            script.setAttribute('data-cf-beacon', '{"token": "90c83e9b603641beac9bf45d47ce886d"}');
+            document.body.appendChild(script);
+        })();
+    </script>
+</body>
+</html>
