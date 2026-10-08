@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- GitHub Pages serves this file at whatever path was requested, so every URL below is resolved against the site root. -->
+<base href="https://iggym.github.io/everyday-ai-done-right/">
+<title>Page not found — Everyday AI, Done Right</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFAF9; --paper-raised:#FFFFFF; --ink:#1C1C1E; --ink-soft:#54545A; --muted:#6E6E73;
+    --line:rgba(28,28,30,0.10); --green:#0D7D56; --green-soft:rgba(15,138,95,0.10); --coral:#C2410C; --coral-soft:rgba(255,107,74,0.12);
+    --shadow:0 1px 2px rgba(28,28,30,0.04), 0 8px 24px rgba(28,28,30,0.06);
+    --display:'Manrope',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace; --radius:16px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --paper:#141414; --paper-raised:#1C1C1E; --ink:#F4F4F3; --ink-soft:#C7C7CB; --muted:#9A9AA0; --line:rgba(244,244,243,0.10);
+           --green:#22C58B; --green-soft:rgba(34,197,139,0.14); --coral:#FF8064; --coral-soft:rgba(255,128,100,0.14);
+           --shadow:0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35); }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--green);outline-offset:2px;border-radius:6px}
+  .skip-link{position:absolute;left:-10000px;top:12px;z-index:100;background:var(--green);color:#fff;padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;text-decoration:none}
+  .skip-link:focus{left:12px}
+  .topbar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .topbar .mark{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-family:var(--display);font-weight:800;font-size:15px}
+  .topbar .mark .dot{width:9px;height:9px;border-radius:50%;background:var(--green)}
+  .topbar a.gh{font-size:13px;font-weight:600;color:var(--ink-soft);text-decoration:none}
+  main{max-width:720px;margin:0 auto;padding:72px 24px 100px;text-align:center}
+  .code{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--coral);background:var(--coral-soft);display:inline-flex;padding:6px 14px;border-radius:20px;margin-bottom:22px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5vw,3rem);letter-spacing:-.02em;line-height:1.1;margin:0 0 14px}
+  h1 .accent{color:var(--green)}
+  .lead{font-size:1.1rem;color:var(--ink-soft);max-width:520px;margin:0 auto}
+  .lead code{font-family:var(--mono);font-size:.85em;background:var(--paper-raised);border:1px solid var(--line);padding:2px 6px;border-radius:6px;word-break:break-all}
+  form{display:flex;gap:10px;max-width:460px;margin:30px auto 0}
+  input[type=search]{flex:1;font-family:var(--body);font-size:15px;padding:12px 16px;border:1px solid var(--line);border-radius:24px;background:var(--paper-raised);color:var(--ink);outline:none}
+  input[type=search]:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+  button{font-family:var(--body);font-weight:600;font-size:14px;padding:12px 20px;border-radius:24px;border:0;background:var(--green);color:#fff;cursor:pointer}
+  .suggest{margin:40px auto 0;text-align:left;max-width:560px}
+  .suggest h2{font-family:var(--display);font-weight:800;font-size:1.05rem;margin:0 0 12px}
+  .suggest ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .suggest li a{display:block;text-decoration:none;background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;padding:14px 16px;transition:border-color .2s ease,transform .2s ease}
+  .suggest li a:hover{border-color:var(--green);transform:translateY(-2px)}
+  .suggest .cat{font-family:var(--mono);font-size:10.5px;color:var(--muted);display:block;margin-bottom:4px}
+  .suggest strong{font-family:var(--display);font-size:15px}
+  .cats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:34px}
+  .cats a{font-size:13px;font-weight:600;padding:8px 15px;border-radius:20px;border:1px solid var(--line);background:var(--paper-raised);color:var(--ink-soft);text-decoration:none}
+  .cats a:hover{border-color:var(--green);color:var(--ink)}
+  footer{border-top:1px solid var(--line);padding:32px 24px;text-align:center;font-size:13px;color:var(--muted)}
+  footer a{color:var(--green)}
+  @media (prefers-reduced-motion: reduce){ *{transition-duration:.001ms !important} }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<nav class="topbar" aria-label="Primary">
+  <a class="mark" href="./"><span class="dot" aria-hidden="true"></span>everyday-ai-done-right</a>
+  <a class="gh" href="https://github.com/iggym/everyday-ai-done-right" rel="noopener">GitHub</a>
+</nav>
+
+<main id="main" tabindex="-1">
+  <div class="code">404 · NOT FOUND</div>
+  <h1>That page isn't here.<br><span class="accent">The free tools still are.</span></h1>
+  <p class="lead" id="lead">The link may be out of date, or the guide was renamed. Nothing here costs money — including a second try.</p>
+
+  <form action="./" method="get" role="search">
+    <label for="q" class="sr-only" style="position:absolute;left:-10000px">Search guides</label>
+    <input id="q" name="q" type="search" placeholder="Search guides, tools, tags…" autocomplete="off">
+    <button type="submit">Search</button>
+  </form>
+
+  <section class="suggest" id="suggest" hidden aria-labelledby="suggest-title">
+    <h2 id="suggest-title">Did you mean one of these?</h2>
+    <ul id="suggest-list"></ul>
+  </section>
+
+  <nav class="cats" aria-label="Browse by category" id="cats">
+    <a href="./">All guides</a>
+  </nav>
+</main>
+
+<footer>
+  <a href="./">Back to the directory</a> · <a href="https://github.com/iggym/everyday-ai-done-right/issues/new" rel="noopener">Report a broken link</a>
+</footer>
+
+<script>
+(async function(){
+  const BASE = 'https://iggym.github.io/everyday-ai-done-right/';
+  // What was requested? Turn the last path segment into search words.
+  const path = location.pathname.replace(/\/+$/, '');
+  const slug = decodeURIComponent(path.split('/').pop() || '').replace(/\.html?$/i, '');
+  const STOP = ['the','and','for','with','into','free','your','from','html','turn','using','how','any'];
+  const stem = w => (w.length > 4 && w.endsWith('s') && !w.endsWith('ss')) ? w.slice(0, -1) : w;
+  const words = [...new Set(slug.toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 2 && !STOP.includes(w)).map(stem))];
+  if(slug){ document.getElementById('lead').innerHTML = `We couldn't find <code>${slug.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</code>. The link may be out of date, or the guide was renamed. Nothing here costs money — including a second try.`; }
+  if(words.length) document.getElementById('q').value = words.join(' ');
+
+  try{
+    const res = await fetch(BASE + 'metadata.json');
+    if(!res.ok) return;
+    const data = await res.json();
+    const cats = data.site && data.site.categories || {};
+    const published = (data.articles || []).filter(a => a.status === 'published');
+
+    // Renamed / merged guides: forward straight to the successor (metadata.json → site.redirects)
+    const redirects = data.site && data.site.redirects || {};
+    const successor = redirects[slug] && published.find(a => a.slug === redirects[slug]);
+    if(successor){ location.replace(BASE + successor.path + '?from=' + encodeURIComponent(slug)); return; }
+
+    // Category chips
+    const catsEl = document.getElementById('cats');
+    Object.keys(cats).sort((a,b)=>cats[a].label.localeCompare(cats[b].label)).forEach(c => {
+      if(!published.some(a => a.category === c)) return;
+      const el = document.createElement('a');
+      el.href = './?category=' + encodeURIComponent(c);
+      el.textContent = `${cats[c].emoji} ${cats[c].label}`;
+      catsEl.appendChild(el);
+    });
+
+    // "Did you mean" — score by shared words with slug/title/tags
+    if(!words.length) return;
+    const tokens = s => new Set(s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(stem));
+    const scored = published.map(a => {
+      const slugWords = tokens(a.slug), titleWords = tokens(a.title), tagWords = tokens((a.tags||[]).join(' '));
+      const score = words.reduce((n, w) => n + (slugWords.has(w) ? 3 : 0) + (titleWords.has(w) ? 2 : 0) + (tagWords.has(w) ? 1 : 0), 0);
+      return {a, score};
+    }).filter(x => x.score >= 3).sort((x,y) => y.score - x.score || (y.a.date > x.a.date ? 1 : -1)).slice(0, 5);
+    if(!scored.length) return;
+    const list = document.getElementById('suggest-list');
+    scored.forEach(({a}) => {
+      const li = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = a.path;
+      const cat = document.createElement('span'); cat.className = 'cat';
+      const c = cats[a.category]; cat.textContent = (c ? `${c.emoji} ${c.label}` : a.category) + ` · ${a.reading_time_minutes || '—'} min`;
+      const strong = document.createElement('strong'); strong.textContent = a.title;
+      link.append(cat, strong); li.appendChild(link); list.appendChild(li);
+    });
+    document.getElementById('suggest').hidden = false;
+  }catch(e){ /* suggestions are a bonus — the search form and links above still work */ }
+})();
+</script>
+</body>
+</html>
