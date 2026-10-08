@@ -3,9 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Everyday AI, Done Right</title>
-<meta name="description" content="Real AI leverage. Actually free. No credit card. A verified directory of zero-cost AI workflows for anyone, anywhere.">
+<title>Everyday AI, Done Right — verified zero-cost AI workflows</title>
+<meta name="description" content="Real AI leverage. Actually free. No credit card. A verified directory of 100+ step-by-step zero-cost AI workflows for anyone, anywhere.">
+<link rel="canonical" href="https://iggym.github.io/everyday-ai-done-right/">
+<link rel="icon" href="./favicon.ico" sizes="32x32">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Everyday AI, Done Right" href="./feed.xml">
+<link rel="sitemap" type="application/xml" href="./sitemap.xml">
+<meta name="theme-color" content="#0F8A5F">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Everyday AI, Done Right">
+<meta property="og:title" content="Everyday AI, Done Right — Real AI leverage. Actually free.">
+<meta property="og:description" content="A verified directory of 100+ step-by-step zero-cost AI workflows — checked against real provider docs, not vibes. No credit card. Ever.">
+<meta property="og:url" content="https://iggym.github.io/everyday-ai-done-right/">
+<meta property="og:image" content="https://iggym.github.io/everyday-ai-done-right/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Everyday AI, Done Right — Real AI leverage. Actually free.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Everyday AI, Done Right — Real AI leverage. Actually free.">
+<meta name="twitter:description" content="A verified directory of 100+ step-by-step zero-cost AI workflows — checked against real provider docs, not vibes. No credit card. Ever.">
+<meta name="twitter:image" content="https://iggym.github.io/everyday-ai-done-right/og-image.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"WebSite","@id":"https://iggym.github.io/everyday-ai-done-right/#website","url":"https://iggym.github.io/everyday-ai-done-right/","name":"Everyday AI, Done Right","description":"A verified directory of zero-cost AI workflows — checked against real provider docs, not vibes.","inLanguage":"en","publisher":{"@id":"https://iggym.github.io/everyday-ai-done-right/#org"}},
+ {"@type":"Organization","@id":"https://iggym.github.io/everyday-ai-done-right/#org","name":"Everyday AI, Done Right","url":"https://iggym.github.io/everyday-ai-done-right/","logo":{"@type":"ImageObject","url":"https://iggym.github.io/everyday-ai-done-right/apple-touch-icon.png","width":180,"height":180},"sameAs":["https://github.com/iggym/everyday-ai-done-right"]}
+]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -13,12 +40,12 @@
     --paper-raised:#FFFFFF;
     --ink:#1C1C1E;
     --ink-soft:#54545A;
-    --muted:#8A8A8F;
+    --muted:#6E6E73;
     --line: rgba(28,28,30,0.10);
-    --green:#0F8A5F;
+    --green:#0D7D56;
     --green-soft: rgba(15,138,95,0.10);
-    --coral:#FF6B4A;
-    --coral-soft: rgba(255,107,74,0.10);
+    --coral:#C2410C;
+    --coral-soft: rgba(255,107,74,0.12);
     --shadow: 0 1px 2px rgba(28,28,30,0.04), 0 8px 24px rgba(28,28,30,0.06);
     --display:'Manrope', sans-serif;
     --body:'Inter', sans-serif;
@@ -31,7 +58,7 @@
       --paper-raised:#1C1C1E;
       --ink:#F4F4F3;
       --ink-soft:#C7C7CB;
-      --muted:#8A8A8F;
+      --muted:#9A9AA0;
       --line: rgba(244,244,243,0.10);
       --green:#22C58B;
       --green-soft: rgba(34,197,139,0.14);
@@ -42,13 +69,13 @@
   }
   html[data-theme="light"]{
     --paper:#FAFAF9; --paper-raised:#FFFFFF; --ink:#1C1C1E; --ink-soft:#54545A;
-    --muted:#8A8A8F; --line: rgba(28,28,30,0.10); --green:#0F8A5F;
-    --green-soft: rgba(15,138,95,0.10); --coral:#FF6B4A; --coral-soft: rgba(255,107,74,0.10);
+    --muted:#6E6E73; --line: rgba(28,28,30,0.10); --green:#0D7D56;
+    --green-soft: rgba(15,138,95,0.10); --coral:#C2410C; --coral-soft: rgba(255,107,74,0.12);
     --shadow: 0 1px 2px rgba(28,28,30,0.04), 0 8px 24px rgba(28,28,30,0.06);
   }
   html[data-theme="dark"]{
     --paper:#141414; --paper-raised:#1C1C1E; --ink:#F4F4F3; --ink-soft:#C7C7CB;
-    --muted:#8A8A8F; --line: rgba(244,244,243,0.10); --green:#22C58B;
+    --muted:#9A9AA0; --line: rgba(244,244,243,0.10); --green:#22C58B;
     --green-soft: rgba(34,197,139,0.14); --coral:#FF8064; --coral-soft: rgba(255,128,100,0.14);
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
   }
@@ -62,6 +89,16 @@
   }
   a{color:inherit;}
   button{font-family:inherit; cursor:pointer;}
+  :focus-visible{ outline:3px solid var(--green); outline-offset:2px; border-radius:6px; }
+  .sr-only{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+  /* ===== Skip link ===== */
+  .skip-link{
+    position:absolute; left:-10000px; top:12px; z-index:100;
+    background:var(--green); color:#fff; padding:10px 16px; border-radius:8px;
+    font-weight:600; font-size:14px; text-decoration:none;
+  }
+  .skip-link:focus{ left:12px; outline:3px solid var(--coral); outline-offset:2px; }
 
   /* ===== Topbar ===== */
   .topbar{
@@ -69,19 +106,23 @@
     background:color-mix(in srgb, var(--paper) 88%, transparent);
     backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
-    padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:12px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;
   }
   .topbar .mark{ display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink); font-family:var(--display); font-weight:800; font-size:15px; }
   .topbar .mark .dot{ width:9px; height:9px; border-radius:50%; background:var(--green); }
+  .topbar .links{ display:flex; align-items:center; gap:6px 14px; flex-wrap:wrap; justify-content:flex-end; }
+  .topbar .links a{ font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none; padding:6px 4px; }
+  .topbar .links a:hover{ color:var(--green); }
   .theme-toggle{
     border:1px solid var(--line); background:var(--paper-raised); color:var(--ink-soft);
     border-radius:20px; padding:7px 14px; font-size:12.5px; font-weight:600;
     display:flex; align-items:center; gap:6px; transition:border-color .2s ease;
   }
   .theme-toggle:hover{ border-color:var(--green); color:var(--ink); }
+  @media (max-width:560px){ .topbar .links a.optional{ display:none; } }
 
   /* ===== Hero ===== */
-  header.hero{ padding:72px 24px 40px; max-width:760px; margin:0 auto; text-align:center; }
+  header.hero{ padding:64px 24px 24px; max-width:760px; margin:0 auto; text-align:center; }
   .eyebrow{
     display:inline-flex; align-items:center; gap:7px;
     font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:0.02em;
@@ -116,7 +157,24 @@
   .cost-widget .item-label{ font-size:13.5px; color:var(--ink-soft); }
   .cost-total{ border-top:1px dashed var(--line); margin-top:14px; padding-top:14px; display:flex; justify-content:space-between; align-items:baseline; }
   .cost-total .total-label{ font-size:13px; color:var(--muted); }
-  .cost-total .total-value{ font-family:var(--display); font-weight:800; font-size:1.6rem; color:var(--green); }
+
+  /* ===== Onboarding: how this works ===== */
+  .howto{ max-width:1080px; margin:36px auto 0; padding:0 24px; }
+  .howto-card{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px 26px; display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:18px 28px;
+  }
+  .howto-intro{ grid-column:1/-1; display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; margin:0; }
+  .howto-intro h2{ font-family:var(--display); font-weight:800; font-size:1.1rem; margin:0; }
+  .howto-intro p{ margin:0; font-size:14px; color:var(--muted); }
+  .howto-step{ display:flex; gap:12px; align-items:flex-start; }
+  .howto-step .n{
+    flex:none; width:28px; height:28px; border-radius:50%; background:var(--green-soft); color:var(--green);
+    font-family:var(--mono); font-weight:600; font-size:12.5px; display:grid; place-items:center;
+  }
+  .howto-step h3{ font-family:var(--display); font-weight:700; font-size:15px; margin:3px 0 4px; }
+  .howto-step p{ margin:0; font-size:13.5px; color:var(--ink-soft); line-height:1.55; }
+  .howto-step .flag{ font-family:var(--mono); font-size:11.5px; color:var(--coral); font-weight:600; }
 
   /* ===== Controls ===== */
   main{ max-width:1080px; margin:0 auto; padding:8px 24px 100px; }
@@ -125,7 +183,7 @@
     margin:36px 0 20px; padding-bottom:20px; border-bottom:1px solid var(--line);
   }
   .search-wrap{ position:relative; flex:1; min-width:220px; max-width:340px; }
-  .search-wrap svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:0.45; }
+  .search-wrap svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:0.45; pointer-events:none; }
   #search{
     width:100%; font-family:var(--body); font-size:14px; padding:11px 14px 11px 38px;
     border:1px solid var(--line); border-radius:24px; background:var(--paper-raised); color:var(--ink);
@@ -136,13 +194,15 @@
   .chip{
     font-family:var(--body); font-size:13px; font-weight:600; padding:8px 15px;
     border-radius:20px; border:1px solid var(--line); background:var(--paper-raised); color:var(--ink-soft);
-    transition:all .18s ease; user-select:none;
+    transition:all .18s ease; user-select:none; line-height:1.3;
   }
   .chip:hover{ border-color:var(--green); color:var(--ink); }
-  .chip.active{ background:var(--ink); border-color:var(--ink); color:var(--paper); }
-  html[data-theme="dark"] .chip.active, @media (prefers-color-scheme: dark){ .chip.active{ background:var(--green); border-color:var(--green); color:#0A0A0A; } }
+  .chip[aria-pressed="true"]{ background:var(--ink); border-color:var(--ink); color:var(--paper); }
+  @media (prefers-color-scheme: dark){ html:not([data-theme="light"]) .chip[aria-pressed="true"]{ background:var(--green); border-color:var(--green); color:#0A0A0A; } }
+  html[data-theme="dark"] .chip[aria-pressed="true"]{ background:var(--green); border-color:var(--green); color:#0A0A0A; }
 
-  .result-count{ font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:20px; }
+  .result-count{ font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:20px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+  .result-count button{ font-family:var(--mono); font-size:12px; color:var(--green); background:none; border:0; padding:0; text-decoration:underline; }
 
   /* ===== Card grid ===== */
   .grid-feed{ display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:18px; }
@@ -156,49 +216,67 @@
   .card:hover{ transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--green); }
   .card.hidden{ display:none; }
   .card.pinned{ grid-column:1/-1; border-color:var(--green); background:var(--green-soft); }
+  .pin-label{
+    display:inline-flex; align-items:center; gap:8px; margin-bottom:12px;
+    font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--green);
+  }
+  .pin-label .why{ font-family:var(--body); font-weight:500; text-transform:none; letter-spacing:0; color:var(--ink-soft); font-size:13px; }
   .card-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:14px; }
   .tool-badge{
     font-family:var(--mono); font-size:10.5px; font-weight:600; color:var(--green);
     background:var(--green-soft); padding:4px 10px; border-radius:12px;
     display:inline-flex; align-items:center; gap:5px;
   }
+  .card.pinned .tool-badge{ background:var(--paper-raised); }
   .reading-time{ font-family:var(--mono); font-size:11px; color:var(--muted); white-space:nowrap; }
   .card h2{ font-family:var(--display); font-weight:800; font-size:1.15rem; margin:0 0 10px; line-height:1.3; }
   .card p.hook{ font-size:14px; color:var(--ink-soft); margin:0 0 16px; line-height:1.55; }
-  .card-bottom{ display:flex; justify-content:space-between; align-items:center; }
+  .card-bottom{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
   .tags{ display:flex; gap:6px; flex-wrap:wrap; }
   .tag-pill{ font-family:var(--mono); font-size:10px; color:var(--muted); border:1px solid var(--line); padding:3px 9px; border-radius:12px; }
-  .verified{ font-family:var(--mono); font-size:10.5px; color:var(--green); display:flex; align-items:center; gap:4px; }
+  .verified{ font-family:var(--mono); font-size:10.5px; color:var(--green); display:flex; align-items:center; gap:4px; white-space:nowrap; }
+  .verified.stale{ color:var(--coral); }
 
   .empty{ text-align:center; padding:80px 20px; color:var(--muted); grid-column:1/-1; }
   .empty .glyph{ font-family:var(--display); font-weight:800; color:var(--green); margin-bottom:10px; font-size:1.2rem; }
+  .empty.error .glyph{ color:var(--coral); }
   .empty p{ max-width:380px; margin:0 auto; font-size:14.5px; }
+  .empty button{ margin-top:16px; border:1px solid var(--line); background:var(--paper-raised); color:var(--ink); border-radius:20px; padding:8px 16px; font-size:13px; font-weight:600; }
 
   footer{ border-top:1px solid var(--line); padding:40px 24px; text-align:center; }
-  footer p{ font-size:13.5px; color:var(--muted); max-width:460px; margin:0 auto 14px; }
-  footer a.home{ font-family:var(--mono); font-size:12px; color:var(--green); text-decoration:none; border-bottom:1px solid var(--green); padding-bottom:2px; }
+  footer p{ font-size:13.5px; color:var(--muted); max-width:520px; margin:0 auto 14px; }
+  footer nav{ display:flex; gap:10px 22px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  footer nav a{ font-family:var(--mono); font-size:12px; color:var(--green); text-decoration:none; border-bottom:1px solid var(--green); padding-bottom:2px; }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <a class="mark" href="https://iggym.github.io/everyday-ai-done-right/"><span class="dot"></span>everyday-ai-done-right</a>
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
-    <span id="themeIcon">◐</span><span id="themeLabel">Auto</span>
-  </button>
-</div>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav class="topbar" aria-label="Primary">
+  <a class="mark" href="./"><span class="dot" aria-hidden="true"></span>everyday-ai-done-right</a>
+  <div class="links">
+    <a class="optional" href="#how-it-works">How it works</a>
+    <a class="optional" href="https://github.com/iggym/everyday-ai-done-right" rel="noopener">GitHub</a>
+    <a class="optional" href="./feed.xml" title="RSS feed">RSS</a>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch colour theme (currently Auto)">
+      <span id="themeIcon" aria-hidden="true">◐</span><span id="themeLabel">Auto</span>
+    </button>
+  </div>
+</nav>
 
 <header class="hero">
-  <div class="eyebrow"><span class="dot"></span>Verified. No credit card. Ever.</div>
+  <div class="eyebrow"><span class="dot" aria-hidden="true"></span>Verified. No credit card. Ever.</div>
   <h1>Real AI leverage.<br><span class="accent">Actually free.</span></h1>
   <p class="tagline">A directory of the highest-leverage things you can do with AI tools that cost genuinely nothing — checked against real provider docs, not vibes.</p>
   <p class="desc" id="site-desc">Anyone, anywhere. No paid API keys, no card on file, no "free trial" that quietly converts.</p>
 
-  <div class="cost-widget" aria-hidden="true">
-    <div class="label">What this replaces</div>
-    <div class="cost-row"><span class="item-label">Tutoring app subscription</span><span class="cost-old">$29/mo</span></div>
-    <div class="cost-row"><span class="item-label">Resume review service</span><span class="cost-old">$79</span></div>
-    <div class="cost-row"><span class="item-label">Budgeting app premium</span><span class="cost-old">$12/mo</span></div>
+  <div class="cost-widget" role="group" aria-labelledby="cost-label">
+    <div class="label" id="cost-label">What this replaces</div>
+    <div class="cost-row"><span class="item-label">Tutoring app subscription</span><span class="cost-old"><span class="sr-only">normally </span>$29/mo</span></div>
+    <div class="cost-row"><span class="item-label">Resume review service</span><span class="cost-old"><span class="sr-only">normally </span>$79</span></div>
+    <div class="cost-row"><span class="item-label">Budgeting app premium</span><span class="cost-old"><span class="sr-only">normally </span>$12/mo</span></div>
     <div class="cost-total">
       <span class="total-label">What you pay here</span>
       <span class="cost-new">$0</span>
@@ -206,22 +284,50 @@
   </div>
 </header>
 
-<main>
+<section class="howto" id="how-it-works" aria-labelledby="howto-title">
+  <div class="howto-card">
+    <div class="howto-intro">
+      <h2 id="howto-title">New here? How this works</h2>
+      <p>Every guide is a step-by-step workflow you can finish today, using a tool that is free by the provider's own published terms.</p>
+    </div>
+    <div class="howto-step">
+      <span class="n" aria-hidden="true">1</span>
+      <div><h3>Pick a real task</h3><p>Resume, medical bill, lease letter, study notes, meal plan… Filter by category or search for the thing you're stuck on.</p></div>
+    </div>
+    <div class="howto-step">
+      <span class="n" aria-hidden="true">2</span>
+      <div><h3>Use the free tool it names</h3><p>"Zero-cost" means a tier with <strong>no credit card and no trial that converts</strong>. Each guide lists the exact limits (messages per day, file sizes) so you know what you're getting.</p></div>
+    </div>
+    <div class="howto-step">
+      <span class="n" aria-hidden="true">3</span>
+      <div><h3>Check the verified date</h3><p>Free limits change. Each card shows when we last confirmed the terms against the provider's docs. <span class="flag">⚠ older than a year</span> means re-check before you rely on it.</p></div>
+    </div>
+  </div>
+</section>
+
+<main id="main" tabindex="-1">
   <div class="controls">
     <div class="search-wrap">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <input id="search" type="text" placeholder="Search guides, tools, tags…">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <label for="search" class="sr-only">Search guides, tools and tags</label>
+      <input id="search" type="search" placeholder="Search guides, tools, tags…" autocomplete="off">
     </div>
-    <div class="filters" id="filters"></div>
+    <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
   </div>
 
-  <div class="result-count" id="feed-count">loading…</div>
+  <div class="result-count" id="feed-count" role="status" aria-live="polite">loading…</div>
   <div class="grid-feed" id="feed"></div>
 </main>
 
 <footer>
   <p id="footer-desc">Everyday AI, Done Right — every guide is verified against the provider's own current pricing before it's published, and re-checked over time.</p>
-  <a class="home" href="https://iggym.github.io/everyday-ai-done-right/">Back to top ↑</a>
+  <p>Spotted a limit that changed? <a href="https://github.com/iggym/everyday-ai-done-right/issues/new" rel="noopener">Report it on GitHub</a> — it helps everyone.</p>
+  <nav aria-label="Footer">
+    <a href="#top">Back to top ↑</a>
+    <a href="./feed.xml">RSS feed</a>
+    <a href="./sitemap.xml">Sitemap</a>
+    <a href="https://github.com/iggym/everyday-ai-done-right" rel="noopener">Source on GitHub</a>
+  </nav>
 </footer>
 
 <script>
@@ -231,16 +337,18 @@
   const toggle = document.getElementById('themeToggle');
   const icon = document.getElementById('themeIcon');
   const label = document.getElementById('themeLabel');
-  const stored = localStorage.getItem('eadr-theme');
+  let stored = null;
+  try { stored = localStorage.getItem('eadr-theme'); } catch(e){}
   function applyTheme(mode){
     if(mode === 'auto'){ root.removeAttribute('data-theme'); icon.textContent='◐'; label.textContent='Auto'; }
     else { root.setAttribute('data-theme', mode); icon.textContent = mode === 'dark' ? '●' : '○'; label.textContent = mode === 'dark' ? 'Dark' : 'Light'; }
+    toggle.setAttribute('aria-label', 'Switch colour theme (currently ' + label.textContent + ')');
   }
-  let current = stored || 'auto';
+  let current = (stored === 'light' || stored === 'dark') ? stored : 'auto';
   applyTheme(current);
   toggle.addEventListener('click', () => {
     current = current === 'auto' ? 'light' : current === 'light' ? 'dark' : 'auto';
-    localStorage.setItem('eadr-theme', current);
+    try { localStorage.setItem('eadr-theme', current); } catch(e){}
     applyTheme(current);
   });
 })();
@@ -253,42 +361,55 @@
   const descEl = document.getElementById('site-desc');
   const footerDescEl = document.getElementById('footer-desc');
 
+  const STALE_AFTER_DAYS = 365;
+  // Fallbacks only — the canonical labels/emojis live in metadata.json → site.categories
+  let CATEGORIES = {
+    accessibility:{label:'Accessibility',emoji:'👁️'}, 'ai-tools':{label:'AI Tools',emoji:'🧰'},
+    business:{label:'Business',emoji:'📈'}, career:{label:'Career',emoji:'💼'}, civic:{label:'Civic & Legal',emoji:'⚖️'},
+    creative:{label:'Creative',emoji:'🎨'}, family:{label:'Family',emoji:'👪'}, health:{label:'Health',emoji:'🥗'},
+    household:{label:'Household',emoji:'🧾'}, learning:{label:'Learning',emoji:'🎧'},
+    'software-engineering':{label:'Software Engineering',emoji:'💻'}, travel:{label:'Travel',emoji:'🧳'}
+  };
+  const catLabel = c => (CATEGORIES[c] && CATEGORIES[c].label) || (c ? c.charAt(0).toUpperCase()+c.slice(1) : '');
+  const catEmoji = c => (CATEGORIES[c] && CATEGORIES[c].emoji) || '💡';
+
   let activeCategory = null;
 
-const EMOJI_MAP = {
-  accessibility: '👁️',
-  career: '💼',
-  health: '🥗',
-  learning: '🎧',
-  household: '🧾',
-  civic: '⚖️',
-  creative: '🎨',
-  travel: '🧳',
-  business: '💼',
-  software_engineering: '💻'
-};
-
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
   function fmtDate(iso){
     try{ return new Date(iso+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
     catch(e){ return iso; }
   }
+  function isStale(iso){
+    const d = new Date(iso+'T00:00:00');
+    return !isNaN(d) && (Date.now() - d.getTime())/864e5 > STALE_AFTER_DAYS;
+  }
 
   function cardHTML(a, idx, isPinned){
-    const tags = (a.tags||[]).map(t=>`<span class="tag-pill">${t}</span>`).join('');
-    const categoryEmoji = EMOJI_MAP[a.category?.toLowerCase()] || '💡';
-
+    const tags = (a.tags||[]).map(t=>`<span class="tag-pill">${esc(t)}</span>`).join('');
+    const cat = (a.category||'').toLowerCase();
+    const stale = a.verified && isStale(a.verified);
+    const verified = a.verified
+      ? (stale
+          ? `<span class="verified stale" title="Last verified ${esc(fmtDate(a.verified))} — free-tier limits may have changed; re-check before relying on this guide">⚠ verified ${esc(fmtDate(a.verified))} · re-check</span>`
+          : `<span class="verified" title="Free-tier terms confirmed against the provider's docs on this date">✓ verified ${esc(fmtDate(a.verified))}</span>`)
+      : '';
+    const pin = isPinned
+      ? `<div class="pin-label"><span>📌 Pinned · Start here</span><span class="why">${esc(a.pinned_reason || 'The reference the other guides build on.')}</span></div>`
+      : '';
     return `
-      <a class="card ${isPinned?'pinned':''}" href="${a.path}" style="animation-delay:${Math.min(idx*0.04,0.4)}s"
-         data-category="${a.category||''}" data-search="${(a.title+' '+(a.hook||'')+' '+(a.tool||'')+' '+(a.tags||[]).join(' ')).toLowerCase()}">
+      <a class="card ${isPinned?'pinned':''}" href="${esc(a.path)}" style="animation-delay:${Math.min(idx*0.04,0.4)}s"
+         data-category="${esc(cat)}" data-search="${esc((a.title+' '+(a.hook||'')+' '+(a.tool||'')+' '+catLabel(cat)+' '+(a.tags||[]).join(' ')).toLowerCase())}">
+        ${pin}
         <div class="card-top">
-          <span class="tool-badge">${categoryEmoji} ${a.tool || 'Free tool'}</span>
-          <span class="reading-time">${a.reading_time_minutes || '—'} min</span>
+          <span class="tool-badge"><span aria-hidden="true">${catEmoji(cat)}</span> ${esc(a.tool || 'Free tool')}</span>
+          <span class="reading-time">${esc(a.reading_time_minutes || '—')} min</span>
         </div>
-        <h2>${a.title}</h2>
-        <p class="hook">${a.hook || ''}</p>
+        <h2>${esc(a.title)}</h2>
+        <p class="hook">${esc(a.hook || '')}</p>
         <div class="card-bottom">
           <div class="tags">${tags}</div>
-          ${a.verified ? `<span class="verified">✓ verified ${fmtDate(a.verified)}</span>` : ''}
+          ${verified}
         </div>
       </a>`;
   }
@@ -303,32 +424,46 @@ const EMOJI_MAP = {
       card.classList.toggle('hidden', !show);
       if(show) visible++;
     });
-    countEl.textContent = visible + (visible === 1 ? ' guide' : ' guides');
+    const scope = activeCategory ? ` in ${catLabel(activeCategory)}` : '';
+    const forQ = q ? ` matching “${esc(q)}”` : '';
+    countEl.innerHTML = `<span>${visible} ${visible === 1 ? 'guide' : 'guides'}${scope}${forQ}</span>`
+      + ((activeCategory || q) ? `<button type="button" id="clear-filters">Clear filters</button>` : '');
+    const clear = document.getElementById('clear-filters');
+    if(clear) clear.addEventListener('click', ()=>{ searchEl.value=''; setCategory(null); searchEl.focus(); });
+  }
+
+  function syncUrl(){
+    const url = new URL(location.href);
+    if(activeCategory) url.searchParams.set('category', activeCategory); else url.searchParams.delete('category');
+    history.replaceState(null, '', url.pathname + url.search + url.hash);
+  }
+
+  function setCategory(cat){
+    activeCategory = cat || null;
+    filtersEl.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed', String((c.dataset.cat||null) === activeCategory)));
+    syncUrl();
+    applyFilters();
   }
 
   function renderFilters(articles){
-    const cats = [...new Set(articles.map(a => a.category).filter(Boolean))];
+    const cats = [...new Set(articles.map(a => (a.category||'').toLowerCase()).filter(Boolean))]
+      .sort((a,b)=>catLabel(a).localeCompare(catLabel(b)));
     if(cats.length === 0){ filtersEl.innerHTML=''; return; }
-    let html = `<span class="chip active" data-cat="">All</span>`;
-    cats.forEach(c => { 
-      const emoji = EMOJI_MAP[c.toLowerCase()] || '';
-      html += `<span class="chip" data-cat="${c}">${emoji} ${c.charAt(0).toUpperCase()+c.slice(1)}</span>`; 
+    let html = `<button type="button" class="chip" data-cat="" aria-pressed="true">All</button>`;
+    cats.forEach(c => {
+      html += `<button type="button" class="chip" data-cat="${esc(c)}" aria-pressed="false"><span aria-hidden="true">${catEmoji(c)}</span> ${esc(catLabel(c))}</button>`;
     });
     filtersEl.innerHTML = html;
     filtersEl.querySelectorAll('.chip').forEach(chip=>{
-      chip.addEventListener('click', ()=>{
-        filtersEl.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-        chip.classList.add('active');
-        activeCategory = chip.dataset.cat || null;
-        applyFilters();
-      });
+      chip.addEventListener('click', ()=> setCategory(chip.dataset.cat || null));
     });
   }
 
   function render(published, site){
     if(site && site.description){ descEl.textContent = site.description; footerDescEl.textContent = site.description; }
+    if(site && site.categories){ CATEGORIES = Object.assign({}, CATEGORIES, site.categories); }
     if(published.length === 0){
-      feedEl.innerHTML = '<div class="empty"><div class="glyph">No guides published yet.</div><p>The first verified, zero-cost workflow is being researched right now. Check back soon — or if you\'re the maintainer, run the content pipeline to add one.</p></div>';
+      feedEl.innerHTML = '<div class="empty"><div class="glyph">No guides published yet.</div><p>The first verified, zero-cost workflow is being researched right now. Check back soon.</p></div>';
       countEl.textContent = '0 guides';
       return;
     }
@@ -339,24 +474,36 @@ const EMOJI_MAP = {
     rest.forEach((a,i)=>{ html += cardHTML(a,i+pinned.length,false); });
     feedEl.innerHTML = html;
     renderFilters(published);
-    applyFilters();
+
+    // Deep links: ?category=health (used by article breadcrumbs) and ?q=resume (used by the 404 page)
+    const params = new URL(location.href).searchParams;
+    const wanted = (params.get('category') || '').toLowerCase();
+    const q = (params.get('q') || '').trim();
+    if(q) searchEl.value = q;
+    const valid = wanted && filtersEl.querySelector(`.chip[data-cat="${CSS.escape(wanted)}"]`);
+    if(valid) setCategory(wanted); else applyFilters();
+    if((valid || q) && location.hash === '') document.getElementById('main').scrollIntoView({block:'start'});
   }
 
   searchEl.addEventListener('input', applyFilters);
 
-  try{
-    const res = await fetch('./metadata.json');
-    if(!res.ok) throw new Error('metadata.json not found');
-    const data = await res.json();
-    render((data.articles || []).filter(a => a.status === 'published'), data.site);
-  }catch(err){
-    feedEl.innerHTML = '<div class="empty"><div class="glyph">No guides published yet.</div><p>The first verified, zero-cost workflow is being researched right now. Check back soon.</p></div>';
-    countEl.textContent = '0 guides';
+  async function load(){
+    countEl.textContent = 'loading…';
+    try{
+      const res = await fetch('./metadata.json', {cache:'no-cache'});
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      render((data.articles || []).filter(a => a.status === 'published'), data.site);
+    }catch(err){
+      feedEl.innerHTML = '<div class="empty error"><div class="glyph">Couldn’t load the guide list.</div><p>The directory index (metadata.json) didn’t load — this is usually a flaky connection, not a missing site. </p><button type="button" id="retry">Try again</button></div>';
+      countEl.textContent = 'Error loading guides';
+      document.getElementById('retry').addEventListener('click', load);
+    }
   }
+  load();
 })();
 </script>
-  <!-- Cloudflare Web Analytics -->
-<!-- Cloudflare Web Analytics -->
+<!-- Cloudflare Web Analytics (privacy-friendly, cookie-less page-view counts) -->
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
 <!-- End Cloudflare Web Analytics -->
 </body>

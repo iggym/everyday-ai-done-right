@@ -1,0 +1,22 @@
+# Keeps metadata.json consistent (unique ids, lowercase categories, no orphan
+# files) and makes sure the generated article chrome, sitemap and feed are
+# up to date with metadata.json.  No dependencies beyond Python's stdlib.
+name: Validate site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate metadata.json
+        run: python3 scripts/validate_metadata.py
+      - name: Check generated files are current
+        run: python3 scripts/build.py --check

@@ -1,0 +1,7 @@
+# Everyday AI, Done Right — https://iggym.github.io/everyday-ai-done-right/
+User-agent: *
+Allow: /
+Disallow: /tasks/
+Disallow: /scripts/
+
+Sitemap: https://iggym.github.io/everyday-ai-done-right/sitemap.xml

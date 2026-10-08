@@ -93,8 +93,71 @@
         .quota-box { background: var(--surface-color); border: 1px solid var(--border-color); padding: 1rem; border-radius: 6px; font-size: 0.875rem; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .quota-box strong { font-family: var(--font-display); }
     </style>
+<!-- eadr:head:start -->
+<meta name="description" content="Stop doing manual data entry for your expense reports; drop up to 50 receipts at a time into Google&#x27;s free developer sandbox and instantly get a…">
+<link rel="canonical" href="https://iggym.github.io/everyday-ai-done-right/articles/ai-studio-batch-receipt-parser.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Everyday AI, Done Right">
+<meta property="og:title" content="Bulk Extract Receipts to CSV for Free">
+<meta property="og:description" content="Stop doing manual data entry for your expense reports; drop up to 50 receipts at a time into Google&#x27;s free developer sandbox and instantly get a…">
+<meta property="og:url" content="https://iggym.github.io/everyday-ai-done-right/articles/ai-studio-batch-receipt-parser.html">
+<meta property="og:image" content="https://iggym.github.io/everyday-ai-done-right/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Everyday AI, Done Right — Real AI leverage. Actually free.">
+<meta property="article:published_time" content="2026-08-20">
+<meta property="article:modified_time" content="2026-08-20">
+<meta property="article:section" content="Business">
+<meta property="article:tag" content="finance">
+<meta property="article:tag" content="data entry">
+<meta property="article:tag" content="CSV">
+<meta property="article:tag" content="automation">
+<meta property="article:tag" content="batch processing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bulk Extract Receipts to CSV for Free">
+<meta name="twitter:description" content="Stop doing manual data entry for your expense reports; drop up to 50 receipts at a time into Google&#x27;s free developer sandbox and instantly get a…">
+<meta name="twitter:image" content="https://iggym.github.io/everyday-ai-done-right/og-image.png">
+<link rel="icon" href="../favicon.ico" sizes="32x32">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Everyday AI, Done Right" href="../feed.xml">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","@id":"https://iggym.github.io/everyday-ai-done-right/articles/ai-studio-batch-receipt-parser.html#article","headline":"Bulk Extract Receipts to CSV for Free","description":"Stop doing manual data entry for your expense reports; drop up to 50 receipts at a time into Google's free developer sandbox and instantly get a…","url":"https://iggym.github.io/everyday-ai-done-right/articles/ai-studio-batch-receipt-parser.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://iggym.github.io/everyday-ai-done-right/articles/ai-studio-batch-receipt-parser.html"},"datePublished":"2026-08-20","dateModified":"2026-08-20","author":{"@type":"Organization","name":"Everyday AI, Done Right","url":"https://iggym.github.io/everyday-ai-done-right/"},"publisher":{"@type":"Organization","name":"Everyday AI, Done Right","url":"https://iggym.github.io/everyday-ai-done-right/","logo":{"@type":"ImageObject","url":"https://iggym.github.io/everyday-ai-done-right/apple-touch-icon.png","width":180,"height":180}},"image":"https://iggym.github.io/everyday-ai-done-right/og-image.png","articleSection":"Business","keywords":"finance, data entry, CSV, automation, batch processing","timeRequired":"PT3M","isAccessibleForFree":true,"about":{"@type":"SoftwareApplication","name":"Google AI Studio","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://iggym.github.io/everyday-ai-done-right/"},{"@type":"ListItem","position":2,"name":"Business","item":"https://iggym.github.io/everyday-ai-done-right/?category=business"},{"@type":"ListItem","position":3,"name":"Bulk Extract Receipts to CSV for Free","item":"https://iggym.github.io/everyday-ai-done-right/articles/ai-studio-batch-receipt-parser.html"}]}]}</script>
+<!-- eadr:head:end -->
 </head>
 <body>
+<!-- eadr:nav:start -->
+<style>.eadr-nav,.eadr-nav *,.eadr-stale,.eadr-stale *{box-sizing:border-box}
+.eadr-nav,.eadr-nav div,.eadr-nav ol,.eadr-nav li,.eadr-nav a,.eadr-nav span,.eadr-stale,.eadr-stale a{margin:0;padding:0;border:0;background:none;list-style:none;position:static;text-align:left;max-width:none;color:inherit;font-size:inherit;text-transform:none;letter-spacing:normal;text-shadow:none;box-shadow:none;text-decoration:none;border-radius:0;transform:none;counter-increment:none;float:none;width:auto;min-height:0;height:auto}
+.eadr-nav li::before,.eadr-nav li::after{content:none;display:none}
+.eadr-skip{position:absolute;left:-10000px;top:12px;z-index:10000;padding:10px 16px;border-radius:8px;background:#0F8A5F;color:#fff;font:600 14px/1 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none}
+.eadr-skip:focus{left:12px;outline:3px solid #FF6B4A;outline-offset:2px}
+.eadr-nav{display:block;font:500 13px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;border-bottom:1px solid rgba(127,127,127,.28)}
+.eadr-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:8px 18px;flex-wrap:wrap;max-width:880px;margin:0 auto;padding:10px 20px}
+.eadr-crumbs{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-width:0}
+.eadr-crumbs li{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.eadr-crumbs li+li::before{content:"\203A";display:inline;opacity:.45}
+.eadr-crumbs a{display:inline;opacity:.78;border-bottom:1px solid transparent;white-space:nowrap}
+.eadr-crumbs a:hover,.eadr-crumbs a:focus-visible{opacity:1;border-bottom-color:currentColor}
+.eadr-crumbs [aria-current]{display:inline-block;opacity:.62;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(44ch,62vw)}
+.eadr-meta{display:inline-flex;align-items:center;gap:12px;font:500 11.5px/1 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.72;white-space:nowrap}
+.eadr-stale{display:none;max-width:840px;margin:14px auto 0;padding:12px 16px;border:1px solid rgba(255,107,74,.45);border-left:5px solid #FF6B4A;border-radius:12px;background:rgba(255,107,74,.10);font:500 13.5px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.eadr-stale.eadr-show{display:block}
+.eadr-stale a{text-decoration:underline;font-weight:600}
+@media (max-width:640px){.eadr-nav-inner{padding:10px 16px}.eadr-meta{opacity:.65}}</style>
+<a class="eadr-skip" href="#eadr-content">Skip to content</a>
+<nav class="eadr-nav" aria-label="Breadcrumb" data-verified="2026-08-20" data-built="2026-10-08">
+  <div class="eadr-nav-inner">
+    <ol class="eadr-crumbs">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html?category=business">📈 Business</a></li>
+      <li><span aria-current="page" title="Bulk Extract Receipts to CSV for Free">Bulk Extract Receipts to CSV for Free</span></li>
+    </ol>
+    <div class="eadr-meta"><span>3 min read</span><span>✓ verified Aug 20, 2026</span></div>
+  </div>
+</nav>
+<div class="eadr-stale" role="note"><strong>Heads up:</strong> this guide was last verified on Aug 20, 2026. Free-tier limits change often — re-check the provider's current pricing page before relying on it. <a href="https://github.com/iggym/everyday-ai-done-right/issues/new?title=Outdated+limit%3A+ai-studio-batch-receipt-parser&amp;body=Which+limit+changed%3F+Please+link+the+provider+page+showing+the+current+free+tier." rel="noopener">Report an outdated limit</a>.</div>
+<script>(function(){var n=document.querySelector('.eadr-nav[data-verified]');if(!n)return;var v=new Date(n.getAttribute('data-verified')+'T00:00:00');if(isNaN(v))return;if((Date.now()-v)/864e5>365){var s=document.querySelector('.eadr-stale');if(s)s.classList.add('eadr-show');}})();</script>
+<!-- eadr:nav:end -->
     <max-container>
         <div class="top-bar">
             <div style="font-family: var(--font-display); font-weight: 800; font-size: 1.2rem;">Everyday AI Done Right</div>
@@ -107,7 +170,7 @@
                 <span class="badge">Business / Finance</span>
                 <span class="badge badge-verified">100% Free <span class="date-chip">as of Aug 20, 2026</span></span>
             </div>
-            <h1>Bulk Extract Receipts to CSV for Free</h1>
+            <h1 id="eadr-content" tabindex="-1">Bulk Extract Receipts to CSV for Free</h1>
             <p style="font-size: 1.125rem; color: var(--text-muted);">Stop doing manual data entry for your expense reports; drop up to 50 receipts at a time into Google's free developer sandbox and instantly get a perfectly formatted CSV.</p>
         </div>
 
@@ -280,5 +343,45 @@ If a field is missing on a document, leave the cell empty. Use a header row.`;
     <!-- Cloudflare Web Analytics -->
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
     <!-- End Cloudflare Web Analytics -->
+<!-- eadr:footer:start -->
+<style>.eadr-related,.eadr-related *{box-sizing:border-box}
+.eadr-related,.eadr-related div,.eadr-related ul,.eadr-related li,.eadr-related a,.eadr-related p,.eadr-related h2,.eadr-related span,.eadr-related strong{margin:0;padding:0;border:0;background:none;list-style:none;position:static;text-align:left;max-width:none;color:inherit;font-size:inherit;text-transform:none;letter-spacing:normal;text-shadow:none;box-shadow:none;text-decoration:none;border-radius:0;transform:none;counter-increment:none;float:none;width:auto;min-height:0;height:auto;line-height:1.5}
+.eadr-related li::before,.eadr-related li::after,.eadr-related h2::before,.eadr-related h2::after{content:none;display:none}
+.eadr-related{display:block;font:400 15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;border-top:1px solid rgba(127,127,127,.28);margin-top:56px;padding:40px 20px 28px}
+.eadr-related-inner{max-width:880px;margin:0 auto}
+.eadr-kicker{display:block;font:600 11px/1 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin:0 0 8px}
+.eadr-related h2{display:block;font:800 1.35rem/1.25 Manrope,Inter,system-ui,sans-serif;letter-spacing:-.01em;margin:0 0 18px}
+.eadr-related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.eadr-related-grid li{display:block}
+.eadr-related-grid a{display:flex;flex-direction:column;gap:8px;height:100%;padding:16px 18px;border:1px solid rgba(127,127,127,.3);border-radius:14px;transition:border-color .2s ease,transform .2s ease}
+.eadr-related-grid a:hover,.eadr-related-grid a:focus-visible{border-color:#0F8A5F;transform:translateY(-2px)}
+.eadr-rel-cat{display:block;font:600 10.5px/1.3 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.65}
+.eadr-related-grid strong{display:block;font:700 15px/1.35 Manrope,Inter,system-ui,sans-serif}
+.eadr-rel-hook{display:block;font-size:13px;line-height:1.5;opacity:.75}
+.eadr-next{display:flex;flex-wrap:wrap;gap:10px 22px;margin:26px 0 0;font-size:14px}
+.eadr-next a{display:inline;font-weight:600;border-bottom:1px solid rgba(127,127,127,.45)}
+.eadr-next a:hover,.eadr-next a:focus-visible{border-bottom-color:currentColor}
+.eadr-foot-meta{display:block;margin:26px 0 0;font:500 12px/1.6 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.62}
+.eadr-foot-meta a{display:inline;text-decoration:underline}
+@media (prefers-reduced-motion:reduce){.eadr-related-grid a{transition:none}.eadr-related-grid a:hover{transform:none}}</style>
+<section class="eadr-related" aria-labelledby="eadr-related-title">
+  <div class="eadr-related-inner">
+    <p class="eadr-kicker">Keep going</p>
+    <h2 id="eadr-related-title">Related guides</h2>
+    <ul class="eadr-related-grid">
+      <li><a href="./business-deck-ai-google-labs.html"><span class="eadr-rel-cat">📈 Business · 3 min</span><strong>Business Deck AI (Google Workspace Labs)</strong><span class="eadr-rel-hook">Generate a 10-slide business deck from a prompt — 100% free, 10k tokens/mo, no card.</span></a></li>
+      <li><a href="./free-business-document-analysis-with-google-gemini.html"><span class="eadr-rel-cat">📈 Business · 3 min</span><strong>Free Business Document Analysis with Google Gemini</strong><span class="eadr-rel-hook">Google Gemini&#x27;s free tier lets you analyze business documents (PDFs, Word files, spreadsheets) up to 20MB…</span></a></li>
+      <li><a href="./extract-crm-json-messy-emails-mistral-free.html"><span class="eadr-rel-cat">📈 Business · 3 min</span><strong>Extract CRM-Ready JSON from Messy Emails for Free</strong><span class="eadr-rel-hook">Turn unstructured client threads into strict, database-ready JSON using Mistral Le Chat&#x27;s free tier—but you…</span></a></li>
+    </ul>
+    <p class="eadr-next">
+      <a href="../index.html?category=business">More Business guides →</a>
+      <a href="../index.html">All guides</a>
+      <a href="./zero-cost-ai-catalog-and-schema.html">📌 Master catalog of free AI tools</a>
+      <a href="https://github.com/iggym/everyday-ai-done-right/issues/new" rel="noopener">Report a problem</a>
+    </p>
+    <p class="eadr-foot-meta">Everyday AI, Done Right · Google AI Studio · free-tier terms verified Aug 20, 2026 · <a href="https://ai.google.dev/pricing" rel="noopener">provider source</a></p>
+  </div>
+</section>
+<!-- eadr:footer:end -->
 </body>
 </html>

@@ -120,6 +120,22 @@ Pick a category below to jump straight to the step-by-step verified guide:
 
 ---
 
+## 🧰 Maintaining the site
+
+The site is plain static HTML on GitHub Pages — no framework, no `npm install`. Two stdlib-only Python scripts keep it consistent:
+
+| Command | What it does |
+| :--- | :--- |
+| `python3 scripts/validate_metadata.py` | Checks `metadata.json`: unique ids & slugs, lowercase categories (from `site.categories`), ISO dates, every `path` exists, no orphan HTML files, redirect targets exist. Add `--fix` to auto-repair ids/casing and rewrite in canonical formatting. |
+| `python3 scripts/build.py` | Injects the shared article chrome (SEO `<head>` tags + JSON-LD, skip link, breadcrumbs, verified-date / staleness notice, "Related guides") into every article, labels icon-only buttons, and regenerates `sitemap.xml` and `feed.xml`. Idempotent — safe to re-run. `--check` exits non-zero if anything is out of date (used by CI). |
+| `python3 scripts/make_brand_assets.py` | Regenerates `favicon.*`, `apple-touch-icon.png` and `og-image.png` (needs Pillow; only when the brand changes). |
+
+**Adding a guide:** drop the HTML in `articles/`, add its entry to `metadata.json` (pick the next free 4-digit `id`), then run the two scripts above and commit the result. **Renaming or removing a guide:** add the old slug to `site.redirects` so the 404 page forwards readers to the successor.
+
+Guides verified more than 12 months ago are automatically flagged on the homepage and at the top of the article until their `verified` date is refreshed.
+
+---
+
 > [!NOTE]
 > ### 🛡️ Our Guarantees
 > 1. 🟢 **100% Free Forever** — Every workflow uses tiers that require **no credit card**.

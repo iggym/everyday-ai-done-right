@@ -467,8 +467,72 @@
             margin-top: 3rem;
         }
     </style>
+<!-- eadr:head:start -->
+<meta name="description" content="A 100% free, open-source guide to setting up local AI image generation the right way — on your own hardware, with no quotas.">
+<link rel="canonical" href="https://iggym.github.io/everyday-ai-done-right/articles/stable-diffusion-comfyui-setup-guide.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Everyday AI, Done Right">
+<meta property="og:title" content="Stable Diffusion: Stop Installing the Wrong UI">
+<meta property="og:description" content="A 100% free, open-source guide to setting up local AI image generation the right way — on your own hardware, with no quotas.">
+<meta property="og:url" content="https://iggym.github.io/everyday-ai-done-right/articles/stable-diffusion-comfyui-setup-guide.html">
+<meta property="og:image" content="https://iggym.github.io/everyday-ai-done-right/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Everyday AI, Done Right — Real AI leverage. Actually free.">
+<meta property="article:published_time" content="2026-08-20">
+<meta property="article:modified_time" content="2026-08-20">
+<meta property="article:section" content="Creative">
+<meta property="article:tag" content="stable-diffusion">
+<meta property="article:tag" content="comfyui">
+<meta property="article:tag" content="image-generation">
+<meta property="article:tag" content="self-hosted">
+<meta property="article:tag" content="open-source">
+<meta property="article:tag" content="ai-art">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Stable Diffusion: Stop Installing the Wrong UI">
+<meta name="twitter:description" content="A 100% free, open-source guide to setting up local AI image generation the right way — on your own hardware, with no quotas.">
+<meta name="twitter:image" content="https://iggym.github.io/everyday-ai-done-right/og-image.png">
+<link rel="icon" href="../favicon.ico" sizes="32x32">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Everyday AI, Done Right" href="../feed.xml">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","@id":"https://iggym.github.io/everyday-ai-done-right/articles/stable-diffusion-comfyui-setup-guide.html#article","headline":"Stable Diffusion: Stop Installing the Wrong UI","description":"A 100% free, open-source guide to setting up local AI image generation the right way — on your own hardware, with no quotas.","url":"https://iggym.github.io/everyday-ai-done-right/articles/stable-diffusion-comfyui-setup-guide.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://iggym.github.io/everyday-ai-done-right/articles/stable-diffusion-comfyui-setup-guide.html"},"datePublished":"2026-08-20","dateModified":"2026-08-20","author":{"@type":"Organization","name":"Everyday AI, Done Right","url":"https://iggym.github.io/everyday-ai-done-right/"},"publisher":{"@type":"Organization","name":"Everyday AI, Done Right","url":"https://iggym.github.io/everyday-ai-done-right/","logo":{"@type":"ImageObject","url":"https://iggym.github.io/everyday-ai-done-right/apple-touch-icon.png","width":180,"height":180}},"image":"https://iggym.github.io/everyday-ai-done-right/og-image.png","articleSection":"Creative","keywords":"stable-diffusion, comfyui, image-generation, self-hosted, open-source, ai-art","timeRequired":"PT3M","isAccessibleForFree":true,"about":{"@type":"SoftwareApplication","name":"ComfyUI / Stable Diffusion (Stability AI)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://iggym.github.io/everyday-ai-done-right/"},{"@type":"ListItem","position":2,"name":"Creative","item":"https://iggym.github.io/everyday-ai-done-right/?category=creative"},{"@type":"ListItem","position":3,"name":"Stable Diffusion: Stop Installing the Wrong UI","item":"https://iggym.github.io/everyday-ai-done-right/articles/stable-diffusion-comfyui-setup-guide.html"}]}]}</script>
+<!-- eadr:head:end -->
 </head>
 <body>
+<!-- eadr:nav:start -->
+<style>.eadr-nav,.eadr-nav *,.eadr-stale,.eadr-stale *{box-sizing:border-box}
+.eadr-nav,.eadr-nav div,.eadr-nav ol,.eadr-nav li,.eadr-nav a,.eadr-nav span,.eadr-stale,.eadr-stale a{margin:0;padding:0;border:0;background:none;list-style:none;position:static;text-align:left;max-width:none;color:inherit;font-size:inherit;text-transform:none;letter-spacing:normal;text-shadow:none;box-shadow:none;text-decoration:none;border-radius:0;transform:none;counter-increment:none;float:none;width:auto;min-height:0;height:auto}
+.eadr-nav li::before,.eadr-nav li::after{content:none;display:none}
+.eadr-skip{position:absolute;left:-10000px;top:12px;z-index:10000;padding:10px 16px;border-radius:8px;background:#0F8A5F;color:#fff;font:600 14px/1 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none}
+.eadr-skip:focus{left:12px;outline:3px solid #FF6B4A;outline-offset:2px}
+.eadr-nav{display:block;font:500 13px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;border-bottom:1px solid rgba(127,127,127,.28)}
+.eadr-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:8px 18px;flex-wrap:wrap;max-width:880px;margin:0 auto;padding:10px 20px}
+.eadr-crumbs{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-width:0}
+.eadr-crumbs li{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.eadr-crumbs li+li::before{content:"\203A";display:inline;opacity:.45}
+.eadr-crumbs a{display:inline;opacity:.78;border-bottom:1px solid transparent;white-space:nowrap}
+.eadr-crumbs a:hover,.eadr-crumbs a:focus-visible{opacity:1;border-bottom-color:currentColor}
+.eadr-crumbs [aria-current]{display:inline-block;opacity:.62;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(44ch,62vw)}
+.eadr-meta{display:inline-flex;align-items:center;gap:12px;font:500 11.5px/1 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.72;white-space:nowrap}
+.eadr-stale{display:none;max-width:840px;margin:14px auto 0;padding:12px 16px;border:1px solid rgba(255,107,74,.45);border-left:5px solid #FF6B4A;border-radius:12px;background:rgba(255,107,74,.10);font:500 13.5px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.eadr-stale.eadr-show{display:block}
+.eadr-stale a{text-decoration:underline;font-weight:600}
+@media (max-width:640px){.eadr-nav-inner{padding:10px 16px}.eadr-meta{opacity:.65}}</style>
+<a class="eadr-skip" href="#main">Skip to content</a>
+<nav class="eadr-nav" aria-label="Breadcrumb" data-verified="2026-08-20" data-built="2026-10-08">
+  <div class="eadr-nav-inner">
+    <ol class="eadr-crumbs">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html?category=creative">🎨 Creative</a></li>
+      <li><span aria-current="page" title="Stable Diffusion: Stop Installing the Wrong UI">Stable Diffusion: Stop Installing the Wrong UI</span></li>
+    </ol>
+    <div class="eadr-meta"><span>3 min read</span><span>✓ verified Aug 20, 2026</span></div>
+  </div>
+</nav>
+<div class="eadr-stale" role="note"><strong>Heads up:</strong> this guide was last verified on Aug 20, 2026. Free-tier limits change often — re-check the provider's current pricing page before relying on it. <a href="https://github.com/iggym/everyday-ai-done-right/issues/new?title=Outdated+limit%3A+stable-diffusion-comfyui-setup-guide&amp;body=Which+limit+changed%3F+Please+link+the+provider+page+showing+the+current+free+tier." rel="noopener">Report an outdated limit</a>.</div>
+<script>(function(){var n=document.querySelector('.eadr-nav[data-verified]');if(!n)return;var v=new Date(n.getAttribute('data-verified')+'T00:00:00');if(isNaN(v))return;if((Date.now()-v)/864e5>365){var s=document.querySelector('.eadr-stale');if(s)s.classList.add('eadr-show');}})();</script>
+<!-- eadr:nav:end -->
 
     <!-- Top Bar -->
     <header class="top-bar">
@@ -476,7 +540,7 @@
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌓</button>
     </header>
 
-    <main class="container">
+    <main class="container" id="main" tabindex="-1">
 
         <!-- Hero -->
         <section class="hero">
@@ -635,4 +699,153 @@
             </div>
         </div>
 
-        <!-- Full Share
+        <!-- Full Share Bar -->
+        <div class="share-bar">
+            <span style="font-weight:600; align-self:center;">Share this guide:</span>
+            <button class="share-btn" type="button" data-share="x">X / Twitter</button>
+            <button class="share-btn" type="button" data-share="linkedin">LinkedIn</button>
+            <button class="share-btn" type="button" data-share="reddit">Reddit</button>
+            <button class="share-btn" type="button" data-share="copy" id="copyLinkBtn">Copy link</button>
+        </div>
+
+    </main>
+
+    <script>
+    (function () {
+        // Theme toggle (persisted)
+        var root = document.documentElement;
+        var toggle = document.getElementById('themeToggle');
+        var saved = null;
+        try { saved = localStorage.getItem('eadr-theme'); } catch (e) {}
+        if (saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            root.setAttribute('data-theme', 'dark');
+        }
+        if (toggle) {
+            toggle.addEventListener('click', function () {
+                var dark = root.getAttribute('data-theme') === 'dark';
+                if (dark) { root.removeAttribute('data-theme'); } else { root.setAttribute('data-theme', 'dark'); }
+                try { localStorage.setItem('eadr-theme', dark ? 'light' : 'dark'); } catch (e) {}
+            });
+        }
+
+        // Diagnostic calculator
+        var vram = document.getElementById('vram');
+        var workflow = document.getElementById('workflow');
+        var recTool = document.getElementById('recTool');
+        var recReason = document.getElementById('recReason');
+        var labels = { '4': 'under 4GB', '6': '4GB-6GB', '8': '6GB-8GB', '12': '8GB-12GB', '24': '12GB+' };
+        function recommend() {
+            if (!vram || !workflow || !recTool || !recReason) return;
+            var v = parseInt(vram.value, 10);
+            var w = workflow.value;
+            var label = labels[vram.value] || vram.value + 'GB';
+            var tool, reason;
+            if (v <= 4) {
+                tool = 'ComfyUI (--lowvram)';
+                reason = 'With a ' + label + ' GPU, memory is the whole game. ComfyUI is the most memory-efficient option; launch it with the <code>--lowvram</code> flag and use a lightweight SD 1.5 checkpoint. Automatic1111 will crash on this hardware.';
+            } else if (w === 'experimental') {
+                tool = 'ComfyUI';
+                reason = 'Node-based workflows are exactly what ComfyUI is built for. On a ' + label + ' GPU you can chain custom nodes, ControlNets and upscalers without hitting a wall.';
+            } else if (w === 'batch') {
+                tool = 'ComfyUI';
+                reason = 'ComfyUI only re-runs the parts of the graph that changed, which makes high-volume batch generation faster and far more stable on a ' + label + ' GPU.';
+            } else {
+                tool = 'ComfyUI';
+                reason = 'ComfyUI is highly efficient with memory. For a ' + label + ' GPU, it will give you the best performance and stability \u2014 and the default workflow is a one-click text-to-image graph, so "simple" still works.';
+            }
+            recTool.textContent = tool;
+            recReason.innerHTML = reason;
+        }
+        if (vram && workflow) {
+            vram.addEventListener('change', recommend);
+            workflow.addEventListener('change', recommend);
+            recommend();
+        }
+
+        // Step accordion
+        document.querySelectorAll('.step .step-header').forEach(function (h) {
+            h.setAttribute('role', 'button');
+            h.setAttribute('tabindex', '0');
+            var step = h.parentElement;
+            h.setAttribute('aria-expanded', step.classList.contains('open') ? 'true' : 'false');
+            function toggleStep() {
+                var open = step.classList.toggle('open');
+                h.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+            h.addEventListener('click', toggleStep);
+            h.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleStep(); } });
+        });
+
+        // Reveal
+        var revealBtn = document.getElementById('revealBtn');
+        var revealContent = document.getElementById('revealContent');
+        if (revealBtn && revealContent) {
+            revealBtn.setAttribute('aria-expanded', 'false');
+            revealBtn.setAttribute('aria-controls', 'revealContent');
+            revealBtn.addEventListener('click', function () {
+                var open = revealContent.classList.toggle('open');
+                revealBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                revealBtn.textContent = open ? 'Hide the Scar-Tissue lessons' : 'Click to reveal the Scar-Tissue lessons';
+            });
+        }
+
+        // Share bar
+        var pageUrl = location.href.split('#')[0];
+        var pageTitle = document.title;
+        document.querySelectorAll('.share-btn[data-share]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var kind = btn.getAttribute('data-share');
+                var u = encodeURIComponent(pageUrl), t = encodeURIComponent(pageTitle);
+                if (kind === 'x') window.open('https://twitter.com/intent/tweet?text=' + t + '&url=' + u, '_blank', 'noopener');
+                else if (kind === 'linkedin') window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + u, '_blank', 'noopener');
+                else if (kind === 'reddit') window.open('https://www.reddit.com/submit?url=' + u + '&title=' + t, '_blank', 'noopener');
+                else if (kind === 'copy') {
+                    var done = function () { btn.textContent = 'Copied!'; setTimeout(function () { btn.textContent = 'Copy link'; }, 1600); };
+                    if (navigator.clipboard) navigator.clipboard.writeText(pageUrl).then(done, done); else done();
+                }
+            });
+        });
+    })();
+    </script>
+<!-- eadr:footer:start -->
+<style>.eadr-related,.eadr-related *{box-sizing:border-box}
+.eadr-related,.eadr-related div,.eadr-related ul,.eadr-related li,.eadr-related a,.eadr-related p,.eadr-related h2,.eadr-related span,.eadr-related strong{margin:0;padding:0;border:0;background:none;list-style:none;position:static;text-align:left;max-width:none;color:inherit;font-size:inherit;text-transform:none;letter-spacing:normal;text-shadow:none;box-shadow:none;text-decoration:none;border-radius:0;transform:none;counter-increment:none;float:none;width:auto;min-height:0;height:auto;line-height:1.5}
+.eadr-related li::before,.eadr-related li::after,.eadr-related h2::before,.eadr-related h2::after{content:none;display:none}
+.eadr-related{display:block;font:400 15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;border-top:1px solid rgba(127,127,127,.28);margin-top:56px;padding:40px 20px 28px}
+.eadr-related-inner{max-width:880px;margin:0 auto}
+.eadr-kicker{display:block;font:600 11px/1 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin:0 0 8px}
+.eadr-related h2{display:block;font:800 1.35rem/1.25 Manrope,Inter,system-ui,sans-serif;letter-spacing:-.01em;margin:0 0 18px}
+.eadr-related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.eadr-related-grid li{display:block}
+.eadr-related-grid a{display:flex;flex-direction:column;gap:8px;height:100%;padding:16px 18px;border:1px solid rgba(127,127,127,.3);border-radius:14px;transition:border-color .2s ease,transform .2s ease}
+.eadr-related-grid a:hover,.eadr-related-grid a:focus-visible{border-color:#0F8A5F;transform:translateY(-2px)}
+.eadr-rel-cat{display:block;font:600 10.5px/1.3 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.65}
+.eadr-related-grid strong{display:block;font:700 15px/1.35 Manrope,Inter,system-ui,sans-serif}
+.eadr-rel-hook{display:block;font-size:13px;line-height:1.5;opacity:.75}
+.eadr-next{display:flex;flex-wrap:wrap;gap:10px 22px;margin:26px 0 0;font-size:14px}
+.eadr-next a{display:inline;font-weight:600;border-bottom:1px solid rgba(127,127,127,.45)}
+.eadr-next a:hover,.eadr-next a:focus-visible{border-bottom-color:currentColor}
+.eadr-foot-meta{display:block;margin:26px 0 0;font:500 12px/1.6 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.62}
+.eadr-foot-meta a{display:inline;text-decoration:underline}
+@media (prefers-reduced-motion:reduce){.eadr-related-grid a{transition:none}.eadr-related-grid a:hover{transform:none}}</style>
+<section class="eadr-related" aria-labelledby="eadr-related-title">
+  <div class="eadr-related-inner">
+    <p class="eadr-kicker">Keep going</p>
+    <h2 id="eadr-related-title">Related guides</h2>
+    <ul class="eadr-related-grid">
+      <li><a href="./stop-describing-start-showing-free-consistent-characters.html"><span class="eadr-rel-cat">🎨 Creative · 4 min</span><strong>Stop Describing, Start Showing: Consistent AI Characters for $0 in Google AI Studio</strong><span class="eadr-rel-hook">One anchor sheet plus one pinned reference image keeps a character looking like themselves across every…</span></a></li>
+      <li><a href="./generate-consistent-character-reference-sheets-leonardo.html"><span class="eadr-rel-cat">🎨 Creative · 4 min</span><strong>Generate Consistent Character Reference Sheets for Free</strong><span class="eadr-rel-hook">Generate consistent character reference sheets or mood boards for your creative projects using Leonardo.ai’s…</span></a></li>
+      <li><a href="./generate-prompt-aligned-graphics-microsoft-designer-free.html"><span class="eadr-rel-cat">🎨 Creative · 3 min</span><strong>Generate Custom Reference Images and Graphics for Free</strong><span class="eadr-rel-hook">Generate high-quality, prompt-aligned images for presentations or art references using Microsoft Designer’s…</span></a></li>
+    </ul>
+    <p class="eadr-next">
+      <a href="../index.html?category=creative">More Creative guides →</a>
+      <a href="../index.html">All guides</a>
+      <a href="./zero-cost-ai-catalog-and-schema.html">📌 Master catalog of free AI tools</a>
+      <a href="https://github.com/iggym/everyday-ai-done-right/issues/new" rel="noopener">Report a problem</a>
+    </p>
+    <p class="eadr-foot-meta">Everyday AI, Done Right · ComfyUI / Stable Diffusion (Stability AI) · free-tier terms verified Aug 20, 2026 · <a href="https://github.com/comfyanonymous/ComfyUI" rel="noopener">provider source</a></p>
+  </div>
+</section>
+<!-- eadr:footer:end -->
+</body>
+</html>
