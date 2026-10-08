@@ -57,7 +57,6 @@ OPTIONAL_KEYS = {"pinned_reason": str}
 
 KNOWN_CATEGORIES = {
     "accessibility",
-    "ai-tools",
     "business",
     "career",
     "civic",
@@ -66,7 +65,6 @@ KNOWN_CATEGORIES = {
     "health",
     "household",
     "learning",
-    "software-engineering",
     "travel",
 }
 VALID_STATUS = {"published", "draft"}

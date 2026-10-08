@@ -1,0 +1,53 @@
+name: Outdated limit
+description: A free-tier limit, price or feature in a guide has changed
+title: "Outdated limit: "
+labels: ["outdated-limit"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for keeping the guides honest. Please include a link to the provider's own page that shows the current free tier. Please don't include personal information.
+  - type: input
+    id: slug
+    attributes:
+      label: Guide slug
+      description: The part of the article URL before ".html", for example `turn-paper-mail-into-calendar-reminders`.
+      placeholder: turn-paper-mail-into-calendar-reminders
+    validations:
+      required: true
+  - type: dropdown
+    id: what-changed
+    attributes:
+      label: What changed?
+      options:
+        - Free request or message limit
+        - Token, context or file-size limit
+        - Feature moved behind a paid plan
+        - Tool renamed, merged or shut down
+        - Price shown in the guide is wrong
+        - Model name or menu path is different
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: What the guide says vs. what the provider says now
+      description: Quote the guide text and the provider text if you can.
+    validations:
+      required: true
+  - type: input
+    id: provider-url
+    attributes:
+      label: Provider page
+      description: Link to the official pricing, limits or help page.
+      placeholder: https://
+    validations:
+      required: true
+  - type: input
+    id: checked-on
+    attributes:
+      label: Date you checked the provider page
+      placeholder: YYYY-MM-DD
+    validations:
+      required: false

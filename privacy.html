@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy — Everyday AI, Done Right</title>
+<meta name="description" content="What Everyday AI, Done Right stores, what its anonymous page-view counter does, and where third-party AI tools take over.">
+<link rel="canonical" href="https://iggym.github.io/everyday-ai-done-right/privacy.html">
+<link rel="icon" href="./favicon.ico" sizes="32x32">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0F8A5F">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Everyday AI, Done Right">
+<meta property="og:title" content="Privacy — Everyday AI, Done Right">
+<meta property="og:description" content="What this site stores, what its anonymous page-view counter does, and where third-party AI tools take over.">
+<meta property="og:url" content="https://iggym.github.io/everyday-ai-done-right/privacy.html">
+<meta property="og:image" content="https://iggym.github.io/everyday-ai-done-right/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="Everyday AI, Done Right" href="./feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFAF9;
+    --paper-raised:#FFFFFF;
+    --ink:#1C1C1E;
+    --ink-soft:#54545A;
+    --muted:#6E6E73;
+    --line: rgba(28,28,30,0.10);
+    --green:#0D7D56;
+    --green-soft: rgba(15,138,95,0.10);
+    --display:'Manrope', sans-serif;
+    --body:'Inter', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#141414;
+      --paper-raised:#1C1C1E;
+      --ink:#F4F4F3;
+      --ink-soft:#C7C7CB;
+      --muted:#9A9AA0;
+      --line: rgba(244,244,243,0.10);
+      --green:#22C58B;
+      --green-soft: rgba(34,197,139,0.14);
+    }
+  }
+  html[data-theme="light"]{
+    --paper:#FAFAF9; --paper-raised:#FFFFFF; --ink:#1C1C1E; --ink-soft:#54545A; --muted:#6E6E73;
+    --line: rgba(28,28,30,0.10); --green:#0D7D56; --green-soft: rgba(15,138,95,0.10);
+  }
+  html[data-theme="dark"]{
+    --paper:#141414; --paper-raised:#1C1C1E; --ink:#F4F4F3; --ink-soft:#C7C7CB; --muted:#9A9AA0;
+    --line: rgba(244,244,243,0.10); --green:#22C58B; --green-soft: rgba(34,197,139,0.14);
+  }
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.65; }
+  a{ color:var(--green); }
+  a:focus-visible, button:focus-visible{ outline:3px solid var(--green); outline-offset:2px; border-radius:4px; }
+  .skip{ position:absolute; left:-10000px; top:12px; padding:10px 16px; border-radius:8px; background:var(--green); color:#fff; font-weight:600; text-decoration:none; }
+  .skip:focus{ left:12px; z-index:10; }
+  .topbar{ border-bottom:1px solid var(--line); padding:14px 24px; }
+  .topbar-inner{ max-width:760px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  .mark{ display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink); font-family:var(--display); font-weight:800; font-size:15px; }
+  .mark .dot{ width:9px; height:9px; border-radius:50%; background:var(--green); }
+  .topbar nav a{ font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none; margin-left:14px; }
+  .topbar nav a:hover{ color:var(--green); }
+  main{ max-width:760px; margin:0 auto; padding:48px 24px 56px; }
+  .eyebrow{ font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.04em; text-transform:uppercase; margin:0 0 10px; }
+  h1{ font-family:var(--display); font-weight:800; font-size:clamp(28px,4vw,38px); line-height:1.15; letter-spacing:-.02em; margin:0 0 14px; }
+  h2{ font-family:var(--display); font-weight:700; font-size:20px; margin:36px 0 10px; }
+  p, li{ color:var(--ink-soft); }
+  ul{ padding-left:20px; }
+  li{ margin-bottom:8px; }
+  .summary{ background:var(--green-soft); border:1px solid var(--line); border-left:4px solid var(--green); border-radius:12px; padding:16px 18px; margin:24px 0 8px; color:var(--ink); }
+  .summary p{ color:var(--ink); margin:0; }
+  code{ font-family:var(--mono); font-size:.9em; background:var(--paper-raised); border:1px solid var(--line); padding:1px 6px; border-radius:6px; color:var(--ink); }
+  footer{ border-top:1px solid var(--line); padding:32px 24px; text-align:center; }
+  footer p{ font-size:13.5px; color:var(--muted); margin:0 auto 10px; max-width:560px; }
+  footer nav{ display:flex; gap:10px 22px; justify-content:center; flex-wrap:wrap; }
+  footer nav a{ font-size:13.5px; color:var(--ink-soft); }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="mark" href="./index.html"><span class="dot" aria-hidden="true"></span> Everyday AI, Done Right</a>
+    <nav aria-label="Site">
+      <a href="./index.html">All guides</a>
+      <a href="./feed.xml">RSS</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <p class="eyebrow">Last updated 8 Oct 2026</p>
+  <h1>Privacy</h1>
+
+  <div class="summary">
+    <p><strong>Short version:</strong> this is a static website with no accounts, no forms, and no tracking cookies from us. It counts page views anonymously with Cloudflare Web Analytics. Once you click through to an AI tool, that tool's own privacy policy applies, not ours.</p>
+  </div>
+
+  <h2>What this site stores</h2>
+  <ul>
+    <li><strong>Nothing on our side.</strong> The site is plain HTML, CSS and JavaScript served by GitHub Pages. We run no server, database, or sign-in system, and we don't receive your personal details.</li>
+    <li><strong>Your colour theme.</strong> If you choose light or dark mode on the homepage, that choice is saved in your browser's <code>localStorage</code> under the key <code>eadr-theme</code>. It never leaves your device.</li>
+    <li><strong>Fonts.</strong> Typefaces are loaded from Google Fonts (<code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code>). Your browser connects to Google to fetch them, and Google's privacy policy applies to that request.</li>
+    <li><strong>Hosting logs.</strong> GitHub Pages, as the host, handles standard web-server requests under GitHub's own privacy statement.</li>
+  </ul>
+
+  <h2>Anonymous page-view counts</h2>
+  <p>Every page loads a small script from <code>static.cloudflareinsights.com</code> (Cloudflare Web Analytics). It reports aggregate page views, such as which guide was read and roughly where in the world the visit came from. Cloudflare describes this product as cookie-less and does not use it to build personal profiles. Cloudflare's own documentation sets out exactly what is measured and how long it is kept.</p>
+  <p>You can block this script with a content blocker or your browser's tracking protection. The site works the same without it.</p>
+
+  <h2>Third-party AI tools</h2>
+  <p>Our guides point to tools made by other companies (for example Google, Anthropic, Mistral, OpenAI, Cloudflare, and open-source projects you run yourself). When you use one of them, the text, files, photos, and audio you send go to that provider, and its terms and privacy policy apply. Free tiers often let providers use inputs to improve their models unless you change a setting, so check the setting before you upload anything sensitive.</p>
+  <p>Where a guide offers a local option (a tool that runs on your own computer, such as Ollama or whisper.cpp), your files stay on your device for that workflow. Check the tool's documentation to confirm.</p>
+
+  <h2>Reporting an outdated limit or a problem</h2>
+  <p>Our report links open a GitHub issue. Anything you write there is public on GitHub, so don't include personal information, account details, or private documents. Use the issue form, which asks only for the guide and the provider page that changed.</p>
+
+  <h2>Changes</h2>
+  <p>If the analytics setup or anything else that touches your data changes, this page will be updated and its date changed at the top. Questions can go to the <a href="https://github.com/iggym/everyday-ai-done-right/issues/new" rel="noopener">GitHub issue tracker</a>.</p>
+  <p>This page describes how the site works. It is not legal advice.</p>
+</main>
+
+<footer>
+  <p>Everyday AI, Done Right — verified zero-cost AI workflows. Not affiliated with any AI provider named in the guides.</p>
+  <nav aria-label="Footer">
+    <a href="./index.html">All guides</a>
+    <a href="./feed.xml">RSS feed</a>
+    <a href="./sitemap.xml">Sitemap</a>
+    <a href="https://github.com/iggym/everyday-ai-done-right" rel="noopener">Source on GitHub</a>
+  </nav>
+</footer>
+<script>
+  (function(){
+    try{
+      var t = localStorage.getItem('eadr-theme');
+      if(t === 'light' || t === 'dark'){ document.documentElement.setAttribute('data-theme', t); }
+    }catch(e){}
+  })();
+</script>
+<!-- Cloudflare Web Analytics (privacy-friendly, cookie-less page-view counts) -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "90c83e9b603641beac9bf45d47ce886d"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -12,6 +12,7 @@
 <link rel="alternate" type="application/rss+xml" title="Everyday AI, Done Right" href="./feed.xml">
 <link rel="sitemap" type="application/xml" href="./sitemap.xml">
 <meta name="theme-color" content="#0F8A5F">
+<link rel="manifest" href="./manifest.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Everyday AI, Done Right">
 <meta property="og:title" content="Everyday AI, Done Right — Real AI leverage. Actually free.">
@@ -197,6 +198,10 @@
     transition:all .18s ease; user-select:none; line-height:1.3;
   }
   .chip:hover{ border-color:var(--green); color:var(--ink); }
+  .sel-wrap{ display:flex; gap:8px 10px; align-items:center; flex-wrap:wrap; font-family:var(--mono); font-size:12px; color:var(--muted); }
+  .sel-wrap select{ font-family:var(--body); font-size:13px; padding:8px 12px; border-radius:20px; border:1px solid var(--line); background:var(--paper-raised); color:var(--ink); max-width:220px; }
+  .sel-wrap select:focus-visible{ outline:3px solid var(--green); outline-offset:2px; }
+  .sel-wrap label{ white-space:nowrap; }
   .chip[aria-pressed="true"]{ background:var(--ink); border-color:var(--ink); color:var(--paper); }
   @media (prefers-color-scheme: dark){ html:not([data-theme="light"]) .chip[aria-pressed="true"]{ background:var(--green); border-color:var(--green); color:#0A0A0A; } }
   html[data-theme="dark"] .chip[aria-pressed="true"]{ background:var(--green); border-color:var(--green); color:#0A0A0A; }
@@ -313,6 +318,16 @@
       <input id="search" type="search" placeholder="Search guides, tools, tags…" autocomplete="off">
     </div>
     <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+    <div class="sel-wrap">
+      <label for="sort">Sort</label>
+      <select id="sort">
+        <option value="newest">Newest first</option>
+        <option value="verified">Recently verified</option>
+        <option value="quick">Quickest read</option>
+      </select>
+      <label for="family">Tool</label>
+      <select id="family"><option value="">All tools</option></select>
+    </div>
   </div>
 
   <div class="result-count" id="feed-count" role="status" aria-live="polite">loading…</div>
@@ -326,6 +341,7 @@
     <a href="#top">Back to top ↑</a>
     <a href="./feed.xml">RSS feed</a>
     <a href="./sitemap.xml">Sitemap</a>
+    <a href="./privacy.html">Privacy</a>
     <a href="https://github.com/iggym/everyday-ai-done-right" rel="noopener">Source on GitHub</a>
   </nav>
 </footer>
@@ -358,22 +374,24 @@
   const countEl = document.getElementById('feed-count');
   const filtersEl = document.getElementById('filters');
   const searchEl = document.getElementById('search');
+  const sortEl = document.getElementById('sort');
+  const familyEl = document.getElementById('family');
   const descEl = document.getElementById('site-desc');
   const footerDescEl = document.getElementById('footer-desc');
 
   const STALE_AFTER_DAYS = 365;
   // Fallbacks only — the canonical labels/emojis live in metadata.json → site.categories
   let CATEGORIES = {
-    accessibility:{label:'Accessibility',emoji:'👁️'}, 'ai-tools':{label:'AI Tools',emoji:'🧰'},
-    business:{label:'Business',emoji:'📈'}, career:{label:'Career',emoji:'💼'}, civic:{label:'Civic & Legal',emoji:'⚖️'},
+    accessibility:{label:'Accessibility',emoji:'👁️'}, business:{label:'Business',emoji:'📈'}, career:{label:'Career',emoji:'💼'}, civic:{label:'Civic & Legal',emoji:'⚖️'},
     creative:{label:'Creative',emoji:'🎨'}, family:{label:'Family',emoji:'👪'}, health:{label:'Health',emoji:'🥗'},
-    household:{label:'Household',emoji:'🧾'}, learning:{label:'Learning',emoji:'🎧'},
-    'software-engineering':{label:'Software Engineering',emoji:'💻'}, travel:{label:'Travel',emoji:'🧳'}
+    household:{label:'Household',emoji:'🧾'}, learning:{label:'Learning',emoji:'🎧'}, travel:{label:'Travel',emoji:'🧳'}
   };
   const catLabel = c => (CATEGORIES[c] && CATEGORIES[c].label) || (c ? c.charAt(0).toUpperCase()+c.slice(1) : '');
   const catEmoji = c => (CATEGORIES[c] && CATEGORIES[c].emoji) || '💡';
 
   let activeCategory = null;
+  let activeFamily = '';
+  let published = [];   // every published guide, set by render()
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
   function fmtDate(iso){
@@ -399,7 +417,8 @@
       : '';
     return `
       <a class="card ${isPinned?'pinned':''}" href="${esc(a.path)}" style="animation-delay:${Math.min(idx*0.04,0.4)}s"
-         data-category="${esc(cat)}" data-search="${esc((a.title+' '+(a.hook||'')+' '+(a.tool||'')+' '+catLabel(cat)+' '+(a.tags||[]).join(' ')).toLowerCase())}">
+         data-category="${esc(cat)}" data-family="${esc(a.tool_family||'')}"
+         data-search="${esc((a.title+' '+(a.hook||'')+' '+(a.tool||'')+' '+catLabel(cat)+' '+(a.tags||[]).join(' ')).toLowerCase())}">
         ${pin}
         <div class="card-top">
           <span class="tool-badge"><span aria-hidden="true">${catEmoji(cat)}</span> ${esc(a.tool || 'Free tool')}</span>
@@ -414,22 +433,46 @@
       </a>`;
   }
 
+  // Pinned guides always lead; the rest follow the chosen sort order.
+  function sortGuides(list){
+    const mode = sortEl.value;
+    const byNewest = (a,b) => (b.date||'').localeCompare(a.date||'') || a.slug.localeCompare(b.slug);
+    const pinned = list.filter(a=>a.pinned);
+    const rest = list.filter(a=>!a.pinned);
+    if(mode === 'verified') rest.sort((a,b) => (b.verified||'').localeCompare(a.verified||'') || byNewest(a,b));
+    else if(mode === 'quick') rest.sort((a,b) => (Number(a.reading_time_minutes)||99) - (Number(b.reading_time_minutes)||99) || byNewest(a,b));
+    else rest.sort(byNewest);
+    return [...pinned, ...rest];
+  }
+
+  // Error boundary: one malformed entry is skipped, it never blanks the whole feed.
+  function drawFeed(){
+    let html = '';
+    let idx = 0;
+    sortGuides(published).forEach(a => {
+      try { html += cardHTML(a, idx, !!a.pinned); idx++; }
+      catch(err){ console.warn('Skipped a guide that failed to render:', a && a.slug, err); }
+    });
+    feedEl.innerHTML = html;
+    applyFilters();
+  }
+
   function applyFilters(){
     const q = searchEl.value.trim().toLowerCase();
     let visible = 0;
     document.querySelectorAll('.card').forEach(card=>{
-      const matchesCategory = !activeCategory || card.dataset.category === activeCategory;
-      const matchesSearch = !q || card.dataset.search.includes(q);
-      const show = matchesCategory && matchesSearch;
+      const show = (!activeCategory || card.dataset.category === activeCategory)
+        && (!activeFamily || card.dataset.family === activeFamily)
+        && (!q || card.dataset.search.includes(q));
       card.classList.toggle('hidden', !show);
       if(show) visible++;
     });
-    const scope = activeCategory ? ` in ${catLabel(activeCategory)}` : '';
+    const scope = (activeCategory ? ` in ${esc(catLabel(activeCategory))}` : '') + (activeFamily ? ` using ${esc(activeFamily)}` : '');
     const forQ = q ? ` matching “${esc(q)}”` : '';
     countEl.innerHTML = `<span>${visible} ${visible === 1 ? 'guide' : 'guides'}${scope}${forQ}</span>`
-      + ((activeCategory || q) ? `<button type="button" id="clear-filters">Clear filters</button>` : '');
+      + ((activeCategory || activeFamily || q) ? `<button type="button" id="clear-filters">Clear filters</button>` : '');
     const clear = document.getElementById('clear-filters');
-    if(clear) clear.addEventListener('click', ()=>{ searchEl.value=''; setCategory(null); searchEl.focus(); });
+    if(clear) clear.addEventListener('click', ()=>{ searchEl.value=''; activeFamily=''; familyEl.value=''; setCategory(null); searchEl.focus(); });
   }
 
   function syncUrl(){
@@ -445,8 +488,8 @@
     applyFilters();
   }
 
-  function renderFilters(articles){
-    const cats = [...new Set(articles.map(a => (a.category||'').toLowerCase()).filter(Boolean))]
+  function renderFilters(list){
+    const cats = [...new Set(list.map(a => (a.category||'').toLowerCase()).filter(Boolean))]
       .sort((a,b)=>catLabel(a).localeCompare(catLabel(b)));
     if(cats.length === 0){ filtersEl.innerHTML=''; return; }
     let html = `<button type="button" class="chip" data-cat="" aria-pressed="true">All</button>`;
@@ -459,21 +502,25 @@
     });
   }
 
-  function render(published, site){
+  function renderFamilies(list){
+    const fams = [...new Set(list.map(a => a.tool_family).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    if(activeFamily && !fams.includes(activeFamily)) activeFamily = '';
+    familyEl.innerHTML = '<option value="">All tools</option>' + fams.map(f => `<option value="${esc(f)}">${esc(f)}</option>`).join('');
+    familyEl.value = activeFamily;
+  }
+
+  function render(list, site){
     if(site && site.description){ descEl.textContent = site.description; footerDescEl.textContent = site.description; }
     if(site && site.categories){ CATEGORIES = Object.assign({}, CATEGORIES, site.categories); }
+    published = list;
     if(published.length === 0){
       feedEl.innerHTML = '<div class="empty"><div class="glyph">No guides published yet.</div><p>The first verified, zero-cost workflow is being researched right now. Check back soon.</p></div>';
       countEl.textContent = '0 guides';
       return;
     }
-    const pinned = published.filter(a=>a.pinned);
-    const rest = published.filter(a=>!a.pinned).sort((a,b)=>new Date(b.date)-new Date(a.date));
-    let html = '';
-    pinned.forEach((a,i)=>{ html += cardHTML(a,i,true); });
-    rest.forEach((a,i)=>{ html += cardHTML(a,i+pinned.length,false); });
-    feedEl.innerHTML = html;
     renderFilters(published);
+    renderFamilies(published);
+    drawFeed();
 
     // Deep links: ?category=health (used by article breadcrumbs) and ?q=resume (used by the 404 page)
     const params = new URL(location.href).searchParams;
@@ -486,6 +533,8 @@
   }
 
   searchEl.addEventListener('input', applyFilters);
+  sortEl.addEventListener('change', drawFeed);
+  familyEl.addEventListener('change', ()=>{ activeFamily = familyEl.value; applyFilters(); });
 
   async function load(){
     countEl.textContent = 'loading…';

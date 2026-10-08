@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draft a Community Newsletter with a Free OpenRouter Model | Everyday AI, Done Right</title>
+  <meta name="description" content="Write the monthly newsletter for a club, PTA, or small shop from a list of updates, using a free model variant and a reusable prompt.">
+  <meta name="keywords" content="newsletter, community, writing, openrouter, free-ai">
+  <meta name="author" content="Everyday AI, Done Right">
+  <style>
+  :root{--paper:#FAFAF9;--paper-raised:#FFFFFF;--ink:#1C1C1E;--ink-soft:#54545A;--muted:#6E6E73;--line:rgba(28,28,30,.10);--green:#0D7D56;--green-soft:rgba(15,138,95,.10);--coral:#C2410C;--display:'Manrope',sans-serif;--body:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+  @media (prefers-color-scheme:dark){:root{--paper:#141414;--paper-raised:#1C1C1E;--ink:#F4F4F3;--ink-soft:#C7C7CB;--muted:#9A9AA0;--line:rgba(244,244,243,.10);--green:#22C58B;--green-soft:rgba(34,197,139,.14);--coral:#FF8064}}
+  html[data-theme="light"]{--paper:#FAFAF9;--paper-raised:#FFFFFF;--ink:#1C1C1E;--ink-soft:#54545A;--muted:#6E6E73;--line:rgba(28,28,30,.10);--green:#0D7D56;--green-soft:rgba(15,138,95,.10)}
+  html[data-theme="dark"]{--paper:#141414;--paper-raised:#1C1C1E;--ink:#F4F4F3;--ink-soft:#C7C7CB;--muted:#9A9AA0;--line:rgba(244,244,243,.10);--green:#22C58B;--green-soft:rgba(34,197,139,.14)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65}
+  a{color:var(--green)}
+  a:focus-visible,button:focus-visible{outline:3px solid var(--green);outline-offset:2px;border-radius:4px}
+  .wrap{max-width:780px;margin:0 auto;padding:0 22px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);margin-bottom:28px}
+  .topbar a.mark{font-family:var(--display);font-weight:800;color:var(--ink);text-decoration:none;font-size:15px}
+  .theme-toggle{font:600 12px var(--body);color:var(--ink-soft);background:var(--paper-raised);border:1px solid var(--line);border-radius:18px;padding:6px 12px;cursor:pointer}
+  .kicker{display:inline-block;font:600 12px var(--mono);color:var(--green);background:var(--green-soft);padding:5px 12px;border-radius:14px;margin-bottom:14px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.2vw,40px);line-height:1.18;letter-spacing:-.02em;margin:0 0 14px}
+  .hook{font-size:18px;color:var(--ink-soft);margin:0 0 26px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0 0 30px}
+  .stat{background:var(--paper-raised);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:14px 16px}
+  .stat b{display:block;font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+  .stat span{font-size:14.5px;color:var(--ink)}
+  h2{font-family:var(--display);font-weight:700;font-size:21px;margin:38px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  p,li{color:var(--ink-soft)}
+  ol.steps{list-style:none;counter-reset:s;padding:0;margin:0}
+  ol.steps>li{counter-increment:s;position:relative;padding-left:44px;margin-bottom:18px}
+  ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;font:700 13px/28px var(--body);text-align:center}
+  ol.steps strong{color:var(--ink);display:block}
+  code{font-family:var(--mono);font-size:.88em;background:var(--paper-raised);border:1px solid var(--line);padding:1px 6px;border-radius:6px;color:var(--ink)}
+  pre.prompt{white-space:pre-wrap;word-wrap:break-word;font:13.5px/1.6 var(--mono);color:var(--ink);background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:0}
+  .copy{margin-top:10px;font:600 13px var(--body);color:#fff;background:var(--green);border:0;border-radius:8px;padding:8px 14px;cursor:pointer}
+  .verify{background:var(--green-soft);border-left:4px solid var(--green);border-radius:12px;padding:14px 18px;margin:26px 0}
+  .verify p{margin:0;color:var(--ink)}
+  ul.checks,ul.pitfalls{padding-left:20px}
+  ul.pitfalls li{color:var(--ink-soft)}
+  footer{border-top:1px solid var(--line);padding:30px 22px;text-align:center;color:var(--muted);font-size:13.5px}
+</style>
+<!-- eadr:head:start -->
+<link rel="canonical" href="https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-newsletter-drafts.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Everyday AI, Done Right">
+<meta property="og:title" content="Draft a Community Newsletter with a Free OpenRouter Model">
+<meta property="og:description" content="Write the monthly newsletter for a club, PTA, or small shop from a list of updates, using a free model variant and a reusable prompt.">
+<meta property="og:url" content="https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-newsletter-drafts.html">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0F8A5F">
+<meta property="og:image" content="https://iggym.github.io/everyday-ai-done-right/og/openrouter-free-newsletter-drafts.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Everyday AI, Done Right — Real AI leverage. Actually free.">
+<meta property="article:published_time" content="2026-10-08">
+<meta property="article:modified_time" content="2026-10-08">
+<meta property="article:section" content="Business">
+<meta property="article:tag" content="newsletter">
+<meta property="article:tag" content="community">
+<meta property="article:tag" content="writing">
+<meta property="article:tag" content="openrouter">
+<meta property="article:tag" content="free-ai">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Draft a Community Newsletter with a Free OpenRouter Model">
+<meta name="twitter:description" content="Write the monthly newsletter for a club, PTA, or small shop from a list of updates, using a free model variant and a reusable prompt.">
+<meta name="twitter:image" content="https://iggym.github.io/everyday-ai-done-right/og/openrouter-free-newsletter-drafts.png">
+<link rel="icon" href="../favicon.ico" sizes="32x32">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Everyday AI, Done Right" href="../feed.xml">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","@id":"https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-newsletter-drafts.html#article","headline":"Draft a Community Newsletter with a Free OpenRouter Model","description":"Write the monthly newsletter for a club, PTA, or small shop from a list of updates, using a free model variant and a reusable prompt.","url":"https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-newsletter-drafts.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-newsletter-drafts.html"},"datePublished":"2026-10-08","dateModified":"2026-10-08","author":{"@type":"Organization","name":"Everyday AI, Done Right","url":"https://iggym.github.io/everyday-ai-done-right/"},"publisher":{"@type":"Organization","name":"Everyday AI, Done Right","url":"https://iggym.github.io/everyday-ai-done-right/","logo":{"@type":"ImageObject","url":"https://iggym.github.io/everyday-ai-done-right/apple-touch-icon.png","width":180,"height":180}},"image":"https://iggym.github.io/everyday-ai-done-right/og/openrouter-free-newsletter-drafts.png","articleSection":"Business","keywords":"newsletter, community, writing, openrouter, free-ai","timeRequired":"PT3M","isAccessibleForFree":true,"about":{"@type":"SoftwareApplication","name":"OpenRouter :free model variants","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://iggym.github.io/everyday-ai-done-right/"},{"@type":"ListItem","position":2,"name":"Business","item":"https://iggym.github.io/everyday-ai-done-right/?category=business"},{"@type":"ListItem","position":3,"name":"Draft a Community Newsletter with a Free OpenRouter Model","item":"https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-newsletter-drafts.html"}]}]}</script>
+<!-- eadr:head:end -->
+</head>
+<body>
+<!-- eadr:nav:start -->
+<style>.eadr-nav,.eadr-nav *,.eadr-stale,.eadr-stale *{box-sizing:border-box}
+.eadr-nav,.eadr-nav div,.eadr-nav ol,.eadr-nav li,.eadr-nav a,.eadr-nav span,.eadr-stale,.eadr-stale a{margin:0;padding:0;border:0;background:none;list-style:none;position:static;text-align:left;max-width:none;color:inherit;font-size:inherit;text-transform:none;letter-spacing:normal;text-shadow:none;box-shadow:none;text-decoration:none;border-radius:0;transform:none;counter-increment:none;float:none;width:auto;min-height:0;height:auto}
+.eadr-nav li::before,.eadr-nav li::after{content:none;display:none}
+.eadr-skip{position:absolute;left:-10000px;top:12px;z-index:10000;padding:10px 16px;border-radius:8px;background:#0F8A5F;color:#fff;font:600 14px/1 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none}
+.eadr-skip:focus{left:12px;outline:3px solid #FF6B4A;outline-offset:2px}
+.eadr-nav{display:block;font:500 13px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;border-bottom:1px solid rgba(127,127,127,.28)}
+.eadr-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:8px 18px;flex-wrap:wrap;max-width:880px;margin:0 auto;padding:10px 20px}
+.eadr-crumbs{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-width:0}
+.eadr-crumbs li{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.eadr-crumbs li+li::before{content:"\203A";display:inline;opacity:.45}
+.eadr-crumbs a{display:inline;opacity:.78;border-bottom:1px solid transparent;white-space:nowrap}
+.eadr-crumbs a:hover,.eadr-crumbs a:focus-visible{opacity:1;border-bottom-color:currentColor}
+.eadr-crumbs [aria-current]{display:inline-block;opacity:.62;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(44ch,62vw)}
+.eadr-meta{display:inline-flex;align-items:center;gap:12px;font:500 11.5px/1 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.72;white-space:nowrap}
+.eadr-stale{display:none;max-width:840px;margin:14px auto 0;padding:12px 16px;border:1px solid rgba(255,107,74,.45);border-left:5px solid #FF6B4A;border-radius:12px;background:rgba(255,107,74,.10);font:500 13.5px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.eadr-stale.eadr-show{display:block}
+.eadr-stale a{text-decoration:underline;font-weight:600}
+@media (max-width:640px){.eadr-nav-inner{padding:10px 16px}.eadr-meta{opacity:.65}}
+@media print{.eadr-nav,.eadr-stale,.eadr-related,.eadr-skip,.theme-toggle,button,header nav,footer{display:none!important}a[href^="http"]::after{content:" (" attr(href) ")";font-size:.85em;opacity:.8;word-break:break-all}}</style>
+<a class="eadr-skip" href="#main">Skip to content</a>
+<nav class="eadr-nav" aria-label="Breadcrumb" data-verified="2026-10-08" data-built="2026-10-08">
+  <div class="eadr-nav-inner">
+    <ol class="eadr-crumbs">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html?category=business">📈 Business</a></li>
+      <li><span aria-current="page" title="Draft a Community Newsletter with a Free OpenRouter Model">Draft a Community Newsletter with a Free OpenRouter Model</span></li>
+    </ol>
+    <div class="eadr-meta"><span>3 min read</span><span>✓ verified Oct 8, 2026</span></div>
+  </div>
+</nav>
+<div class="eadr-stale" role="note"><strong>Heads up:</strong> this guide was last verified on Oct 8, 2026. Free-tier limits change often — re-check the provider's current pricing page before relying on it. <a href="https://github.com/iggym/everyday-ai-done-right/issues/new?title=Outdated+limit%3A+openrouter-free-newsletter-drafts&amp;body=Which+limit+changed%3F+Please+link+the+provider+page+showing+the+current+free+tier." rel="noopener">Report an outdated limit</a>.</div>
+<script>(function(){var n=document.querySelector('.eadr-nav[data-verified]');if(!n)return;var v=new Date(n.getAttribute('data-verified')+'T00:00:00');if(isNaN(v))return;if((Date.now()-v)/864e5>365){var s=document.querySelector('.eadr-stale');if(s)s.classList.add('eadr-show');}})();</script>
+<!-- eadr:nav:end -->
+  <div class="wrap">
+    <header class="topbar">
+      <a class="mark" href="../index.html">Everyday AI, Done Right</a>
+      <button class="theme-toggle" type="button" onclick="toggleTheme()">Toggle theme</button>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <article>
+        <span class="kicker">Business</span>
+        <h1>Draft a Community Newsletter with a Free OpenRouter Model</h1>
+        <p class="hook">Write the monthly newsletter for a club, PTA, or small shop from a list of updates, using a free model variant and a reusable prompt.</p>
+
+        <div class="stats">
+          <div class="stat"><b>Tool</b><span>OpenRouter :free model variants</span></div>
+          <div class="stat"><b>Cost</b><span>$0 on :free variants — listed by OpenRouter as free versions of models</span></div>
+          <div class="stat"><b>Limits</b><span>Free variants have their own rate limits and availability; check the model page</span></div>
+          <div class="stat"><b>Verified</b><span>8 October 2026</span></div>
+        </div>
+
+        <section>
+          <h2>Why this works</h2>
+          <p>Volunteer organisations publish a newsletter, and it takes an evening each month. A free model can turn a bullet list of updates into a readable draft, which you then edit for the community.</p>
+        </section>
+
+        <section>
+          <h2>Step by step</h2>
+          <ol class="steps">
+          <li><strong>Collect the updates</strong>Ask committee members to send three bullet points each by the same deadline.</li>
+          <li><strong>Pick a free model</strong>Use a model ID ending in <code>:free</code> from the OpenRouter models page.</li>
+          <li><strong>Generate the draft</strong>Use the prompt below. Ask for a subject line and two alternatives.</li>
+          <li><strong>Edit for names and dates</strong>Check every name, date, and figure against the original bullets.</li>
+          <li><strong>Save the prompt</strong>Keep the prompt in a text file so next month's issue has the same structure.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Copy-paste prompt</h2>
+          <pre class="prompt" id="prompt-openrouter-free-newsletter-drafts">Write a community newsletter from the updates below. Use: a friendly subject line plus two alternatives, a 60-word opening, sections for each update with a heading, and a closing with the next meeting date. Use only facts in the updates. Keep it under 500 words.
+
+UPDATES:
+&lt;paste&gt;</pre>
+          <button class="copy" type="button" data-target="prompt-openrouter-free-newsletter-drafts" onclick="copyPrompt(this)">Copy prompt</button>
+        </section>
+
+        <section>
+          <h2>Check your result</h2>
+          <ul class="checks">
+          <li>Every date and name matches the bullets</li>
+          <li>No fundraising or money figures were invented</li>
+          <li>The subject line works without the body</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Pitfalls to avoid</h2>
+          <ul class="pitfalls">
+          <li>Free models can change between sessions; keep your prompt stable so tone stays consistent.</li>
+          <li>Email lists may have data rules; send only to people who subscribed.</li>
+          </ul>
+        </section>
+
+        <div class="verify">
+          <p><strong>What we checked:</strong> The &#x27;:free&#x27; variant behaviour was read from OpenRouter&#x27;s documentation on 8 Oct 2026. Free models change often; check the model&#x27;s page for current limits. Source: <a href="https://openrouter.ai/docs/guides/routing/model-variants/free" rel="noopener">https://openrouter.ai/docs/guides/routing/model-variants/free</a>.</p>
+        </div>
+      </article>
+    </main>
+  </div>
+
+<!-- eadr:footer:start -->
+<style>.eadr-related,.eadr-related *{box-sizing:border-box}
+.eadr-related,.eadr-related div,.eadr-related ul,.eadr-related li,.eadr-related a,.eadr-related p,.eadr-related h2,.eadr-related span,.eadr-related strong{margin:0;padding:0;border:0;background:none;list-style:none;position:static;text-align:left;max-width:none;color:inherit;font-size:inherit;text-transform:none;letter-spacing:normal;text-shadow:none;box-shadow:none;text-decoration:none;border-radius:0;transform:none;counter-increment:none;float:none;width:auto;min-height:0;height:auto;line-height:1.5}
+.eadr-related li::before,.eadr-related li::after,.eadr-related h2::before,.eadr-related h2::after{content:none;display:none}
+.eadr-related{display:block;font:400 15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;border-top:1px solid rgba(127,127,127,.28);margin-top:56px;padding:40px 20px 28px}
+.eadr-related-inner{max-width:880px;margin:0 auto}
+.eadr-kicker{display:block;font:600 11px/1 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin:0 0 8px}
+.eadr-related h2{display:block;font:800 1.35rem/1.25 Manrope,Inter,system-ui,sans-serif;letter-spacing:-.01em;margin:0 0 18px}
+.eadr-related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.eadr-related-grid li{display:block}
+.eadr-related-grid a{display:flex;flex-direction:column;gap:8px;height:100%;padding:16px 18px;border:1px solid rgba(127,127,127,.3);border-radius:14px;transition:border-color .2s ease,transform .2s ease}
+.eadr-related-grid a:hover,.eadr-related-grid a:focus-visible{border-color:#0F8A5F;transform:translateY(-2px)}
+.eadr-rel-cat{display:block;font:600 10.5px/1.3 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.65}
+.eadr-related-grid strong{display:block;font:700 15px/1.35 Manrope,Inter,system-ui,sans-serif}
+.eadr-rel-hook{display:block;font-size:13px;line-height:1.5;opacity:.75}
+.eadr-next{display:flex;flex-wrap:wrap;gap:10px 22px;margin:26px 0 0;font-size:14px}
+.eadr-next a{display:inline;font-weight:600;border-bottom:1px solid rgba(127,127,127,.45)}
+.eadr-next a:hover,.eadr-next a:focus-visible{border-bottom-color:currentColor}
+.eadr-foot-meta{display:block;margin:26px 0 0;font:500 12px/1.6 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.62}
+.eadr-foot-meta a{display:inline;text-decoration:underline}
+@media (prefers-reduced-motion:reduce){.eadr-related-grid a{transition:none}.eadr-related-grid a:hover{transform:none}}</style>
+<section class="eadr-related" aria-labelledby="eadr-related-title">
+  <div class="eadr-related-inner">
+    <p class="eadr-kicker">Keep going</p>
+    <h2 id="eadr-related-title">Related guides</h2>
+    <ul class="eadr-related-grid">
+      <li><a href="./build-the-tool-that-doesnt-exist-yet.html"><span class="eadr-rel-cat">📈 Business · 5 min</span><strong>Build the Tool That Doesn&#x27;t Exist Yet</strong><span class="eadr-rel-hook">Describe a tool in one sentence, let Claude&#x27;s free Artifacts write a self-contained HTML file, then host it…</span></a></li>
+      <li><a href="./openrouter-free-followup-notes.html"><span class="eadr-rel-cat">💼 Career · 3 min</span><strong>Draft Thank-You and Follow-Up Notes After Every Interview</strong><span class="eadr-rel-hook">Send a specific, warm follow-up within a day of each interview, drafted with a free model from your own…</span></a></li>
+      <li><a href="./openrouter-free-language-practice.html"><span class="eadr-rel-cat">🧳 Travel · 3 min</span><strong>Practise a New Language with a Free OpenRouter Chat Model</strong><span class="eadr-rel-hook">Hold daily conversation practice in a language you are learning, with a free model that corrects your…</span></a></li>
+    </ul>
+    <p class="eadr-next">
+      <a href="../index.html?category=business">More Business guides →</a>
+      <a href="../index.html">All guides</a>
+      <a href="../privacy.html">Privacy</a>
+      <a href="./zero-cost-ai-catalog-and-schema.html">📌 Master catalog of free AI tools</a>
+      <a href="https://github.com/iggym/everyday-ai-done-right/issues/new" rel="noopener">Report a problem</a>
+    </p>
+    <p class="eadr-foot-meta">Everyday AI, Done Right · OpenRouter :free model variants · free-tier terms verified Oct 8, 2026 · <a href="https://openrouter.ai/docs/guides/routing/model-variants/free" rel="noopener">provider source</a></p>
+  </div>
+</section>
+<!-- eadr:footer:end -->
+  <footer>
+    <p>Everyday AI, Done Right · about 3 min read · guides are not legal, medical, or financial advice.</p>
+  </footer>
+  <script>
+function toggleTheme(){var r=document.documentElement;var c=r.getAttribute('data-theme');if(c==='light'){r.removeAttribute('data-theme');}else{r.setAttribute('data-theme','light');}}
+function copyPrompt(btn){var t=document.getElementById(btn.getAttribute('data-target')).textContent;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){btn.textContent='Copied';});}}
+</script>
+</body>
+</html>
