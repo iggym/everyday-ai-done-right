@@ -129,6 +129,7 @@ NAV_CSS = """
 .eadr-stale.eadr-show{display:block}
 .eadr-stale a{text-decoration:underline;font-weight:600}
 @media (max-width:640px){.eadr-nav-inner{padding:10px 16px}.eadr-meta{opacity:.65}}
+@media print{.eadr-nav,.eadr-stale,.eadr-related,.eadr-skip,.theme-toggle,button,header nav,footer{display:none!important}a[href^="http"]::after{content:" (" attr(href) ")";font-size:.85em;opacity:.8;word-break:break-all}}
 """.strip()
 
 RELATED_CSS = """
@@ -186,6 +187,12 @@ class Site:
     def url(self, a: dict) -> str:
         return self.base + a["path"]
 
+    def image(self, a: dict) -> str:
+        """Per-guide social card (og/<slug>.png, see make_social_cards.py) or the site default."""
+        if (ROOT / "og" / f"{a['slug']}.png").is_file():
+            return f"{self.base}og/{a['slug']}.png"
+        return self.base + "og-image.png"
+
 
 def related_for(site: Site, a: dict) -> list[dict]:
     """Nearest guides: same category (+5), shared tags (+2 each), same tool family (+1), same tool (+1).
@@ -210,6 +217,7 @@ def head_block(site: Site, a: dict, doc: str) -> str:
     desc = html.unescape(existing_desc.group(1)) if existing_desc else truncate(a["hook"], 155)
     og_desc = truncate(desc, 200)
     cat_label = site.cat_label(a["category"])
+    img = site.image(a)
     lines = [f"<!-- eadr:head:start -->"]
     if not existing_desc:
         lines.append(f'<meta name="description" content="{esc(desc)}">')
@@ -225,9 +233,11 @@ def head_block(site: Site, a: dict, doc: str) -> str:
             f'<meta property="og:description" content="{esc(og_desc)}">',
             f'<meta property="og:url" content="{esc(url)}">',
         ]
+    if not has_tag(doc, r'rel=["\']manifest["\']'):
+        lines += ['<link rel="manifest" href="../manifest.webmanifest">', '<meta name="theme-color" content="#0F8A5F">']
     if not has_tag(doc, r'property=["\']og:image["\']'):
         lines += [
-            f'<meta property="og:image" content="{esc(site.base)}og-image.png">',
+            f'<meta property="og:image" content="{esc(img)}">',
             '<meta property="og:image:width" content="1200">',
             '<meta property="og:image:height" content="630">',
             f'<meta property="og:image:alt" content="{esc(site.title)} — Real AI leverage. Actually free.">',
@@ -243,7 +253,7 @@ def head_block(site: Site, a: dict, doc: str) -> str:
             '<meta name="twitter:card" content="summary_large_image">',
             f'<meta name="twitter:title" content="{esc(a["title"])}">',
             f'<meta name="twitter:description" content="{esc(og_desc)}">',
-            f'<meta name="twitter:image" content="{esc(site.base)}og-image.png">',
+            f'<meta name="twitter:image" content="{esc(img)}">',
         ]
     if not has_tag(doc, r'rel=["\'](?:shortcut )?icon["\']'):
         lines += [
@@ -273,7 +283,7 @@ def head_block(site: Site, a: dict, doc: str) -> str:
                         "url": site.base,
                         "logo": {"@type": "ImageObject", "url": site.base + "apple-touch-icon.png", "width": 180, "height": 180},
                     },
-                    "image": site.base + "og-image.png",
+                    "image": img,
                     "articleSection": cat_label,
                     "keywords": ", ".join(a.get("tags", [])),
                     "timeRequired": f"PT{int(a.get('reading_time_minutes') or 3)}M",
@@ -370,6 +380,7 @@ def related_block(site: Site, a: dict) -> str:
         '    <p class="eadr-next">\n'
         f'      <a href="../index.html?category={esc(cat)}">More {esc(cat_label)} guides →</a>\n'
         '      <a href="../index.html">All guides</a>\n'
+        '      <a href="../privacy.html">Privacy</a>\n'
         f"{pinned_link}"
         f'      <a href="{GITHUB_REPO}/issues/new" rel="noopener">Report a problem</a>\n'
         "    </p>\n"
@@ -536,6 +547,8 @@ def process_article(site: Site, a: dict, check: bool = False) -> tuple[bool, int
 def build_sitemap(site: Site) -> str:
     newest = max(max(a["date"], a["verified"]) for a in site.published)
     rows = [f"  <url><loc>{xml_escape(site.base)}</loc><lastmod>{newest}</lastmod></url>"]
+    for page, lastmod in STATIC_PAGES:
+        rows.append(f"  <url><loc>{xml_escape(site.base + page)}</loc><lastmod>{lastmod}</lastmod></url>")
     for a in sorted(site.published, key=lambda x: x["date"], reverse=True):
         rows.append(f"  <url><loc>{xml_escape(site.url(a))}</loc><lastmod>{max(a['date'], a['verified'])}</lastmod></url>")
     return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(rows) + "\n</urlset>\n"
@@ -577,6 +590,49 @@ def build_feed(site: Site) -> str:
     return "\n".join(out)
 
 
+# --------------------------------------------------------------------------- #
+# README catalog (backlog 6.5) - the per-category list between the markers is
+# generated, so the GitHub front page can't drift from metadata.json again.
+# --------------------------------------------------------------------------- #
+README = ROOT / "README.md"
+CATALOG_START = "<!-- catalog:start -->"
+CATALOG_END = "<!-- catalog:end -->"
+
+
+def build_catalog(site: Site) -> str:
+    by_cat: dict[str, list[dict]] = {}
+    for a in site.published:
+        by_cat.setdefault(a["category"], []).append(a)
+    lines = [
+        f"**{len(site.published)} verified guides** across {len(by_cat)} categories. "
+        "This list is generated from `metadata.json` by `python3 scripts/build.py`, so edit the metadata, not this section.",
+        "",
+    ]
+    for cat in sorted(by_cat, key=site.cat_label):
+        items = sorted(by_cat[cat], key=lambda a: (not a.get("pinned"), a["title"].lower()))
+        lines.append(f"### {site.cat_emoji(cat)} {site.cat_label(cat)} ({len(items)})")
+        lines.append("")
+        for a in items:
+            pin = "📌 " if a.get("pinned") else ""
+            lines.append(f"* {pin}**[{a['title']}]({site.url(a)})** — {truncate(a['hook'], 170)}")
+            lines.append(f"  <sub>{a['tool']} · verified {fmt_date(a['verified'])}</sub>")
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def build_readme(site: Site, current: str) -> str:
+    try:
+        head, rest = current.split(CATALOG_START, 1)
+        _, tail = rest.split(CATALOG_END, 1)
+    except ValueError:
+        raise SystemExit(f"README.md is missing the {CATALOG_START} / {CATALOG_END} markers")
+    return head + CATALOG_START + "\n" + build_catalog(site) + CATALOG_END + tail
+
+
+# Static pages that live outside metadata.json but should be in the sitemap.
+STATIC_PAGES = [("privacy.html", "2026-10-08")]
+
+
 def write_if_changed(path: Path, content: str, check: bool) -> bool:
     old = path.read_text(encoding="utf-8") if path.is_file() else None
     if old == content:
@@ -603,6 +659,8 @@ def main(argv: list[str]) -> int:
         changed_files.append("sitemap.xml")
     if write_if_changed(ROOT / "feed.xml", build_feed(site), check):
         changed_files.append("feed.xml")
+    if write_if_changed(README, build_readme(site, README.read_text(encoding="utf-8")), check):
+        changed_files.append("README.md")
 
     verb = "would change" if check else "updated"
     print(f"{verb}: {changed_articles} article(s), {', '.join(changed_files) or 'no root files'}; "

@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://iggym.github.io/everyday-ai-done-right/</loc><lastmod>2026-08-21</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/privacy.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ollama-lease-summary-offline.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ollama-resume-tailor-offline.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ollama-symptom-timeline-local.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ollama-recipe-box-local.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ollama-family-chore-planner-offline.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ollama-client-email-drafts-offline.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ollama-weekly-meal-prep-local.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ollama-textbook-flashcards-local.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/whisper-cpp-meeting-transcripts-offline.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/whisper-cpp-lecture-notes-offline.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/whisper-cpp-interview-practice-offline.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/whisper-cpp-family-captions-offline.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/whisper-cpp-travel-voice-journal.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/tesseract-receipts-to-csv.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ocrmypdf-scanned-forms-searchable.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/tesseract-lab-printout-text-local.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/ocrmypdf-screen-reader-scans.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/aider-small-site-fixes-ollama.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/continue-learn-codebase-ollama.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/continue-local-pr-review.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/aider-unit-tests-small-script.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-model-comparison.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-newsletter-drafts.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-language-practice.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-followup-notes.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/openrouter-free-naming-brainstorm.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/cloudflare-workers-ai-daily-budget.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/cloudflare-workers-ai-council-minutes-summary.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/cloudflare-workers-ai-bill-sorter.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/mistral-le-chat-packing-list.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/mistral-le-chat-compare-job-offers.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/mistral-le-chat-party-planner.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/mistral-le-chat-zine-outline.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/libretranslate-foreign-notices-selfhosted.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/libretranslate-school-letters-selfhosted.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/libretranslate-product-copy-selfhosted.html</loc><lastmod>2026-10-08</lastmod></url>
   <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/multimodal-supplement-interaction-gemini.html</loc><lastmod>2026-08-21</lastmod></url>
   <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/decode-lab-results-copilot.html</loc><lastmod>2026-08-21</lastmod></url>
   <url><loc>https://iggym.github.io/everyday-ai-done-right/articles/stress-test-worldbuilding-notebooklm.html</loc><lastmod>2026-08-21</lastmod></url>
